@@ -252,3 +252,15 @@ Duration classes:
 - OVER_WATCHDOG > watchdog
 
 After a micro-probe, if more than half of the 5 s watchdog budget is already consumed, KINLINK freezes further action and does not issue an additional bandwidth refresh.
+
+
+## Rolling reliability windows
+
+Diagnostics expose 1-hour and 24-hour interruption burden:
+- interruption count;
+- cumulative interruption duration;
+- longest interruption;
+- dominant passive-cause transition in the last 24 hours.
+
+A qualitative burden is derived as QUIET / NOTICEABLE / UNSTABLE / SEVERE.
+KINLINK deliberately does not infer an availability percentage from sparse Android callbacks.

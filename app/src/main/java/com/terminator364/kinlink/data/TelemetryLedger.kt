@@ -138,6 +138,20 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             cursor.getInt(0)
         }
 
+    fun actionCountsByPrefixSince(actionPrefix: String, sinceWallMs: Long): Map<String, Int> {
+        val result = linkedMapOf<String, Int>()
+        readableDatabase.rawQuery(
+            "SELECT action, COUNT(*) FROM action_receipts WHERE action LIKE ? AND ts_wall_ms >= ? GROUP BY action",
+            arrayOf("$actionPrefix%", sinceWallMs.toString())
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                val action = cursor.getString(0)
+                result[action.removePrefix(actionPrefix)] = cursor.getInt(1)
+            }
+        }
+        return result
+    }
+
     fun actionCountsByPrefix(actionPrefix: String): Map<String, Int> {
         val result = linkedMapOf<String, Int>()
         readableDatabase.rawQuery(
@@ -187,6 +201,15 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         ).use { cursor ->
             cursor.moveToFirst()
             Triple(cursor.getLong(0), cursor.getLong(1), cursor.getInt(2))
+        }
+
+    fun interruptionDurationStatsSince(sinceWallMs: Long): Triple<Int, Long, Long> =
+        readableDatabase.rawQuery(
+            "SELECT COUNT(duration_ms), COALESCE(SUM(duration_ms), 0), COALESCE(MAX(duration_ms), 0) FROM action_receipts WHERE action LIKE 'INTERRUPTION_%' AND duration_ms IS NOT NULL AND ts_wall_ms >= ?",
+            arrayOf(sinceWallMs.toString())
+        ).use { cursor ->
+            cursor.moveToFirst()
+            Triple(cursor.getInt(0), cursor.getLong(1), cursor.getLong(2))
         }
 
     fun interruptionDurationStats(): Pair<Long, Long> =
@@ -281,9 +304,13 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             while (cursor.moveToNext()) qualityCounts[cursor.getString(0)] = cursor.getInt(1)
         }
 
+        val now = System.currentTimeMillis()
         val interruptionDurations = interruptionDurationStats()
+        val interruptions1h = interruptionDurationStatsSince(now - 60L * 60L * 1000L)
+        val interruptions24h = interruptionDurationStatsSince(now - 24L * 60L * 60L * 1000L)
+        val causes24h = actionCountsByPrefixSince("PASSIVE_CAUSE_", now - 24L * 60L * 60L * 1000L)
         val recoveryDurations = actionDurationStats("AUTO_RECOVERY")
-        val stability = stabilityWindow()
+        val stability = stabilityWindow(now)
         return DiagnosticSummary(
             generatedAtMillis = System.currentTimeMillis(),
             totalEvents = recentCount(),
@@ -315,7 +342,14 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             runtimeBudgetSessions = countActions("RUNTIME_BUDGET_SESSION"),
             recoveryActionDurationTotalMillis = recoveryDurations.first,
             recoveryActionDurationMaxMillis = recoveryDurations.second,
-            recoveryActionDurationSamples = recoveryDurations.third
+            recoveryActionDurationSamples = recoveryDurations.third,
+            recent1hInterruptionCount = interruptions1h.first,
+            recent1hInterruptionMillis = interruptions1h.second,
+            recent1hLongestInterruptionMillis = interruptions1h.third,
+            recent24hInterruptionCount = interruptions24h.first,
+            recent24hInterruptionMillis = interruptions24h.second,
+            recent24hLongestInterruptionMillis = interruptions24h.third,
+            recent24hCauseCounts = causes24h
         )
     }
 }

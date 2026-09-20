@@ -6,6 +6,7 @@ import com.terminator364.kinlink.core.PassiveProblemClassifier
 import com.terminator364.kinlink.core.PassiveGuidancePolicy
 import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.ActionDurationPolicy
+import com.terminator364.kinlink.core.RecentReliabilityPolicy
 
 /** Privacy-safe diagnostic summary: no SSID, SIM identifier, IP address, gateway or payload. */
 data class DiagnosticSummary(
@@ -39,7 +40,14 @@ data class DiagnosticSummary(
     val runtimeBudgetSessions: Int = 0,
     val recoveryActionDurationTotalMillis: Long = 0L,
     val recoveryActionDurationMaxMillis: Long = 0L,
-    val recoveryActionDurationSamples: Int = 0
+    val recoveryActionDurationSamples: Int = 0,
+    val recent1hInterruptionCount: Int = 0,
+    val recent1hInterruptionMillis: Long = 0L,
+    val recent1hLongestInterruptionMillis: Long = 0L,
+    val recent24hInterruptionCount: Int = 0,
+    val recent24hInterruptionMillis: Long = 0L,
+    val recent24hLongestInterruptionMillis: Long = 0L,
+    val recent24hCauseCounts: Map<String, Int> = emptyMap()
 )
 
 object DiagnosticReportBuilder {
@@ -99,6 +107,24 @@ object DiagnosticReportBuilder {
                 appendLine("- $cause: $count")
             }
         }
+        appendLine()
+
+        val recentBurden = RecentReliabilityPolicy.classify(
+            summary.recent24hInterruptionCount,
+            summary.recent24hInterruptionMillis,
+            summary.recent24hLongestInterruptionMillis
+        )
+        appendLine("Recent interruption burden")
+        appendLine("- 24h qualitative burden: ${recentBurden.name}")
+        appendLine("- Last 1h: ${summary.recent1hInterruptionCount} interruption(s), ${summary.recent1hInterruptionMillis} ms cumulative, longest ${summary.recent1hLongestInterruptionMillis} ms")
+        appendLine("- Last 24h: ${summary.recent24hInterruptionCount} interruption(s), ${summary.recent24hInterruptionMillis} ms cumulative, longest ${summary.recent24hLongestInterruptionMillis} ms")
+        if (summary.recent24hCauseCounts.isNotEmpty()) {
+            val dominant = summary.recent24hCauseCounts.maxByOrNull { it.value }
+            if (dominant != null) {
+                appendLine("- Dominant passive cause transition in 24h: ${dominant.key} (${dominant.value})")
+            }
+        }
+        appendLine("- No availability percentage is inferred from sparse callbacks.")
         appendLine()
 
         appendLine("Observed interruptions")
