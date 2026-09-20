@@ -2,24 +2,25 @@
 
 ## Stable rollback baseline
 
-**0.4.0-rc1** remains stable-signed, Drive-promoted and recoverable.
+**0.4.0-rc1** remains the stable-signed Drive installer.
 
-It already contains the permanent regression fix for the field contradiction:
-Android VALIDATED cannot be downgraded merely because one external probe fails.
+## Consolidated development head
 
-## Development head
+Commit: `11a0dc026e7b3ebe1ec798f12ca592fea506e000`  
+GitHub Actions run: `35532848258` — **PASS**
 
-Commit: `7feaec6975638fe224614757e16977ff91302917`  
-CI run: `35532459908` — **PASS**
-
-New integrated scope:
+Validated together:
+- Wi-Fi contradiction regression protection;
 - persistent Autopilot profiles;
-- Conservative / Balanced / Maximum Stability selector;
-- selected profile survives app restart;
-- adaptive policy uses the persisted profile;
-- technical diagnostics expose the active profile.
+- local action receipts;
+- action receipts in diagnostic export;
+- installed build version shown in the cockpit;
+- recovery qualification policy;
+- bounded name-resolution policy;
+- fail-open watchdog policy;
+- existing Mobile Vault and anti-flapping behavior.
 
-## Delivery discipline
+## Delivery rule
 
-Do **not** make the user install this isolated increment.
-Continue accumulating coherent product work, test it in CI, and promote one consolidated stable-signed installer later.
+No user reinstall for this intermediate head.
+The next phone APK will be a consolidated stable-signed candidate, not a micro-update.
