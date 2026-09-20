@@ -23,45 +23,50 @@
 - Android connectivity re-evaluation hook
 - bandwidth-metric refresh request
 
-## M3 — Resilience Evidence Engine — CURRENT
-
-Deliver as one coherent upgrade:
-- Android VALIDATED outranks single-probe failure
-- two-endpoint bounded fallback probe
+### M3 — Resilience Evidence Engine
+- Android VALIDATED outranks isolated probe failure
+- two-endpoint bounded fallback
 - captive-portal priority
 - coherent positive/negative report policy
-- explicit regression test for the field contradiction
-- clearer human explanation and technical evidence
-- no automatic mobile probe
+- field contradiction converted into permanent regression tests
 
-## M4 — Mobile Vault / Cost Guard
+### M4 — Mobile Vault / Cost Guard — IMPLEMENTED IN RC1
+- passive device-wide mobile RX/TX delta tracking
+- reboot/counter-reset safe baseline
+- optional persisted daily envelope
+- BUNDLE_OK / LOW / EXHAUSTED policy
+- KINLINK probe/retry hold at LOW and EXHAUSTED
+- no continuous polling
+- duplicate UI/service ledger writes removed
 
-- persisted user data envelope
-- device/mobile byte-delta ledger with reboot-safe counter reset handling
-- low/exhausted/expired policy state
-- hard prevention implemented only where Android public APIs/VpnService can guarantee it
-- zero hidden speed tests/retry storms
-- per-action estimated data cost
+### M6 — Adaptive Intelligence, safe subset — IMPLEMENTED IN RC1
+- bounded 15-minute stability window
+- instability score and flapping flag
+- no-regret adaptive policy
+- healthy Wi-Fi left alone
+- unstable-but-validated Wi-Fi observed without hidden probe
+- budget state overrides recovery
+- captive portal remains user-driven
 
-## M5 — Stabilizer Data Plane
+## M5 — Stabilizer Data Plane — GATED, NOT YET PROMOTED
 
-- VpnService/TUN backend prototype
+Before activation:
+- VpnService/TUN prototype
 - DNS resilience/cache benchmark
 - per-flow classification
 - fail-open heartbeat/watchdog
 - no-lockdown default
 - battery/RAM/latency benchmark against plain Android
 - automatic disable when no measurable benefit exists
+- field rollback test
 
-## M6 — Adaptive Intelligence
+Android ConnectivityDiagnostics callbacks are not assumed available to a normal app; KINLINK must first qualify as an active connectivity provider such as a VPN before relying on them.
 
-- trusted-network context memory
-- shadow decisions
-- hysteresis and anti-flapping
-- no-regret evaluation
-- gradual autopilot promotion
+## Current integrated candidate
+
+0.4.0-rc1 combines M3 + M4 + safe M6 behavior. It is intentionally more complete than the previously installed M2 and is built as one upgrade candidate.
 
 ## Final product gate
 
 Do not label KINLINK final/total merely because a milestone compiles.
-The total product gate requires M0–M6 applicable safety/evidence gates, stable update continuity, and field-verified behavior on the target phone.
+The final gate requires the integrated candidate to pass CI, stable-signing continuity, Drive readback, update-in-place installation, field behavior, and any future M5 data-plane benchmarks.
