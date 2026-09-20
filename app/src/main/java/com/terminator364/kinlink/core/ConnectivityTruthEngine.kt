@@ -22,7 +22,10 @@ object ConnectivityTruthEngine {
         val hasIpv4Address: Boolean = false,
         val hasIpv6Address: Boolean = false,
         val hasIpv4DefaultRoute: Boolean = false,
-        val hasIpv6DefaultRoute: Boolean = false
+        val hasIpv6DefaultRoute: Boolean = false,
+        val signalStrengthDbm: Int? = null,
+        val androidNotCongested: Boolean = true,
+        val androidNotSuspended: Boolean = true
     )
 
     fun reduce(capabilities: NetworkCapabilities?, linkProperties: LinkProperties?): NetworkTruth {
@@ -83,7 +86,10 @@ object ConnectivityTruthEngine {
                 } == true,
                 hasIpv6DefaultRoute = linkProperties?.routes?.any {
                     it.isDefaultRoute && it.destination.address is Inet6Address
-                } == true
+                } == true,
+                signalStrengthDbm = capabilities.signalStrength.takeIf { it != Int.MIN_VALUE },
+                androidNotCongested = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_CONGESTED),
+                androidNotSuspended = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED)
             )
         )
     }
@@ -140,6 +146,9 @@ object ConnectivityTruthEngine {
             hasIpv6Address = snapshot.hasIpv6Address,
             hasIpv4DefaultRoute = snapshot.hasIpv4DefaultRoute,
             hasIpv6DefaultRoute = snapshot.hasIpv6DefaultRoute,
+            signalStrengthDbm = snapshot.signalStrengthDbm,
+            androidNotCongested = snapshot.androidNotCongested,
+            androidNotSuspended = snapshot.androidNotSuspended,
             confidence = if (validated || captive) 0.9 else 0.55
         )
     }
