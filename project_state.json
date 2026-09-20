@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_0_7_0_DEV_RADIO_RELIABILITY_AND_CAUSE_AWARE_AUTOPILOT",
+  "phase": "POST_FIELD_0_7_0_DEV_CONTINUITY_SYNCED_RADIO_RELIABILITY",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "finish CI for radio/reliability/profile-recommendation batch; if green, continue consolidated 0.7.0-dev feature work without replacing canonical RC3",
+  "next_uncommitted_action": "continue 0.7.0-dev from full-pass head 00e4df0d3869daaab777d2b159a1c8228d9b2c7c; next material work: longitudinal radio/congestion evidence, resource qualification, migration proof, consolidated RC gate",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -128,13 +128,26 @@
       "Autopilot profile recommendation from reliability burden",
       "slow-link burden included in reliability classification"
     ],
-    "last_full_pass": "3467ffdcf5da78cfd17e0e13f9b73b6b9cf0f317"
+    "last_full_pass": "00e4df0d3869daaab777d2b159a1c8228d9b2c7c"
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
     "code_head": "00e4df0d3869daaab777d2b159a1c8228d9b2c7c",
-    "design_lint": "QUEUED",
-    "android_ci": "QUEUED",
-    "last_known_full_pass": "92f140a0391a6dc52b39718616ef5d02e477f024"
+    "design_lint": "PASS",
+    "android_ci": "PASS",
+    "full_machine_verdict": "PASS"
+  },
+  "continuity": {
+    "command": "KINLINKGO",
+    "canonical_files": [
+      "project_state.json",
+      "NEXT_UNCOMMITTED_ACTION.md",
+      "BUILD_STATUS.md",
+      "docs/CANONICAL_SPEC.md",
+      "docs/KINLINK_CONTINUITY.md"
+    ],
+    "repository": "Terminator364/KINLINK",
+    "branch": "main",
+    "rule": "resume_from_latest_durable_main_without_restart"
   }
 }

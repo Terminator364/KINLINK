@@ -12,7 +12,7 @@ Core goals:
 - learn locally in shadow mode before taking aggressive actions;
 - produce machine-readable diagnostics for evidence-driven updates.
 
-Status: M1 Observer Core implemented, awaiting Android build and field gates.
+Status: 0.6.0-rc3 is the signed field-validated baseline; 0.7.0-dev is the active machine-tested development line. See `project_state.json` and `docs/KINLINK_CONTINUITY.md`.
 
 The first field candidate observes Android's existing connectivity state. It never
 starts a speed test, changes a network setting, enables cellular data, or installs
