@@ -3,6 +3,7 @@ package com.terminator364.kinlink.core
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.SystemClock
 import com.terminator364.kinlink.data.TelemetryLedger
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
@@ -46,6 +47,7 @@ class AutopilotRecoveryController(
     }
 
     private fun execute(decision: AutomaticRecoveryDecision) {
+        val started = SystemClock.elapsedRealtime()
         val network = cm.activeNetwork ?: run {
             record(false, "NO_NETWORK", "Réseau disparu avant l’action.")
             return
@@ -65,6 +67,14 @@ class AutopilotRecoveryController(
 
         when (decision.action) {
             AutomaticRecoveryAction.REFRESH_METRICS -> {
+                if (!stillSameActiveWifi(network)) {
+                    record(false, "WATCHDOG_TRANSPORT_CHANGED", "Transport changé avant refresh; abandon fail-open.")
+                    return
+                }
+                if (watchdogExpired(started)) {
+                    record(false, "WATCHDOG_TIMEOUT", "Deadline de récupération dépassée avant refresh; abandon fail-open.")
+                    return
+                }
                 val refreshed = runCatching { cm.requestBandwidthUpdate(network) }.getOrDefault(false)
                 record(refreshed, "REFRESH", "Wi-Fi validé mais instable : métriques rafraîchies sans probe.")
             }
@@ -81,6 +91,14 @@ class AutopilotRecoveryController(
                 }
 
                 val probe = WifiDoctorProbe(context).run()
+                if (watchdogExpired(started)) {
+                    record(false, "WATCHDOG_TIMEOUT", "Micro-probe terminé hors deadline; aucune action réseau supplémentaire.")
+                    return
+                }
+                if (!stillSameActiveWifi(network)) {
+                    record(false, "WATCHDOG_TRANSPORT_CHANGED", "Transport changé pendant le micro-probe; aucune action réseau supplémentaire.")
+                    return
+                }
                 val refreshed = runCatching { cm.requestBandwidthUpdate(network) }.getOrDefault(false)
                 if (probe.success) {
                     record(
@@ -100,11 +118,26 @@ class AutopilotRecoveryController(
         }
     }
 
+    private fun watchdogExpired(startedElapsedMillis: Long): Boolean =
+        RecoveryWatchdogPolicy.action(
+            nowElapsedMillis = SystemClock.elapsedRealtime(),
+            lastHeartbeatElapsedMillis = startedElapsedMillis,
+            hardDeadlineMillis = RECOVERY_DEADLINE_MS
+        ) == RecoveryWatchdogAction.FAIL_OPEN
+
+    private fun stillSameActiveWifi(expected: android.net.Network): Boolean {
+        val active = cm.activeNetwork ?: return false
+        if (active != expected) return false
+        val caps = cm.getNetworkCapabilities(active) ?: return false
+        return caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+    }
+
     private fun record(success: Boolean, suffix: String, summary: String) {
         runCatching { ledger.appendAction("${ACTION_PREFIX}_$suffix", success, summary) }
     }
 
     companion object {
         const val ACTION_PREFIX = "AUTO_RECOVERY"
+        const val RECOVERY_DEADLINE_MS = 5_000L
     }
 }

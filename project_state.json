@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "P0_HANDOFF_FENCE_AND_OBSERVABILITY_CI_PENDING",
+  "phase": "P0_WATCHDOG_AND_HANDOFF_HARDENING_CI_PENDING",
   "status": "ACTIVE",
   "field_incident": {
     "symptom": "after leaving Wi-Fi coverage, mobile data appeared unusable",
@@ -15,18 +15,19 @@
     "never use VpnService in production until separately qualified",
     "automatic recovery is Wi-Fi-only",
     "cellular transport always yields NO_ACTION",
-    "re-check active transport immediately before every automatic action"
+    "re-check active transport immediately before every automatic action",
+    "abort post-probe work if the active network changed",
+    "hard recovery deadline is 5 seconds"
   ],
-  "new_observability": [
-    "passive Wi-Fi to cellular handoff receipts",
-    "passive cellular to Wi-Fi handoff receipts",
-    "passive no-network to cellular receipts",
+  "implemented_observability": [
+    "passive transport handoff receipts",
+    "bounded local action receipts",
     "CI static fence for forbidden network ownership APIs"
   ],
-  "last_machine_checkpoint": {
-    "commit": "e765cc1255039490be7068c4a0069e53cb0f4417",
-    "ci_run": 35534457752,
+  "last_proven_machine_checkpoint": {
+    "commit": "56169dbd3fc691cc7233d46c9c44edda6e3e633e",
+    "ci_run": 35534674139,
     "ci_status": "PASS"
   },
-  "next_uncommitted_action": "validate handoff observability and fail-open static fence in CI; then continue product-wide qualification before any new signed installer"
+  "next_uncommitted_action": "validate watchdog and stale-network abort in CI; then continue lifecycle and resource qualification before any signed promotion"
 }

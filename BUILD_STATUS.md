@@ -1,24 +1,24 @@
 # KINLINK build status
 
-## P0 handoff hardening
+## Proven machine checkpoint
 
-Commit `e765cc1255039490be7068c4a0069e53cb0f4417` passed full Android CI and design-lint.
+Commit `56169dbd3fc691cc7233d46c9c44edda6e3e633e` passed Android CI and design-lint.
 
-Verified repository state after the field incident:
-- no `bindProcessToNetwork`;
-- no `requestNetwork` ownership;
-- no production `VpnService`;
-- no `reportNetworkConnectivity`;
-- automatic recovery remains Wi-Fi-only.
+Validated together:
+- hard fail-open mobile handoff;
+- static CI ban on routing/network ownership APIs;
+- passive handoff receipts;
+- battery, severe thermal and Android low-memory guards.
 
 ## Current integration batch
 
-Added:
-- permanent CI fail-open API fence;
-- passive transport-handoff receipt ledger;
-- explicit Wi-Fi→mobile, mobile→Wi-Fi and no-network→mobile transition evidence;
-- canonical specification updated so framework connectivity hints are fully forbidden.
+Added runtime watchdog enforcement:
+- 5 second hard recovery deadline;
+- active-network identity re-check before post-probe work;
+- immediate abort if Android changes away from the Wi-Fi being examined;
+- no stale refresh after Wi-Fi→mobile handoff;
+- receipt for watchdog timeout or transport-change abort.
 
 ## Delivery
 
-No new phone install yet. The next signed APK will be promoted only after this batch and the remaining product-wide qualification gates pass.
+No installer promotion until this batch passes CI and the remaining lifecycle/resource gates are consolidated.

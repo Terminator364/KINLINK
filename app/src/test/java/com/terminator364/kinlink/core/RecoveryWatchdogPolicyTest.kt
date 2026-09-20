@@ -25,6 +25,13 @@ class RecoveryWatchdogPolicyTest {
         )
     }
 
+    @Test fun exactDeadlineDoesNotFailOpenEarly() {
+        assertEquals(
+            RecoveryWatchdogAction.FREEZE_NEW_ACTIONS,
+            RecoveryWatchdogPolicy.action(10_000L, 5_000L, 5_000L)
+        )
+    }
+
     @Test fun missingHeartbeatFailsOpen() {
         assertEquals(
             RecoveryWatchdogAction.FAIL_OPEN,

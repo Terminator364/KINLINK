@@ -1,17 +1,16 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Proven P0 checkpoint
+## Current machine batch
 
-The hard fail-open handoff patch passed CI.
+1. Validate runtime watchdog enforcement in CI.
+2. Validate stale Wi-Fi work abort after transport changes.
+3. Continue lifecycle/restart qualification.
+4. Continue bounded resource/telemetry qualification.
 
-## Current batch
+## Human action
 
-1. CI-enforced static ban on production network ownership/binding APIs.
-2. Passive handoff receipts for Wi-Fi→mobile and related transport transitions.
-3. No active action is introduced by handoff telemetry.
-4. Continue qualification of recovery, resource budgets and lifecycle behavior.
+None. Do not request another incremental install.
 
-## Delivery rule
+## Promotion rule
 
-Do not ask the user to install another incremental APK.
-Promote the next signed installer only after a materially consolidated batch passes machine gates.
+Only create the next stable-signed APK after the consolidated P0 handoff/watchdog/lifecycle batch passes.

@@ -23,6 +23,8 @@
 - severe thermal pressure
 - Android low-memory pressure
 - recovery cooldown/hourly cap
+- recovery hard deadline
+- transport changes during recovery
 - reboot and package update restart
 - diagnostic export
 
@@ -37,6 +39,7 @@
 - recovery is rate-limited and receipt-carrying
 - resource pressure (battery saver / thermal / low-memory) suspends recovery
 - networking remains fail-open
+- stale Wi-Fi work cannot continue after Android changes active transport
 
 ## Remaining RC2 gate
 Target-phone in-place update and field behavior.
