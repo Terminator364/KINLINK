@@ -302,7 +302,7 @@ class MainActivity : Activity() {
 
         Thread {
             val result = WifiOptimizer(this).optimize()
-            runCatching { ledger.appendAction("WIFI_OPTIMIZE", result.success, result.summary) }
+            runCatching { ledger.appendAction("WIFI_OPTIMIZE_${result.manualDiagnosisCause.name}", result.success, result.summary) }
             runOnUiThread {
                 wifiDoctorButton.isEnabled = true
                 adviceTitleText.text = when {
@@ -314,7 +314,10 @@ class MainActivity : Activity() {
                 detailText.text = detailText.text.toString() +
                     "\n\nAction résilience : ${result.action.name}" +
                     "\nAndroid VALIDATED : ${if (result.androidValidated) "oui" else "non"}" +
-                    "\nMicro-tests tentés : ${result.probeAttempts}" +
+                    "\nMicro-tests HTTP tentés : ${result.probeAttempts}" +
+                    "\nDNS Wi-Fi : ${result.dnsProbeSucceeded?.let { if (it) "confirmé" else "non confirmé" } ?: "non testé"}" +
+                    "\nLatence DNS : ${result.dnsLatencyMillis?.let { "$it ms" } ?: "n/a"}" +
+                    "\nDiagnostic manuel : ${result.manualDiagnosisCause.name}" +
                     "\nSignal Android : ${if (result.frameworkHintSent) "envoyé" else "non nécessaire"}" +
                     "\nMétriques réseau : ${if (result.bandwidthRefreshRequested) "rafraîchissement demandé" else "inchangées"}"
             }

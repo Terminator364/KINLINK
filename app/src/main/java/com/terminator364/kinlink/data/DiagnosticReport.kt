@@ -56,7 +56,8 @@ data class DiagnosticSummary(
     val longestLowQualityMillis: Long = 0L,
     val userIncidentMarkers: Int = 0,
     val latestUserIncidentMarkerMillis: Long? = null,
-    val incidentWindowActions: List<ActionReceipt> = emptyList()
+    val incidentWindowActions: List<ActionReceipt> = emptyList(),
+    val manualWifiDiagnosisCounts: Map<String, Int> = emptyMap()
 )
 
 object DiagnosticReportBuilder {
@@ -111,7 +112,8 @@ object DiagnosticReportBuilder {
             appendLine("- No user incident marker retained.")
         } else {
             appendLine("- Latest marker (UTC epoch ms): $incidentMarker")
-            appendLine("- Actions/observations retained since marker: ${summary.incidentWindowActions.size}")
+            appendLine("- Context window: up to 5 minutes before the marker through export time.")
+            appendLine("- Actions/observations retained in incident window: ${summary.incidentWindowActions.size}")
             summary.incidentWindowActions.forEach { receipt ->
                 appendLine("- ${receipt.tsWallMs} · ${receipt.action} · ${if (receipt.success) "PASS" else "FAIL"} · ${receipt.summary}")
             }
@@ -171,6 +173,16 @@ object DiagnosticReportBuilder {
         appendLine("- Long (>=30 s): ${summary.longInterruptions}")
         appendLine("- Cumulative interruption time: ${summary.totalInterruptionMillis} ms")
         appendLine("- Longest retained interruption: ${summary.longestInterruptionMillis} ms")
+        appendLine()
+
+        appendLine("Manual Wi-Fi diagnosis outcomes")
+        if (summary.manualWifiDiagnosisCounts.isEmpty()) {
+            appendLine("- No manual Wi-Fi diagnosis retained yet")
+        } else {
+            summary.manualWifiDiagnosisCounts.toSortedMap().forEach { (cause, count) ->
+                appendLine("- $cause: $count")
+            }
+        }
         appendLine()
 
         appendLine("Automatic recovery control-path duration")

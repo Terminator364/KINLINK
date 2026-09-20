@@ -35,6 +35,9 @@ data class ActionReceipt(
 )
 
 class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_telemetry.db", null, 5) {
+    companion object {
+        private const val INCIDENT_PRE_WINDOW_MS = 5L * 60L * 1000L
+    }
     override fun onCreate(db: SQLiteDatabase) {
         createNetworkEvents(db)
         createActionReceipts(db)
@@ -389,7 +392,7 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         val now = System.currentTimeMillis()
         val latestIncidentMarker = latestActionTimestamp("USER_INCIDENT_MARKER")
         val incidentWindowActions = latestIncidentMarker?.let {
-            recentActionsSince(it, 30)
+            recentActionsSince((it - INCIDENT_PRE_WINDOW_MS).coerceAtLeast(0L), 50)
         } ?: emptyList()
 
         val interruptionDurations = interruptionDurationStats()
