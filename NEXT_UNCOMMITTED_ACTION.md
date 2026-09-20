@@ -1,21 +1,24 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Field gate — PASS
+## Field safety gate — PASS
 
-Proven on target phone:
-- KINLINK 0.6.0-rc3 installed;
-- Wi-Fi → cellular handoff PASS;
-- mobile Internet available;
-- KINLINK observation-only on cellular;
-- cellular → Wi-Fi handoff PASS;
-- Wi-Fi Internet restored;
-- original mobile-data-block symptom not reproduced.
+Target phone RC3:
+- Wi-Fi → cellular: PASS
+- cellular Internet: PASS
+- KINLINK cellular observation-only: PASS
+- cellular → Wi-Fi: PASS
+- Wi-Fi Internet restored: PASS
+- original mobile-block symptom: NOT REPRODUCED
 
-## Post-field hardening now integrating
+## Current development batch
 
-1. Suppress transient OFFLINE publication for 1.5 s after default-network loss so normal Android handoff does not flash a false outage.
-2. Correct mobile-data wording:
-   - counter is Android device-wide mobile TrafficStats delta observed by KINLINK;
-   - it is not KINLINK app traffic;
-   - it is not operator balance.
-3. Keep these fixes in the next consolidated build; do not force a new install solely for cosmetic wording.
+Machine-validate:
+1. 1.5 s loss-settle UI hardening;
+2. truthful Android mobile-counter wording;
+3. passive Android bandwidth estimates in NetworkTruth;
+4. slow-but-VALIDATED Wi-Fi recognition in Autopilot;
+5. zero hidden probe / zero mobile assist remains invariant.
+
+## Delivery
+
+Do not replace the installed RC3 yet. Continue batching material improvements before the next install.
