@@ -207,3 +207,9 @@ Each service session captures a lightweight start/end resource snapshot:
 
 Battery drain per hour is only calculated for sessions >= 30 minutes; shorter sessions are explicitly inconclusive.
 These receipts are qualification evidence, not a claim that all battery drain belongs to KINLINK.
+
+
+## Background notification dedupe
+
+The foreground notification is re-published only when its visible text changes.
+Repeated equivalent NetworkCallback events do not trigger redundant NotificationManager updates.

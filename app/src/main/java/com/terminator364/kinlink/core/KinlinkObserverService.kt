@@ -24,12 +24,14 @@ class KinlinkObserverService : Service() {
     private var latestTruth = NetworkTruth()
     private lateinit var postUpdateSelfTestStore: PostUpdateSelfTestStore
     private var runningVersionCode: Long = -1L
+    private var lastNotificationText: String? = null
     private lateinit var runtimeBudgetSampler: RuntimeBudgetSampler
     private var runtimeBudgetStart: RuntimeBudgetSnapshot? = null
 
     override fun onCreate() {
         super.onCreate()
         createChannel()
+        lastNotificationText = "Résilience Wi-Fi active · données mobiles protégées"
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.stat_sys_warning)
             .setContentTitle("KINLINK Autopilot")
@@ -228,6 +230,8 @@ class KinlinkObserverService : Service() {
             Transport.NONE -> "Aucun réseau · observation passive"
             Transport.UNKNOWN -> "Réseau en transition · observation passive"
         }
+        if (!NotificationUpdatePolicy.shouldPublish(lastNotificationText, text)) return
+        lastNotificationText = text
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.stat_sys_warning)
             .setContentTitle("KINLINK Autopilot")
