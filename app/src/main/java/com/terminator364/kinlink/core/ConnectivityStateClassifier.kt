@@ -39,6 +39,17 @@ object ConnectivityStateClassifier {
                 avoidAutomaticMobileUse = true
             )
 
+        truth.transport == Transport.WIFI &&
+            truth.internetState == InternetState.VALIDATED &&
+            PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.CONSTRAINED ->
+            ConnectivityAssessment(
+                OperationalState.WIFI_DEGRADED,
+                "Wi-Fi connecté mais limité",
+                "Android confirme Internet, mais sa capacité estimée est très faible. KINLINK surveille sans forcer les données mobiles.",
+                preserveLan = true,
+                avoidAutomaticMobileUse = true
+            )
+
         truth.transport == Transport.WIFI && truth.internetState == InternetState.VALIDATED ->
             ConnectivityAssessment(
                 OperationalState.WIFI_HEALTHY,

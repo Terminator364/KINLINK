@@ -13,6 +13,21 @@ class ConnectivityStateClassifierTest {
         assertTrue(result.avoidAutomaticMobileUse)
     }
 
+    @Test fun validatedButConstrainedWifiIsVisibleAsDegraded() {
+        val result = ConnectivityStateClassifier.classify(
+            NetworkTruth(
+                transport = Transport.WIFI,
+                internetState = InternetState.VALIDATED,
+                lanState = LanState.LINK_PRESENT,
+                downstreamKbps = 700,
+                upstreamKbps = 180
+            )
+        )
+        assertEquals(OperationalState.WIFI_DEGRADED, result.state)
+        assertTrue(result.preserveLan)
+        assertTrue(result.avoidAutomaticMobileUse)
+    }
+
     @Test fun localWifiWithoutValidatedWanKeepsLanSeparate() {
         val result = ConnectivityStateClassifier.classify(
             NetworkTruth(transport = Transport.WIFI, internetState = InternetState.UNKNOWN, lanState = LanState.LINK_PRESENT)
