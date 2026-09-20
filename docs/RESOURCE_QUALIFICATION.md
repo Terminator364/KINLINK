@@ -26,6 +26,7 @@ These limits are qualification gates, not guarantees for every device or radio c
 - battery percentage/hour only when the session lasts at least 30 minutes
 
 Short sessions are explicitly INCONCLUSIVE for hourly battery rate.
+Sessions where battery percentage increases (charging or measurement discontinuity) are also INCONCLUSIVE rather than being reported as 0%/h.
 
 ## Battery attribution caveat
 

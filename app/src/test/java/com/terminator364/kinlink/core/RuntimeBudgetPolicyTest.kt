@@ -24,11 +24,12 @@ class RuntimeBudgetPolicyTest {
         assertNull(e.batteryPercentPerHour)
     }
 
-    @Test fun chargingOrCapacityIncreaseDoesNotBecomeNegativeDrain() {
+    @Test fun chargingMakesBatteryEvidenceInconclusive() {
         val e = RuntimeBudgetPolicy.evidence(
             RuntimeBudgetSnapshot(0L, 12, 50),
             RuntimeBudgetSnapshot(3_600_000L, 12, 60)
         )
-        assertEquals(0, e.batteryDeltaPercent)
+        assertNull(e.batteryDeltaPercent)
+        assertNull(e.batteryPercentPerHour)
     }
 }

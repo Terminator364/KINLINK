@@ -24,7 +24,8 @@ object RuntimeBudgetPolicy {
     fun evidence(start: RuntimeBudgetSnapshot, end: RuntimeBudgetSnapshot): RuntimeBudgetEvidence {
         val duration = (end.elapsedMillis - start.elapsedMillis).coerceAtLeast(0L)
         val batteryDelta = if (start.batteryPercent != null && end.batteryPercent != null) {
-            (start.batteryPercent - end.batteryPercent).coerceAtLeast(0)
+            if (end.batteryPercent > start.batteryPercent) null
+            else start.batteryPercent - end.batteryPercent
         } else null
         val perHour = if (batteryDelta != null && duration >= 30L * 60L * 1000L) {
             batteryDelta.toDouble() * 3_600_000.0 / duration.toDouble()
