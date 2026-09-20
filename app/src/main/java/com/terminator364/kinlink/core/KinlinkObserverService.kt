@@ -62,7 +62,8 @@ class KinlinkObserverService : Service() {
             val modeReadable = runCatching { recoveryModeStore.current() }.isSuccess
             val coreSelfTest = RuntimeSelfTestPolicy.core(
                 databaseVersion = runCatching { ledger.schemaVersion() }.getOrDefault(-1),
-                recoveryModeReadable = modeReadable
+                recoveryModeReadable = modeReadable,
+                schemaIntegrity = runCatching { ledger.schemaIntegrityOk() }.getOrDefault(false)
             )
             coreRuntimeReady = coreSelfTest.pass
             runCatching {
