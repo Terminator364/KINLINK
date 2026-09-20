@@ -56,4 +56,22 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
     fun recentCount(): Int = readableDatabase.rawQuery(
         "SELECT COUNT(*) FROM network_events", null
     ).use { cursor -> cursor.moveToFirst(); cursor.getInt(0) }
+
+    fun diagnosticSummary(currentTruth: NetworkTruth): DiagnosticSummary {
+        val counts = linkedMapOf<String, Int>()
+        readableDatabase.rawQuery(
+            "SELECT transport || '_' || internet_state, COUNT(*) FROM network_events GROUP BY transport, internet_state",
+            null
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                counts[cursor.getString(0)] = cursor.getInt(1)
+            }
+        }
+        return DiagnosticSummary(
+            generatedAtMillis = System.currentTimeMillis(),
+            totalEvents = recentCount(),
+            currentTruth = currentTruth,
+            stateCounts = counts
+        )
+    }
 }
