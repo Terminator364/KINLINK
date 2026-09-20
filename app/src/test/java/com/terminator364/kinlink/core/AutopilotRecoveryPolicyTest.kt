@@ -81,6 +81,45 @@ class AutopilotRecoveryPolicyTest {
         assertEquals(AutomaticRecoveryAction.NONE, d.action)
     }
 
+    @Test fun weakRadioSuppressesPointlessRecovery() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(
+                transport = Transport.WIFI,
+                internetState = InternetState.VALIDATED,
+                signalStrengthDbm = -82,
+                downstreamKbps = 20_000,
+                upstreamKbps = 5_000
+            ),
+            AutopilotProfile.MAXIMUM_STABILITY,
+            90,
+            false,
+            0,
+            Long.MAX_VALUE,
+            persistentLowQuality = true
+        )
+        assertEquals(AutomaticRecoveryAction.NONE, d.action)
+    }
+
+    @Test fun congestionSuspicionSuppressesRepeatedRefresh() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(
+                transport = Transport.WIFI,
+                internetState = InternetState.VALIDATED,
+                signalStrengthDbm = -55,
+                androidNotCongested = false,
+                downstreamKbps = 2_000,
+                upstreamKbps = 700
+            ),
+            AutopilotProfile.MAXIMUM_STABILITY,
+            90,
+            false,
+            0,
+            Long.MAX_VALUE,
+            persistentLowQuality = true
+        )
+        assertEquals(AutomaticRecoveryAction.NONE, d.action)
+    }
+
     @Test fun resourceConstraintBlocksRecovery() {
         val d = AutopilotRecoveryPolicy.decide(
             NetworkTruth(transport = Transport.WIFI, internetState = InternetState.UNKNOWN, lanState = LanState.LINK_PRESENT),

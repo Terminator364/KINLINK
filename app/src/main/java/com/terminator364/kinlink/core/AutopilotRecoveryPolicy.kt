@@ -31,6 +31,24 @@ object AutopilotRecoveryPolicy {
         if (truth.internetState == InternetState.CAPTIVE_PORTAL) {
             return AutomaticRecoveryDecision(AutomaticRecoveryAction.NONE, "Portail captif : action utilisateur requise.")
         }
+
+        val passiveCause = PassiveProblemClassifier.classify(
+            truth,
+            instabilityScore = instabilityScore,
+            flapping = instabilityScore >= 70
+        ).cause
+        if (passiveCause == PassiveProblemCause.WEAK_WIFI_SIGNAL) {
+            return AutomaticRecoveryDecision(
+                AutomaticRecoveryAction.NONE,
+                "Signal Wi-Fi faible : un refresh métrique ne peut pas corriger la radio; observation passive."
+            )
+        }
+        if (passiveCause == PassiveProblemCause.CONGESTION_SUSPECT) {
+            return AutomaticRecoveryDecision(
+                AutomaticRecoveryAction.NONE,
+                "Congestion possible : KINLINK évite les refresh répétés sans preuve de bénéfice."
+            )
+        }
         if (resourceConstrained) {
             return AutomaticRecoveryDecision(AutomaticRecoveryAction.NONE, "Batterie ou température : récupération automatique suspendue.")
         }

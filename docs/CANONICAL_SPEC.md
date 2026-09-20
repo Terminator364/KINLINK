@@ -328,3 +328,12 @@ New telemetry rows persist only boolean IP topology evidence:
 - IPv6 default route present.
 
 Legacy interface_name and gateway columns remain only for backward-compatible schema migration and receive NULL for all new rows. Runtime diagnostics may inspect topology, but new local history no longer stores raw interface/gateway identifiers.
+
+
+## Cause-aware recovery suppression
+
+Autopilot now refuses automatic recovery when the passive cause is:
+- WEAK_WIFI_SIGNAL: metrics refresh cannot improve radio power;
+- CONGESTION_SUSPECT: repeated refreshes are unlikely to add capacity.
+
+These cases remain observable and user-visible, but KINLINK avoids useless actions.
