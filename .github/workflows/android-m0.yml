@@ -1,4 +1,4 @@
-name: android-rc2
+name: android-rc3
 on:
   workflow_dispatch:
   push:
@@ -27,6 +27,19 @@ jobs:
             exit 1
           fi
           echo "Fail-open API fence passed."
+      - name: Manifest safety fence
+        run: |
+          set -euo pipefail
+          MANIFEST="app/src/main/AndroidManifest.xml"
+          if grep -q 'android.permission.CHANGE_NETWORK_STATE' "$MANIFEST"; then
+            echo "CHANGE_NETWORK_STATE is forbidden for KINLINK fail-open baseline."
+            exit 1
+          fi
+          if grep -q 'android.net.VpnService' "$MANIFEST"; then
+            echo "VpnService is forbidden until separately qualified."
+            exit 1
+          fi
+          echo "Manifest safety fence passed."
       - name: Unit tests
         run: gradle :app:testDebugUnitTest --stacktrace
       - name: Build CI debug APK
@@ -37,7 +50,7 @@ jobs:
           cat > app/build/outputs/apk/debug/KINLINK-build-manifest.json <<EOF
           {
             "product": "KINLINK",
-            "version": "0.5.0-rc2",
+            "version": "0.6.0-rc3",
             "variant": "debug-ci",
             "commit": "${GITHUB_SHA}",
             "built_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
@@ -46,7 +59,7 @@ jobs:
           EOF
       - uses: actions/upload-artifact@v4
         with:
-          name: KINLINK-rc2-ci-build
+          name: KINLINK-rc3-ci-build
           path: |
             app/build/outputs/apk/debug/app-debug.apk
             app/build/outputs/apk/debug/KINLINK-debug.apk.sha256
