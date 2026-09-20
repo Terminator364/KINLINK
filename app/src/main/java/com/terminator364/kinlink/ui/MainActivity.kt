@@ -411,7 +411,10 @@ class MainActivity : Activity() {
                 val burden = RecentReliabilityPolicy.classify(
                     reliability.interruptionCount,
                     reliability.cumulativeMillis,
-                    reliability.longestMillis
+                    reliability.longestMillis,
+                    reliability.lowQualityEpisodeCount,
+                    reliability.lowQualityCumulativeMillis,
+                    reliability.lowQualityLongestMillis
                 )
                 ProfileRecommendationPolicy.recommend(burden)
             }
@@ -453,7 +456,10 @@ class MainActivity : Activity() {
                 val burden = RecentReliabilityPolicy.classify(
                     reliability.interruptionCount,
                     reliability.cumulativeMillis,
-                    reliability.longestMillis
+                    reliability.longestMillis,
+                    reliability.lowQualityEpisodeCount,
+                    reliability.lowQualityCumulativeMillis,
+                    reliability.lowQualityLongestMillis
                 )
                 append("Interruptions 24 h : ${reliability.interruptionCount}")
                 append(" · cumul ${reliability.cumulativeMillis} ms")
