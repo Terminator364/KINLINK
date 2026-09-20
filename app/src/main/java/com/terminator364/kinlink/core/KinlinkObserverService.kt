@@ -39,6 +39,15 @@ class KinlinkObserverService : Service() {
         ledger = TelemetryLedger(this)
         mobileBudget = MobileBudgetTracker(this)
         recoveryModeStore = RecoveryModeStore(this)
+        StartupReceiptStore(this).consume()?.let { startup ->
+            runCatching {
+                ledger.appendAction(
+                    "STARTUP_${startup.source.name}",
+                    startup.success,
+                    startup.detail
+                )
+            }
+        }
         val lifecycleDecision = LifecycleSafetyGuard(this).noteStart()
         runCatching {
             ledger.appendAction(
