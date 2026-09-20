@@ -134,3 +134,10 @@ Existing v2 databases migrate in place with UNKNOWN as the historical default.
 Explicit manual optimization also respects metered Wi-Fi.
 When Android marks the active Wi-Fi as metered, KINLINK performs no HTTP micro-probe and only requests a passive bandwidth-metric refresh.
 This protects tethered/hotspot data plans from hidden probe traffic.
+
+
+## Recovery effectiveness receipts
+
+After an automatic metrics refresh, KINLINK passively compares the triggering Wi-Fi quality tier with the quality after two subsequent validated Wi-Fi observations.
+It records IMPROVED, UNCHANGED, DEGRADED or INCONCLUSIVE.
+No extra network request is generated for this evaluation.

@@ -244,7 +244,11 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             mobileValidatedOutcomes = countActions("HANDOFF_OUTCOME_MOBILE_VALIDATED"),
             mobilePendingOutcomes = countActions("HANDOFF_OUTCOME_MOBILE_PRESENT_UNVALIDATED"),
             watchdogAborts = countActions("AUTO_RECOVERY_WATCHDOG_"),
-            recoveryMode = recoveryMode
+            recoveryMode = recoveryMode,
+            recoveryImproved = countActions("RECOVERY_OUTCOME_IMPROVED"),
+            recoveryUnchanged = countActions("RECOVERY_OUTCOME_UNCHANGED"),
+            recoveryDegraded = countActions("RECOVERY_OUTCOME_DEGRADED"),
+            recoveryInconclusive = countActions("RECOVERY_OUTCOME_INCONCLUSIVE")
         )
     }
 }

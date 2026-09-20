@@ -18,6 +18,7 @@ class KinlinkObserverService : Service() {
     private var recovery: AutopilotRecoveryController? = null
     private val handoffAudit = NetworkHandoffAudit()
     private val handoffOutcomeTracker = HandoffOutcomeTracker()
+    private val recoveryEffectivenessTracker = RecoveryEffectivenessTracker()
     private var latestTruth = NetworkTruth()
 
     override fun onCreate() {
@@ -57,7 +58,9 @@ class KinlinkObserverService : Service() {
             )
         }
         if (lifecycleDecision.recoveryAllowed) {
-            recovery = AutopilotRecoveryController(this, ledger)
+            recovery = AutopilotRecoveryController(this, ledger) { baseline ->
+                recoveryEffectivenessTracker.start(baseline)
+            }
         } else {
             runCatching {
                 ledger.appendAction(
@@ -88,6 +91,14 @@ class KinlinkObserverService : Service() {
                         "HANDOFF_OUTCOME_${outcome.outcome.name}",
                         outcome.outcome != HandoffOutcome.MOBILE_PRESENT_UNVALIDATED,
                         outcome.summary
+                    )
+                }
+                recoveryEffectivenessTracker.observe(truth)?.let { evidence ->
+                    ledger.appendAction(
+                        "RECOVERY_OUTCOME_${evidence.result.name}",
+                        evidence.result == RecoveryEffectiveness.IMPROVED ||
+                            evidence.result == RecoveryEffectiveness.UNCHANGED,
+                        "${evidence.summary} baseline=${evidence.baseline.name}; current=${evidence.current.name}"
                     )
                 }
                 updateNotificationFor(truth)

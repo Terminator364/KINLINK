@@ -19,7 +19,11 @@ data class DiagnosticSummary(
     val mobileValidatedOutcomes: Int = 0,
     val mobilePendingOutcomes: Int = 0,
     val watchdogAborts: Int = 0,
-    val recoveryMode: String = "UNKNOWN"
+    val recoveryMode: String = "UNKNOWN",
+    val recoveryImproved: Int = 0,
+    val recoveryUnchanged: Int = 0,
+    val recoveryDegraded: Int = 0,
+    val recoveryInconclusive: Int = 0
 )
 
 object DiagnosticReportBuilder {
@@ -46,6 +50,13 @@ object DiagnosticReportBuilder {
         appendLine("- Instability score: ${summary.instabilityScore}/100")
         appendLine("- State transitions in bounded window: ${summary.recentTransitions}")
         appendLine("- Flapping detected: ${if (summary.flapping) "yes" else "no"}")
+        appendLine()
+
+        appendLine("Recovery effectiveness")
+        appendLine("- Improved: ${summary.recoveryImproved}")
+        appendLine("- Unchanged: ${summary.recoveryUnchanged}")
+        appendLine("- Degraded: ${summary.recoveryDegraded}")
+        appendLine("- Inconclusive: ${summary.recoveryInconclusive}")
         appendLine()
 
         appendLine("Handoff evidence")

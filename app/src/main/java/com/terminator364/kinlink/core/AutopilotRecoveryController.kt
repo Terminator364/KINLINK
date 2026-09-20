@@ -10,7 +10,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class AutopilotRecoveryController(
     private val context: Context,
-    private val ledger: TelemetryLedger
+    private val ledger: TelemetryLedger,
+    private val onRecoveryActionExecuted: ((NetworkTruth) -> Unit)? = null
 ) {
     private val cm = context.getSystemService(ConnectivityManager::class.java)
     private val profileStore = AutopilotProfileStore(context)
@@ -54,7 +55,7 @@ class AutopilotRecoveryController(
         if (decision.action == AutomaticRecoveryAction.NONE) return
         if (!inFlight.compareAndSet(false, true)) return
         worker.execute {
-            try { execute(decision) } finally { inFlight.set(false) }
+            try { execute(decision, truth) } finally { inFlight.set(false) }
         }
     }
 
@@ -63,7 +64,7 @@ class AutopilotRecoveryController(
         worker.shutdownNow()
     }
 
-    private fun execute(decision: AutomaticRecoveryDecision) {
+    private fun execute(decision: AutomaticRecoveryDecision, triggeringTruth: NetworkTruth) {
         val started = SystemClock.elapsedRealtime()
         val network = cm.activeNetwork ?: run {
             record(false, "NO_NETWORK", "Réseau disparu avant l’action.")
@@ -94,6 +95,7 @@ class AutopilotRecoveryController(
                 }
                 val refreshed = runCatching { cm.requestBandwidthUpdate(network) }.getOrDefault(false)
                 record(refreshed, "REFRESH", "Wi-Fi validé mais instable : métriques rafraîchies sans probe.")
+                if (refreshed) onRecoveryActionExecuted?.invoke(triggeringTruth)
             }
             AutomaticRecoveryAction.CONFIRM_WIFI -> {
                 if (caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {
