@@ -1,70 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootScroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F7FB"
+    android:background="#F5F7FB"
+    android:clipToPadding="false"
     android:fillViewport="true">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="KINLINK"
-            android:textColor="#0B57D0"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/stateText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:background="@drawable/card_primary"
-            android:padding="20dp"
-            android:text="OBSERVATION…"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/transportText"
-            style="@style/KinlinkCardText"
-            android:layout_marginTop="16dp"
-            android:text="Connexion : —" />
-
-        <TextView
-            android:id="@+id/internetText"
-            style="@style/KinlinkCardText"
-            android:text="Internet : —" />
-
-        <TextView
-            android:id="@+id/mobileText"
-            style="@style/KinlinkCardText"
-            android:text="Données : —" />
-
-        <TextView
-            android:id="@+id/detailText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/card_neutral"
-            android:lineSpacingExtra="5dp"
-            android:padding="18dp"
-            android:text="Diagnostic en cours…"
-            android:textColor="#263238"
-            android:textSize="15sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="M0 observe uniquement. Il ne bascule pas le réseau et ne consomme pas volontairement de données de test."
-            android:textColor="#5F6368"
-            android:textSize="13sp" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingStart="20dp" android:paddingTop="16dp" android:paddingEnd="20dp" android:paddingBottom="32dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="KINLINK" android:textColor="#0B57D0" android:textSize="30sp" android:textStyle="bold" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Votre connexion, simplement" android:textColor="#667085" android:textSize="14sp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="22dp" android:background="@drawable/card_primary" android:orientation="vertical" android:padding="22dp">
+            <TextView android:id="@+id/heroEyebrow" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/status_pill" android:paddingStart="10dp" android:paddingTop="5dp" android:paddingEnd="10dp" android:paddingBottom="5dp" android:text="AUTOPILOT" android:textColor="#EAF2FF" android:textSize="11sp" android:textStyle="bold" />
+            <TextView android:id="@+id/stateText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="Vérification de la connexion" android:textColor="#FFFFFF" android:textSize="28sp" android:textStyle="bold" />
+            <TextView android:id="@+id/heroDetailText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="KINLINK observe sans consommer de données de test." android:textColor="#DCE9FF" android:textSize="15sp" />
+        </LinearLayout>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="26dp" android:text="AUJOURD’HUI" android:textColor="#667085" android:textSize="12sp" android:textStyle="bold" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="9dp" android:background="@drawable/card_neutral" android:orientation="vertical" android:padding="18dp">
+            <TextView android:id="@+id/transportText" style="@style/KinlinkSummaryText" android:text="Connexion en cours" />
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="14dp" android:layout_marginBottom="14dp" android:background="#E8ECF2" />
+            <TextView android:id="@+id/internetText" style="@style/KinlinkSummaryText" android:text="Internet" />
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="14dp" android:layout_marginBottom="14dp" android:background="#E8ECF2" />
+            <TextView android:id="@+id/mobileText" style="@style/KinlinkSummaryText" android:text="Données mobiles" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:background="@drawable/card_soft_blue" android:orientation="vertical" android:padding="18dp">
+            <TextView android:id="@+id/adviceTitleText" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Aucune action nécessaire" android:textColor="#123B78" android:textSize="17sp" android:textStyle="bold" />
+            <TextView android:id="@+id/adviceText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="KINLINK reste en observation et protège vos données mobiles." android:textColor="#365B91" android:textSize="14sp" />
+        </LinearLayout>
+        <TextView android:id="@+id/technicalToggle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="22dp" android:background="@drawable/button_outline" android:paddingStart="14dp" android:paddingTop="10dp" android:paddingEnd="14dp" android:paddingBottom="10dp" android:text="Voir les détails techniques" android:textColor="#0B57D0" android:textSize="14sp" android:textStyle="bold" />
+        <TextView android:id="@+id/detailText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:background="@drawable/card_neutral" android:lineSpacingExtra="4dp" android:padding="18dp" android:textColor="#344054" android:textSize="14sp" android:visibility="gone" />
     </LinearLayout>
 </ScrollView>
