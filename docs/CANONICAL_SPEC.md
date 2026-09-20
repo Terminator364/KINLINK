@@ -94,3 +94,15 @@ This is a heuristic, not a speed test:
 - it never overrides Android VALIDATED by itself;
 - it never triggers cellular routing;
 - it exists to expose slow-but-valid links that the previous cockpit could misleadingly call simply "healthy".
+
+
+## Bounded Wi-Fi responsiveness
+
+The explicit "Optimiser le Wi-Fi maintenant" path may reuse its existing Wi-Fi-only 204 micro-probe latency to classify responsiveness as RESPONSIVE, SLOW or VERY_SLOW.
+
+This classification:
+- adds zero extra requests beyond the already bounded manual micro-probe;
+- is not a throughput/speed test;
+- never runs on cellular;
+- never overrides Android validation by itself;
+- is diagnostic evidence only.

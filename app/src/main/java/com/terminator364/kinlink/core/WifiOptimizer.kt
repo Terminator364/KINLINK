@@ -72,15 +72,17 @@ class WifiOptimizer(private val context: Context) {
         val hintSent = false
         val bandwidthRefresh = runCatching { cm.requestBandwidthUpdate(network) }.getOrDefault(false)
 
+        val responsiveness = WifiProbeLatencyPolicy.classify(probe.latencyMillis)
+        val responsivenessLabel = WifiProbeLatencyPolicy.label(responsiveness)
         val summary = when (action) {
             WifiOptimizationAction.KEEP_VALIDATED_AND_REFRESH ->
                 if (probe.success) {
-                    "Internet est validé par Android et confirmé en ${probe.latencyMillis ?: "?"} ms. Les métriques Wi-Fi ont été rafraîchies."
+                    "Internet est validé par Android et confirmé en ${probe.latencyMillis ?: "?"} ms ($responsivenessLabel). Les métriques Wi-Fi ont été rafraîchies."
                 } else {
                     "Android confirme Internet. Les micro-tests n’ont pas répondu : KINLINK conserve l’état sain et rafraîchit seulement les métriques."
                 }
             WifiOptimizationAction.CONFIRM_AND_REFRESH ->
-                "Android n’avait pas encore validé Internet, mais le micro-test l’a confirmé localement. KINLINK ne modifie pas l’état réseau Android et rafraîchit seulement les métriques."
+                "Android n’avait pas encore validé Internet, mais le micro-test l’a confirmé localement ($responsivenessLabel). KINLINK ne modifie pas l’état réseau Android et rafraîchit seulement les métriques."
             WifiOptimizationAction.NEGATIVE_EVIDENCE_REFRESH ->
                 "Internet n’est pas confirmé par les micro-tests. KINLINK ne signale pas de panne à Android et ne provoque aucune bascule mobile; seules les métriques sont rafraîchies."
             WifiOptimizationAction.CAPTIVE_PORTAL_REQUIRED -> "Portail Wi-Fi détecté : connexion utilisateur requise."
