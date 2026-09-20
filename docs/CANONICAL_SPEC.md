@@ -337,3 +337,9 @@ Autopilot now refuses automatic recovery when the passive cause is:
 - CONGESTION_SUSPECT: repeated refreshes are unlikely to add capacity.
 
 These cases remain observable and user-visible, but KINLINK avoids useless actions.
+
+
+## Suspended-network handling
+
+If Android no longer exposes NET_CAPABILITY_NOT_SUSPENDED on active Wi-Fi, KINLINK classifies NETWORK_SUSPENDED and blocks active recovery until Android resumes the network.
+No probe or routing action is attempted while suspended.
