@@ -21,6 +21,15 @@ data class ConnectivityAssessment(
 
 object ConnectivityStateClassifier {
     fun classify(truth: NetworkTruth): ConnectivityAssessment = when {
+        truth.transport == Transport.CELLULAR && truth.budgetState == BudgetState.BUNDLE_EXHAUSTED ->
+            ConnectivityAssessment(OperationalState.DATA_EXHAUSTED, "Forfait épuisé", "KINLINK n’effectue aucun retry coûteux.", false, true)
+
+        truth.transport == Transport.CELLULAR && truth.budgetState == BudgetState.BUNDLE_EXPIRED ->
+            ConnectivityAssessment(OperationalState.DATA_EXPIRED, "Forfait expiré", "KINLINK attend une action explicite.", false, true)
+
+        truth.transport == Transport.CELLULAR && truth.budgetState == BudgetState.BUNDLE_LOW ->
+            ConnectivityAssessment(OperationalState.DATA_LOW, "Données mobiles limitées", "KINLINK évite toute vérification qui consommerait des données.", false, true)
+
         truth.transport == Transport.NONE || truth.internetState == InternetState.OFFLINE ->
             ConnectivityAssessment(
                 OperationalState.OFFLINE,
@@ -65,15 +74,6 @@ object ConnectivityStateClassifier {
                 preserveLan = true,
                 avoidAutomaticMobileUse = true
             )
-
-        truth.transport == Transport.CELLULAR && truth.budgetState == BudgetState.BUNDLE_EXHAUSTED ->
-            ConnectivityAssessment(OperationalState.DATA_EXHAUSTED, "Forfait épuisé", "KINLINK n’effectue aucun retry coûteux.", false, true)
-
-        truth.transport == Transport.CELLULAR && truth.budgetState == BudgetState.BUNDLE_EXPIRED ->
-            ConnectivityAssessment(OperationalState.DATA_EXPIRED, "Forfait expiré", "KINLINK attend une action explicite.", false, true)
-
-        truth.transport == Transport.CELLULAR && truth.budgetState == BudgetState.BUNDLE_LOW ->
-            ConnectivityAssessment(OperationalState.DATA_LOW, "Données mobiles limitées", "KINLINK évite toute vérification qui consommerait des données.", false, true)
 
         truth.transport == Transport.CELLULAR && truth.internetState == InternetState.VALIDATED ->
             ConnectivityAssessment(OperationalState.MOBILE_HEALTHY, "Données mobiles disponibles", "Connexion mobile active, sans test automatique.", false, true)
