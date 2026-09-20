@@ -11,7 +11,8 @@ data class DiagnosticSummary(
     val weeklyEvents: Int = totalEvents,
     val recentTransitions: Int = 0,
     val instabilityScore: Int = 0,
-    val flapping: Boolean = false
+    val flapping: Boolean = false,
+    val recentActions: List<ActionReceipt> = emptyList()
 )
 
 object DiagnosticReportBuilder {
@@ -39,6 +40,16 @@ object DiagnosticReportBuilder {
         appendLine("This week")
         appendLine("- Observed network-state changes: ${summary.weeklyEvents}")
         appendLine("- Autopilot result: bounded observation/recovery only; no forced mobile routing")
+        appendLine()
+
+        appendLine("Recent KINLINK actions")
+        if (summary.recentActions.isEmpty()) {
+            appendLine("- No explicit KINLINK action recorded yet")
+        } else {
+            summary.recentActions.forEach { receipt ->
+                appendLine("- ${receipt.tsWallMs} · ${receipt.action} · ${if (receipt.success) "PASS" else "FAIL"} · ${receipt.summary}")
+            }
+        }
         appendLine()
 
         appendLine("Observed state changes retained locally: ${summary.totalEvents}")
