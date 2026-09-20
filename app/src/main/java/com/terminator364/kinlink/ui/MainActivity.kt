@@ -27,6 +27,7 @@ import com.terminator364.kinlink.core.NetworkObserver
 import com.terminator364.kinlink.core.PassiveLinkQuality
 import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
 import com.terminator364.kinlink.core.PassiveProblemClassifier
+import com.terminator364.kinlink.core.PassiveGuidancePolicy
 import com.terminator364.kinlink.core.RecoveryBlockReason
 import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
@@ -291,6 +292,7 @@ class MainActivity : Activity() {
             instabilityScore = stability?.assessment?.score ?: 0,
             flapping = stability?.assessment?.flapping ?: false
         )
+        val passiveGuidance = PassiveGuidancePolicy.guidance(passiveProblem)
         val adaptiveDecision = AdaptivePolicyEngine.evaluate(
             truth = truth,
             instabilityScore = stability?.assessment?.score ?: 0,
@@ -328,8 +330,8 @@ class MainActivity : Activity() {
                 PassiveLinkQuality.LIMITED -> "\n\nQualité passive : capacité Android limitée."
                 else -> ""
             }
-            adviceTitleText.text = doctorAdvice.title
-            adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}\n\nAutopilot ${profileLabel(currentProfile)} : ${adaptiveDecision.reason}${qualityNotice}"
+            adviceTitleText.text = passiveGuidance.title
+            adviceText.text = "${passiveGuidance.message}\n\n${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}\n\nAutopilot ${profileLabel(currentProfile)} : ${adaptiveDecision.reason}${qualityNotice}"
         }
 
         detailText.text = buildString {

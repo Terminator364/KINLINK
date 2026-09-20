@@ -166,3 +166,10 @@ Severity:
 - LONG >= 30 s
 
 No timer, probe or packet is generated to measure the outage. Initial unknown startup state never invents an interruption.
+
+
+## Cause-aware passive guidance
+
+Every passive problem cause maps to a non-invasive user guidance message.
+Cause transitions are journaled only when the cause changes, avoiding repeated log noise.
+Guidance never triggers routing, DNS replacement, mobile-data toggling or hidden probes.

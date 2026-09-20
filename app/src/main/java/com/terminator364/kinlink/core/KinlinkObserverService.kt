@@ -20,6 +20,7 @@ class KinlinkObserverService : Service() {
     private val handoffOutcomeTracker = HandoffOutcomeTracker()
     private val recoveryEffectivenessTracker = RecoveryEffectivenessTracker()
     private val interruptionTracker = ConnectivityInterruptionTracker()
+    private val problemTransitionTracker = PassiveProblemTransitionTracker()
     private var latestTruth = NetworkTruth()
 
     override fun onCreate() {
@@ -109,9 +110,22 @@ class KinlinkObserverService : Service() {
                         "${interruption.summary} ${interruption.fromTransport.name}->${interruption.toTransport.name}"
                     )
                 }
+                val stability = ledger.stabilityWindow()
+                val passiveProblem = PassiveProblemClassifier.classify(
+                    truth,
+                    stability.assessment.score,
+                    stability.assessment.flapping
+                )
+                problemTransitionTracker.observe(passiveProblem.cause)?.let { cause ->
+                    ledger.appendAction(
+                        "PASSIVE_CAUSE_${cause.name}",
+                        true,
+                        "${passiveProblem.summary} confidence=${passiveProblem.confidence}%"
+                    )
+                }
                 updateNotificationFor(truth)
                 if (ActiveRecoveryPolicy.allowed(recoveryModeStore.current(), truth.transport)) {
-                    recovery?.onTruth(truth, ledger.stabilityWindow().assessment.score)
+                    recovery?.onTruth(truth, stability.assessment.score)
                 }
             }
         }
