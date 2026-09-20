@@ -1,22 +1,19 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Proven state
+## Proven checkpoint
 
-Stable rollback installer: **0.4.0-rc1**.
+Development head `11a0dc026e7b3ebe1ec798f12ca592fea506e000` passed CI in run `35532848258`.
 
-Development head `7feaec6975638fe224614757e16977ff91302917` passed CI in run `35532459908`.
+Stable rollback remains **0.4.0-rc1** in Drive.
 
-The field contradiction shown by the previous phone screenshot is already a permanent regression test:
-a validated Android network cannot be declared bad solely because one diagnostic endpoint fails.
+## Next machine work
 
-## Continue without another user install
+1. Continue product-grade evidence and failure-mode coverage.
+2. Keep strong recovery disabled until its measured gates pass.
+3. Preserve Mobile Vault and Android VALIDATED authority.
+4. Use local action receipts to reduce screenshot-driven diagnosis.
+5. Accumulate a materially larger batch before the next signed installer promotion.
 
-1. Keep integrating high-value safe features.
-2. Improve local evidence/receipts so field failures are easier to diagnose.
-3. Keep Autopilot profiles persistent and bounded.
-4. Preserve Mobile Vault, anti-flapping and fail-open rules.
-5. Do not overwrite the stable installer for a micro-change.
+## Human install policy
 
-## Promotion rule
-
-Promote the next APK only when the batch is materially more complete than RC1 and CI/regression gates pass.
+Do not ask for another install until the next candidate is meaningfully more complete than RC1.
