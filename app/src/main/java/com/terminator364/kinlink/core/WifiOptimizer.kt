@@ -6,9 +6,11 @@ import android.net.NetworkCapabilities
 
 enum class WifiOptimizationAction {
     BLOCKED_NON_WIFI,
+    CAPTIVE_PORTAL_REQUIRED,
+    KEEP_VALIDATED_AND_REFRESH,
     CONFIRM_AND_REFRESH,
     REVALIDATE_AND_REFRESH,
-    OBSERVE_ONLY
+    INCONCLUSIVE_REFRESH
 }
 
 data class WifiOptimizationResult(
@@ -17,25 +19,33 @@ data class WifiOptimizationResult(
     val summary: String,
     val latencyMillis: Long? = null,
     val frameworkHintSent: Boolean = false,
-    val bandwidthRefreshRequested: Boolean = false
+    val bandwidthRefreshRequested: Boolean = false,
+    val androidValidated: Boolean = false,
+    val probeAttempts: Int = 0
 )
 
 object WifiOptimizerPolicy {
-    fun action(isWifi: Boolean, probeSucceeded: Boolean?): WifiOptimizationAction = when {
+    fun action(
+        isWifi: Boolean,
+        androidValidated: Boolean,
+        captivePortal: Boolean,
+        probeSucceeded: Boolean?
+    ): WifiOptimizationAction = when {
         !isWifi -> WifiOptimizationAction.BLOCKED_NON_WIFI
+        captivePortal -> WifiOptimizationAction.CAPTIVE_PORTAL_REQUIRED
+        androidValidated -> WifiOptimizationAction.KEEP_VALIDATED_AND_REFRESH
         probeSucceeded == true -> WifiOptimizationAction.CONFIRM_AND_REFRESH
         probeSucceeded == false -> WifiOptimizationAction.REVALIDATE_AND_REFRESH
-        else -> WifiOptimizationAction.OBSERVE_ONLY
+        else -> WifiOptimizationAction.INCONCLUSIVE_REFRESH
+    }
+
+    fun connectivityReport(action: WifiOptimizationAction): Boolean? = when (action) {
+        WifiOptimizationAction.CONFIRM_AND_REFRESH -> true
+        WifiOptimizationAction.REVALIDATE_AND_REFRESH -> false
+        else -> null
     }
 }
 
-/**
- * Explicit Wi-Fi-only optimizer.
- *
- * It never toggles mobile data, never changes routes, never runs a speed test and never
- * creates a persistent network request. It uses a bounded micro-probe then gives Android
- * a connectivity hint and asks for refreshed bandwidth metrics.
- */
 class WifiOptimizer(private val context: Context) {
     fun optimize(): WifiOptimizationResult {
         val cm = context.getSystemService(ConnectivityManager::class.java)
@@ -56,36 +66,71 @@ class WifiOptimizer(private val context: Context) {
             )
         }
 
-        val probe = WifiDoctorProbe(context).run()
-        val action = WifiOptimizerPolicy.action(isWifi = true, probeSucceeded = probe.success)
+        val androidValidated =
+            caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        val captivePortal =
+            caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_CAPTIVE_PORTAL)
 
-        val hintSent = runCatching {
-            cm.reportNetworkConnectivity(network, probe.success)
-            true
-        }.getOrDefault(false)
+        if (captivePortal) {
+            return WifiOptimizationResult(
+                false,
+                WifiOptimizationAction.CAPTIVE_PORTAL_REQUIRED,
+                "Portail Wi-Fi détecté : ouvre la page de connexion. KINLINK ne force ni mobile ni fausse panne.",
+                androidValidated = false
+            )
+        }
+
+        val probe = WifiDoctorProbe(context).run()
+        val action = WifiOptimizerPolicy.action(
+            isWifi = true,
+            androidValidated = androidValidated,
+            captivePortal = false,
+            probeSucceeded = probe.success
+        )
+
+        val reportValue = WifiOptimizerPolicy.connectivityReport(action)
+        val hintSent = if (reportValue == null) {
+            false
+        } else {
+            runCatching {
+                cm.reportNetworkConnectivity(network, reportValue)
+                true
+            }.getOrDefault(false)
+        }
 
         val bandwidthRefresh = runCatching {
             cm.requestBandwidthUpdate(network)
         }.getOrDefault(false)
 
         val summary = when (action) {
+            WifiOptimizationAction.KEEP_VALIDATED_AND_REFRESH -> {
+                if (probe.success) {
+                    "Internet est validé par Android et confirmé en ${probe.latencyMillis ?: "?"} ms. Les métriques Wi-Fi ont été rafraîchies."
+                } else {
+                    "Android confirme Internet. Les serveurs de micro-test n’ont pas répondu, donc KINLINK ne classe pas le Wi-Fi comme défaillant. Les métriques ont été rafraîchies."
+                }
+            }
             WifiOptimizationAction.CONFIRM_AND_REFRESH ->
-                "Wi-Fi confirmé en ${probe.latencyMillis ?: "?"} ms. Android a reçu l’état réel et KINLINK a demandé un rafraîchissement des métriques."
+                "Android n’avait pas encore validé Internet, mais le micro-test l’a confirmé. KINLINK a transmis cette preuve et rafraîchi les métriques."
             WifiOptimizationAction.REVALIDATE_AND_REFRESH ->
-                "Le Wi-Fi répond mal. KINLINK a demandé à Android de réévaluer la connectivité, sans forcer les données mobiles."
+                "Ni Android ni les micro-tests bornés n’ont confirmé Internet. Une réévaluation Wi-Fi a été demandée sans bascule mobile forcée."
+            WifiOptimizationAction.CAPTIVE_PORTAL_REQUIRED ->
+                "Portail Wi-Fi détecté : connexion utilisateur requise."
             WifiOptimizationAction.BLOCKED_NON_WIFI ->
                 "Action bloquée hors Wi-Fi."
-            WifiOptimizationAction.OBSERVE_ONLY ->
-                "Aucune intervention réseau nécessaire."
+            WifiOptimizationAction.INCONCLUSIVE_REFRESH ->
+                "État encore incertain : KINLINK rafraîchit les métriques sans déclarer de panne."
         }
 
         return WifiOptimizationResult(
-            success = probe.success,
+            success = androidValidated || probe.success,
             action = action,
             summary = summary,
             latencyMillis = probe.latencyMillis,
             frameworkHintSent = hintSent,
-            bandwidthRefreshRequested = bandwidthRefresh
+            bandwidthRefreshRequested = bandwidthRefresh,
+            androidValidated = androidValidated,
+            probeAttempts = probe.attempts
         )
     }
 }
