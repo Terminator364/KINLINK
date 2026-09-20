@@ -301,3 +301,13 @@ The 24-hour reliability window now includes completed slow-but-validated Wi-Fi e
 - longest episode.
 
 This is reported separately from hard Internet interruptions so "connected but painfully slow" is not hidden inside an availability-only view.
+
+
+## One-tap incident marker
+
+The cockpit exposes "Signaler un problème maintenant".
+It records a privacy-safe local snapshot of the current passive state:
+transport, Internet state, passive quality/cause, cause confidence, session health, DNS metadata count/private-DNS flag, instability score and RecoveryMode.
+
+The marker performs no probe, speed test, routing change or mobile-data action.
+Its purpose is to preserve evidence when the user experiences a bad connection so later diagnostics do not depend on screenshots or memory.

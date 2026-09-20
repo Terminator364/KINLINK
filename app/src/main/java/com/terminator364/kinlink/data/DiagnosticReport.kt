@@ -93,6 +93,11 @@ object DiagnosticReportBuilder {
         appendLine("- Android private DNS active: ${summary.currentTruth.privateDnsActive}")
         appendLine()
 
+        appendLine("User incident markers")
+        appendLine("- Retained manual markers: ${summary.userIncidentMarkers}")
+        appendLine("- Marker content is local passive state only; no network test is launched.")
+        appendLine()
+
         appendLine("Runtime self-test evidence")
         appendLine("- Core self-test PASS receipts: ${summary.coreSelfTestPasses}")
         appendLine("- Observer callback self-test PASS receipts: ${summary.observerSelfTestPasses}")

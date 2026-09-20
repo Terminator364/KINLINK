@@ -230,6 +230,22 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/incidentMarkerButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/button_outline"
+            android:gravity="center"
+            android:paddingStart="14dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="12dp"
+            android:text="Signaler un problème maintenant"
+            android:textColor="#0B57D0"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/technicalToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

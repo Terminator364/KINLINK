@@ -59,6 +59,7 @@ class MainActivity : Activity() {
     private lateinit var heroDetailText: TextView
     private lateinit var adviceTitleText: TextView
     private lateinit var adviceText: TextView
+    private lateinit var incidentMarkerButton: TextView
     private lateinit var technicalToggle: TextView
     private lateinit var diagnosticExport: TextView
     private lateinit var wifiDoctorButton: TextView
@@ -92,6 +93,7 @@ class MainActivity : Activity() {
         heroDetailText = findViewById(R.id.heroDetailText)
         adviceTitleText = findViewById(R.id.adviceTitleText)
         adviceText = findViewById(R.id.adviceText)
+        incidentMarkerButton = findViewById(R.id.incidentMarkerButton)
         technicalToggle = findViewById(R.id.technicalToggle)
         diagnosticExport = findViewById(R.id.diagnosticExport)
         wifiDoctorButton = findViewById(R.id.wifiDoctorButton)
@@ -111,6 +113,7 @@ class MainActivity : Activity() {
         refreshProfileButton()
         refreshSafeModeButton()
 
+        incidentMarkerButton.setOnClickListener { recordUserIncidentMarker() }
         technicalToggle.setOnClickListener { toggleTechnicalDetails() }
         diagnosticExport.setOnClickListener { exportDiagnostic() }
         wifiDoctorButton.setOnClickListener { optimizeWifi() }
@@ -189,6 +192,49 @@ class MainActivity : Activity() {
         AutopilotProfile.CONSERVATIVE -> "Conservateur"
         AutopilotProfile.BALANCED -> "Équilibré"
         AutopilotProfile.MAXIMUM_STABILITY -> "Stabilité max"
+    }
+
+    private fun recordUserIncidentMarker() {
+        val stability = latestStability
+        val passiveQuality = PassiveLinkQualityPolicy.assess(latestTruth)
+        val passiveProblem = PassiveProblemClassifier.classify(
+            latestTruth,
+            instabilityScore = stability?.assessment?.score ?: 0,
+            flapping = stability?.assessment?.flapping ?: false
+        )
+        val sessionHealth = SessionHealthPolicy.assess(
+            latestTruth,
+            instabilityScore = stability?.assessment?.score ?: 0,
+            flapping = stability?.assessment?.flapping ?: false,
+            passiveProblem = passiveProblem
+        )
+        val summary = buildString {
+            append("transport=${latestTruth.transport.name}; ")
+            append("internet=${latestTruth.internetState.name}; ")
+            append("quality=${passiveQuality.quality.name}; ")
+            append("cause=${passiveProblem.cause.name}; ")
+            append("causeConfidence=${passiveProblem.confidence}; ")
+            append("sessionHealth=${sessionHealth.health.name}; ")
+            append("dnsServers=${latestTruth.dnsServerCount}; ")
+            append("privateDns=${latestTruth.privateDnsActive}; ")
+            append("instability=${stability?.assessment?.score ?: 0}; ")
+            append("recoveryMode=${recoveryModeStore.current().name}")
+        }
+        runCatching {
+            ledger.appendAction(
+                "USER_INCIDENT_MARKER",
+                true,
+                summary
+            )
+        }.onSuccess {
+            Toast.makeText(
+                this,
+                "État enregistré. Tu pourras l’exporter dans les détails techniques.",
+                Toast.LENGTH_LONG
+            ).show()
+        }.onFailure {
+            Toast.makeText(this, "Impossible d’enregistrer l’état", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun toggleTechnicalDetails() {
