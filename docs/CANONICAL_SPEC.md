@@ -32,7 +32,7 @@ Android VALIDATED, captive portal, active transport and LinkProperties outrank e
 - positive confirmation remains local evidence only and never alters Android validation state;
 - all positive and negative framework connectivity hints are forbidden;
 - profile-dependent cooldown/hourly caps;
-- battery saver or severe thermal pressure suspends recovery;
+- battery saver, Android low-memory pressure or severe thermal pressure suspends recovery;
 - every executed action generates a bounded local receipt;
 - every transport handoff is passively journaled so Wi-Fi→mobile incidents can be reconstructed without routing ownership.
 

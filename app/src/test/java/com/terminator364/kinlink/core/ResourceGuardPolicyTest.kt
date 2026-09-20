@@ -6,12 +6,18 @@ import org.junit.Test
 
 class ResourceGuardPolicyTest {
     @Test fun normalDeviceAllowsRecovery() {
-        assertFalse(ResourceGuardPolicy.constrained(false, false))
+        assertFalse(ResourceGuardPolicy.constrained(false, false, false))
     }
+
     @Test fun batterySaverConstrainsRecovery() {
-        assertTrue(ResourceGuardPolicy.constrained(true, false))
+        assertTrue(ResourceGuardPolicy.constrained(true, false, false))
     }
+
     @Test fun severeThermalStateConstrainsRecovery() {
-        assertTrue(ResourceGuardPolicy.constrained(false, true))
+        assertTrue(ResourceGuardPolicy.constrained(false, true, false))
+    }
+
+    @Test fun lowMemoryConstrainsRecovery() {
+        assertTrue(ResourceGuardPolicy.constrained(false, false, true))
     }
 }

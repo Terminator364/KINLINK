@@ -21,6 +21,7 @@
 - mobile budget low/exhausted
 - battery saver
 - severe thermal pressure
+- Android low-memory pressure
 - recovery cooldown/hourly cap
 - reboot and package update restart
 - diagnostic export
@@ -34,7 +35,7 @@
 - Android VALIDATED cannot be downgraded by endpoint failure
 - stable Wi-Fi is left alone
 - recovery is rate-limited and receipt-carrying
-- resource pressure suspends recovery
+- resource pressure (battery saver / thermal / low-memory) suspends recovery
 - networking remains fail-open
 
 ## Remaining RC2 gate
