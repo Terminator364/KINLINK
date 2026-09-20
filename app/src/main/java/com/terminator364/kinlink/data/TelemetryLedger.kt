@@ -278,6 +278,25 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         cursor.getInt(0)
     }
 
+    fun recentActionsSince(sinceWallMs: Long, limit: Int = 30): List<ActionReceipt> {
+        val safeLimit = limit.coerceIn(1, 100)
+        val result = mutableListOf<ActionReceipt>()
+        readableDatabase.rawQuery(
+            "SELECT ts_wall_ms, action, success, summary FROM action_receipts WHERE ts_wall_ms >= ? ORDER BY ts_wall_ms ASC LIMIT ?",
+            arrayOf(sinceWallMs.toString(), safeLimit.toString())
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                result += ActionReceipt(
+                    tsWallMs = cursor.getLong(0),
+                    action = cursor.getString(1),
+                    success = cursor.getInt(2) != 0,
+                    summary = cursor.getString(3)
+                )
+            }
+        }
+        return result
+    }
+
     fun recentActions(limit: Int = 10): List<ActionReceipt> {
         val safeLimit = limit.coerceIn(1, 50)
         val result = mutableListOf<ActionReceipt>()
@@ -353,6 +372,11 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         }
 
         val now = System.currentTimeMillis()
+        val latestIncidentMarker = latestActionTimestamp("USER_INCIDENT_MARKER")
+        val incidentWindowActions = latestIncidentMarker?.let {
+            recentActionsSince(it, 30)
+        } ?: emptyList()
+
         val interruptionDurations = interruptionDurationStats()
         val lowQualityDurations = lowQualityDurationStats()
         val interruptions1h = interruptionDurationStatsSince(now - 60L * 60L * 1000L)

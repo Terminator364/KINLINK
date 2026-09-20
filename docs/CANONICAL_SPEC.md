@@ -311,3 +311,9 @@ transport, Internet state, passive quality/cause, cause confidence, session heal
 
 The marker performs no probe, speed test, routing change or mobile-data action.
 Its purpose is to preserve evidence when the user experiences a bad connection so later diagnostics do not depend on screenshots or memory.
+
+
+## Incident-focused diagnostic window
+
+When a user incident marker exists, diagnostic export includes a bounded chronological action window from the latest marker onward (max 30 receipts).
+This allows post-incident analysis to focus on what changed after the user experienced the problem, without requiring screenshots or full unbounded logs.

@@ -98,6 +98,19 @@ object DiagnosticReportBuilder {
         appendLine("- Marker content is local passive state only; no network test is launched.")
         appendLine()
 
+        appendLine("Incident focus")
+        val incidentMarker = summary.latestUserIncidentMarkerMillis
+        if (incidentMarker == null) {
+            appendLine("- No user incident marker retained.")
+        } else {
+            appendLine("- Latest marker (UTC epoch ms): $incidentMarker")
+            appendLine("- Actions/observations retained since marker: ${summary.incidentWindowActions.size}")
+            summary.incidentWindowActions.forEach { receipt ->
+                appendLine("- ${receipt.tsWallMs} · ${receipt.action} · ${if (receipt.success) "PASS" else "FAIL"} · ${receipt.summary}")
+            }
+        }
+        appendLine()
+
         appendLine("Runtime self-test evidence")
         appendLine("- Core self-test PASS receipts: ${summary.coreSelfTestPasses}")
         appendLine("- Observer callback self-test PASS receipts: ${summary.observerSelfTestPasses}")
