@@ -8,7 +8,9 @@ The signing keystore, its passwords, and any encoded copy remain outside GitHub 
 
 ## One-time offline station
 
-On the user's Windows PC, create the KINLINK release keystore locally and keep one offline protected backup. The local signing station supplies these four values only to the local release build:
+On the user's Windows PC, create the KINLINK release keystore locally and keep one offline protected backup. Use `New-KinlinkSigningKey.ps1` in `tools/signing`: it prompts for the two passwords without writing them into the script or a text file, refuses to overwrite an existing key, and prints the public SHA-256 certificate fingerprint.
+
+The local signing station supplies these four values only to the local release build:
 
 | Local value | Purpose |
 |---|---|
