@@ -24,6 +24,8 @@ import com.terminator364.kinlink.core.MobileBudgetSnapshot
 import com.terminator364.kinlink.core.MobileBudgetTracker
 import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.NetworkObserver
+import com.terminator364.kinlink.core.PassiveLinkQuality
+import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
 import com.terminator364.kinlink.core.RecoveryBlockReason
 import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
@@ -282,6 +284,7 @@ class MainActivity : Activity() {
         val assessment = ConnectivityStateClassifier.classify(truth)
         val vaultDecision = MobileVault.decide(truth, assessment)
         val doctorAdvice = WifiDoctor.advise(assessment)
+        val passiveQuality = PassiveLinkQualityPolicy.assess(truth)
         val adaptiveDecision = AdaptivePolicyEngine.evaluate(
             truth = truth,
             instabilityScore = stability?.assessment?.score ?: 0,
@@ -314,8 +317,13 @@ class MainActivity : Activity() {
             adviceTitleText.text = "Mode sûr actif"
             adviceText.text = "KINLINK observe et journalise seulement. Aucune optimisation ni récupération active n’est exécutée."
         } else {
+            val qualityNotice = when (passiveQuality.quality) {
+                PassiveLinkQuality.CONSTRAINED -> "\n\nQualité passive : capacité Android très limitée."
+                PassiveLinkQuality.LIMITED -> "\n\nQualité passive : capacité Android limitée."
+                else -> ""
+            }
             adviceTitleText.text = doctorAdvice.title
-            adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}\n\nAutopilot ${profileLabel(currentProfile)} : ${adaptiveDecision.reason}"
+            adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}\n\nAutopilot ${profileLabel(currentProfile)} : ${adaptiveDecision.reason}${qualityNotice}"
         }
 
         detailText.text = buildString {
@@ -328,6 +336,8 @@ class MainActivity : Activity() {
             append("Confiance Android : ${(truth.confidence * 100).toInt()} %\n")
             append("Budget mobile : ${truth.budgetState.name}\n")
             append("Autopilot : ${adaptiveDecision.intent.name}\n")
+            append("Capacité Android : ↓${truth.downstreamKbps} kbps / ↑${truth.upstreamKbps} kbps\n")
+            append("Qualité passive : ${passiveQuality.quality.name} · ${passiveQuality.summary}\n")
             stability?.let {
                 append("Instabilité 15 min : ${it.assessment.score}/100")
                 append(" · ${it.transitions} transition(s)")

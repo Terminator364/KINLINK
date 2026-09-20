@@ -22,6 +22,8 @@ data class NetworkTruth(
     val metered: Boolean = false,
     val interfaceName: String? = null,
     val gateway: String? = null,
+    val downstreamKbps: Int = 0,
+    val upstreamKbps: Int = 0,
     val confidence: Double = 0.0,
     val observedAtMillis: Long = System.currentTimeMillis()
 )
@@ -29,5 +31,5 @@ data class NetworkTruth(
 /** A stable, non-identifying representation used to suppress duplicate telemetry. */
 fun NetworkTruth.telemetryFingerprint(): String = listOf(
     transport, internetState, lanState, budgetState, failureDomain, context,
-    metered, interfaceName, gateway
+    metered, interfaceName, gateway, downstreamKbps, upstreamKbps
 ).joinToString("|")

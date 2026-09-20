@@ -12,7 +12,9 @@ object ConnectivityTruthEngine {
         val captive: Boolean = false,
         val metered: Boolean = false,
         val interfaceName: String? = null,
-        val gateway: String? = null
+        val gateway: String? = null,
+        val downstreamKbps: Int = 0,
+        val upstreamKbps: Int = 0
     )
 
     fun reduce(capabilities: NetworkCapabilities?, linkProperties: LinkProperties?): NetworkTruth {
@@ -61,7 +63,9 @@ object ConnectivityTruthEngine {
                 captive = captive,
                 metered = !capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED),
                 interfaceName = linkProperties?.interfaceName,
-                gateway = gateway
+                gateway = gateway,
+                downstreamKbps = capabilities.linkDownstreamBandwidthKbps.coerceAtLeast(0),
+                upstreamKbps = capabilities.linkUpstreamBandwidthKbps.coerceAtLeast(0)
             )
         )
     }
@@ -110,6 +114,8 @@ object ConnectivityTruthEngine {
             metered = snapshot.metered,
             interfaceName = snapshot.interfaceName,
             gateway = snapshot.gateway,
+            downstreamKbps = snapshot.downstreamKbps.coerceAtLeast(0),
+            upstreamKbps = snapshot.upstreamKbps.coerceAtLeast(0),
             confidence = if (validated || captive) 0.9 else 0.55
         )
     }

@@ -82,3 +82,15 @@ The privacy-safe diagnostic export also carries aggregate handoff and watchdog e
 ## Lifecycle start receipts
 
 BOOT_COMPLETED and MY_PACKAGE_REPLACED start attempts are persisted before the service can disappear from view. The next successful service creation imports that pending receipt into the bounded action ledger. A rejected background foreground-service start is therefore diagnosable later instead of being silently lost.
+
+
+## Passive quality awareness
+
+KINLINK separates "Android says Internet is validated" from "Android estimates useful capacity".
+It records passive downstream/upstream bandwidth estimates from NetworkCapabilities and classifies them as UNKNOWN, CONSTRAINED, LIMITED or COMFORTABLE.
+
+This is a heuristic, not a speed test:
+- it consumes no extra mobile data;
+- it never overrides Android VALIDATED by itself;
+- it never triggers cellular routing;
+- it exists to expose slow-but-valid links that the previous cockpit could misleadingly call simply "healthy".
