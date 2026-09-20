@@ -1,25 +1,46 @@
 # KINLINK build status
 
-## Stable field baseline
+## Integrated candidate — 0.4.0-rc1
 
-M2 is installed and field-visible. Stable signing continuity is established.
+Status: **CI PASS / stable-signed / Drive-promoted / field verification pending**
 
-## Field defect converted into M3 regression
+Evidence:
+- Source commit: `a818ddf31bf952a52a40d3df02cddb1e7914b933`
+- GitHub Actions run: `35529443848` — PASS
+- Unit and regression tests: PASS
+- Debug APK build: PASS
+- Stable APK SHA-256: `030015ccd39f2536dea071434c987a243ecc4d0e29067d7b8b3e0ce41bd0e8d5`
+- Stable signer certificate SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+- Stable APK size: 6,502,991 bytes
+- Drive readback: byte-identical
+- Drive installer directory: one APK only, `KINLINK_LATEST.apk`
 
-The target phone exposed a contradiction:
-- Android/KINLINK truth engine: WIFI_HEALTHY
-- M2 explicit optimizer: negative revalidation because one external endpoint failed
+## What RC1 integrates
 
-This is now treated as a P0 evidence-arbitration defect, not as proof of poor Wi-Fi.
+- M3 Resilience Evidence Engine
+  - Android VALIDATED wins over isolated probe failure
+  - exact HTTP 204 acceptance
+  - bounded fallback endpoint
+  - captive-portal priority
+  - field contradiction regression tests
+- M4 Mobile Vault / Cost Guard
+  - passive TrafficStats mobile byte deltas
+  - reboot/reset-safe baseline
+  - optional daily MiB envelope
+  - LOW at 80%, EXHAUSTED at 100%
+  - KINLINK mobile recovery hold at LOW/EXHAUSTED
+- Safe adaptive layer
+  - bounded 15-minute stability window
+  - instability score / flapping flag
+  - no-regret policy
+  - healthy validated Wi-Fi is left alone
+  - no hidden mobile probes
+- Telemetry hardening
+  - one canonical background writer
+  - no UI/service duplicate ledger append
 
-## M3 candidate
+## Current gate
 
-- Android VALIDATED authority preserved
-- captive portal has priority
-- fallback micro-probe endpoint
-- negative revalidation only on coherent negative evidence
-- richer technical evidence
-- unit regression tests
-- no automatic mobile-data probe
+The candidate is not labeled final 1.0 yet because the target phone has not field-verified this integrated build and the optional M5 VpnService/TUN stabilizer is intentionally not active.
 
-M3 must pass CI, stable-sign promotion and update-in-place verification before field installation.
+The next valid transition is an **in-place phone update** followed by one focused Wi-Fi resilience check and optional Mobile Vault budget setup. M5 may advance only after this RC1 field gate.
