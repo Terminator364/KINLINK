@@ -217,6 +217,8 @@ class MainActivity : Activity() {
             append("sessionHealth=${sessionHealth.health.name}; ")
             append("dnsServers=${latestTruth.dnsServerCount}; ")
             append("privateDns=${latestTruth.privateDnsActive}; ")
+            append("ipv4=${latestTruth.hasIpv4Address}; ipv6=${latestTruth.hasIpv6Address}; ")
+            append("route4=${latestTruth.hasIpv4DefaultRoute}; route6=${latestTruth.hasIpv6DefaultRoute}; ")
             append("instability=${stability?.assessment?.score ?: 0}; ")
             append("recoveryMode=${recoveryModeStore.current().name}")
         }
@@ -408,6 +410,7 @@ class MainActivity : Activity() {
             append("Cause passive détail : ${passiveProblem.summary}\n")
             append("Santé de session : ${sessionHealth.health.name} · ${sessionHealth.summary}\n")
             append("DNS Android : ${truth.dnsServerCount} serveur(s) · DNS privé ${if (truth.privateDnsActive) "actif" else "non signalé"}\n")
+            append("Pile IP : IPv4=${truth.hasIpv4Address} / IPv6=${truth.hasIpv6Address} · route4=${truth.hasIpv4DefaultRoute} / route6=${truth.hasIpv6DefaultRoute}\n")
             stability?.let {
                 append("Instabilité 15 min : ${it.assessment.score}/100")
                 append(" · ${it.transitions} transition(s)")

@@ -230,6 +230,8 @@ class KinlinkObserverService : Service() {
             Transport.WIFI -> when (passiveProblem.cause) {
                 PassiveProblemCause.LOW_CAPACITY -> "Wi-Fi connecté mais capacité limitée · surveillance passive"
                 PassiveProblemCause.CAPTIVE_PORTAL -> "Wi-Fi · connexion au portail requise"
+                PassiveProblemCause.ADDRESSING_SUSPECT -> "Wi-Fi · adresse IP à surveiller"
+                PassiveProblemCause.ROUTE_CONFIGURATION_SUSPECT -> "Wi-Fi · route réseau à surveiller"
                 PassiveProblemCause.DNS_CONFIGURATION_SUSPECT -> "Wi-Fi · configuration DNS à surveiller"
                 PassiveProblemCause.WAN_UNVALIDATED -> "Wi-Fi local présent · Internet non confirmé"
                 PassiveProblemCause.FLAPPING -> "Wi-Fi instable · KINLINK limite les actions"

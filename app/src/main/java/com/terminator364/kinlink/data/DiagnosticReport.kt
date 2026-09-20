@@ -94,6 +94,10 @@ object DiagnosticReportBuilder {
         appendLine("- Session health: ${sessionHealth.health.name} — ${sessionHealth.summary}")
         appendLine("- Android DNS servers exposed: ${summary.currentTruth.dnsServerCount}")
         appendLine("- Android private DNS active: ${summary.currentTruth.privateDnsActive}")
+        appendLine("- IPv4 address present: ${summary.currentTruth.hasIpv4Address}")
+        appendLine("- IPv6 address present: ${summary.currentTruth.hasIpv6Address}")
+        appendLine("- IPv4 default route present: ${summary.currentTruth.hasIpv4DefaultRoute}")
+        appendLine("- IPv6 default route present: ${summary.currentTruth.hasIpv6DefaultRoute}")
         appendLine()
 
         appendLine("User incident markers")
