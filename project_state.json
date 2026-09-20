@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_0_7_0_DEV_EVIDENCE_DRIVEN_RECOVERY_CI",
+  "phase": "POST_FIELD_0_7_0_DEV_DIAGNOSTIC_DEPTH_AND_SELF_TEST_CI",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "finish CI on evidence-driven recovery; next focus: richer passive diagnosis and only then decide whether 0.7.0-dev is mature enough to become a consolidated release candidate",
+  "next_uncommitted_action": "finish CI for post-update runtime self-test; then continue resource-budget qualification and longitudinal diagnostics before next consolidated release candidate",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -76,7 +76,7 @@
     "version": "0.7.0-dev",
     "versionCode": 8,
     "promotion": "FORBIDDEN_UNTIL_CONSOLIDATED_RC_GATE",
-    "head": "29f6b9e60bb5ff1f87eae943041c3102e158d879",
+    "head": "ccfe2db259d42f85173e412f2b08d5f61833c72c",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -89,7 +89,15 @@
       "truthful device-wide mobile counter wording",
       "1.5s transient-loss UI settle",
       "passive recovery effectiveness receipts",
-      "anti-repeat ineffective recovery"
+      "anti-repeat ineffective recovery",
+      "passive failure-cause classification",
+      "passive DNS metadata observation",
+      "passive interruption duration/severity",
+      "cause-aware passive guidance",
+      "cause-aware foreground notification",
+      "passive cause transition history",
+      "qualitative session health synthesis",
+      "post-update zero-network runtime self-test"
     ]
   }
 }

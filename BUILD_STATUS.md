@@ -47,3 +47,19 @@ KINLINK 0.7.0-dev now evaluates whether automatic metric refreshes appear to imp
 Results are retained as IMPROVED / UNCHANGED / DEGRADED / INCONCLUSIVE.
 Two recent UNCHANGED/DEGRADED outcomes within the bounded window suppress further automatic recovery attempts.
 This prevents repeated no-benefit actions.
+
+
+## 0.7.0-dev diagnostic-depth tranche
+
+Integrated:
+- passive likely-cause classification with confidence;
+- Android DNS server-count/private-DNS observation, no DNS override;
+- passive outage duration evidence (MICRO / SHORT / LONG);
+- cause-aware non-invasive guidance;
+- cause-aware foreground notification;
+- bounded cause-transition history;
+- qualitative session health (HEALTHY / WATCH / DEGRADED / CRITICAL);
+- once-per-version zero-network runtime self-test for DB schema, RecoveryMode readability and first NetworkCallback evidence.
+
+Proven CI PASS already covers passive-cause diagnosis, guidance/notification and session-health commits.
+Post-update runtime self-test is the current CI gate.
