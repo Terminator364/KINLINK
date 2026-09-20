@@ -1,30 +1,24 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Proven release checkpoint
+## Field gate status
 
-KINLINK 0.6.0-rc3 is:
-- full-CI PASS;
-- Android-lint PASS;
-- network/permission fence PASS;
-- stable-signed with the persistent KINLINK signer;
-- canonical Drive promotion PASS;
-- byte-for-byte Drive readback PASS.
+PASS:
+- KINLINK 0.6.0-rc3 installed.
+- Manual Wi-Fi OFF → cellular handoff.
+- Cellular transport active.
+- Internet available.
+- KINLINK observation-only on cellular.
+- Original mobile-data-block symptom not reproduced.
 
-Canonical installer:
-- Drive file ID: `1EUEEkAFoX0pQEdCU3prP5UoawbzHoh4L`
-- Name: `KINLINK_LATEST.apk`
-- SHA-256: `4fb4ac36765b6d3728194bf7884f3c98afff625f4a5bc0637b825db0703a700c`
+PENDING:
+1. Re-enable Wi-Fi.
+2. Confirm Android returns to Wi-Fi normally.
+3. Confirm KINLINK reports Wi-Fi ready/usable again.
+4. If successful, close the bidirectional handoff field gate.
 
-## Next true gate — human field validation
+## UI issue queued for next consolidated build
 
-One in-place update only.
-
-After install, validate:
-1. app opens and shows KINLINK 0.6.0-rc3;
-2. Wi-Fi observation/recovery remains healthy;
-3. safe mode toggle is visible and immediate;
-4. leave Wi-Fi coverage and confirm mobile data works normally;
-5. return to Wi-Fi and confirm handoff back;
-6. inspect local action/handoff receipts if any anomaly appears.
-
-Do not create another installer before this field gate produces evidence, unless a machine-only defect is discovered first.
+The label "Suivi KINLINK · X MiB" is semantically wrong.
+The tracker observes device-wide mobile TrafficStats delta, not KINLINK's own mobile traffic.
+Rename it to explicitly say device mobile usage observed by KINLINK.
+Do not issue a new APK solely for this wording correction.

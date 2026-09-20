@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "human field gate: perform one in-place install of canonical KINLINK_LATEST.apk, then verify startup/version, Wi-Fi behavior, Wi-Fi-to-cellular handoff, and action receipts",
+  "next_uncommitted_action": "field gate: re-enable Wi-Fi at home and confirm cellular-to-Wi-Fi return; after field gate, batch the mobile-budget wording fix into the next consolidated build rather than forcing a cosmetic-only reinstall",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -42,5 +42,15 @@
       "readback_status": "PASS",
       "installer_folder_cardinality": 1
     }
+  },
+  "field_validation": {
+    "manual_wifi_off_to_cellular": "PASS",
+    "mobile_internet_available": true,
+    "cellular_control": "ANDROID",
+    "kinlink_cellular_behavior": "OBSERVATION_ONLY",
+    "original_mobile_block_symptom": "NOT_REPRODUCED",
+    "physical_walk_out_of_wifi_range": "NOT_TESTED",
+    "cellular_to_wifi_return": "PENDING",
+    "ui_issue": "Mobile budget label 'Suivi KINLINK' is misleading because tracker observes device-wide mobile TrafficStats deltas."
   }
 }
