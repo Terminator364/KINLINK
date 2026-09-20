@@ -4,14 +4,13 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">#F4F7FB</item>
         <item name="android:navigationBarColor">#F4F7FB</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 
-    <style name="KinlinkCardText">
+    <style name="KinlinkSummaryText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/card_neutral</item>
-        <item name="android:padding">18dp</item>
         <item name="android:textColor">#263238</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">17sp</item>
     </style>
 </resources>
