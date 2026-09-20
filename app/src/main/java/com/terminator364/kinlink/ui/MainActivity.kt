@@ -31,6 +31,7 @@ import com.terminator364.kinlink.core.PassiveGuidancePolicy
 import com.terminator364.kinlink.core.RecoveryBlockReason
 import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
+import com.terminator364.kinlink.core.ReliabilitySummaryPolicy
 import com.terminator364.kinlink.core.RecentReliabilityPolicy
 import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.NetworkTruth
@@ -55,6 +56,7 @@ class MainActivity : Activity() {
     private lateinit var internetText: TextView
     private lateinit var mobileText: TextView
     private lateinit var mobileBudgetText: TextView
+    private lateinit var reliabilityText: TextView
     private lateinit var detailText: TextView
     private lateinit var heroDetailText: TextView
     private lateinit var adviceTitleText: TextView
@@ -89,6 +91,7 @@ class MainActivity : Activity() {
         internetText = findViewById(R.id.internetText)
         mobileText = findViewById(R.id.mobileText)
         mobileBudgetText = findViewById(R.id.mobileBudgetText)
+        reliabilityText = findViewById(R.id.reliabilityText)
         detailText = findViewById(R.id.detailText)
         heroDetailText = findViewById(R.id.heroDetailText)
         adviceTitleText = findViewById(R.id.adviceTitleText)
@@ -383,6 +386,15 @@ class MainActivity : Activity() {
             }
         }
         mobileBudgetText.text = mobileBudgetLabel(budget)
+        reliabilityText.text = latestReliability?.let { reliability ->
+            ReliabilitySummaryPolicy.label(
+                interruptionCount = reliability.interruptionCount,
+                cumulativeMillis = reliability.cumulativeMillis,
+                longestMillis = reliability.longestMillis,
+                lowQualityEpisodeCount = reliability.lowQualityEpisodeCount,
+                dominantCause = reliability.dominantCause
+            )
+        } ?: "24 h · historique en préparation"
 
         if (observationOnly) {
             adviceTitleText.text = "Mode sûr actif"
