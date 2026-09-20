@@ -113,3 +113,10 @@ This classification:
 Low passive capacity must persist for 3 consecutive VALIDATED Wi-Fi observations before it may request a metrics refresh.
 A single low estimate never triggers recovery.
 The action remains REFRESH_METRICS only: no hidden probe, no route change, no mobile assist.
+
+
+## Probe handoff abort
+
+The bounded Wi-Fi micro-probe re-checks before each endpoint that the originally captured network is still Android's active Wi-Fi.
+If a handoff started, remaining endpoints are skipped immediately.
+The probe never falls through to cellular.

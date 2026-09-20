@@ -54,6 +54,20 @@ class WifiDoctorProbe(private val context: Context) {
         var lastFailure = "non confirmé"
 
         for (endpoint in endpoints) {
+            val stillActive = cm.activeNetwork == network
+            val currentCaps = cm.getNetworkCapabilities(network)
+            val stillWifi = currentCaps?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
+            if (!WifiProbeContinuationPolicy.mayContinue(stillActive, stillWifi)) {
+                return WifiProbeResult(
+                    false,
+                    "Diagnostic interrompu : le Wi-Fi actif a changé pendant le handoff.",
+                    lastLatency,
+                    attempts = attempts,
+                    successes = 0,
+                    failures = failures
+                )
+            }
+
             attempts += 1
             val started = System.nanoTime()
             val attempt = runCatching {
