@@ -32,3 +32,15 @@ RC3 now persists BOOT_COMPLETED / MY_PACKAGE_REPLACED service-start outcomes and
 - Signed APK SHA-256: `4fb4ac36765b6d3728194bf7884f3c98afff625f4a5bc0637b825db0703a700c`
 - Stable signer certificate SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
 - Drive canonical replacement: PENDING because the container-to-Drive bridge expired; old installer intentionally preserved.
+
+
+## RC3 canonical Drive promotion — PASS
+
+- Canonical Drive file ID preserved: `1EUEEkAFoX0pQEdCU3prP5UoawbzHoh4L`
+- Canonical name: `KINLINK_LATEST.apk`
+- Size: `6584911` bytes
+- Post-upload Drive readback SHA-256: `4fb4ac36765b6d3728194bf7884f3c98afff625f4a5bc0637b825db0703a700c`
+- Expected signed APK SHA-256: exact match
+- Temporary staging APK removed after readback proof
+- INSTALLER folder contains one canonical APK
+- Next gate: one in-place target-phone field update
