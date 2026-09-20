@@ -7,7 +7,8 @@ data class DiagnosticSummary(
     val generatedAtMillis: Long,
     val totalEvents: Int,
     val currentTruth: NetworkTruth,
-    val stateCounts: Map<String, Int>
+    val stateCounts: Map<String, Int>,
+    val weeklyEvents: Int = totalEvents
 )
 
 object DiagnosticReportBuilder {
@@ -23,14 +24,13 @@ object DiagnosticReportBuilder {
         appendLine("- Mobile-data policy: ${mobileLabel(summary.currentTruth)}")
         appendLine("- Explanation: ${explanation(summary.currentTruth)}")
         appendLine()
-        appendLine("Observed state changes: ${summary.totalEvents}")
-        if (summary.stateCounts.isEmpty()) {
-            appendLine("- No state change recorded yet")
-        } else {
-            summary.stateCounts.toSortedMap().forEach { (state, count) ->
-                appendLine("- $state: $count")
-            }
-        }
+        appendLine("This week")
+        appendLine("- Observed network-state changes: ${summary.weeklyEvents}")
+        appendLine("- Autopilot result: observation only; no routing change was attempted")
+        appendLine()
+        appendLine("Observed state changes retained locally: ${summary.totalEvents}")
+        if (summary.stateCounts.isEmpty()) appendLine("- No state change recorded yet")
+        else summary.stateCounts.toSortedMap().forEach { (state, count) -> appendLine("- $state: $count") }
         appendLine()
         appendLine("Privacy")
         appendLine("- No SSID, SIM identifier, IP address, gateway, app traffic, password or token is included.")
@@ -38,33 +38,19 @@ object DiagnosticReportBuilder {
     }
 
     private fun transportLabel(truth: NetworkTruth) = when (truth.transport.name) {
-        "WIFI" -> "Wi-Fi"
-        "CELLULAR" -> "Mobile data"
-        "ETHERNET" -> "Ethernet"
-        "VPN" -> "VPN"
-        else -> "No active connection"
+        "WIFI" -> "Wi-Fi"; "CELLULAR" -> "Mobile data"; "ETHERNET" -> "Ethernet"; "VPN" -> "VPN"; else -> "No active connection"
     }
-
     private fun internetLabel(truth: NetworkTruth) = when (truth.internetState.name) {
-        "VALIDATED" -> "Available"
-        "CAPTIVE_PORTAL" -> "Sign-in required"
-        "PARTIAL" -> "Limited"
-        "OFFLINE" -> "Offline"
-        else -> "Not confirmed"
+        "VALIDATED" -> "Available"; "CAPTIVE_PORTAL" -> "Sign-in required"; "PARTIAL" -> "Limited"; "OFFLINE" -> "Offline"; else -> "Not confirmed"
     }
-
     private fun lanLabel(truth: NetworkTruth) = when (truth.lanState.name) {
-        "HEALTHY", "LINK_PRESENT" -> "Present"
-        "DOWN" -> "Unavailable"
-        else -> "Not verified"
+        "HEALTHY", "LINK_PRESENT" -> "Present"; "DOWN" -> "Unavailable"; else -> "Not verified"
     }
-
     private fun mobileLabel(truth: NetworkTruth) = when {
         truth.transport.name == "WIFI" -> "Preserved while Wi-Fi is active"
         truth.metered -> "Metered connection detected; no automatic data test"
         else -> "No automatic mobile-data action"
     }
-
     private fun explanation(truth: NetworkTruth) = when {
         truth.internetState.name == "VALIDATED" -> "Android reports Internet access."
         truth.lanState.name == "LINK_PRESENT" -> "A local link exists, but Internet is not confirmed. Local LAN is kept separate."
