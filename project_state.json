@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "M1_OBSERVER_CORE_IMPLEMENTED_AWAITING_BUILD_GATE",
+  "phase": "M1_OBSERVER_CORE_CI_VERIFIED_FIELD_FEEDBACK_PENDING",
   "design_version": "0.1.0",
   "status": "ACTIVE",
   "platform": "Android",
@@ -22,7 +22,7 @@
     "data-exhausted/expired is not treated as a generic network-quality failure",
     "adaptive learning cannot override hard user budgets or safety constraints"
   ],
-  "next_uncommitted_action": "run Android unit-test/build gate; only then publish a field candidate and collect observer telemetry",
+  "next_uncommitted_action": "implement the minimum field diagnostic package: bounded local event summary, user-initiated export, and human-readable failure explanation; then CI-build before requesting another phone action",
   "android_baseline": {
     "compileSdk": 37,
     "targetSdk": 37,
@@ -40,5 +40,11 @@
     "bounded SQLite ledger",
     "blue cockpit UI",
     "manual CI build"
-  ]
+  ],
+  "last_proven_checkpoint": {
+    "commit": "336ede392ce7616b991a227e940b05cfc101a60a",
+    "ci_run": 35522715744,
+    "status": "PASS",
+    "note": "CI/unit tests passed; field feedback confirmed the M0 screen needs product-grade diagnostics and polish."
+  }
 }
