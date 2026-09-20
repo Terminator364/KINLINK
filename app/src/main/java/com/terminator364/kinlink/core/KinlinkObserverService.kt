@@ -29,6 +29,7 @@ class KinlinkObserverService : Service() {
     private lateinit var runtimeBudgetSampler: RuntimeBudgetSampler
     private var runtimeBudgetStart: RuntimeBudgetSnapshot? = null
     private var coreRuntimeReady = true
+    private var runtimeBudgetCheckpointWritten = false
 
     override fun onCreate() {
         super.onCreate()
@@ -131,6 +132,7 @@ class KinlinkObserverService : Service() {
                     }
                 }
                 ledger.append(truth)
+                maybeRecordRuntimeBudgetCheckpoint()
                 handoffAudit.observe(truth.transport)?.let { transition ->
                     recovery?.onTransportTransition()
                     handoffOutcomeTracker.onTransition(transition)
@@ -191,6 +193,31 @@ class KinlinkObserverService : Service() {
             }
         }
         observer.start()
+    }
+
+    private fun maybeRecordRuntimeBudgetCheckpoint() {
+        if (!::runtimeBudgetSampler.isInitialized) return
+        val start = runtimeBudgetStart ?: return
+        if (!RuntimeBudgetCheckpointPolicy.shouldCheckpoint(
+                start.elapsedMillis,
+                android.os.SystemClock.elapsedRealtime(),
+                runtimeBudgetCheckpointWritten
+            )
+        ) return
+
+        val evidence = RuntimeBudgetPolicy.evidence(start, runtimeBudgetSampler.sample())
+        val rate = evidence.batteryPercentPerHour?.let {
+            String.format(java.util.Locale.US, "%.2f", it)
+        } ?: "inconclusive"
+
+        runCatching {
+            ledger.appendAction(
+                "RUNTIME_BUDGET_CHECKPOINT",
+                true,
+                "durationMs=${evidence.durationMillis}; pssStartMiB=${evidence.startPssMiB}; pssEndMiB=${evidence.endPssMiB}; pssDeltaMiB=${evidence.pssDeltaMiB}; batteryDelta=${evidence.batteryDeltaPercent ?: -1}; batteryPctPerHour=$rate"
+            )
+        }
+        runtimeBudgetCheckpointWritten = true
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
