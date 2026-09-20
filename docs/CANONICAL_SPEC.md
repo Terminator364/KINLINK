@@ -283,3 +283,11 @@ While the app UI is open, technical details show the latest 24-hour interruption
 - dominant passive cause transition when available.
 
 This uses local SQLite evidence only and creates no network traffic.
+
+
+## Slow-but-validated Wi-Fi episode evidence
+
+KINLINK now measures continuous Wi-Fi periods where Android still reports VALIDATED but passive quality is LIMITED or CONSTRAINED.
+The episode ends when quality returns to COMFORTABLE/UNKNOWN or the active transport changes.
+Receipts store duration_ms and worst observed severity.
+No probe or polling loop is added.

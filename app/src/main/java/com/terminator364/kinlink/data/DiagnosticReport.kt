@@ -47,7 +47,10 @@ data class DiagnosticSummary(
     val recent24hInterruptionCount: Int = 0,
     val recent24hInterruptionMillis: Long = 0L,
     val recent24hLongestInterruptionMillis: Long = 0L,
-    val recent24hCauseCounts: Map<String, Int> = emptyMap()
+    val recent24hCauseCounts: Map<String, Int> = emptyMap(),
+    val lowQualityEpisodes: Int = 0,
+    val totalLowQualityMillis: Long = 0L,
+    val longestLowQualityMillis: Long = 0L
 )
 
 object DiagnosticReportBuilder {
@@ -125,6 +128,12 @@ object DiagnosticReportBuilder {
             }
         }
         appendLine("- No availability percentage is inferred from sparse callbacks.")
+        appendLine()
+
+        appendLine("Observed slow-but-validated Wi-Fi episodes")
+        appendLine("- Episodes retained: ${summary.lowQualityEpisodes}")
+        appendLine("- Cumulative degraded-quality time: ${summary.totalLowQualityMillis} ms")
+        appendLine("- Longest degraded-quality episode: ${summary.longestLowQualityMillis} ms")
         appendLine()
 
         appendLine("Observed interruptions")

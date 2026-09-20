@@ -20,6 +20,7 @@ class KinlinkObserverService : Service() {
     private val handoffOutcomeTracker = HandoffOutcomeTracker()
     private val recoveryEffectivenessTracker = RecoveryEffectivenessTracker()
     private val interruptionTracker = ConnectivityInterruptionTracker()
+    private val degradedQualityEpisodeTracker = DegradedQualityEpisodeTracker()
     private val problemTransitionTracker = PassiveProblemTransitionTracker()
     private var latestTruth = NetworkTruth()
     private lateinit var postUpdateSelfTestStore: PostUpdateSelfTestStore
@@ -150,6 +151,14 @@ class KinlinkObserverService : Service() {
                         interruption.severity == InterruptionSeverity.MICRO,
                         "${interruption.summary} ${interruption.fromTransport.name}->${interruption.toTransport.name}",
                         durationMillis = interruption.durationMillis
+                    )
+                }
+                degradedQualityEpisodeTracker.observe(truth)?.let { episode ->
+                    ledger.appendAction(
+                        "LOW_QUALITY_EPISODE_${episode.severity.name}",
+                        true,
+                        episode.summary,
+                        durationMillis = episode.durationMillis
                     )
                 }
                 val stability = ledger.stabilityWindow()

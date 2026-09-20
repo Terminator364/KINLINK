@@ -219,6 +219,15 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             Triple(cursor.getInt(0), cursor.getLong(1), cursor.getLong(2))
         }
 
+    fun lowQualityDurationStats(): Pair<Long, Long> =
+        readableDatabase.rawQuery(
+            "SELECT COALESCE(SUM(duration_ms), 0), COALESCE(MAX(duration_ms), 0) FROM action_receipts WHERE action LIKE 'LOW_QUALITY_EPISODE_%' AND duration_ms IS NOT NULL",
+            null
+        ).use { cursor ->
+            cursor.moveToFirst()
+            cursor.getLong(0) to cursor.getLong(1)
+        }
+
     fun interruptionDurationStats(): Pair<Long, Long> =
         readableDatabase.rawQuery(
             "SELECT COALESCE(SUM(duration_ms), 0), COALESCE(MAX(duration_ms), 0) FROM action_receipts WHERE action LIKE 'INTERRUPTION_%' AND duration_ms IS NOT NULL",
@@ -329,6 +338,7 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
 
         val now = System.currentTimeMillis()
         val interruptionDurations = interruptionDurationStats()
+        val lowQualityDurations = lowQualityDurationStats()
         val interruptions1h = interruptionDurationStatsSince(now - 60L * 60L * 1000L)
         val interruptions24h = interruptionDurationStatsSince(now - 24L * 60L * 60L * 1000L)
         val causes24h = actionCountsByPrefixSince("PASSIVE_CAUSE_", now - 24L * 60L * 60L * 1000L)
@@ -359,6 +369,9 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             longInterruptions = countActions("INTERRUPTION_LONG"),
             totalInterruptionMillis = interruptionDurations.first,
             longestInterruptionMillis = interruptionDurations.second,
+            lowQualityEpisodes = countActions("LOW_QUALITY_EPISODE_"),
+            totalLowQualityMillis = lowQualityDurations.first,
+            longestLowQualityMillis = lowQualityDurations.second,
             passiveCauseCounts = actionCountsByPrefix("PASSIVE_CAUSE_"),
             coreSelfTestPasses = countActions("SELF_TEST_CORE"),
             observerSelfTestPasses = countActions("SELF_TEST_OBSERVER_CALLBACK"),
