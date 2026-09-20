@@ -31,12 +31,14 @@ import com.terminator364.kinlink.core.PassiveGuidancePolicy
 import com.terminator364.kinlink.core.RecoveryBlockReason
 import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
+import com.terminator364.kinlink.core.RecentReliabilityPolicy
 import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.WifiDoctor
 import com.terminator364.kinlink.core.WifiOptimizer
 import com.terminator364.kinlink.data.DiagnosticExporter
 import com.terminator364.kinlink.data.StabilityWindow
+import com.terminator364.kinlink.data.RecentReliabilityWindow
 import com.terminator364.kinlink.data.TelemetryLedger
 import java.util.Locale
 
@@ -73,6 +75,7 @@ class MainActivity : Activity() {
         state = BudgetState.BALANCE_UNKNOWN
     )
     private var latestStability: StabilityWindow? = null
+    private var latestReliability: RecentReliabilityWindow? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,10 +146,12 @@ class MainActivity : Activity() {
             val budget = mobileBudget.sample()
             val enrichedTruth = rawTruth.copy(budgetState = budget.state)
             val stability = runCatching { ledger.stabilityWindow() }.getOrNull()
+            val reliability = runCatching { ledger.recentReliabilityWindow() }.getOrNull()
 
             runOnUiThread {
                 latestBudget = budget
                 latestStability = stability
+                latestReliability = reliability
                 render(enrichedTruth, budget, stability)
             }
         }
@@ -362,6 +367,20 @@ class MainActivity : Activity() {
                 append(" · ${it.transitions} transition(s)")
                 if (it.assessment.flapping) append(" · FLAPPING")
                 append("\n")
+            }
+            latestReliability?.let { reliability ->
+                val burden = RecentReliabilityPolicy.classify(
+                    reliability.interruptionCount,
+                    reliability.cumulativeMillis,
+                    reliability.longestMillis
+                )
+                append("Interruptions 24 h : ${reliability.interruptionCount}")
+                append(" · cumul ${reliability.cumulativeMillis} ms")
+                append(" · max ${reliability.longestMillis} ms")
+                append(" · ${burden.name}\n")
+                reliability.dominantCause?.let { cause ->
+                    append("Cause dominante 24 h : $cause\n")
+                }
             }
             if (budget.counterResetDetected) {
                 append("Compteur mobile : baseline réinitialisée après reset/reboot\n")

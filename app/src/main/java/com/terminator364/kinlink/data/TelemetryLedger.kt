@@ -17,6 +17,13 @@ data class StabilityWindow(
     val assessment: StabilityAssessment
 )
 
+data class RecentReliabilityWindow(
+    val interruptionCount: Int,
+    val cumulativeMillis: Long,
+    val longestMillis: Long,
+    val dominantCause: String?
+)
+
 data class ActionReceipt(
     val tsWallMs: Long,
     val action: String,
@@ -220,6 +227,22 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             cursor.moveToFirst()
             cursor.getLong(0) to cursor.getLong(1)
         }
+
+    fun recentReliabilityWindow(
+        nowMillis: Long = System.currentTimeMillis(),
+        windowMillis: Long = 24L * 60L * 60L * 1000L
+    ): RecentReliabilityWindow {
+        val since = nowMillis - windowMillis
+        val interruptions = interruptionDurationStatsSince(since)
+        val causes = actionCountsByPrefixSince("PASSIVE_CAUSE_", since)
+        val dominant = causes.maxByOrNull { it.value }?.key
+        return RecentReliabilityWindow(
+            interruptionCount = interruptions.first,
+            cumulativeMillis = interruptions.second,
+            longestMillis = interruptions.third,
+            dominantCause = dominant
+        )
+    }
 
     fun schemaVersion(): Int = readableDatabase.version
 

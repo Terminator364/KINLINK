@@ -271,3 +271,15 @@ KINLINK deliberately does not infer an availability percentage from sparse Andro
 Within a 30-minute window, two safety aborts (watchdog, transport changed, network/capabilities disappeared) open a circuit breaker.
 While open, Autopilot performs no automatic recovery action and falls back to passive observation.
 The breaker naturally closes as old abort receipts age out of the window.
+
+
+## Cockpit 24-hour reliability visibility
+
+While the app UI is open, technical details show the latest 24-hour interruption window:
+- interruption count;
+- cumulative duration;
+- longest interruption;
+- qualitative burden;
+- dominant passive cause transition when available.
+
+This uses local SQLite evidence only and creates no network traffic.
