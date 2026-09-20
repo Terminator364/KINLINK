@@ -188,6 +188,7 @@ class MainActivity : Activity() {
 
         Thread {
             val result = WifiOptimizer(this).optimize()
+            runCatching { ledger.appendAction("WIFI_OPTIMIZE", result.success, result.summary) }
             runOnUiThread {
                 wifiDoctorButton.isEnabled = true
                 adviceTitleText.text = when {
