@@ -54,3 +54,6 @@ Target-phone in-place update and field behavior.
 - manifest safety fence rejects CHANGE_NETWORK_STATE and VpnService
 - diagnostic export includes aggregate handoff outcomes and watchdog abort evidence
 - versionCode monotonic upgrade to 7
+
+- Android lint must pass
+- manifest must not request CHANGE_NETWORK_STATE, CHANGE_WIFI_STATE, MODIFY_PHONE_STATE or WRITE_SETTINGS

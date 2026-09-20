@@ -31,8 +31,10 @@ jobs:
         run: |
           set -euo pipefail
           MANIFEST="app/src/main/AndroidManifest.xml"
-          if grep -q 'android.permission.CHANGE_NETWORK_STATE' "$MANIFEST"; then
-            echo "CHANGE_NETWORK_STATE is forbidden for KINLINK fail-open baseline."
+          forbidden_permissions='android.permission.CHANGE_NETWORK_STATE|android.permission.CHANGE_WIFI_STATE|android.permission.MODIFY_PHONE_STATE|android.permission.WRITE_SETTINGS'
+          if grep -E -q "$forbidden_permissions" "$MANIFEST"; then
+            echo "A network-affecting Android permission is forbidden for the KINLINK fail-open baseline."
+            grep -E -n "$forbidden_permissions" "$MANIFEST" || true
             exit 1
           fi
           if grep -q 'android.net.VpnService' "$MANIFEST"; then
@@ -42,6 +44,8 @@ jobs:
           echo "Manifest safety fence passed."
       - name: Unit tests
         run: gradle :app:testDebugUnitTest --stacktrace
+      - name: Android lint
+        run: gradle :app:lintDebug --stacktrace
       - name: Build CI debug APK
         run: gradle :app:assembleDebug --stacktrace
       - name: SHA-256
