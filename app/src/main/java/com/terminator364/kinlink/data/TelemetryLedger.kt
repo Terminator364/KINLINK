@@ -270,7 +270,8 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             longInterruptions = countActions("INTERRUPTION_LONG"),
             passiveCauseCounts = actionCountsByPrefix("PASSIVE_CAUSE_"),
             coreSelfTestPasses = countActions("SELF_TEST_CORE"),
-            observerSelfTestPasses = countActions("SELF_TEST_OBSERVER_CALLBACK")
+            observerSelfTestPasses = countActions("SELF_TEST_OBSERVER_CALLBACK"),
+            runtimeBudgetSessions = countActions("RUNTIME_BUDGET_SESSION")
         )
     }
 }

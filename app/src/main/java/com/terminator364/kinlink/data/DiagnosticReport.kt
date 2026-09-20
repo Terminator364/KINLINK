@@ -32,7 +32,8 @@ data class DiagnosticSummary(
     val longInterruptions: Int = 0,
     val passiveCauseCounts: Map<String, Int> = emptyMap(),
     val coreSelfTestPasses: Int = 0,
-    val observerSelfTestPasses: Int = 0
+    val observerSelfTestPasses: Int = 0,
+    val runtimeBudgetSessions: Int = 0
 )
 
 object DiagnosticReportBuilder {
@@ -75,6 +76,7 @@ object DiagnosticReportBuilder {
         appendLine("Runtime self-test evidence")
         appendLine("- Core self-test PASS receipts: ${summary.coreSelfTestPasses}")
         appendLine("- Observer callback self-test PASS receipts: ${summary.observerSelfTestPasses}")
+        appendLine("- Completed runtime budget sessions: ${summary.runtimeBudgetSessions}")
         appendLine()
 
         appendLine("Recent stability")

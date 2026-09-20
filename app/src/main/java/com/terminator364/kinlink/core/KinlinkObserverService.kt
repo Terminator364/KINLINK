@@ -24,6 +24,8 @@ class KinlinkObserverService : Service() {
     private var latestTruth = NetworkTruth()
     private lateinit var postUpdateSelfTestStore: PostUpdateSelfTestStore
     private var runningVersionCode: Long = -1L
+    private lateinit var runtimeBudgetSampler: RuntimeBudgetSampler
+    private var runtimeBudgetStart: RuntimeBudgetSnapshot? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -45,6 +47,8 @@ class KinlinkObserverService : Service() {
         mobileBudget = MobileBudgetTracker(this)
         recoveryModeStore = RecoveryModeStore(this)
         postUpdateSelfTestStore = PostUpdateSelfTestStore(this)
+        runtimeBudgetSampler = RuntimeBudgetSampler(this)
+        runtimeBudgetStart = runtimeBudgetSampler.sample()
         runningVersionCode = runCatching {
             packageManager.getPackageInfo(packageName, 0).longVersionCode
         }.getOrDefault(-1L)
@@ -181,6 +185,19 @@ class KinlinkObserverService : Service() {
         if (::observer.isInitialized) observer.stop()
         recovery?.close()
         if (::ledger.isInitialized) {
+            if (::runtimeBudgetSampler.isInitialized) {
+                runtimeBudgetStart?.let { start ->
+                    val evidence = RuntimeBudgetPolicy.evidence(start, runtimeBudgetSampler.sample())
+                    val rate = evidence.batteryPercentPerHour?.let { String.format(java.util.Locale.US, "%.2f", it) } ?: "insufficient-session"
+                    runCatching {
+                        ledger.appendAction(
+                            "RUNTIME_BUDGET_SESSION",
+                            true,
+                            "durationMs=${evidence.durationMillis}; pssStartMiB=${evidence.startPssMiB}; pssEndMiB=${evidence.endPssMiB}; pssDeltaMiB=${evidence.pssDeltaMiB}; batteryDelta=${evidence.batteryDeltaPercent ?: -1}; batteryPctPerHour=$rate"
+                        )
+                    }
+                }
+            }
             runCatching { ledger.appendAction("SERVICE_STOP", true, "Service arrêté proprement.") }
             ledger.close()
         }

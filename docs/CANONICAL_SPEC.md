@@ -196,3 +196,14 @@ Once per versionCode, service startup performs a zero-network core self-test:
 
 The first real NetworkCallback event then records observer-callback self-test PASS.
 A failed core test is not marked complete, so evidence remains visible and can be retried on a later service creation.
+
+
+## Runtime resource qualification hooks
+
+Each service session captures a lightweight start/end resource snapshot:
+- process PSS in MiB;
+- Android battery percentage when available;
+- elapsed session duration.
+
+Battery drain per hour is only calculated for sessions >= 30 minutes; shorter sessions are explicitly inconclusive.
+These receipts are qualification evidence, not a claim that all battery drain belongs to KINLINK.
