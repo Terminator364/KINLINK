@@ -4,6 +4,8 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.terminator364.kinlink.core.NetworkStabilityPolicy
+import com.terminator364.kinlink.core.QualityTrend
+import com.terminator364.kinlink.core.QualityTrendPolicy
 import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.StabilityAssessment
@@ -24,7 +26,8 @@ data class RecentReliabilityWindow(
     val dominantCause: String?,
     val lowQualityEpisodeCount: Int = 0,
     val lowQualityCumulativeMillis: Long = 0L,
-    val lowQualityLongestMillis: Long = 0L
+    val lowQualityLongestMillis: Long = 0L,
+    val qualityTrend: QualityTrend = QualityTrend.INSUFFICIENT
 )
 
 data class ActionReceipt(
@@ -267,6 +270,22 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             cursor.getLong(0) to cursor.getLong(1)
         }
 
+    fun recentQualityTrend(
+        sinceWallMs: Long,
+        limit: Int = 8
+    ): QualityTrend {
+        val names = mutableListOf<String>()
+        val safeLimit = limit.coerceIn(3, 20)
+        readableDatabase.rawQuery(
+            "SELECT quality_tier FROM network_events WHERE ts_wall_ms >= ? ORDER BY ts_wall_ms DESC LIMIT ?",
+            arrayOf(sinceWallMs.toString(), safeLimit.toString())
+        ).use { cursor ->
+            while (cursor.moveToNext()) names += cursor.getString(0)
+        }
+        names.reverse()
+        return QualityTrendPolicy.classify(names)
+    }
+
     fun recentReliabilityWindow(
         nowMillis: Long = System.currentTimeMillis(),
         windowMillis: Long = 24L * 60L * 60L * 1000L
@@ -283,7 +302,8 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             dominantCause = dominant,
             lowQualityEpisodeCount = lowQuality.first,
             lowQualityCumulativeMillis = lowQuality.second,
-            lowQualityLongestMillis = lowQuality.third
+            lowQualityLongestMillis = lowQuality.third,
+            qualityTrend = recentQualityTrend(since)
         )
     }
 

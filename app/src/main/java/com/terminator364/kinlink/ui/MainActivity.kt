@@ -393,7 +393,8 @@ class MainActivity : Activity() {
                 cumulativeMillis = reliability.cumulativeMillis,
                 longestMillis = reliability.longestMillis,
                 lowQualityEpisodeCount = reliability.lowQualityEpisodeCount,
-                dominantCause = reliability.dominantCause
+                dominantCause = reliability.dominantCause,
+                qualityTrend = reliability.qualityTrend
             )
         } ?: "24 h · historique en préparation"
 

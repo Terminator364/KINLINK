@@ -6,7 +6,8 @@ object ReliabilitySummaryPolicy {
         cumulativeMillis: Long,
         longestMillis: Long,
         lowQualityEpisodeCount: Int,
-        dominantCause: String?
+        dominantCause: String?,
+        qualityTrend: QualityTrend = QualityTrend.INSUFFICIENT
     ): String {
         if (interruptionCount <= 0 && lowQualityEpisodeCount <= 0) {
             return "24 h · aucune coupure mesurée dans l’historique retenu"
@@ -23,6 +24,9 @@ object ReliabilitySummaryPolicy {
         }
         dominantCause?.takeIf { it.isNotBlank() }?.let {
             parts += "cause dominante=" + it
+        }
+        if (qualityTrend != QualityTrend.INSUFFICIENT) {
+            parts += "tendance=" + qualityTrend.name
         }
         return "24 h · " + parts.joinToString(" · ")
     }
