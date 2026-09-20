@@ -52,7 +52,9 @@ class RuntimeBudgetSampler(context: Context) {
 
         return RuntimeBudgetSnapshot(
             elapsedMillis = SystemClock.elapsedRealtime(),
-            processPssMiB = (Debug.getPss() / 1024).coerceAtLeast(0),
+            processPssMiB = (Debug.getPss() / 1024L)
+                .coerceIn(0L, Int.MAX_VALUE.toLong())
+                .toInt(),
             batteryPercent = battery
         )
     }
