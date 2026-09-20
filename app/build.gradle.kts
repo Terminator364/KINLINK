@@ -7,10 +7,7 @@ val releaseStorePassword = providers.environmentVariable("KINLINK_KEYSTORE_PASSW
 val releaseKeyAlias = providers.environmentVariable("KINLINK_KEY_ALIAS").orNull
 val releaseKeyPassword = providers.environmentVariable("KINLINK_KEY_PASSWORD").orNull
 val releaseSigningAvailable = listOf(
-    releaseKeystorePath,
-    releaseStorePassword,
-    releaseKeyAlias,
-    releaseKeyPassword,
+    releaseKeystorePath, releaseStorePassword, releaseKeyAlias, releaseKeyPassword
 ).all { !it.isNullOrBlank() }
 
 android {
@@ -53,11 +50,12 @@ android {
 tasks.matching { it.name == "validateSigningRelease" }.configureEach {
     doFirst {
         check(releaseSigningAvailable) {
-            "Release signing is not configured. Configure the KINLINK GitHub Actions secrets."
+            "Release signing is not configured. Use the offline KINLINK signing station."
         }
     }
 }
 
 dependencies {
+    implementation("androidx.core:core:1.16.0")
     testImplementation("junit:junit:4.13.2")
 }
