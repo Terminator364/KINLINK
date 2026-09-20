@@ -1,46 +1,104 @@
 {
   "project": "KINLINK",
-  "phase": "M3_RESILIENCE_EVIDENCE_ENGINE_CI_PENDING",
-  "design_version": "0.3.0-m3",
+  "phase": "RC1_INTEGRATED_STABLE_SIGNED_DRIVE_PROMOTED_FIELD_GATE",
+  "design_version": "0.4.0-rc1",
   "status": "ACTIVE",
-  "stable_signer_certificate_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
-  "field_evidence": {
-    "m2_contradiction": "Android/KINLINK WIFI_HEALTHY while one failed endpoint triggered negative Wi-Fi revalidation",
-    "root_cause": "single external probe had excessive authority in optimizer policy",
-    "regression_rule": "Android VALIDATED cannot be overruled by isolated external probe failure"
+  "source_commit": "a818ddf31bf952a52a40d3df02cddb1e7914b933",
+  "ci": {
+    "run_id": 35529443848,
+    "status": "PASS",
+    "artifact_id": 10611201005,
+    "artifact_archive_digest_sha256": "9ba77abbfdbf229a4379d5b53e5098949862bd4eee3b6b67081fb63039389c32",
+    "debug_apk_sha256": "5261a29b3b5651f9dbbf2911ff1da8ff0d1a6bb1047d24089a4dea7b951b0514"
   },
-  "m3_scope": [
-    "multi-signal evidence arbitration",
-    "Android VALIDATED authority",
-    "two-endpoint bounded explicit Wi-Fi probe",
-    "captive portal priority",
-    "coherent revalidation policy",
-    "regression tests for field contradiction",
-    "human-readable evidence explanation"
+  "installer": {
+    "version": "0.4.0-rc1",
+    "version_code": 5,
+    "apk_sha256": "030015ccd39f2536dea071434c987a243ecc4d0e29067d7b8b3e0ce41bd0e8d5",
+    "size_bytes": 6502991,
+    "signature_scheme": "v3",
+    "signer_certificate_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
+    "drive_path": "KINLINK/INSTALLER/KINLINK_LATEST.apk",
+    "drive_file_id": "1EUEEkAFoX0pQEdCU3prP5UoawbzHoh4L",
+    "drive_readback_byte_identical": true,
+    "installer_apk_count": 1,
+    "update_in_place_expected": true
+  },
+  "field_evidence": {
+    "m2_contradiction": "Android/KINLINK WIFI_HEALTHY while one failed external 204 endpoint triggered negative Wi-Fi revalidation",
+    "root_cause": "single external probe had excessive authority in optimizer policy",
+    "permanent_regression_rule": "Android VALIDATED cannot be overruled by isolated external probe failure",
+    "rc1_fix": "Android validation authority plus bounded fallback probe plus exact HTTP 204 acceptance"
+  },
+  "implemented_now": [
+    "event-driven passive Android network observer",
+    "Android 15/16 foreground-service lifecycle hardening",
+    "LAN/WAN state separation",
+    "bounded privacy-safe SQLite telemetry",
+    "single canonical background ledger writer to prevent duplicate telemetry",
+    "human-readable connectivity cockpit",
+    "explicit Wi-Fi-only resilience action",
+    "two-endpoint bounded Wi-Fi micro-probe",
+    "exact HTTP 204 validation to reject portal/proxy false positives",
+    "Android VALIDATED authority over isolated probe failure",
+    "captive-portal priority",
+    "bandwidth metric refresh request",
+    "Mobile Vault passive device-wide mobile RX/TX delta guard",
+    "reboot/counter-reset-safe Mobile Vault baseline",
+    "optional persisted daily mobile-data envelope",
+    "BUNDLE_OK/BUNDLE_LOW/BUNDLE_EXHAUSTED policy",
+    "KINLINK mobile probe/retry hold at LOW and EXHAUSTED",
+    "bounded 15-minute network stability window",
+    "0..100 instability score and flapping flag",
+    "no-regret adaptive autopilot policy",
+    "persistent private stable APK signing and update continuity",
+    "byte-identical Drive promotion readback"
   ],
-  "primary_constraints": [
-    "zero-dollar baseline",
-    "unstable Wi-Fi and cellular networks",
-    "metered mobile data must be protected",
-    "battery impact must remain low",
-    "no root required",
-    "fail-open networking",
-    "LAN must survive WAN failure",
-    "telemetry must be local-first and privacy-preserving"
+  "not_yet_claimed": [
+    "carrier-billing-exact mobile usage",
+    "system-wide DNS optimization",
+    "VPN/TUN per-flow steering",
+    "whole-device throughput acceleration",
+    "field-proven latency reduction",
+    "field-proven RC1 stability on target phone"
   ],
   "p0_invariants": [
     "never automatically speed-test mobile data",
     "never let one external probe overrule Android VALIDATED",
     "never classify one unreachable diagnostic endpoint as proof of Wi-Fi failure",
+    "never treat HTTP 200/302 from a known 204 endpoint as Internet validation",
     "never permanently block normal Android networking",
     "preserve LAN independently from WAN",
-    "preserve stable signing certificate across upgrades"
+    "never duplicate one network transition through UI and service writers",
+    "preserve stable signer certificate across upgrades",
+    "do not promote VPN/TUN data plane before fail-open and resource benchmarks pass"
   ],
-  "next_uncommitted_action": "CI-test M3, then stable-sign with existing key, verify signer, replace Drive installer and read back before field update",
+  "m5_gate": {
+    "status": "NOT_PROMOTED",
+    "reason": "A VpnService/TUN data plane would take part in real traffic and requires fail-open, battery, RAM, latency and rollback evidence before activation.",
+    "required_before_activation": [
+      "TUN prototype tests",
+      "DNS resilience benchmark",
+      "watchdog teardown test",
+      "no-lockdown verification",
+      "RAM and battery benchmark",
+      "latency comparison against plain Android",
+      "field rollback test"
+    ]
+  },
+  "next_uncommitted_action": "human gate: update installed stable-signed KINLINK in place to 0.4.0-rc1, exercise Wi-Fi resilience once, configure optional mobile budget, then use field evidence to qualify the next M5 stabilizer work",
   "android_baseline": {
     "compileSdk": 37,
     "targetSdk": 37,
     "minSdk": 30,
     "jdk": 17
+  },
+  "last_proven_checkpoint": {
+    "status": "RC1_CI_PASS_STABLE_SIGNED_DRIVE_READBACK_VERIFIED",
+    "source_commit": "a818ddf31bf952a52a40d3df02cddb1e7914b933",
+    "ci_run": 35529443848,
+    "apk_sha256": "030015ccd39f2536dea071434c987a243ecc4d0e29067d7b8b3e0ce41bd0e8d5",
+    "signer_certificate_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
+    "drive_file_id": "1EUEEkAFoX0pQEdCU3prP5UoawbzHoh4L"
   }
 }
