@@ -161,6 +161,8 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         )
     }
 
+    fun schemaVersion(): Int = readableDatabase.version
+
     fun recentCount(): Int = readableDatabase.rawQuery(
         "SELECT COUNT(*) FROM network_events", null
     ).use { cursor ->
@@ -266,7 +268,9 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             microInterruptions = countActions("INTERRUPTION_MICRO"),
             shortInterruptions = countActions("INTERRUPTION_SHORT"),
             longInterruptions = countActions("INTERRUPTION_LONG"),
-            passiveCauseCounts = actionCountsByPrefix("PASSIVE_CAUSE_")
+            passiveCauseCounts = actionCountsByPrefix("PASSIVE_CAUSE_"),
+            coreSelfTestPasses = countActions("SELF_TEST_CORE"),
+            observerSelfTestPasses = countActions("SELF_TEST_OBSERVER_CALLBACK")
         )
     }
 }

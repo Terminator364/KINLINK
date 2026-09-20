@@ -22,6 +22,8 @@ class KinlinkObserverService : Service() {
     private val interruptionTracker = ConnectivityInterruptionTracker()
     private val problemTransitionTracker = PassiveProblemTransitionTracker()
     private var latestTruth = NetworkTruth()
+    private lateinit var postUpdateSelfTestStore: PostUpdateSelfTestStore
+    private var runningVersionCode: Long = -1L
 
     override fun onCreate() {
         super.onCreate()
@@ -42,6 +44,28 @@ class KinlinkObserverService : Service() {
         ledger = TelemetryLedger(this)
         mobileBudget = MobileBudgetTracker(this)
         recoveryModeStore = RecoveryModeStore(this)
+        postUpdateSelfTestStore = PostUpdateSelfTestStore(this)
+        runningVersionCode = runCatching {
+            packageManager.getPackageInfo(packageName, 0).longVersionCode
+        }.getOrDefault(-1L)
+
+        if (postUpdateSelfTestStore.needsCoreTest(runningVersionCode)) {
+            val modeReadable = runCatching { recoveryModeStore.current() }.isSuccess
+            val coreSelfTest = RuntimeSelfTestPolicy.core(
+                databaseVersion = runCatching { ledger.schemaVersion() }.getOrDefault(-1),
+                recoveryModeReadable = modeReadable
+            )
+            runCatching {
+                ledger.appendAction(
+                    "SELF_TEST_CORE",
+                    coreSelfTest.pass,
+                    coreSelfTest.summary
+                )
+            }
+            if (coreSelfTest.pass) {
+                postUpdateSelfTestStore.markCoreTested(runningVersionCode)
+            }
+        }
         StartupReceiptStore(this).consume()?.let { startup ->
             runCatching {
                 ledger.appendAction(
@@ -78,6 +102,17 @@ class KinlinkObserverService : Service() {
             val truth = rawTruth.copy(budgetState = budget.state)
             latestTruth = truth
             runCatching {
+                if (postUpdateSelfTestStore.needsObserverTest(runningVersionCode)) {
+                    val observerSelfTest = RuntimeSelfTestPolicy.observerCallback(true)
+                    ledger.appendAction(
+                        "SELF_TEST_OBSERVER_CALLBACK",
+                        observerSelfTest.pass,
+                        observerSelfTest.summary
+                    )
+                    if (observerSelfTest.pass) {
+                        postUpdateSelfTestStore.markObserverTested(runningVersionCode)
+                    }
+                }
                 ledger.append(truth)
                 handoffAudit.observe(truth.transport)?.let { transition ->
                     recovery?.onTransportTransition()

@@ -30,7 +30,9 @@ data class DiagnosticSummary(
     val microInterruptions: Int = 0,
     val shortInterruptions: Int = 0,
     val longInterruptions: Int = 0,
-    val passiveCauseCounts: Map<String, Int> = emptyMap()
+    val passiveCauseCounts: Map<String, Int> = emptyMap(),
+    val coreSelfTestPasses: Int = 0,
+    val observerSelfTestPasses: Int = 0
 )
 
 object DiagnosticReportBuilder {
@@ -68,6 +70,11 @@ object DiagnosticReportBuilder {
         appendLine("- Session health: ${sessionHealth.health.name} — ${sessionHealth.summary}")
         appendLine("- Android DNS servers exposed: ${summary.currentTruth.dnsServerCount}")
         appendLine("- Android private DNS active: ${summary.currentTruth.privateDnsActive}")
+        appendLine()
+
+        appendLine("Runtime self-test evidence")
+        appendLine("- Core self-test PASS receipts: ${summary.coreSelfTestPasses}")
+        appendLine("- Observer callback self-test PASS receipts: ${summary.observerSelfTestPasses}")
         appendLine()
 
         appendLine("Recent stability")

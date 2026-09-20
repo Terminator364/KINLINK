@@ -186,3 +186,13 @@ Diagnostic exports aggregate passive cause transitions from the bounded action l
 KINLINK produces a qualitative session-health state: HEALTHY, WATCH, DEGRADED or CRITICAL.
 It combines current Internet state, passive cause and recent instability/flapping.
 No opaque numeric score is exposed as a claim of objective network quality.
+
+
+## Post-update runtime self-test
+
+Once per versionCode, service startup performs a zero-network core self-test:
+- telemetry database opens at schema >= 3;
+- RecoveryMode is readable.
+
+The first real NetworkCallback event then records observer-callback self-test PASS.
+A failed core test is not marked complete, so evidence remains visible and can be retried on a later service creation.
