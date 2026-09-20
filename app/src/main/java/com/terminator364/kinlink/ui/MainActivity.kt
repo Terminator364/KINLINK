@@ -16,6 +16,7 @@ import com.terminator364.kinlink.core.KinlinkObserverService
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.WifiDoctor
+import com.terminator364.kinlink.core.WifiDoctorProbe
 import com.terminator364.kinlink.data.DiagnosticExporter
 import com.terminator364.kinlink.data.TelemetryLedger
 
@@ -32,6 +33,7 @@ class MainActivity : Activity() {
     private lateinit var adviceText: TextView
     private lateinit var technicalToggle: TextView
     private lateinit var diagnosticExport: TextView
+    private lateinit var wifiDoctorButton: TextView
     private var latestTruth = NetworkTruth()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,9 +50,11 @@ class MainActivity : Activity() {
         adviceText = findViewById(R.id.adviceText)
         technicalToggle = findViewById(R.id.technicalToggle)
         diagnosticExport = findViewById(R.id.diagnosticExport)
+        wifiDoctorButton = findViewById(R.id.wifiDoctorButton)
         installSystemBarInsets()
         technicalToggle.setOnClickListener { toggleTechnicalDetails() }
         diagnosticExport.setOnClickListener { exportDiagnostic() }
+        wifiDoctorButton.setOnClickListener { runWifiDoctor() }
         ledger = TelemetryLedger(this)
         observer = NetworkObserver(this) { truth ->
             ledger.append(truth)
@@ -77,7 +81,21 @@ class MainActivity : Activity() {
         val nowVisible = detailText.visibility == View.VISIBLE
         detailText.visibility = if (nowVisible) View.GONE else View.VISIBLE
         diagnosticExport.visibility = if (nowVisible) View.GONE else View.VISIBLE
+        wifiDoctorButton.visibility = if (nowVisible) View.GONE else View.VISIBLE
         technicalToggle.text = if (nowVisible) "Voir les détails techniques" else "Masquer les détails techniques"
+    }
+
+    private fun runWifiDoctor() {
+        wifiDoctorButton.isEnabled = false
+        Thread {
+            val result = WifiDoctorProbe(this).run()
+            runOnUiThread {
+                wifiDoctorButton.isEnabled = true
+                adviceTitleText.text = if (result.success) "Wi-Fi Doctor : réponse reçue" else "Wi-Fi Doctor : problème détecté"
+                adviceText.text = result.summary
+                detailText.text = detailText.text.toString() + "\n\nTest Wi-Fi explicite : ${result.summary}"
+            }
+        }.start()
     }
 
     private fun exportDiagnostic() {
