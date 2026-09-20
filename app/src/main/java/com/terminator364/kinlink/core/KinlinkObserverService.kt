@@ -18,6 +18,7 @@ class KinlinkObserverService : Service() {
     private var recovery: AutopilotRecoveryController? = null
     private val handoffAudit = NetworkHandoffAudit()
     private val handoffOutcomeTracker = HandoffOutcomeTracker()
+    private var latestTruth = NetworkTruth()
 
     override fun onCreate() {
         super.onCreate()
@@ -61,6 +62,7 @@ class KinlinkObserverService : Service() {
         observer = NetworkObserver(this) { rawTruth ->
             val budget = mobileBudget.sample()
             val truth = rawTruth.copy(budgetState = budget.state)
+            latestTruth = truth
             runCatching {
                 ledger.append(truth)
                 handoffAudit.observe(truth.transport)?.let { transition ->
@@ -88,7 +90,12 @@ class KinlinkObserverService : Service() {
         observer.start()
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_REFRESH_MODE && ::recoveryModeStore.isInitialized) {
+            updateNotificationFor(latestTruth)
+        }
+        return START_STICKY
+    }
 
     override fun onDestroy() {
         if (::observer.isInitialized) observer.stop()
@@ -132,5 +139,6 @@ class KinlinkObserverService : Service() {
     companion object {
         private const val CHANNEL_ID = "kinlink_observer"
         private const val NOTIFICATION_ID = 114
+        const val ACTION_REFRESH_MODE = "com.terminator364.kinlink.REFRESH_RECOVERY_MODE"
     }
 }

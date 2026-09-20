@@ -41,6 +41,7 @@ class MainActivity : Activity() {
     private lateinit var profileStore: AutopilotProfileStore
     private lateinit var recoveryModeStore: RecoveryModeStore
 
+    private lateinit var heroEyebrow: TextView
     private lateinit var stateText: TextView
     private lateinit var transportText: TextView
     private lateinit var internetText: TextView
@@ -72,6 +73,7 @@ class MainActivity : Activity() {
         ContextCompat.startForegroundService(this, Intent(this, KinlinkObserverService::class.java))
         setContentView(R.layout.activity_main)
 
+        heroEyebrow = findViewById(R.id.heroEyebrow)
         stateText = findViewById(R.id.stateText)
         transportText = findViewById(R.id.transportText)
         internetText = findViewById(R.id.internetText)
@@ -122,6 +124,12 @@ class MainActivity : Activity() {
                 )
             }
             refreshSafeModeButton()
+            ContextCompat.startForegroundService(
+                this,
+                Intent(this, KinlinkObserverService::class.java).apply {
+                    action = KinlinkObserverService.ACTION_REFRESH_MODE
+                }
+            )
             render(latestTruth, latestBudget, latestStability)
         }
 
@@ -269,8 +277,12 @@ class MainActivity : Activity() {
             profile = currentProfile
         )
 
-        stateText.text = assessment.headline
-        heroDetailText.text = assessment.explanation
+        val observationOnly = recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY
+        heroEyebrow.text = if (observationOnly) "MODE SÛR" else "AUTOPILOT"
+        stateText.text = if (observationOnly) "Observation uniquement" else assessment.headline
+        heroDetailText.text = if (observationOnly) {
+            "Aucune récupération active. Android garde entièrement le contrôle du réseau."
+        } else assessment.explanation
         transportText.text = "Connexion en cours · ${transportLabel(truth)}"
         internetText.text = "Internet · ${internetLabel(truth)}"
         mobileText.text = when (truth.budgetState) {
@@ -287,8 +299,13 @@ class MainActivity : Activity() {
         }
         mobileBudgetText.text = mobileBudgetLabel(budget)
 
-        adviceTitleText.text = doctorAdvice.title
-        adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}\n\nAutopilot ${profileLabel(currentProfile)} : ${adaptiveDecision.reason}"
+        if (observationOnly) {
+            adviceTitleText.text = "Mode sûr actif"
+            adviceText.text = "KINLINK observe et journalise seulement. Aucune optimisation ni récupération active n’est exécutée."
+        } else {
+            adviceTitleText.text = doctorAdvice.title
+            adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}\n\nAutopilot ${profileLabel(currentProfile)} : ${adaptiveDecision.reason}"
+        }
 
         detailText.text = buildString {
             append("État KINLINK : ${assessment.state.name}\n")
