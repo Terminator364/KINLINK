@@ -120,7 +120,7 @@ class AutopilotRecoveryController(
                     return
                 }
 
-                val probe = WifiDoctorProbe(context).run()
+                val probe = WifiDoctorProbe(context).run(network)
                 if (watchdogExpired(started)) {
                     record(false, "WATCHDOG_TIMEOUT", "Micro-probe terminé hors deadline; aucune action réseau supplémentaire.", started)
                     return

@@ -86,7 +86,7 @@ class WifiOptimizer(private val context: Context) {
         }
 
         val dnsProbe = WifiDnsProbe(context, network).run()
-        val probe = WifiDoctorProbe(context).run()
+        val probe = WifiDoctorProbe(context).run(network)
         val action = WifiOptimizerPolicy.action(true, androidValidated, false, probe.success, meteredWifi = false)
         val diagnosisCause = ManualWifiDiagnosisPolicy.classify(
             androidValidated = androidValidated,

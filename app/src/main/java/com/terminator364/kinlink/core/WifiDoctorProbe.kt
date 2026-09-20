@@ -34,10 +34,18 @@ class WifiDoctorProbe(private val context: Context) {
         Endpoint("fallback", "https://cp.cloudflare.com/generate_204")
     )
 
-    fun run(): WifiProbeResult {
+    fun run(expectedNetwork: android.net.Network? = null): WifiProbeResult {
         val cm = context.getSystemService(ConnectivityManager::class.java)
-        val network = cm.activeNetwork
+        val network = expectedNetwork ?: cm.activeNetwork
             ?: return WifiProbeResult(false, "Aucun réseau actif", null)
+
+        if (cm.activeNetwork != network) {
+            return WifiProbeResult(
+                false,
+                "Diagnostic bloqué : le réseau actif a changé avant le micro-test.",
+                null
+            )
+        }
 
         val caps = cm.getNetworkCapabilities(network)
         if (caps?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) != true) {
