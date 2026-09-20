@@ -33,6 +33,7 @@ import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
 import com.terminator364.kinlink.core.ReliabilitySummaryPolicy
 import com.terminator364.kinlink.core.RecentReliabilityPolicy
+import com.terminator364.kinlink.core.ProfileRecommendationPolicy
 import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.WifiDoctor
@@ -405,8 +406,23 @@ class MainActivity : Activity() {
                 PassiveLinkQuality.LIMITED -> "\n\nQualité passive : capacité Android limitée."
                 else -> ""
             }
+            val profileRecommendation = latestReliability?.let { reliability ->
+                val burden = RecentReliabilityPolicy.classify(
+                    reliability.interruptionCount,
+                    reliability.cumulativeMillis,
+                    reliability.longestMillis
+                )
+                ProfileRecommendationPolicy.recommend(burden)
+            }
+            val recommendationNotice = profileRecommendation?.let {
+                "\n\nProfil conseillé : " + profileLabel(it.profile) + " · " + it.reason
+            } ?: ""
             adviceTitleText.text = passiveGuidance.title
-            adviceText.text = "${passiveGuidance.message}\n\n${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}\n\nAutopilot ${profileLabel(currentProfile)} : ${adaptiveDecision.reason}${qualityNotice}"
+            adviceText.text = passiveGuidance.message +
+                "\n\n" + doctorAdvice.message +
+                "\n\n" + vaultDecision.why + " · " + vaultDecision.result +
+                "\n\nAutopilot " + profileLabel(currentProfile) + " : " + adaptiveDecision.reason +
+                qualityNotice + recommendationNotice
         }
 
         detailText.text = buildString {
