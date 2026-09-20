@@ -112,6 +112,7 @@ class KinlinkObserverService : Service() {
             Transport.ETHERNET -> "Ethernet · observation seulement"
             Transport.VPN -> "VPN détecté · observation seulement"
             Transport.NONE -> "Aucun réseau · observation passive"
+            Transport.UNKNOWN -> "Réseau en transition · observation passive"
         }
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.stat_sys_warning)
