@@ -25,6 +25,7 @@
 - recovery cooldown/hourly cap
 - recovery hard deadline
 - transport changes during recovery
+- 5-second observation-only settling window after transport handoff
 - reboot and package update restart
 - restart-storm degradation to observation-only
 - diagnostic export

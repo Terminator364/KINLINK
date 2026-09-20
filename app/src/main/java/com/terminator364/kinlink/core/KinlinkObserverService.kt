@@ -61,10 +61,11 @@ class KinlinkObserverService : Service() {
             runCatching {
                 ledger.append(truth)
                 handoffAudit.observe(truth.transport)?.let { transition ->
+                    recovery?.onTransportTransition()
                     ledger.appendAction(
                         "HANDOFF_${transition.kind.name}",
                         true,
-                        transition.summary
+                        transition.summary + " Fenêtre calme 5 s avant toute récupération."
                     )
                 }
                 recovery?.onTruth(truth, ledger.stabilityWindow().assessment.score)

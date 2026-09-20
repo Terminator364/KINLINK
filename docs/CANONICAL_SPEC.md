@@ -35,7 +35,8 @@ Android VALIDATED, captive portal, active transport and LinkProperties outrank e
 - battery saver, Android low-memory pressure or severe thermal pressure suspends recovery;
 - every executed action generates a bounded local receipt;
 - every transport handoff is passively journaled so Wi-Fi→mobile incidents can be reconstructed without routing ownership;
-- every recovery action has a hard 5 s fail-open deadline and re-checks that the same Wi-Fi is still active before any post-probe action.
+- every recovery action has a hard 5 s fail-open deadline and re-checks that the same Wi-Fi is still active before any post-probe action;
+- every transport transition creates a 5 s observation-only settling window so Android completes Wi-Fi/mobile handoff without KINLINK recovery activity.
 
 ## Lifecycle
 

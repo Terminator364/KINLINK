@@ -1,23 +1,18 @@
 {
   "project": "KINLINK",
-  "phase": "P0_LIFECYCLE_FAIL_OPEN_CI_PENDING",
+  "phase": "P0_TRANSPORT_SETTLING_CI_PENDING",
   "status": "ACTIVE",
   "incident_priority": "P0_MOBILE_HANDOFF",
   "delivery": "HOLD_UNTIL_CONSOLIDATED_PASS",
-  "implemented_now": [
-    "zero framework connectivity reports",
-    "CI ban on network ownership APIs",
-    "passive handoff receipts",
-    "battery/thermal/low-memory recovery guard",
-    "5-second recovery watchdog",
-    "stale active-network abort",
-    "service lifecycle receipts",
-    "restart-storm observation-only degradation"
-  ],
-  "restart_storm_policy": {
-    "window_minutes": 10,
-    "max_service_creations_with_active_recovery": 3,
-    "degraded_mode": "OBSERVATION_ONLY"
+  "proven": {
+    "handoff_fail_open": "PASS",
+    "forbidden_api_fence": "PASS",
+    "resource_guard": "PASS",
+    "watchdog_stale_network_abort": "PASS"
   },
-  "next_uncommitted_action": "validate watchdog + lifecycle batches in CI, then consolidate resource/diagnostic qualification before next signed APK"
+  "integrating": [
+    "restart-storm observation-only degradation",
+    "5-second post-handoff observation-only settling window"
+  ],
+  "next_uncommitted_action": "validate lifecycle and transport-settling batches, then consolidate diagnostics and release qualification before signed promotion"
 }

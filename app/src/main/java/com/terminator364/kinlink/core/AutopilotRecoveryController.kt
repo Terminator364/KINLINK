@@ -18,9 +18,21 @@ class AutopilotRecoveryController(
     private val worker = Executors.newSingleThreadExecutor()
     private val inFlight = AtomicBoolean(false)
     @Volatile private var closed = false
+    @Volatile private var lastTransportTransitionElapsedMillis: Long? = null
+
+    fun onTransportTransition() {
+        lastTransportTransitionElapsedMillis = SystemClock.elapsedRealtime()
+    }
 
     fun onTruth(truth: NetworkTruth, instabilityScore: Int) {
         if (closed) return
+        if (!TransportSettlingPolicy.recoveryAllowed(
+                SystemClock.elapsedRealtime(),
+                lastTransportTransitionElapsedMillis
+            )
+        ) {
+            return
+        }
         val now = System.currentTimeMillis()
         val since = now - AutopilotRecoveryPolicy.hourlyWindowMillis()
         val recent = runCatching { ledger.countActionsSince(ACTION_PREFIX, since) }.getOrDefault(0)
