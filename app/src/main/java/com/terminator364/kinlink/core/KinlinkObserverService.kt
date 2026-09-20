@@ -28,6 +28,7 @@ class KinlinkObserverService : Service() {
     private var lastNotificationText: String? = null
     private lateinit var runtimeBudgetSampler: RuntimeBudgetSampler
     private var runtimeBudgetStart: RuntimeBudgetSnapshot? = null
+    private var coreRuntimeReady = true
 
     override fun onCreate() {
         super.onCreate()
@@ -62,6 +63,7 @@ class KinlinkObserverService : Service() {
                 databaseVersion = runCatching { ledger.schemaVersion() }.getOrDefault(-1),
                 recoveryModeReadable = modeReadable
             )
+            coreRuntimeReady = coreSelfTest.pass
             runCatching {
                 ledger.appendAction(
                     "SELF_TEST_CORE",
@@ -90,9 +92,17 @@ class KinlinkObserverService : Service() {
                 "starts10m=${lifecycleDecision.startsInWindow}; ${lifecycleDecision.reason}"
             )
         }
-        if (lifecycleDecision.recoveryAllowed) {
+        if (lifecycleDecision.recoveryAllowed && coreRuntimeReady) {
             recovery = AutopilotRecoveryController(this, ledger) { baseline ->
                 recoveryEffectivenessTracker.start(baseline)
+            }
+        } else if (!coreRuntimeReady) {
+            runCatching {
+                ledger.appendAction(
+                    "RECOVERY_SUSPENDED_SELF_TEST",
+                    false,
+                    "Self-test core non validé : récupération active suspendue, observation maintenue."
+                )
             }
         } else {
             runCatching {
