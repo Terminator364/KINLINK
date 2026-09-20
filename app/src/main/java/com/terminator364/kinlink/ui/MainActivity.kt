@@ -199,8 +199,8 @@ class MainActivity : Activity() {
         AlertDialog.Builder(this)
             .setTitle("Protection des données mobiles")
             .setMessage(
-                "Plafond de garde optionnel en MiB par jour. " +
-                    "KINLINK ne lance jamais de speedtest mobile, même sans plafond."
+                "Seuil de prudence optionnel en MiB. Il s’appuie sur la variation du compteur mobile global Android observée par KINLINK. " +
+                    "Ce n’est ni la consommation propre de KINLINK ni le solde opérateur. KINLINK ne lance jamais de speedtest mobile."
             )
             .setView(input)
             .setPositiveButton("Enregistrer") { _, _ ->
@@ -297,8 +297,8 @@ class MainActivity : Activity() {
         transportText.text = "Connexion en cours · ${transportLabel(truth)}"
         internetText.text = "Internet · ${internetLabel(truth)}"
         mobileText.text = when (truth.budgetState) {
-            BudgetState.BUNDLE_EXHAUSTED -> "Données mobiles · plafond KINLINK atteint"
-            BudgetState.BUNDLE_LOW -> "Données mobiles · plafond bientôt atteint"
+            BudgetState.BUNDLE_EXHAUSTED -> "Données mobiles · seuil de prudence KINLINK atteint"
+            BudgetState.BUNDLE_LOW -> "Données mobiles · seuil de prudence bientôt atteint"
             else -> when (truth.transport.name) {
                 "CELLULAR" -> "Données mobiles · Android contrôle · KINLINK observe seulement"
                 else -> if (assessment.avoidAutomaticMobileUse) {
@@ -348,14 +348,14 @@ class MainActivity : Activity() {
     }
 
     private fun mobileBudgetLabel(snapshot: MobileBudgetSnapshot): String {
-        if (!snapshot.supported) return "Suivi data mobile · indisponible sur cet appareil"
+        if (!snapshot.supported) return "Compteur mobile Android · indisponible sur cet appareil"
 
         val used = String.format(Locale.US, "%.1f", snapshot.usedTodayMiB)
         val limit = snapshot.dailyLimitMiB
         return if (limit == null) {
-            "Suivi KINLINK · $used MiB aujourd’hui · plafond non configuré"
+            "Compteur mobile Android observé · $used MiB depuis la baseline KINLINK aujourd’hui · seuil non configuré"
         } else {
-            "Suivi KINLINK · $used / $limit MiB aujourd’hui"
+            "Compteur mobile Android observé · $used / $limit MiB depuis la baseline KINLINK aujourd’hui"
         }
     }
 

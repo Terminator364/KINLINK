@@ -1,24 +1,21 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Field gate status
+## Field gate — PASS
 
-PASS:
-- KINLINK 0.6.0-rc3 installed.
-- Manual Wi-Fi OFF → cellular handoff.
-- Cellular transport active.
-- Internet available.
-- KINLINK observation-only on cellular.
-- Original mobile-data-block symptom not reproduced.
+Proven on target phone:
+- KINLINK 0.6.0-rc3 installed;
+- Wi-Fi → cellular handoff PASS;
+- mobile Internet available;
+- KINLINK observation-only on cellular;
+- cellular → Wi-Fi handoff PASS;
+- Wi-Fi Internet restored;
+- original mobile-data-block symptom not reproduced.
 
-PENDING:
-1. Re-enable Wi-Fi.
-2. Confirm Android returns to Wi-Fi normally.
-3. Confirm KINLINK reports Wi-Fi ready/usable again.
-4. If successful, close the bidirectional handoff field gate.
+## Post-field hardening now integrating
 
-## UI issue queued for next consolidated build
-
-The label "Suivi KINLINK · X MiB" is semantically wrong.
-The tracker observes device-wide mobile TrafficStats delta, not KINLINK's own mobile traffic.
-Rename it to explicitly say device mobile usage observed by KINLINK.
-Do not issue a new APK solely for this wording correction.
+1. Suppress transient OFFLINE publication for 1.5 s after default-network loss so normal Android handoff does not flash a false outage.
+2. Correct mobile-data wording:
+   - counter is Android device-wide mobile TrafficStats delta observed by KINLINK;
+   - it is not KINLINK app traffic;
+   - it is not operator balance.
+3. Keep these fixes in the next consolidated build; do not force a new install solely for cosmetic wording.

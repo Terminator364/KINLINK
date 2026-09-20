@@ -5,6 +5,8 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.LinkProperties
+import android.os.Handler
+import android.os.Looper
 
 /** Observer only: any internal failure leaves Android networking untouched. */
 class NetworkObserver(
@@ -14,12 +16,28 @@ class NetworkObserver(
     private val cm = context.getSystemService(ConnectivityManager::class.java)
     private var registered = false
     private var lastFingerprint: String? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private var lossGeneration = 0L
 
     private val callback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) = safePublish(network)
-        override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) = safePublish(network, caps)
-        override fun onLinkPropertiesChanged(network: Network, lp: LinkProperties) = safePublish(network, null, lp)
-        override fun onLost(network: Network) = safePublish(cm.activeNetwork)
+        override fun onAvailable(network: Network) {
+            lossGeneration += 1L
+            safePublish(network)
+        }
+        override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
+            lossGeneration += 1L
+            safePublish(network, caps)
+        }
+        override fun onLinkPropertiesChanged(network: Network, lp: LinkProperties) =
+            safePublish(network, null, lp)
+
+        override fun onLost(network: Network) {
+            val generation = ++lossGeneration
+            handler.postDelayed({
+                if (!registered || generation != lossGeneration) return@postDelayed
+                safePublish(cm.activeNetwork)
+            }, NetworkLossSettlingPolicy.LOSS_SETTLE_MS)
+        }
     }
 
     fun start() {
@@ -37,6 +55,8 @@ class NetworkObserver(
     fun stop() {
         if (!registered) return
         registered = false
+        lossGeneration += 1L
+        handler.removeCallbacksAndMessages(null)
         runCatching { cm.unregisterNetworkCallback(callback) }
     }
 

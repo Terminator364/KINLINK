@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "RC3_PROMOTED_FIELD_GATE",
+  "phase": "RC3_FIELD_GATE_PASS_POST_FIELD_HARDENING",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "field gate: re-enable Wi-Fi at home and confirm cellular-to-Wi-Fi return; after field gate, batch the mobile-budget wording fix into the next consolidated build rather than forcing a cosmetic-only reinstall",
+  "next_uncommitted_action": "validate post-field UX hardening in CI; do not require immediate reinstall solely for wording/transition polish; continue consolidation toward next materially improved build",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -50,7 +50,9 @@
     "kinlink_cellular_behavior": "OBSERVATION_ONLY",
     "original_mobile_block_symptom": "NOT_REPRODUCED",
     "physical_walk_out_of_wifi_range": "NOT_TESTED",
-    "cellular_to_wifi_return": "PENDING",
-    "ui_issue": "Mobile budget label 'Suivi KINLINK' is misleading because tracker observes device-wide mobile TrafficStats deltas."
+    "cellular_to_wifi_return": "PASS",
+    "ui_issue": "Android device-wide mobile TrafficStats label corrected in next consolidated build.",
+    "bidirectional_handoff": "PASS",
+    "transient_offline_flash": "OBSERVED_AND_FIX_INTEGRATING"
   }
 }
