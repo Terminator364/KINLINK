@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "RC3_CONSOLIDATED_CANDIDATE_CI",
+  "phase": "RC3_SIGNED_CANDIDATE_READY",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -23,6 +23,16 @@
     "versionCode 7",
     "durable boot/package-restart start receipts"
   ],
-  "delivery": "HOLD_UNTIL_CI_SIGNING_READBACK_PASS",
-  "next_uncommitted_action": "pass final RC3 CI including Android lint and startup receipts; then fetch artifact, verify hash, stable-sign and Drive-readback"
+  "delivery": "SIGNED_READY_DRIVE_REPLACEMENT_PENDING",
+  "next_uncommitted_action": "replace canonical Drive installer only through a byte-safe path; otherwise use verified signed APK fallback and keep old Drive installer intact",
+  "release_candidate": {
+    "version": "0.6.0-rc3",
+    "versionCode": 7,
+    "source_commit": "dc7555b784562a059e16107c574839a66dff89cd",
+    "ci_run": 35536189018,
+    "ci_status": "PASS",
+    "ci_apk_sha256": "b24c8aab5a34039dc1a982a9b5f4b65cb9de0aec259f1f380cf834b1ef362668",
+    "signed_apk_sha256": "4fb4ac36765b6d3728194bf7884f3c98afff625f4a5bc0637b825db0703a700c",
+    "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
+  }
 }
