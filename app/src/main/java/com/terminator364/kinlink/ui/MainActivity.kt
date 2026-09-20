@@ -6,9 +6,12 @@ import android.view.View
 import android.view.WindowInsets
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import com.terminator364.kinlink.R
+import com.terminator364.kinlink.core.ConnectivityStateClassifier
 import com.terminator364.kinlink.core.NetworkObserver
 import com.terminator364.kinlink.core.NetworkTruth
+import com.terminator364.kinlink.data.DiagnosticExporter
 import com.terminator364.kinlink.data.TelemetryLedger
 
 class MainActivity : Activity() {
@@ -23,6 +26,8 @@ class MainActivity : Activity() {
     private lateinit var adviceTitleText: TextView
     private lateinit var adviceText: TextView
     private lateinit var technicalToggle: TextView
+    private lateinit var diagnosticExport: TextView
+    private var latestTruth = NetworkTruth()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,12 +41,10 @@ class MainActivity : Activity() {
         adviceTitleText = findViewById(R.id.adviceTitleText)
         adviceText = findViewById(R.id.adviceText)
         technicalToggle = findViewById(R.id.technicalToggle)
+        diagnosticExport = findViewById(R.id.diagnosticExport)
         installSystemBarInsets()
-        technicalToggle.setOnClickListener {
-            val nowVisible = detailText.visibility == View.VISIBLE
-            detailText.visibility = if (nowVisible) View.GONE else View.VISIBLE
-            technicalToggle.text = if (nowVisible) "Voir les détails techniques" else "Masquer les détails techniques"
-        }
+        technicalToggle.setOnClickListener { toggleTechnicalDetails() }
+        diagnosticExport.setOnClickListener { exportDiagnostic() }
         ledger = TelemetryLedger(this)
         observer = NetworkObserver(this) { truth ->
             ledger.append(truth)
@@ -64,44 +67,46 @@ class MainActivity : Activity() {
         super.onDestroy()
     }
 
-    private fun render(t: NetworkTruth) {
-        stateText.text = when {
-            t.internetState.name == "VALIDATED" -> "Internet disponible"
-            t.lanState.name == "LINK_PRESENT" -> "Internet indisponible"
-            t.internetState.name == "OFFLINE" -> "Vous êtes hors ligne"
-            else -> "Vérification en cours"
+    private fun toggleTechnicalDetails() {
+        val nowVisible = detailText.visibility == View.VISIBLE
+        detailText.visibility = if (nowVisible) View.GONE else View.VISIBLE
+        diagnosticExport.visibility = if (nowVisible) View.GONE else View.VISIBLE
+        technicalToggle.text = if (nowVisible) "Voir les détails techniques" else "Masquer les détails techniques"
+    }
+
+    private fun exportDiagnostic() {
+        runCatching {
+            DiagnosticExporter(this).share(ledger.diagnosticSummary(latestTruth))
+        }.onFailure {
+            Toast.makeText(this, "Impossible de préparer le diagnostic", Toast.LENGTH_SHORT).show()
         }
-        heroDetailText.text = when {
-            t.internetState.name == "VALIDATED" -> "Tout fonctionne normalement. KINLINK veille discrètement."
-            t.lanState.name == "LINK_PRESENT" -> "Votre réseau local est préservé. KINLINK ne force aucun basculement."
-            else -> "KINLINK observe sans consommer de données de test."
-        }
-        transportText.text = "Connexion en cours · ${transportLabel(t)}"
-        internetText.text = "Internet · ${internetLabel(t)}"
-        mobileText.text = when {
-            t.transport.name == "WIFI" -> "Données mobiles · préservées"
-            t.metered -> "Données mobiles · utilisées selon votre forfait"
-            else -> "Données mobiles · non utilisées"
+    }
+
+    private fun render(truth: NetworkTruth) {
+        latestTruth = truth
+        val assessment = ConnectivityStateClassifier.classify(truth)
+        stateText.text = assessment.headline
+        heroDetailText.text = assessment.explanation
+        transportText.text = "Connexion en cours · ${transportLabel(truth)}"
+        internetText.text = "Internet · ${internetLabel(truth)}"
+        mobileText.text = if (assessment.avoidAutomaticMobileUse) {
+            "Données mobiles · protégées"
+        } else {
+            "Données mobiles · politique active"
         }
         adviceTitleText.text = when {
-            t.internetState.name == "VALIDATED" -> "Aucune action nécessaire"
-            t.lanState.name == "LINK_PRESENT" -> "Votre réseau local reste disponible"
-            t.internetState.name == "OFFLINE" -> "Connexion indisponible"
-            else -> "KINLINK vérifie la situation"
+            assessment.preserveLan -> "Votre réseau local est préservé"
+            truth.internetState.name == "VALIDATED" -> "Aucune action nécessaire"
+            else -> "Aucune action automatique"
         }
-        adviceText.text = when {
-            t.internetState.name == "VALIDATED" -> "KINLINK reste en observation et protège vos données mobiles."
-            t.lanState.name == "LINK_PRESENT" -> "Les fonctions locales peuvent continuer à fonctionner même sans Internet."
-            t.internetState.name == "OFFLINE" -> "Aucune donnée mobile ne sera utilisée automatiquement pour forcer une connexion."
-            else -> "Aucune action automatique n’est lancée tant que la situation n’est pas claire."
-        }
+        adviceText.text = assessment.explanation
         detailText.text = buildString {
-            append("Réseau local : ${lanLabel(t)}\n")
-            append("Contexte : ${contextLabel(t)}\n")
-            append("Interface : ${t.interfaceName ?: "Non disponible"}\n")
-            append("Passerelle locale : ${t.gateway ?: "Non disponible"}\n")
-            append("Diagnostic : ${failureLabel(t)}\n")
-            append("Confiance : ${(t.confidence * 100).toInt()} %")
+            append("État KINLINK : ${assessment.state.name}\n")
+            append("Réseau local : ${lanLabel(truth)}\n")
+            append("Contexte : ${contextLabel(truth)}\n")
+            append("Diagnostic : ${failureLabel(truth)}\n")
+            append("Confiance : ${(truth.confidence * 100).toInt()} %\n\n")
+            append("Exporter le diagnostic ne lance aucun speedtest, probe mobile ou changement réseau.")
         }
     }
 
