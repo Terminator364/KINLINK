@@ -80,7 +80,7 @@ class KinlinkObserverService : Service() {
                     )
                 }
                 updateNotificationFor(truth)
-                if (recoveryModeStore.current() == RecoveryMode.AUTOMATIC) {
+                if (ActiveRecoveryPolicy.allowed(recoveryModeStore.current(), truth.transport)) {
                     recovery?.onTruth(truth, ledger.stabilityWindow().assessment.score)
                 }
             }

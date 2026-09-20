@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.terminator364.kinlink.R
+import com.terminator364.kinlink.core.ActiveRecoveryPolicy
 import com.terminator364.kinlink.core.AdaptivePolicyEngine
 import com.terminator364.kinlink.core.AutopilotProfile
 import com.terminator364.kinlink.core.AutopilotProfileStore
@@ -214,7 +215,7 @@ class MainActivity : Activity() {
     }
 
     private fun optimizeWifi() {
-        if (recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY) {
+        if (!ActiveRecoveryPolicy.allowed(recoveryModeStore.current(), latestTruth.transport)) {
             adviceTitleText.text = "Mode sûr actif"
             adviceText.text = "KINLINK observe uniquement. Aucune optimisation active n’est exécutée."
             return
