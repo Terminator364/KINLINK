@@ -27,6 +27,29 @@ class DiagnosticReportBuilderTest {
         assertFalse(report.contains("192.168.1.1"))
     }
 
+    @Test fun reportIncludesBoundedActionReceipts() {
+        val report = DiagnosticReportBuilder.build(
+            DiagnosticSummary(
+                generatedAtMillis = 1L,
+                totalEvents = 1,
+                currentTruth = NetworkTruth(transport = Transport.WIFI),
+                stateCounts = emptyMap(),
+                recentActions = listOf(
+                    ActionReceipt(
+                        tsWallMs = 123L,
+                        action = "WIFI_OPTIMIZE",
+                        success = true,
+                        summary = "Android validated network retained"
+                    )
+                )
+            )
+        )
+
+        assertTrue(report.contains("WIFI_OPTIMIZE"))
+        assertTrue(report.contains("PASS"))
+        assertTrue(report.contains("Android validated network retained"))
+    }
+
     @Test fun reportStatesThatNoAutomaticMobileProbeWasUsed() {
         val report = DiagnosticReportBuilder.build(
             DiagnosticSummary(
