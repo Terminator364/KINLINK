@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.terminator364.kinlink.R
+import com.terminator364.kinlink.core.AdaptivePolicyEngine
 import com.terminator364.kinlink.core.BudgetState
 import com.terminator364.kinlink.core.ConnectivityStateClassifier
 import com.terminator364.kinlink.core.KinlinkObserverService
@@ -198,6 +199,10 @@ class MainActivity : Activity() {
         val assessment = ConnectivityStateClassifier.classify(truth)
         val vaultDecision = MobileVault.decide(truth, assessment)
         val doctorAdvice = WifiDoctor.advise(assessment)
+        val adaptiveDecision = AdaptivePolicyEngine.evaluate(
+            truth = truth,
+            instabilityScore = stability?.assessment?.score ?: 0
+        )
 
         stateText.text = assessment.headline
         heroDetailText.text = assessment.explanation
@@ -215,7 +220,7 @@ class MainActivity : Activity() {
         mobileBudgetText.text = mobileBudgetLabel(budget)
 
         adviceTitleText.text = doctorAdvice.title
-        adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}"
+        adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}\n\nAutopilot : ${adaptiveDecision.reason}"
 
         detailText.text = buildString {
             append("État KINLINK : ${assessment.state.name}\n")
@@ -224,6 +229,7 @@ class MainActivity : Activity() {
             append("Diagnostic : ${failureLabel(truth)}\n")
             append("Confiance Android : ${(truth.confidence * 100).toInt()} %\n")
             append("Budget mobile : ${truth.budgetState.name}\n")
+            append("Autopilot : ${adaptiveDecision.intent.name}\n")
             stability?.let {
                 append("Instabilité 15 min : ${it.assessment.score}/100")
                 append(" · ${it.transitions} transition(s)")
