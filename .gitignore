@@ -1,0 +1,10 @@
+.gradle/
+build/
+**/build/
+local.properties
+*.apk
+*.aab
+*.keystore
+*.jks
+*.log
+kinlink_telemetry.db

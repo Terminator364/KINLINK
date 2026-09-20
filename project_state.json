@@ -1,0 +1,44 @@
+{
+  "project": "KINLINK",
+  "phase": "M1_OBSERVER_CORE_IMPLEMENTED_AWAITING_BUILD_GATE",
+  "design_version": "0.1.0",
+  "status": "ACTIVE",
+  "platform": "Android",
+  "primary_constraints": [
+    "zero-dollar baseline",
+    "unstable Wi-Fi and cellular networks",
+    "metered mobile data must be protected",
+    "battery impact must remain low",
+    "no root required",
+    "fail-open networking",
+    "LAN must survive WAN failure",
+    "telemetry must be local-first and privacy-preserving"
+  ],
+  "p0_invariants": [
+    "KINLINK must never intentionally exceed the configured mobile-data budget",
+    "KINLINK must not perform volumetric speed tests on metered mobile data automatically",
+    "KINLINK failure must not permanently block normal Android networking",
+    "local LAN health and Internet health are separate state dimensions",
+    "data-exhausted/expired is not treated as a generic network-quality failure",
+    "adaptive learning cannot override hard user budgets or safety constraints"
+  ],
+  "next_uncommitted_action": "run Android unit-test/build gate; only then publish a field candidate and collect observer telemetry",
+  "android_baseline": {
+    "compileSdk": 37,
+    "targetSdk": 37,
+    "minSdk": 30,
+    "jdk": 17
+  },
+  "design_artifacts": [
+    "ANDROID_RUNTIME_DESIGN",
+    "COMPONENT_CONTRACTS",
+    "UI_INFORMATION_ARCHITECTURE"
+  ],
+  "m0_scope": [
+    "network observer",
+    "truth reducer",
+    "bounded SQLite ledger",
+    "blue cockpit UI",
+    "manual CI build"
+  ]
+}

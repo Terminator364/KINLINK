@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KINLINK Telemetry Event",
+  "type": "object",
+  "required": ["event_id", "event_type", "ts_monotonic_ms", "engine_version"],
+  "properties": {
+    "event_id": {"type": "string"},
+    "event_type": {"type": "string"},
+    "ts_wall": {"type": ["string", "null"]},
+    "ts_monotonic_ms": {"type": "integer", "minimum": 0},
+    "engine_version": {"type": "string"},
+    "transport": {"enum": ["wifi", "cellular", "ethernet", "vpn", "none", "unknown"]},
+    "internet_state": {"enum": ["validated", "partial", "stalled", "offline", "unknown"]},
+    "lan_state": {"enum": ["healthy", "degraded", "down", "unknown"]},
+    "budget_state": {"enum": ["bundle_ok", "bundle_low", "bundle_exhausted", "bundle_expired", "balance_unknown"]},
+    "decision": {"type": ["string", "null"]},
+    "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+  },
+  "additionalProperties": true
+}

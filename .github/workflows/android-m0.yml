@@ -1,0 +1,42 @@
+name: android-m0
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+      - name: Unit tests
+        run: gradle :app:testDebugUnitTest --stacktrace
+      - name: Build debug APK
+        run: gradle :app:assembleDebug --stacktrace
+      - name: SHA-256
+        run: |
+          sha256sum app/build/outputs/apk/debug/app-debug.apk | tee app/build/outputs/apk/debug/KINLINK-debug.apk.sha256
+          cat > app/build/outputs/apk/debug/KINLINK-build-manifest.json <<EOF
+          {
+            "product": "KINLINK",
+            "version": "0.1.0-m0",
+            "variant": "debug",
+            "commit": "${GITHUB_SHA}",
+            "built_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "verification": "CI build and unit tests passed; field verification pending"
+          }
+          EOF
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KINLINK-m0-debug
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            app/build/outputs/apk/debug/KINLINK-debug.apk.sha256
+            app/build/outputs/apk/debug/KINLINK-build-manifest.json
+          retention-days: 7

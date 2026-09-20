@@ -1,0 +1,29 @@
+name: design-lint
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate-design:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Validate JSON
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          for p in pathlib.Path('.').rglob('*.json'):
+              json.loads(p.read_text(encoding='utf-8'))
+              print('OK', p)
+          PY
+      - name: Required design files
+        run: |
+          test -f project_state.json
+          test -f docs/CANONICAL_SPEC.md
+          test -f docs/ARCHITECTURE.md
+          test -f docs/FAIL_OPEN_AND_RECOVERY.md
+          test -f docs/TELEMETRY_AND_DIAGNOSTICS.md

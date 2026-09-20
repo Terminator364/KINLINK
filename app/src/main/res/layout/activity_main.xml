@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F7FB"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KINLINK"
+            android:textColor="#0B57D0"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/stateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/card_primary"
+            android:padding="20dp"
+            android:text="OBSERVATION…"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/transportText"
+            style="@style/KinlinkCardText"
+            android:layout_marginTop="16dp"
+            android:text="Connexion : —" />
+
+        <TextView
+            android:id="@+id/internetText"
+            style="@style/KinlinkCardText"
+            android:text="Internet : —" />
+
+        <TextView
+            android:id="@+id/mobileText"
+            style="@style/KinlinkCardText"
+            android:text="Données : —" />
+
+        <TextView
+            android:id="@+id/detailText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/card_neutral"
+            android:lineSpacingExtra="5dp"
+            android:padding="18dp"
+            android:text="Diagnostic en cours…"
+            android:textColor="#263238"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="M0 observe uniquement. Il ne bascule pas le réseau et ne consomme pas volontairement de données de test."
+            android:textColor="#5F6368"
+            android:textSize="13sp" />
+    </LinearLayout>
+</ScrollView>
