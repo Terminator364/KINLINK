@@ -64,7 +64,8 @@ class MobileBudgetTracker(context: Context) {
     fun sample(epochDay: Long = LocalDate.now().toEpochDay()): MobileBudgetSnapshot {
         val rx = TrafficStats.getMobileRxBytes()
         val tx = TrafficStats.getMobileTxBytes()
-        val supported = rx != TrafficStats.UNSUPPORTED && tx != TrafficStats.UNSUPPORTED
+        val unsupported = TrafficStats.UNSUPPORTED.toLong()
+        val supported = rx != unsupported && tx != unsupported
 
         if (!supported) {
             return MobileBudgetSnapshot(
