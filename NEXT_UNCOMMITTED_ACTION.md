@@ -2,25 +2,32 @@
 
 ## Last proven checkpoint
 
-KINLINK M2 is CI-verified and promoted as the single Drive installer.
+KINLINK M2 is CI-verified, persistently signed, promoted to Drive, and read back byte-for-byte.
 
-- Binary source commit: `6010398a7f64e62d301c3e5b4317c6ce5f927b48`
+- Source commit: `6010398a7f64e62d301c3e5b4317c6ce5f927b48`
 - CI run: `35527033841` — PASS
-- APK SHA-256: `7960160c137ff9776ba5ea694bdd961a7ad2a645ac2f3c7a757e46b4cf8b1cc9`
+- Stable APK SHA-256: `ca09e40d0ad5d8e3bec8ddfe56e80bdc6a2449a653ace75f7877385e697d12a7`
+- Stable signer SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
 - Drive: `KINLINK/INSTALLER/KINLINK_LATEST.apk`
-- Drive readback: one APK only.
+- Private signing material: `KINLINK/SIGNING`
+- Drive readback: byte-identical; installer folder contains one APK only.
 
 ## Next action — HUMAN GATE
 
-Install/update `KINLINK_LATEST.apk` on the target Android phone, open KINLINK,
-keep Wi-Fi active, then press **Optimiser le Wi-Fi maintenant** once.
+Because the M1 currently installed on the phone used a disposable CI debug certificate, Android cannot
+upgrade it in place to the new stable certificate.
+
+Perform this one-time migration:
+1. uninstall the currently installed KINLINK;
+2. install `KINLINK_LATEST.apk` from `KINLINK/INSTALLER`;
+3. open KINLINK with Wi-Fi active;
+4. press **Optimiser le Wi-Fi maintenant** once.
 
 Expected behavior:
-1. no forced switch to mobile data;
-2. bounded Wi-Fi-only probe;
-3. Android connectivity re-evaluation;
-4. refreshed network metrics request;
-5. clear success/degraded explanation in the cockpit.
+- no forced switch to mobile data;
+- bounded Wi-Fi-only probe;
+- Android connectivity re-evaluation;
+- refreshed network metrics request;
+- clear success/degraded explanation in the cockpit.
 
-After that single field check, use the resulting observation to decide whether M2 can become the stable baseline
-or whether M3 data-plane work is justified. Do not produce another diagnostic-only APK.
+After this migration, do not rotate the stable signing key. Future KINLINK APKs should update in place.

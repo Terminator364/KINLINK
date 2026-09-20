@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "M2_ACTIVE_WIFI_OPTIMIZER_PROMOTED_FIELD_GATE",
+  "phase": "M2_STABLE_SIGNING_BASELINE_PROMOTED_FIELD_GATE",
   "design_version": "0.2.0-m2",
   "status": "ACTIVE",
   "platform": "Android",
@@ -9,15 +9,33 @@
     "run_id": 35527033841,
     "status": "PASS",
     "artifact_id": 10609663647,
-    "artifact_digest_sha256": "b328bee347a10a332613209f18e66463d35837ab3652421176efba4f013c376f"
+    "source_artifact_digest_sha256": "b328bee347a10a332613209f18e66463d35837ab3652421176efba4f013c376f"
   },
   "installer": {
     "version": "0.2.0-m2",
-    "apk_sha256": "7960160c137ff9776ba5ea694bdd961a7ad2a645ac2f3c7a757e46b4cf8b1cc9",
-    "size_bytes": 6450808,
+    "apk_sha256": "ca09e40d0ad5d8e3bec8ddfe56e80bdc6a2449a653ace75f7877385e697d12a7",
+    "size_bytes": 6466127,
+    "signature_scheme": "v3",
+    "signer_certificate_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
     "drive_path": "KINLINK/INSTALLER/KINLINK_LATEST.apk",
     "drive_file_id": "1OE47FFE4SmIylMw4MGHdpYu4drJxY9Bo",
+    "drive_readback_byte_identical": true,
     "readback_apk_count": 1
+  },
+  "stable_signing": {
+    "baseline": "KINLINK_UPDATE_KEY_V1",
+    "drive_folder_id": "1V5ywV1P5WoM1mMcLyhtsT0SBf6sqnxCm",
+    "keystore_drive_file_id": "1wGzmkn8NYYh038t5v-naH-mtZRZ_MSx4",
+    "credentials_drive_file_id": "1vYjUSQWXvhCFku3RbDFhjhtqBgM3hUuW",
+    "apksigner_drive_file_id": "104D6eJisiFmhuxdbvl4FGuBuvBUS9Djf",
+    "verification_drive_file_id": "1uUrpkIbFwrYe7Q5Cwk4GvtMUTOqINDaC",
+    "public_repository_contains_private_key": false
+  },
+  "migration": {
+    "old_m1_signer_sha256": "7d023c3ab4551af92259411c3bd7a26d676ca81f3bbfc1e14da05e46d4752025",
+    "requires_one_time_uninstall": true,
+    "reason": "installed M1 uses a disposable CI debug key; stable M2 uses persistent KINLINK update key",
+    "future_updates_should_require_uninstall": false
   },
   "primary_constraints": [
     "zero-dollar baseline",
@@ -35,7 +53,8 @@
     "KINLINK failure must not permanently block normal Android networking",
     "local LAN health and Internet health are separate state dimensions",
     "data-exhausted/expired is not treated as a generic network-quality failure",
-    "adaptive learning cannot override hard user budgets or safety constraints"
+    "adaptive learning cannot override hard user budgets or safety constraints",
+    "promoted APKs must preserve stable signing certificate 2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
   ],
   "implemented_now": [
     "event-driven passive observer",
@@ -45,7 +64,8 @@
     "privacy-safe diagnostic export",
     "explicit Wi-Fi-only micro-diagnostic",
     "explicit Wi-Fi-only Android connectivity re-evaluation",
-    "explicit bandwidth-metric refresh request"
+    "explicit bandwidth-metric refresh request",
+    "persistent private APK signing baseline with readback verification"
   ],
   "not_yet_claimed": [
     "whole-device throughput acceleration",
@@ -53,7 +73,7 @@
     "VPN/TUN traffic steering",
     "field-proven latency reduction"
   ],
-  "next_uncommitted_action": "human gate: install promoted KINLINK_LATEST.apk and run one explicit Wi-Fi optimization check",
+  "next_uncommitted_action": "human gate: one-time uninstall of disposable-debug M1, install stable-signed KINLINK_LATEST.apk, run one explicit Wi-Fi optimization check",
   "android_baseline": {
     "compileSdk": 37,
     "targetSdk": 37,
@@ -61,9 +81,10 @@
     "jdk": 17
   },
   "last_proven_checkpoint": {
-    "status": "M2_CI_VERIFIED_INSTALLER_PROMOTED",
-    "binary_source_commit": "6010398a7f64e62d301c3e5b4317c6ce5f927b48",
+    "status": "M2_STABLE_SIGNED_DRIVE_READBACK_VERIFIED",
+    "source_commit": "6010398a7f64e62d301c3e5b4317c6ce5f927b48",
     "ci_run": 35527033841,
-    "apk_sha256": "7960160c137ff9776ba5ea694bdd961a7ad2a645ac2f3c7a757e46b4cf8b1cc9"
+    "apk_sha256": "ca09e40d0ad5d8e3bec8ddfe56e80bdc6a2449a653ace75f7877385e697d12a7",
+    "signer_certificate_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
   }
 }
