@@ -1,6 +1,7 @@
 package com.terminator364.kinlink.data
 
 import com.terminator364.kinlink.core.NetworkTruth
+import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
 
 /** Privacy-safe diagnostic summary: no SSID, SIM identifier, IP address, gateway or payload. */
 data class DiagnosticSummary(
@@ -34,7 +35,10 @@ object DiagnosticReportBuilder {
         appendLine("- Mobile-data policy: ${mobileLabel(summary.currentTruth)}")
         appendLine("- Mobile budget state: ${summary.currentTruth.budgetState.name}")
         appendLine("- Explanation: ${explanation(summary.currentTruth)}")
+        val passiveQuality = PassiveLinkQualityPolicy.assess(summary.currentTruth)
         appendLine("- Recovery mode: ${summary.recoveryMode}")
+        appendLine("- Android passive capacity: down=${summary.currentTruth.downstreamKbps} kbps, up=${summary.currentTruth.upstreamKbps} kbps")
+        appendLine("- Passive quality: ${passiveQuality.quality.name} — ${passiveQuality.summary}")
         appendLine()
 
         appendLine("Recent stability")
@@ -77,6 +81,7 @@ object DiagnosticReportBuilder {
         appendLine()
         appendLine("Privacy")
         appendLine("- No SSID, SIM identifier, IP address, gateway, app traffic, password or token is included.")
+        appendLine("- Passive bandwidth values come from Android NetworkCapabilities estimates, not a speed test.")
         appendLine("- KINLINK did not run a speed test or an automatic mobile-data probe for this report.")
     }
 
