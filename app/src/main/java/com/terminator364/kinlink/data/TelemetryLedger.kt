@@ -3,8 +3,17 @@ package com.terminator364.kinlink.data
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.terminator364.kinlink.core.NetworkStabilityPolicy
 import com.terminator364.kinlink.core.NetworkTruth
+import com.terminator364.kinlink.core.StabilityAssessment
 import java.util.UUID
+
+data class StabilityWindow(
+    val events: Int,
+    val transitions: Int,
+    val validatedEvents: Int,
+    val assessment: StabilityAssessment
+)
 
 class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_telemetry.db", null, 1) {
     override fun onCreate(db: SQLiteDatabase) {
@@ -55,13 +64,52 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
 
     fun recentCount(): Int = readableDatabase.rawQuery(
         "SELECT COUNT(*) FROM network_events", null
-    ).use { cursor -> cursor.moveToFirst(); cursor.getInt(0) }
+    ).use { cursor ->
+        cursor.moveToFirst()
+        cursor.getInt(0)
+    }
+
+    fun stabilityWindow(
+        nowMillis: Long = System.currentTimeMillis(),
+        windowMillis: Long = 15L * 60L * 1000L
+    ): StabilityWindow {
+        val since = nowMillis - windowMillis
+        var events = 0
+        var transitions = 0
+        var validated = 0
+        var previousState: String? = null
+
+        readableDatabase.rawQuery(
+            "SELECT internet_state FROM network_events WHERE ts_wall_ms >= ? ORDER BY ts_wall_ms ASC",
+            arrayOf(since.toString())
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                val state = cursor.getString(0)
+                events += 1
+                if (state == "VALIDATED") validated += 1
+                if (previousState != null && previousState != state) transitions += 1
+                previousState = state
+            }
+        }
+
+        return StabilityWindow(
+            events = events,
+            transitions = transitions,
+            validatedEvents = validated,
+            assessment = NetworkStabilityPolicy.assess(events, transitions, validated)
+        )
+    }
 
     fun diagnosticSummary(currentTruth: NetworkTruth): DiagnosticSummary {
         val weekStartMillis = System.currentTimeMillis() - 7L * 24L * 60L * 60L * 1000L
         val weeklyEvents = readableDatabase.rawQuery(
-            "SELECT COUNT(*) FROM network_events WHERE ts_wall_ms >= ?", arrayOf(weekStartMillis.toString())
-        ).use { cursor -> cursor.moveToFirst(); cursor.getInt(0) }
+            "SELECT COUNT(*) FROM network_events WHERE ts_wall_ms >= ?",
+            arrayOf(weekStartMillis.toString())
+        ).use { cursor ->
+            cursor.moveToFirst()
+            cursor.getInt(0)
+        }
+
         val counts = linkedMapOf<String, Int>()
         readableDatabase.rawQuery(
             "SELECT transport || '_' || internet_state, COUNT(*) FROM network_events GROUP BY transport, internet_state",
@@ -71,12 +119,17 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
                 counts[cursor.getString(0)] = cursor.getInt(1)
             }
         }
+
+        val stability = stabilityWindow()
         return DiagnosticSummary(
             generatedAtMillis = System.currentTimeMillis(),
             totalEvents = recentCount(),
             currentTruth = currentTruth,
             stateCounts = counts,
-            weeklyEvents = weeklyEvents
+            weeklyEvents = weeklyEvents,
+            recentTransitions = stability.transitions,
+            instabilityScore = stability.assessment.score,
+            flapping = stability.assessment.flapping
         )
     }
 }
