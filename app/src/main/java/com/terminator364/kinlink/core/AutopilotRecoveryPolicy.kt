@@ -21,7 +21,8 @@ object AutopilotRecoveryPolicy {
         resourceConstrained: Boolean,
         recentAutomaticActions: Int,
         millisSinceLastAutomaticAction: Long,
-        persistentLowQuality: Boolean = false
+        persistentLowQuality: Boolean = false,
+        recentIneffectiveOutcomes: Int = 0
     ): AutomaticRecoveryDecision {
         if (truth.transport != Transport.WIFI) {
             return AutomaticRecoveryDecision(AutomaticRecoveryAction.NONE, "Récupération automatique limitée au Wi-Fi.")
@@ -44,6 +45,12 @@ object AutopilotRecoveryPolicy {
             AutopilotProfile.MAXIMUM_STABILITY -> 8
         }
 
+        if (recentIneffectiveOutcomes >= 2) {
+            return AutomaticRecoveryDecision(
+                AutomaticRecoveryAction.NONE,
+                "Deux récupérations récentes n’ont pas amélioré la qualité : pause anti-répétition."
+            )
+        }
         if (recentAutomaticActions >= hourlyCap) {
             return AutomaticRecoveryDecision(AutomaticRecoveryAction.NONE, "Plafond horaire de récupération atteint.")
         }

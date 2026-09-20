@@ -89,6 +89,25 @@ class AutopilotRecoveryPolicyTest {
         assertEquals(AutomaticRecoveryAction.NONE, d.action)
     }
 
+    @Test fun repeatedIneffectiveOutcomesStopAutomaticRecovery() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(
+                transport = Transport.WIFI,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 600,
+                upstreamKbps = 180
+            ),
+            AutopilotProfile.MAXIMUM_STABILITY,
+            90,
+            false,
+            0,
+            Long.MAX_VALUE,
+            persistentLowQuality = true,
+            recentIneffectiveOutcomes = 2
+        )
+        assertEquals(AutomaticRecoveryAction.NONE, d.action)
+    }
+
     @Test fun hourlyCapStopsRunawayRecovery() {
         val d = AutopilotRecoveryPolicy.decide(
             NetworkTruth(transport = Transport.WIFI, internetState = InternetState.UNKNOWN, lanState = LanState.LINK_PRESENT),

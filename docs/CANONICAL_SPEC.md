@@ -141,3 +141,9 @@ This protects tethered/hotspot data plans from hidden probe traffic.
 After an automatic metrics refresh, KINLINK passively compares the triggering Wi-Fi quality tier with the quality after two subsequent validated Wi-Fi observations.
 It records IMPROVED, UNCHANGED, DEGRADED or INCONCLUSIVE.
 No extra network request is generated for this evaluation.
+
+
+## Anti-repeat ineffective recovery
+
+Within the bounded one-hour action window, two UNCHANGED or DEGRADED recovery outcomes suspend further automatic recovery attempts.
+This prevents KINLINK from repeatedly refreshing metrics when evidence shows no benefit.
