@@ -6,6 +6,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.LinkProperties
 
+/** Observer only: any internal failure leaves Android networking untouched. */
 class NetworkObserver(
     context: Context,
     private val onTruth: (NetworkTruth) -> Unit
@@ -15,17 +16,22 @@ class NetworkObserver(
     private var lastFingerprint: String? = null
 
     private val callback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) = publish(network)
-        override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) = publish(network, caps)
-        override fun onLinkPropertiesChanged(network: Network, lp: LinkProperties) = publish(network, null, lp)
-        override fun onLost(network: Network) = publish(cm.activeNetwork)
+        override fun onAvailable(network: Network) = safePublish(network)
+        override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) = safePublish(network, caps)
+        override fun onLinkPropertiesChanged(network: Network, lp: LinkProperties) = safePublish(network, null, lp)
+        override fun onLost(network: Network) = safePublish(cm.activeNetwork)
     }
 
     fun start() {
         if (registered) return
-        registered = true
-        cm.registerDefaultNetworkCallback(callback)
-        publish(cm.activeNetwork)
+        runCatching {
+            cm.registerDefaultNetworkCallback(callback)
+            registered = true
+            safePublish(cm.activeNetwork)
+        }.onFailure {
+            // Fail-open: no retry loop and no Android network change.
+            deliver(NetworkTruth())
+        }
     }
 
     fun stop() {
@@ -34,18 +40,27 @@ class NetworkObserver(
         runCatching { cm.unregisterNetworkCallback(callback) }
     }
 
-    private fun publish(
+    private fun safePublish(
         network: Network?,
         providedCaps: NetworkCapabilities? = null,
         providedLp: LinkProperties? = null
     ) {
-        val active = network ?: cm.activeNetwork
-        val caps = providedCaps ?: active?.let(cm::getNetworkCapabilities)
-        val lp = providedLp ?: active?.let(cm::getLinkProperties)
-        val truth = ConnectivityTruthEngine.reduce(caps, lp)
-        val fingerprint = truth.telemetryFingerprint()
-        if (fingerprint == lastFingerprint) return
-        lastFingerprint = fingerprint
-        onTruth(truth)
+        runCatching {
+            val active = network ?: cm.activeNetwork
+            val caps = providedCaps ?: active?.let(cm::getNetworkCapabilities)
+            val lp = providedLp ?: active?.let(cm::getLinkProperties)
+            val truth = ConnectivityTruthEngine.reduce(caps, lp)
+            val fingerprint = truth.telemetryFingerprint()
+            if (fingerprint == lastFingerprint) return
+            lastFingerprint = fingerprint
+            deliver(truth)
+        }.onFailure {
+            // The observer may degrade, but it may never take ownership of routing.
+            deliver(NetworkTruth())
+        }
+    }
+
+    private fun deliver(truth: NetworkTruth) {
+        runCatching { onTruth(truth) }
     }
 }
