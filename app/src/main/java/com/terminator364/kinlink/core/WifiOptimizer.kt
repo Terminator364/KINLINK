@@ -22,7 +22,10 @@ data class WifiOptimizationResult(
     val frameworkHintSent: Boolean = false,
     val bandwidthRefreshRequested: Boolean = false,
     val androidValidated: Boolean = false,
-    val probeAttempts: Int = 0
+    val probeAttempts: Int = 0,
+    val dnsProbeSucceeded: Boolean? = null,
+    val dnsLatencyMillis: Long? = null,
+    val manualDiagnosisCause: ManualWifiDiagnosisCause = ManualWifiDiagnosisCause.INCONCLUSIVE
 )
 
 object WifiOptimizerPolicy {
@@ -82,8 +85,14 @@ class WifiOptimizer(private val context: Context) {
             )
         }
 
+        val dnsProbe = WifiDnsProbe(context, network).run()
         val probe = WifiDoctorProbe(context).run()
         val action = WifiOptimizerPolicy.action(true, androidValidated, false, probe.success, meteredWifi = false)
+        val diagnosisCause = ManualWifiDiagnosisPolicy.classify(
+            androidValidated = androidValidated,
+            dnsSucceeded = dnsProbe.success,
+            httpSucceeded = probe.success
+        )
         // P0 handoff invariant: never influence Android's network validation state.
         // requestBandwidthUpdate only refreshes metrics for the currently observed Wi-Fi.
         val hintSent = false
@@ -116,7 +125,10 @@ class WifiOptimizer(private val context: Context) {
             frameworkHintSent = hintSent,
             bandwidthRefreshRequested = bandwidthRefresh,
             androidValidated = androidValidated,
-            probeAttempts = probe.attempts
+            probeAttempts = probe.attempts,
+            dnsProbeSucceeded = dnsProbe.success,
+            dnsLatencyMillis = dnsProbe.latencyMillis,
+            manualDiagnosisCause = diagnosisCause
         )
     }
 }
