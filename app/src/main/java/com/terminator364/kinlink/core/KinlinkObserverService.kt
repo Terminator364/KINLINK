@@ -14,14 +14,16 @@ import com.terminator364.kinlink.data.TelemetryLedger
 class KinlinkObserverService : Service() {
     private lateinit var observer: NetworkObserver
     private lateinit var ledger: TelemetryLedger
+    private lateinit var mobileBudget: MobileBudgetTracker
 
     override fun onCreate() {
         super.onCreate()
         createChannel()
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.stat_sys_warning)
             .setContentTitle("KINLINK Autopilot")
-            .setContentText("Observation locale active — aucun test mobile automatique")
+            .setContentText("Résilience locale active — aucun test mobile automatique")
             .setOngoing(true)
             .build()
 
@@ -36,7 +38,12 @@ class KinlinkObserverService : Service() {
         }
 
         ledger = TelemetryLedger(this)
-        observer = NetworkObserver(this) { ledger.append(it) }
+        mobileBudget = MobileBudgetTracker(this)
+
+        observer = NetworkObserver(this) { rawTruth ->
+            val budget = mobileBudget.sample()
+            ledger.append(rawTruth.copy(budgetState = budget.state))
+        }
         observer.start()
     }
 
@@ -53,7 +60,11 @@ class KinlinkObserverService : Service() {
     private fun createChannel() {
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(
-            NotificationChannel(CHANNEL_ID, "KINLINK Autopilot", NotificationManager.IMPORTANCE_LOW)
+            NotificationChannel(
+                CHANNEL_ID,
+                "KINLINK Autopilot",
+                NotificationManager.IMPORTANCE_LOW
+            )
         )
     }
 
