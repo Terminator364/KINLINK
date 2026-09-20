@@ -2,6 +2,7 @@ package com.terminator364.kinlink.core
 
 import android.content.Context
 import android.net.TrafficStats
+import android.os.SystemClock
 import java.time.LocalDate
 import kotlin.math.max
 
@@ -17,6 +18,20 @@ data class MobileBudgetSnapshot(
 
     val dailyLimitMiB: Long?
         get() = dailyLimitBytes?.div(1024L * 1024L)
+}
+
+object MobileBudgetSamplingPolicy {
+    const val MIN_SAMPLE_INTERVAL_MS = 15_000L
+
+    fun shouldReuse(
+        nowElapsedMillis: Long,
+        lastSampleElapsedMillis: Long?,
+        sameEpochDay: Boolean
+    ): Boolean {
+        if (!sameEpochDay || lastSampleElapsedMillis == null) return false
+        val age = (nowElapsedMillis - lastSampleElapsedMillis).coerceAtLeast(0L)
+        return age < MIN_SAMPLE_INTERVAL_MS
+    }
 }
 
 object MobileBudgetPolicy {
@@ -47,12 +62,20 @@ object MobileBudgetPolicy {
  */
 class MobileBudgetTracker(context: Context) {
     private val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    private var cachedSnapshot: MobileBudgetSnapshot? = null
+    private var cachedEpochDay: Long? = null
+    private var lastSampleElapsedMillis: Long? = null
 
     fun setDailyLimitMiB(limitMiB: Int?) {
         prefs.edit().apply {
             if (limitMiB == null || limitMiB <= 0) remove(KEY_LIMIT_BYTES)
             else putLong(KEY_LIMIT_BYTES, limitMiB.toLong() * 1024L * 1024L)
         }.apply()
+        synchronized(SAMPLE_LOCK) {
+            cachedSnapshot = null
+            cachedEpochDay = null
+            lastSampleElapsedMillis = null
+        }
     }
 
     fun configuredDailyLimitMiB(): Long? {
@@ -60,19 +83,37 @@ class MobileBudgetTracker(context: Context) {
         return if (bytes > 0L) bytes / (1024L * 1024L) else null
     }
 
-    fun sample(epochDay: Long = LocalDate.now().toEpochDay()): MobileBudgetSnapshot = synchronized(SAMPLE_LOCK) {
+    fun sample(
+        epochDay: Long = LocalDate.now().toEpochDay(),
+        nowElapsedMillis: Long = SystemClock.elapsedRealtime(),
+        force: Boolean = false
+    ): MobileBudgetSnapshot = synchronized(SAMPLE_LOCK) {
+        if (!force &&
+            MobileBudgetSamplingPolicy.shouldReuse(
+                nowElapsedMillis,
+                lastSampleElapsedMillis,
+                cachedEpochDay == epochDay
+            )
+        ) {
+            cachedSnapshot?.let { return it }
+        }
+
         val rx = TrafficStats.getMobileRxBytes()
         val tx = TrafficStats.getMobileTxBytes()
         val unsupported = TrafficStats.UNSUPPORTED.toLong()
         val supported = rx != unsupported && tx != unsupported
 
         if (!supported) {
-            return MobileBudgetSnapshot(
+            val snapshot = MobileBudgetSnapshot(
                 supported = false,
                 usedTodayBytes = 0L,
                 dailyLimitBytes = configuredLimitBytes(),
                 state = BudgetState.BALANCE_UNKNOWN
             )
+            cachedSnapshot = snapshot
+            cachedEpochDay = epochDay
+            lastSampleElapsedMillis = nowElapsedMillis
+            return snapshot
         }
 
         val total = safeAdd(rx, tx)
@@ -98,13 +139,17 @@ class MobileBudgetTracker(context: Context) {
             .apply()
 
         val limit = configuredLimitBytes()
-        return MobileBudgetSnapshot(
+        val snapshot = MobileBudgetSnapshot(
             supported = true,
             usedTodayBytes = used,
             dailyLimitBytes = limit,
             state = MobileBudgetPolicy.state(true, used, limit),
             counterResetDetected = resetDetected
         )
+        cachedSnapshot = snapshot
+        cachedEpochDay = epochDay
+        lastSampleElapsedMillis = nowElapsedMillis
+        return snapshot
     }
 
     private fun configuredLimitBytes(): Long? {

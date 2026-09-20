@@ -213,3 +213,11 @@ These receipts are qualification evidence, not a claim that all battery drain be
 
 The foreground notification is re-published only when its visible text changes.
 Repeated equivalent NetworkCallback events do not trigger redundant NotificationManager updates.
+
+
+## Mobile counter sampling discipline
+
+Device-wide Android mobile TrafficStats are cached for 15 seconds per epoch day.
+Repeated network callbacks inside that window reuse the cached snapshot.
+Changing the configured prudence threshold invalidates the cache immediately.
+No polling loop is introduced.
