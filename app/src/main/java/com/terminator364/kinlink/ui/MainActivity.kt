@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.terminator364.kinlink.R
 import com.terminator364.kinlink.core.AdaptivePolicyEngine
+import com.terminator364.kinlink.core.AutopilotProfile
+import com.terminator364.kinlink.core.AutopilotProfileStore
 import com.terminator364.kinlink.core.BudgetState
 import com.terminator364.kinlink.core.ConnectivityStateClassifier
 import com.terminator364.kinlink.core.KinlinkObserverService
@@ -33,6 +35,7 @@ class MainActivity : Activity() {
     private lateinit var observer: NetworkObserver
     private lateinit var ledger: TelemetryLedger
     private lateinit var mobileBudget: MobileBudgetTracker
+    private lateinit var profileStore: AutopilotProfileStore
 
     private lateinit var stateText: TextView
     private lateinit var transportText: TextView
@@ -47,8 +50,10 @@ class MainActivity : Activity() {
     private lateinit var diagnosticExport: TextView
     private lateinit var wifiDoctorButton: TextView
     private lateinit var budgetButton: TextView
+    private lateinit var profileButton: TextView
 
     private var latestTruth = NetworkTruth()
+    private var currentProfile = AutopilotProfile.BALANCED
     private var latestBudget = MobileBudgetSnapshot(
         supported = false,
         usedTodayBytes = 0L,
@@ -75,16 +80,25 @@ class MainActivity : Activity() {
         diagnosticExport = findViewById(R.id.diagnosticExport)
         wifiDoctorButton = findViewById(R.id.wifiDoctorButton)
         budgetButton = findViewById(R.id.budgetButton)
+        profileButton = findViewById(R.id.profileButton)
 
         installSystemBarInsets()
 
         ledger = TelemetryLedger(this)
         mobileBudget = MobileBudgetTracker(this)
+        profileStore = AutopilotProfileStore(this)
+        currentProfile = profileStore.current()
+        refreshProfileButton()
 
         technicalToggle.setOnClickListener { toggleTechnicalDetails() }
         diagnosticExport.setOnClickListener { exportDiagnostic() }
         wifiDoctorButton.setOnClickListener { optimizeWifi() }
         budgetButton.setOnClickListener { configureMobileBudget() }
+        profileButton.setOnClickListener {
+            currentProfile = profileStore.cycle()
+            refreshProfileButton()
+            render(latestTruth, latestBudget, latestStability)
+        }
 
         observer = NetworkObserver(this) { rawTruth ->
             val budget = mobileBudget.sample()
@@ -112,6 +126,16 @@ class MainActivity : Activity() {
     override fun onDestroy() {
         ledger.close()
         super.onDestroy()
+    }
+
+    private fun refreshProfileButton() {
+        profileButton.text = "Profil Autopilot · ${profileLabel(currentProfile)}"
+    }
+
+    private fun profileLabel(profile: AutopilotProfile): String = when (profile) {
+        AutopilotProfile.CONSERVATIVE -> "Conservateur"
+        AutopilotProfile.BALANCED -> "Équilibré"
+        AutopilotProfile.MAXIMUM_STABILITY -> "Stabilité max"
     }
 
     private fun toggleTechnicalDetails() {
@@ -201,7 +225,8 @@ class MainActivity : Activity() {
         val doctorAdvice = WifiDoctor.advise(assessment)
         val adaptiveDecision = AdaptivePolicyEngine.evaluate(
             truth = truth,
-            instabilityScore = stability?.assessment?.score ?: 0
+            instabilityScore = stability?.assessment?.score ?: 0,
+            profile = currentProfile
         )
 
         stateText.text = assessment.headline
@@ -220,10 +245,11 @@ class MainActivity : Activity() {
         mobileBudgetText.text = mobileBudgetLabel(budget)
 
         adviceTitleText.text = doctorAdvice.title
-        adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}\n\nAutopilot : ${adaptiveDecision.reason}"
+        adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}\n\nAutopilot ${profileLabel(currentProfile)} : ${adaptiveDecision.reason}"
 
         detailText.text = buildString {
             append("État KINLINK : ${assessment.state.name}\n")
+            append("Profil Autopilot : ${currentProfile.name}\n")
             append("Réseau local : ${lanLabel(truth)}\n")
             append("Contexte : ${contextLabel(truth)}\n")
             append("Diagnostic : ${failureLabel(truth)}\n")
