@@ -53,7 +53,10 @@ data class DiagnosticSummary(
     val recent24hLowQualityLongestMillis: Long = 0L,
     val lowQualityEpisodes: Int = 0,
     val totalLowQualityMillis: Long = 0L,
-    val longestLowQualityMillis: Long = 0L
+    val longestLowQualityMillis: Long = 0L,
+    val userIncidentMarkers: Int = 0,
+    val latestUserIncidentMarkerMillis: Long? = null,
+    val incidentWindowActions: List<ActionReceipt> = emptyList()
 )
 
 object DiagnosticReportBuilder {
