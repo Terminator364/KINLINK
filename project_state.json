@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_0_7_0_DEV_RESOURCE_AND_LONGITUDINAL_DIAGNOSTICS",
+  "phase": "POST_FIELD_0_7_0_DEV_DEEP_DIAGNOSTICS_AND_FAILSAFE",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "continue 0.7.0-dev with bounded action-duration/latency evidence and resource qualification; keep RC3 canonical until next consolidated RC gate",
+  "next_uncommitted_action": "continue 0.7.0-dev with radio/congestion diagnosis, user-facing 24h reliability summary, resource qualification and consolidated release gating; keep RC3 canonical",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -53,7 +53,7 @@
     "cellular_to_wifi_return": "PASS",
     "ui_issue": "Android device-wide mobile TrafficStats label corrected in next consolidated build.",
     "bidirectional_handoff": "PASS",
-    "transient_offline_flash": "OBSERVED_AND_FIX_INTEGRATING"
+    "transient_offline_flash": "OBSERVED_FIX_MACHINE_PASS_NOT_YET_FIELD_RETESTED"
   },
   "post_field_improvements": [
     "bidirectional handoff field gate PASS",
@@ -76,7 +76,7 @@
     "version": "0.7.0-dev",
     "versionCode": 8,
     "promotion": "FORBIDDEN_UNTIL_CONSOLIDATED_RC_GATE",
-    "head": "5cce76cade7361e821a8eee36be8f0f1e5528412",
+    "head": "3467ffdcf5da78cfd17e0e13f9b73b6b9cf0f317",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -103,13 +103,27 @@
       "15-second mobile counter sampling cache",
       "time+row bounded telemetry retention",
       "structured interruption duration schema v4",
-      "cumulative and longest interruption diagnostics"
+      "cumulative and longest interruption diagnostics",
+      "24h reliability windows and slow-link burden",
+      "one-tap passive incident marker",
+      "incident-focused timeline with pre-marker context",
+      "recovery control-path duration evidence",
+      "recovery circuit breaker",
+      "privacy-safe IPv4/IPv6 address and default-route topology",
+      "addressing and route configuration passive causes",
+      "telemetry schema v5 without new raw interface/gateway persistence",
+      "bounded manual Wi-Fi DNS-vs-HTTP diagnosis",
+      "all probes pinned to originally captured Wi-Fi network",
+      "manual diagnosis outcome aggregation",
+      "active recovery suspended on failed runtime self-test",
+      "passive 30-minute runtime resource checkpoint",
+      "runtime telemetry schema-integrity verification"
     ],
-    "last_full_pass": "5cce76cade7361e821a8eee36be8f0f1e5528412"
+    "last_full_pass": "3467ffdcf5da78cfd17e0e13f9b73b6b9cf0f317"
   },
-  "telemetry_schema_version": 4,
+  "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "5cce76cade7361e821a8eee36be8f0f1e5528412",
+    "code_head": "3467ffdcf5da78cfd17e0e13f9b73b6b9cf0f317",
     "design_lint": "PASS",
     "android_ci": "PASS",
     "full_machine_verdict": "PASS"

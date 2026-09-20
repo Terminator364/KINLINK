@@ -82,3 +82,23 @@ Machine status:
 - schema-v4 head `5cce76cade7361e821a8eee36be8f0f1e5528412`: design-lint PASS + full Android CI PASS.
 
 The installed RC3 baseline remains unchanged.
+
+
+## 0.7.0-dev deep-diagnostics + fail-safe tranche
+
+Full machine PASS at `3467ffdcf5da78cfd17e0e13f9b73b6b9cf0f317`.
+
+Added since the previous checkpoint:
+- rolling reliability and slow-but-validated Wi-Fi burden;
+- one-tap passive incident marker plus focused context timeline;
+- recovery control-path timing and evidence-driven circuit breaker;
+- privacy-safe IP topology (IPv4/IPv6 address/default-route booleans);
+- separate passive causes for addressing vs route vs DNS/WAN;
+- telemetry schema v5; new rows no longer persist raw interface/gateway values;
+- bounded manual Wi-Fi DNS-vs-HTTP diagnosis on the exact captured Wi-Fi network;
+- remaining HTTP probe endpoints abort when that original Wi-Fi is no longer active;
+- post-update self-test failure suspends active recovery while observation remains;
+- one passive >=30-minute runtime resource checkpoint per service session;
+- runtime verification of required telemetry schema columns.
+
+Stable target-phone baseline remains 0.6.0-rc3 and is not overwritten.
