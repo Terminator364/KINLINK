@@ -55,6 +55,7 @@ object AdaptivePolicyEngine {
         }
 
         if (truth.transport == Transport.WIFI && truth.internetState == InternetState.VALIDATED) {
+            val passiveQuality = PassiveLinkQualityPolicy.assess(truth)
             val threshold = when (profile) {
                 AutopilotProfile.CONSERVATIVE -> 70
                 AutopilotProfile.BALANCED -> 55
@@ -65,6 +66,16 @@ object AdaptivePolicyEngine {
                 AdaptiveDecision(
                     AutopilotIntent.OBSERVE_WIFI,
                     "Le Wi-Fi fonctionne mais présente des oscillations récentes.",
+                    allowAutomaticProbe = false,
+                    allowMobileAssist = false
+                )
+            } else if (
+                passiveQuality.quality == PassiveLinkQuality.CONSTRAINED ||
+                passiveQuality.quality == PassiveLinkQuality.LIMITED
+            ) {
+                AdaptiveDecision(
+                    AutopilotIntent.OBSERVE_WIFI,
+                    "Internet est validé, mais la capacité passive annoncée par Android est limitée.",
                     allowAutomaticProbe = false,
                     allowMobileAssist = false
                 )

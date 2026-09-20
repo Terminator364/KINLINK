@@ -44,3 +44,9 @@ RC3 now persists BOOT_COMPLETED / MY_PACKAGE_REPLACED service-start outcomes and
 - Temporary staging APK removed after readback proof
 - INSTALLER folder contains one canonical APK
 - Next gate: one in-place target-phone field update
+
+
+## Post-field quality awareness
+
+After the bidirectional handoff PASS, KINLINK now separates Android Internet validation from passive capacity estimates.
+A VALIDATED Wi-Fi with constrained/limited Android bandwidth estimates is no longer described by Autopilot as simply steady/healthy. It is observed as a potentially slow-but-valid link without hidden probes or cellular assist.

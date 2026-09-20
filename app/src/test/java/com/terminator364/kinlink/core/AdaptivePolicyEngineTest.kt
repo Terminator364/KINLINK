@@ -44,6 +44,21 @@ class AdaptivePolicyEngineTest {
         assertFalse(decision.allowAutomaticProbe)
     }
 
+    @Test fun validatedButConstrainedWifiIsNotCalledSteady() {
+        val decision = AdaptivePolicyEngine.evaluate(
+            NetworkTruth(
+                transport = Transport.WIFI,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 600,
+                upstreamKbps = 180
+            ),
+            instabilityScore = 5
+        )
+        assertEquals(AutopilotIntent.OBSERVE_WIFI, decision.intent)
+        assertFalse(decision.allowAutomaticProbe)
+        assertFalse(decision.allowMobileAssist)
+    }
+
     @Test fun captivePortalRequiresUserAction() {
         val decision = AdaptivePolicyEngine.evaluate(
             NetworkTruth(
