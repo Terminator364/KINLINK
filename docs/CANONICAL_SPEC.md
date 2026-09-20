@@ -155,3 +155,14 @@ KINLINK classifies likely causes without generating traffic:
 NO_LINK, CAPTIVE_PORTAL, DNS_CONFIGURATION_SUSPECT, LOW_CAPACITY, FLAPPING, WAN_UNVALIDATED, MOBILE_UNVALIDATED, NONE or UNKNOWN.
 
 DNS_CONFIGURATION_SUSPECT is deliberately cautious: it means a local Wi-Fi link exists, Internet is unvalidated and Android exposes zero DNS servers. It is evidence, not proof of a DNS outage.
+
+
+## Passive interruption evidence
+
+After Internet was previously VALIDATED, KINLINK passively timestamps loss of validation and records duration only when VALIDATED returns.
+Severity:
+- MICRO < 2 s
+- SHORT 2–30 s
+- LONG >= 30 s
+
+No timer, probe or packet is generated to measure the outage. Initial unknown startup state never invents an interruption.

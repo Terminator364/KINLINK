@@ -24,7 +24,10 @@ data class DiagnosticSummary(
     val recoveryImproved: Int = 0,
     val recoveryUnchanged: Int = 0,
     val recoveryDegraded: Int = 0,
-    val recoveryInconclusive: Int = 0
+    val recoveryInconclusive: Int = 0,
+    val microInterruptions: Int = 0,
+    val shortInterruptions: Int = 0,
+    val longInterruptions: Int = 0
 )
 
 object DiagnosticReportBuilder {
@@ -59,6 +62,12 @@ object DiagnosticReportBuilder {
         appendLine("- Instability score: ${summary.instabilityScore}/100")
         appendLine("- State transitions in bounded window: ${summary.recentTransitions}")
         appendLine("- Flapping detected: ${if (summary.flapping) "yes" else "no"}")
+        appendLine()
+
+        appendLine("Observed interruptions")
+        appendLine("- Micro (<2 s): ${summary.microInterruptions}")
+        appendLine("- Short (2–30 s): ${summary.shortInterruptions}")
+        appendLine("- Long (>=30 s): ${summary.longInterruptions}")
         appendLine()
 
         appendLine("Recovery effectiveness")

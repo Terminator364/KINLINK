@@ -248,7 +248,10 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             recoveryImproved = countActions("RECOVERY_OUTCOME_IMPROVED"),
             recoveryUnchanged = countActions("RECOVERY_OUTCOME_UNCHANGED"),
             recoveryDegraded = countActions("RECOVERY_OUTCOME_DEGRADED"),
-            recoveryInconclusive = countActions("RECOVERY_OUTCOME_INCONCLUSIVE")
+            recoveryInconclusive = countActions("RECOVERY_OUTCOME_INCONCLUSIVE"),
+            microInterruptions = countActions("INTERRUPTION_MICRO"),
+            shortInterruptions = countActions("INTERRUPTION_SHORT"),
+            longInterruptions = countActions("INTERRUPTION_LONG")
         )
     }
 }

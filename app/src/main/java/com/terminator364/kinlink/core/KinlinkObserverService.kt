@@ -19,6 +19,7 @@ class KinlinkObserverService : Service() {
     private val handoffAudit = NetworkHandoffAudit()
     private val handoffOutcomeTracker = HandoffOutcomeTracker()
     private val recoveryEffectivenessTracker = RecoveryEffectivenessTracker()
+    private val interruptionTracker = ConnectivityInterruptionTracker()
     private var latestTruth = NetworkTruth()
 
     override fun onCreate() {
@@ -99,6 +100,13 @@ class KinlinkObserverService : Service() {
                         evidence.result == RecoveryEffectiveness.IMPROVED ||
                             evidence.result == RecoveryEffectiveness.UNCHANGED,
                         "${evidence.summary} baseline=${evidence.baseline.name}; current=${evidence.current.name}"
+                    )
+                }
+                interruptionTracker.observe(truth)?.let { interruption ->
+                    ledger.appendAction(
+                        "INTERRUPTION_${interruption.severity.name}",
+                        interruption.severity == InterruptionSeverity.MICRO,
+                        "${interruption.summary} ${interruption.fromTransport.name}->${interruption.toTransport.name}"
                     )
                 }
                 updateNotificationFor(truth)
