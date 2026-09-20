@@ -60,8 +60,7 @@ class MobileBudgetTracker(context: Context) {
         return if (bytes > 0L) bytes / (1024L * 1024L) else null
     }
 
-    @Synchronized
-    fun sample(epochDay: Long = LocalDate.now().toEpochDay()): MobileBudgetSnapshot {
+    fun sample(epochDay: Long = LocalDate.now().toEpochDay()): MobileBudgetSnapshot = synchronized(SAMPLE_LOCK) {
         val rx = TrafficStats.getMobileRxBytes()
         val tx = TrafficStats.getMobileTxBytes()
         val unsupported = TrafficStats.UNSUPPORTED.toLong()
@@ -124,5 +123,6 @@ class MobileBudgetTracker(context: Context) {
         private const val KEY_LAST_TOTAL_BYTES = "last_total_mobile_bytes"
         private const val KEY_USED_TODAY_BYTES = "used_today_mobile_bytes"
         private const val KEY_LIMIT_BYTES = "daily_limit_bytes"
+        private val SAMPLE_LOCK = Any()
     }
 }
