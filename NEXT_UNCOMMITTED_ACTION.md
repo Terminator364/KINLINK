@@ -1,26 +1,25 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Immutable field baseline
-- KINLINK 0.6.0-rc3 / versionCode 7
-- bidirectional handoff PASS
-- original mobile-block symptom NOT REPRODUCED
-- canonical Drive APK remains RC3
+## Stable field baseline
+- 0.6.0-rc3 / versionCode 7 remains installed and canonical.
+- Bidirectional handoff field gate PASS.
+- Original mobile-block symptom not reproduced.
 
-## Active development line
-- 0.7.0-dev / versionCode 8
-- do not promote DEV to Drive
+## 0.7.0-dev integrated
+- passive link-quality awareness
+- handoff UI settle
+- truthful mobile-counter semantics
+- 3-observation hysteresis
+- metered Wi-Fi zero-HTTP policy
+- handoff-aware probe abort
+- quality history schema v3
+- recovery effectiveness outcomes: IMPROVED / UNCHANGED / DEGRADED / INCONCLUSIVE
+- two recent ineffective outcomes suspend further automatic recovery
+- release/dev identity fence
 
-## Integrated this tranche
-1. passive quality awareness
-2. constrained VALIDATED Wi-Fi surfaced honestly
-3. 3-observation hysteresis before metrics refresh
-4. handoff-aware micro-probe abort
-5. low-noise quality history in telemetry schema v3
-6. Android device-wide mobile counter wording fix
-7. metered Wi-Fi: zero HTTP probes, metrics-only
-8. dev/release version identity fence
+## Current gate
+Run complete CI on current head.
 
-## Next machine work
-- close CI on current head;
-- add recovery efficacy receipts so KINLINK can prove whether a refresh improved, did nothing, or degraded passive quality;
-- continue batching material improvements before next signed field candidate.
+## Next
+Continue material quality/diagnostic work.
+Do not promote or ask for installation until 0.7.0-dev becomes a substantially larger consolidated candidate.

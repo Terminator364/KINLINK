@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_0_7_0_DEV_QUALITY_EFFICIENCY_CI",
+  "phase": "POST_FIELD_0_7_0_DEV_EVIDENCE_DRIVEN_RECOVERY_CI",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "finish CI for metered-Wi-Fi protection and 0.7.0-dev head; then add recovery efficacy/outcome evidence before any next release candidate",
+  "next_uncommitted_action": "finish CI on evidence-driven recovery; next focus: richer passive diagnosis and only then decide whether 0.7.0-dev is mature enough to become a consolidated release candidate",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -76,7 +76,7 @@
     "version": "0.7.0-dev",
     "versionCode": 8,
     "promotion": "FORBIDDEN_UNTIL_CONSOLIDATED_RC_GATE",
-    "head": "10f4cfd1aa1a6d6f0239aee2698e0b265fea2da9",
+    "head": "29f6b9e60bb5ff1f87eae943041c3102e158d879",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -87,7 +87,9 @@
       "probe abort on handoff",
       "metered Wi-Fi zero-HTTP manual optimization",
       "truthful device-wide mobile counter wording",
-      "1.5s transient-loss UI settle"
+      "1.5s transient-loss UI settle",
+      "passive recovery effectiveness receipts",
+      "anti-repeat ineffective recovery"
     ]
   }
 }

@@ -40,3 +40,10 @@ Development line:
 - telemetry schema v3 persists low-noise quality tiers, with in-place v2 migration
 - manual optimization on metered Wi-Fi performs metrics-only refresh and zero HTTP micro-probes
 - all mobile-routing and hidden-probe safety invariants remain unchanged
+
+
+## Evidence-driven recovery loop
+KINLINK 0.7.0-dev now evaluates whether automatic metric refreshes appear to improve passive Wi-Fi quality after two subsequent validated observations.
+Results are retained as IMPROVED / UNCHANGED / DEGRADED / INCONCLUSIVE.
+Two recent UNCHANGED/DEGRADED outcomes within the bounded window suppress further automatic recovery attempts.
+This prevents repeated no-benefit actions.
