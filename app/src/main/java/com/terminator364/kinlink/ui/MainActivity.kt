@@ -24,6 +24,7 @@ import com.terminator364.kinlink.core.MobileBudgetSnapshot
 import com.terminator364.kinlink.core.MobileBudgetTracker
 import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.NetworkObserver
+import com.terminator364.kinlink.core.RecoveryBlockReason
 import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
 import com.terminator364.kinlink.core.NetworkTruth
@@ -223,10 +224,18 @@ class MainActivity : Activity() {
     }
 
     private fun optimizeWifi() {
-        if (!ActiveRecoveryPolicy.allowed(recoveryModeStore.current(), latestTruth.transport)) {
-            adviceTitleText.text = "Mode sûr actif"
-            adviceText.text = "KINLINK observe uniquement. Aucune optimisation active n’est exécutée."
-            return
+        when (ActiveRecoveryPolicy.blockReason(recoveryModeStore.current(), latestTruth.transport)) {
+            RecoveryBlockReason.OBSERVATION_ONLY -> {
+                adviceTitleText.text = "Mode sûr actif"
+                adviceText.text = "KINLINK observe uniquement. Aucune optimisation active n’est exécutée."
+                return
+            }
+            RecoveryBlockReason.NON_WIFI -> {
+                adviceTitleText.text = "Wi-Fi requis"
+                adviceText.text = "Aucune action lancée : KINLINK ne touche pas aux données mobiles."
+                return
+            }
+            RecoveryBlockReason.NONE -> Unit
         }
         wifiDoctorButton.isEnabled = false
         adviceTitleText.text = "Analyse de résilience Wi-Fi"
@@ -256,7 +265,9 @@ class MainActivity : Activity() {
 
     private fun exportDiagnostic() {
         runCatching {
-            DiagnosticExporter(this).share(ledger.diagnosticSummary(latestTruth))
+            DiagnosticExporter(this).share(
+                ledger.diagnosticSummary(latestTruth, recoveryModeStore.current().name)
+            )
         }.onFailure {
             Toast.makeText(this, "Impossible de préparer le diagnostic", Toast.LENGTH_SHORT).show()
         }

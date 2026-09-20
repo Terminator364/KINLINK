@@ -196,7 +196,7 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         )
     }
 
-    fun diagnosticSummary(currentTruth: NetworkTruth): DiagnosticSummary {
+    fun diagnosticSummary(currentTruth: NetworkTruth, recoveryMode: String = "UNKNOWN"): DiagnosticSummary {
         val weekStartMillis = System.currentTimeMillis() - 7L * 24L * 60L * 60L * 1000L
         val weeklyEvents = readableDatabase.rawQuery(
             "SELECT COUNT(*) FROM network_events WHERE ts_wall_ms >= ?",
@@ -228,7 +228,8 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             handoffEvents = countActions("HANDOFF_"),
             mobileValidatedOutcomes = countActions("HANDOFF_OUTCOME_MOBILE_VALIDATED"),
             mobilePendingOutcomes = countActions("HANDOFF_OUTCOME_MOBILE_PRESENT_UNVALIDATED"),
-            watchdogAborts = countActions("AUTO_RECOVERY_WATCHDOG_")
+            watchdogAborts = countActions("AUTO_RECOVERY_WATCHDOG_"),
+            recoveryMode = recoveryMode
         )
     }
 }

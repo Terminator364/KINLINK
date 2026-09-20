@@ -16,7 +16,8 @@ data class DiagnosticSummary(
     val handoffEvents: Int = 0,
     val mobileValidatedOutcomes: Int = 0,
     val mobilePendingOutcomes: Int = 0,
-    val watchdogAborts: Int = 0
+    val watchdogAborts: Int = 0,
+    val recoveryMode: String = "UNKNOWN"
 )
 
 object DiagnosticReportBuilder {
@@ -33,6 +34,7 @@ object DiagnosticReportBuilder {
         appendLine("- Mobile-data policy: ${mobileLabel(summary.currentTruth)}")
         appendLine("- Mobile budget state: ${summary.currentTruth.budgetState.name}")
         appendLine("- Explanation: ${explanation(summary.currentTruth)}")
+        appendLine("- Recovery mode: ${summary.recoveryMode}")
         appendLine()
 
         appendLine("Recent stability")
