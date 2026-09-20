@@ -16,7 +16,7 @@ import com.terminator364.kinlink.core.KinlinkObserverService
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.WifiDoctor
-import com.terminator364.kinlink.core.WifiDoctorProbe
+import com.terminator364.kinlink.core.WifiOptimizer
 import com.terminator364.kinlink.data.DiagnosticExporter
 import com.terminator364.kinlink.data.TelemetryLedger
 
@@ -54,7 +54,7 @@ class MainActivity : Activity() {
         installSystemBarInsets()
         technicalToggle.setOnClickListener { toggleTechnicalDetails() }
         diagnosticExport.setOnClickListener { exportDiagnostic() }
-        wifiDoctorButton.setOnClickListener { runWifiDoctor() }
+        wifiDoctorButton.setOnClickListener { optimizeWifi() }
         ledger = TelemetryLedger(this)
         observer = NetworkObserver(this) { truth ->
             ledger.append(truth)
@@ -81,19 +81,23 @@ class MainActivity : Activity() {
         val nowVisible = detailText.visibility == View.VISIBLE
         detailText.visibility = if (nowVisible) View.GONE else View.VISIBLE
         diagnosticExport.visibility = if (nowVisible) View.GONE else View.VISIBLE
-        wifiDoctorButton.visibility = if (nowVisible) View.GONE else View.VISIBLE
         technicalToggle.text = if (nowVisible) "Voir les détails techniques" else "Masquer les détails techniques"
     }
 
-    private fun runWifiDoctor() {
+    private fun optimizeWifi() {
         wifiDoctorButton.isEnabled = false
+        adviceTitleText.text = "Optimisation Wi-Fi en cours"
+        adviceText.text = "Micro-test borné, Wi-Fi uniquement. Aucune donnée mobile n’est utilisée."
         Thread {
-            val result = WifiDoctorProbe(this).run()
+            val result = WifiOptimizer(this).optimize()
             runOnUiThread {
                 wifiDoctorButton.isEnabled = true
-                adviceTitleText.text = if (result.success) "Wi-Fi Doctor : réponse reçue" else "Wi-Fi Doctor : problème détecté"
+                adviceTitleText.text = if (result.success) "Wi-Fi optimisé" else "Réévaluation Wi-Fi demandée"
                 adviceText.text = result.summary
-                detailText.text = detailText.text.toString() + "\n\nTest Wi-Fi explicite : ${result.summary}"
+                detailText.text = detailText.text.toString() +
+                    "\n\nOptimisation explicite : ${result.action.name}" +
+                    "\nSignal Android : ${if (result.frameworkHintSent) "envoyé" else "non envoyé"}" +
+                    "\nMétriques réseau : ${if (result.bandwidthRefreshRequested) "rafraîchissement demandé" else "inchangées"}"
             }
         }.start()
     }
@@ -131,7 +135,7 @@ class MainActivity : Activity() {
             append("WHY : ${vaultDecision.why}\n")
             append("WHAT : ${vaultDecision.what.name}\n")
             append("RESULT : ${vaultDecision.result}\n\n")
-            append("Exporter le diagnostic ne lance aucun speedtest, probe mobile ou changement réseau.")
+            append("Le bouton d’optimisation agit uniquement sur le Wi-Fi actif : micro-probe, signal de réévaluation Android et rafraîchissement des métriques.")
         }
     }
 

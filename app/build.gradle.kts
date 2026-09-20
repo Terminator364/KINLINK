@@ -18,8 +18,8 @@ android {
         applicationId = "com.terminator364.kinlink"
         minSdk = 30
         targetSdk = 37
-        versionCode = 2
-        versionName = "0.1.0-m1"
+        versionCode = 3
+        versionName = "0.2.0-m2"
     }
 
     signingConfigs {

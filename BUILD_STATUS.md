@@ -2,12 +2,16 @@
 
 ## Current evidence
 
-- M1 Observer Core source: present
-- Local pure-model tests: present
-- Android/Gradle build: not yet executed in an Android SDK environment
-- APK: not yet produced
-- Field test: not yet performed
+- M1 Observer Core: field-installed and operational.
+- Passive background observer: implemented.
+- Persistent bounded telemetry ledger: implemented.
+- Explicit Wi-Fi Doctor: implemented.
+- M2 active Wi-Fi optimizer: committed for CI verification.
+- Mobile-data probe: forbidden by policy.
+- Android routing takeover / VPN data plane: not enabled.
 
-This distinction is deliberate: source code and a workflow are not evidence of a
-working APK.  The next valid transition is a passing unit-test and debug-APK CI
-run, followed by an installation on the target phone.
+## M2 gate
+
+M2 must pass unit tests and debug-APK build before it can replace the installed M1.
+The optimizer is intentionally bounded: Wi-Fi only, explicit user action, tiny connectivity probe,
+Android connectivity re-evaluation hint, bandwidth-metric refresh, and fail-open behavior.

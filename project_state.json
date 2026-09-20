@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "M1_OBSERVER_CORE_CI_VERIFIED_FIELD_FEEDBACK_PENDING",
-  "design_version": "0.1.0",
+  "phase": "M2_ACTIVE_WIFI_OPTIMIZER_CI_PENDING",
+  "design_version": "0.2.0-m2",
   "status": "ACTIVE",
   "platform": "Android",
   "primary_constraints": [
@@ -22,29 +22,31 @@
     "data-exhausted/expired is not treated as a generic network-quality failure",
     "adaptive learning cannot override hard user budgets or safety constraints"
   ],
-  "next_uncommitted_action": "implement the minimum field diagnostic package: bounded local event summary, user-initiated export, and human-readable failure explanation; then CI-build before requesting another phone action",
+  "implemented_now": [
+    "event-driven passive observer",
+    "bounded local SQLite telemetry",
+    "human-readable connectivity cockpit",
+    "privacy-safe diagnostic export",
+    "explicit Wi-Fi-only micro-diagnostic",
+    "explicit Wi-Fi-only Android connectivity re-evaluation",
+    "explicit bandwidth-metric refresh request"
+  ],
+  "not_yet_claimed": [
+    "whole-device throughput acceleration",
+    "system-wide DNS optimization",
+    "VPN/TUN traffic steering",
+    "field-proven latency reduction"
+  ],
+  "next_uncommitted_action": "validate M2 in CI, capture APK hash and promote installer only on PASS",
   "android_baseline": {
     "compileSdk": 37,
     "targetSdk": 37,
     "minSdk": 30,
     "jdk": 17
   },
-  "design_artifacts": [
-    "ANDROID_RUNTIME_DESIGN",
-    "COMPONENT_CONTRACTS",
-    "UI_INFORMATION_ARCHITECTURE"
-  ],
-  "m0_scope": [
-    "network observer",
-    "truth reducer",
-    "bounded SQLite ledger",
-    "blue cockpit UI",
-    "manual CI build"
-  ],
   "last_proven_checkpoint": {
-    "commit": "336ede392ce7616b991a227e940b05cfc101a60a",
-    "ci_run": 35522715744,
-    "status": "PASS",
-    "note": "CI/unit tests passed; field feedback confirmed the M0 screen needs product-grade diagnostics and polish."
+    "commit": "75337b7ca5119683f16c456e713da0fcf22f27ac",
+    "status": "M1_SOURCE_PRESENT",
+    "note": "M1 field-installed previously; M2 active optimizer is the next coherent product increment."
   }
 }

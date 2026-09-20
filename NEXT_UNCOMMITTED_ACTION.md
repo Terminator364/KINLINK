@@ -2,17 +2,23 @@
 
 ## Last proven checkpoint
 
-- Commit `336ede392ce7616b991a227e940b05cfc101a60a`: offline-only signing bootstrap and documentation.
-- GitHub Actions run `35522715744`: **PASS** — unit tests and CI debug APK build.
-- The first installed M0 APK is only an observer bootstrap. Its field screenshot confirmed that the product needs clearer human diagnostics before another phone action.
+- M1 APK was built, installed and used on the target phone.
+- Commit `75337b7ca5119683f16c456e713da0fcf22f27ac` added the explicit Wi-Fi-only Doctor.
+- M1 remains safe but mostly diagnostic; it does not materially steer Android connectivity.
+
+## Current candidate
+
+M2 adds the first bounded active optimizer:
+1. explicit Wi-Fi-only micro-probe;
+2. report observed connectivity back to Android for framework re-evaluation;
+3. request refreshed bandwidth metrics;
+4. refuse all active optimization on cellular;
+5. preserve fail-open and no-speedtest guarantees.
 
 ## Next action
 
-Implement the **minimum field diagnostic package**:
-1. bounded local event summary from the existing ledger;
-2. user-initiated diagnostic export with no SSID, SIM identifier, token, payload, or password;
-3. human-readable explanation of LAN/WAN, Wi-Fi/mobile, offline and metered states;
-4. tests and CI build;
-5. request one focused field check only after the next APK has a concrete diagnostic benefit.
-
-Release signing remains offline-only and is deferred until a viable field candidate is ready. Do not publish a CI debug APK as an update.
+Wait only for the GitHub Actions M2 result. If tests and APK build pass:
+- capture the APK SHA-256 and manifest;
+- promote the single installer candidate;
+- then request one focused phone install/use check.
+Do not send another diagnostic-only APK.
