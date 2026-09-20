@@ -4,9 +4,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.terminator364.kinlink.R
 import com.terminator364.kinlink.data.TelemetryLedger
 
 /** Event-driven background observer. It changes no Android network setting and can be stopped safely. */
@@ -17,12 +18,23 @@ class KinlinkObserverService : Service() {
     override fun onCreate() {
         super.onCreate()
         createChannel()
-        startForeground(NOTIFICATION_ID, NotificationCompat.Builder(this, CHANNEL_ID)
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.stat_sys_warning)
             .setContentTitle("KINLINK Autopilot")
             .setContentText("Observation locale active — aucun test mobile automatique")
             .setOngoing(true)
-            .build())
+            .build()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(
+                NOTIFICATION_ID,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            )
+        } else {
+            startForeground(NOTIFICATION_ID, notification)
+        }
+
         ledger = TelemetryLedger(this)
         observer = NetworkObserver(this) { ledger.append(it) }
         observer.start()
@@ -31,8 +43,8 @@ class KinlinkObserverService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
 
     override fun onDestroy() {
-        observer.stop()
-        ledger.close()
+        if (::observer.isInitialized) observer.stop()
+        if (::ledger.isInitialized) ledger.close()
         super.onDestroy()
     }
 
@@ -40,7 +52,9 @@ class KinlinkObserverService : Service() {
 
     private fun createChannel() {
         val manager = getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(NotificationChannel(CHANNEL_ID, "KINLINK Autopilot", NotificationManager.IMPORTANCE_LOW))
+        manager.createNotificationChannel(
+            NotificationChannel(CHANNEL_ID, "KINLINK Autopilot", NotificationManager.IMPORTANCE_LOW)
+        )
     }
 
     companion object {

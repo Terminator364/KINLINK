@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "M2_ACTIVE_WIFI_OPTIMIZER_CI_PENDING",
+  "phase": "M2_ACTIVE_WIFI_OPTIMIZER_ANDROID16_HARDENED_CI_PENDING",
   "design_version": "0.2.0-m2",
   "status": "ACTIVE",
   "platform": "Android",
@@ -24,6 +24,7 @@
   ],
   "implemented_now": [
     "event-driven passive observer",
+    "Android 15/16 specialUse foreground observer declaration",
     "bounded local SQLite telemetry",
     "human-readable connectivity cockpit",
     "privacy-safe diagnostic export",
@@ -37,7 +38,7 @@
     "VPN/TUN traffic steering",
     "field-proven latency reduction"
   ],
-  "next_uncommitted_action": "validate M2 in CI, capture APK hash and promote installer only on PASS",
+  "next_uncommitted_action": "validate hardened M2 in CI, capture APK hash and promote installer only on PASS",
   "android_baseline": {
     "compileSdk": 37,
     "targetSdk": 37,
@@ -45,8 +46,8 @@
     "jdk": 17
   },
   "last_proven_checkpoint": {
-    "commit": "75337b7ca5119683f16c456e713da0fcf22f27ac",
-    "status": "M1_SOURCE_PRESENT",
-    "note": "M1 field-installed previously; M2 active optimizer is the next coherent product increment."
+    "commit": "01f9abe27948622da6add273ea590e111a55ed50",
+    "status": "M2_OPTIMIZER_COMMITTED_CI_RUNNING",
+    "note": "Active Wi-Fi optimizer committed; Android 15/16 observer lifetime hardening is being layered before field promotion."
   }
 }
