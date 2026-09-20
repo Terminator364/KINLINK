@@ -173,3 +173,9 @@ No timer, probe or packet is generated to measure the outage. Initial unknown st
 Every passive problem cause maps to a non-invasive user guidance message.
 Cause transitions are journaled only when the cause changes, avoiding repeated log noise.
 Guidance never triggers routing, DNS replacement, mobile-data toggling or hidden probes.
+
+
+## Cause-aware notification and history
+
+The foreground notification reflects the current passive cause on Wi-Fi (limited capacity, captive portal, DNS configuration suspicion, WAN unvalidated, flapping) without creating traffic.
+Diagnostic exports aggregate passive cause transitions from the bounded action ledger.

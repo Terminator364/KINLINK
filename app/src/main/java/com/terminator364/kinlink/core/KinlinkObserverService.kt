@@ -123,7 +123,7 @@ class KinlinkObserverService : Service() {
                         "${passiveProblem.summary} confidence=${passiveProblem.confidence}%"
                     )
                 }
-                updateNotificationFor(truth)
+                updateNotificationFor(truth, passiveProblem)
                 if (ActiveRecoveryPolicy.allowed(recoveryModeStore.current(), truth.transport)) {
                     recovery?.onTruth(truth, stability.assessment.score)
                 }
@@ -134,7 +134,10 @@ class KinlinkObserverService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == ACTION_REFRESH_MODE && ::recoveryModeStore.isInitialized) {
-            updateNotificationFor(latestTruth)
+            updateNotificationFor(
+                latestTruth,
+                PassiveProblemClassifier.classify(latestTruth)
+            )
         }
         return START_STICKY
     }
@@ -151,13 +154,23 @@ class KinlinkObserverService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    private fun updateNotificationFor(truth: NetworkTruth) {
+    private fun updateNotificationFor(
+        truth: NetworkTruth,
+        passiveProblem: PassiveProblemAssessment = PassiveProblemClassifier.classify(truth)
+    ) {
         val observationOnly = recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY
         val text = if (observationOnly) {
             "Mode sûr · observation uniquement · Android garde le contrôle"
         } else when (truth.transport) {
             Transport.CELLULAR -> "Données mobiles · Android contrôle · KINLINK observe seulement"
-            Transport.WIFI -> "Résilience Wi-Fi active · données mobiles hors contrôle KINLINK"
+            Transport.WIFI -> when (passiveProblem.cause) {
+                PassiveProblemCause.LOW_CAPACITY -> "Wi-Fi connecté mais capacité limitée · surveillance passive"
+                PassiveProblemCause.CAPTIVE_PORTAL -> "Wi-Fi · connexion au portail requise"
+                PassiveProblemCause.DNS_CONFIGURATION_SUSPECT -> "Wi-Fi · configuration DNS à surveiller"
+                PassiveProblemCause.WAN_UNVALIDATED -> "Wi-Fi local présent · Internet non confirmé"
+                PassiveProblemCause.FLAPPING -> "Wi-Fi instable · KINLINK limite les actions"
+                else -> "Résilience Wi-Fi active · données mobiles hors contrôle KINLINK"
+            }
             Transport.ETHERNET -> "Ethernet · observation seulement"
             Transport.VPN -> "VPN détecté · observation seulement"
             Transport.NONE -> "Aucun réseau · observation passive"

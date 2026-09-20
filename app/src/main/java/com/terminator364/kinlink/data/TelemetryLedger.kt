@@ -127,6 +127,20 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             cursor.getInt(0)
         }
 
+    fun actionCountsByPrefix(actionPrefix: String): Map<String, Int> {
+        val result = linkedMapOf<String, Int>()
+        readableDatabase.rawQuery(
+            "SELECT action, COUNT(*) FROM action_receipts WHERE action LIKE ? GROUP BY action",
+            arrayOf("$actionPrefix%")
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                val action = cursor.getString(0)
+                result[action.removePrefix(actionPrefix)] = cursor.getInt(1)
+            }
+        }
+        return result
+    }
+
     fun latestActionTimestamp(actionPrefix: String): Long? =
         readableDatabase.rawQuery(
             "SELECT ts_wall_ms FROM action_receipts WHERE action LIKE ? ORDER BY ts_wall_ms DESC LIMIT 1",
@@ -251,7 +265,8 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             recoveryInconclusive = countActions("RECOVERY_OUTCOME_INCONCLUSIVE"),
             microInterruptions = countActions("INTERRUPTION_MICRO"),
             shortInterruptions = countActions("INTERRUPTION_SHORT"),
-            longInterruptions = countActions("INTERRUPTION_LONG")
+            longInterruptions = countActions("INTERRUPTION_LONG"),
+            passiveCauseCounts = actionCountsByPrefix("PASSIVE_CAUSE_")
         )
     }
 }

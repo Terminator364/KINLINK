@@ -28,7 +28,8 @@ data class DiagnosticSummary(
     val recoveryInconclusive: Int = 0,
     val microInterruptions: Int = 0,
     val shortInterruptions: Int = 0,
-    val longInterruptions: Int = 0
+    val longInterruptions: Int = 0,
+    val passiveCauseCounts: Map<String, Int> = emptyMap()
 )
 
 object DiagnosticReportBuilder {
@@ -65,6 +66,16 @@ object DiagnosticReportBuilder {
         appendLine("- Instability score: ${summary.instabilityScore}/100")
         appendLine("- State transitions in bounded window: ${summary.recentTransitions}")
         appendLine("- Flapping detected: ${if (summary.flapping) "yes" else "no"}")
+        appendLine()
+
+        appendLine("Passive cause transitions")
+        if (summary.passiveCauseCounts.isEmpty()) {
+            appendLine("- No passive cause transition retained yet")
+        } else {
+            summary.passiveCauseCounts.toSortedMap().forEach { (cause, count) ->
+                appendLine("- $cause: $count")
+            }
+        }
         appendLine()
 
         appendLine("Observed interruptions")
