@@ -148,7 +148,8 @@ class KinlinkObserverService : Service() {
                     ledger.appendAction(
                         "INTERRUPTION_${interruption.severity.name}",
                         interruption.severity == InterruptionSeverity.MICRO,
-                        "${interruption.summary} ${interruption.fromTransport.name}->${interruption.toTransport.name}"
+                        "${interruption.summary} ${interruption.fromTransport.name}->${interruption.toTransport.name}",
+                        durationMillis = interruption.durationMillis
                     )
                 }
                 val stability = ledger.stabilityWindow()

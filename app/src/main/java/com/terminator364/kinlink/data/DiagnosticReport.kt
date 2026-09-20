@@ -30,6 +30,8 @@ data class DiagnosticSummary(
     val microInterruptions: Int = 0,
     val shortInterruptions: Int = 0,
     val longInterruptions: Int = 0,
+    val totalInterruptionMillis: Long = 0L,
+    val longestInterruptionMillis: Long = 0L,
     val passiveCauseCounts: Map<String, Int> = emptyMap(),
     val coreSelfTestPasses: Int = 0,
     val observerSelfTestPasses: Int = 0,
@@ -99,6 +101,8 @@ object DiagnosticReportBuilder {
         appendLine("- Micro (<2 s): ${summary.microInterruptions}")
         appendLine("- Short (2–30 s): ${summary.shortInterruptions}")
         appendLine("- Long (>=30 s): ${summary.longInterruptions}")
+        appendLine("- Cumulative interruption time: ${summary.totalInterruptionMillis} ms")
+        appendLine("- Longest retained interruption: ${summary.longestInterruptionMillis} ms")
         appendLine()
 
         appendLine("Recovery effectiveness")

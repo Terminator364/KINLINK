@@ -9,7 +9,7 @@ data class RuntimeSelfTestResult(
 
 object RuntimeSelfTestPolicy {
     fun core(databaseVersion: Int, recoveryModeReadable: Boolean): RuntimeSelfTestResult =
-        if (databaseVersion >= 3 && recoveryModeReadable) {
+        if (databaseVersion >= 4 && recoveryModeReadable) {
             RuntimeSelfTestResult(true, "Base/migration et mode de récupération lisibles.")
         } else {
             RuntimeSelfTestResult(

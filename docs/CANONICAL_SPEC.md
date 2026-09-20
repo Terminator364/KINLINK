@@ -230,3 +230,11 @@ Privacy/storage bounds are enforced by both age and row count:
 - action receipts: max 14 days and max 500 rows.
 
 Pruning occurs only when KINLINK already writes an event/receipt; no maintenance polling job is added.
+
+
+## Structured interruption duration
+
+Telemetry schema v4 adds an optional duration_ms field to action receipts.
+Interruption receipts store their measured duration structurally.
+Diagnostics report cumulative and longest retained interruption duration.
+Existing receipts migrate with NULL duration and remain valid.

@@ -24,7 +24,7 @@ data class ActionReceipt(
     val summary: String
 )
 
-class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_telemetry.db", null, 3) {
+class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_telemetry.db", null, 4) {
     override fun onCreate(db: SQLiteDatabase) {
         createNetworkEvents(db)
         createActionReceipts(db)
@@ -34,6 +34,9 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         if (oldVersion < 2) createActionReceipts(db)
         if (oldVersion < 3) {
             runCatching { db.execSQL("ALTER TABLE network_events ADD COLUMN quality_tier TEXT NOT NULL DEFAULT 'UNKNOWN'") }
+        }
+        if (oldVersion < 4) {
+            runCatching { db.execSQL("ALTER TABLE action_receipts ADD COLUMN duration_ms INTEGER") }
         }
     }
 
@@ -66,7 +69,8 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
               ts_wall_ms INTEGER NOT NULL,
               action TEXT NOT NULL,
               success INTEGER NOT NULL,
-              summary TEXT NOT NULL
+              summary TEXT NOT NULL,
+              duration_ms INTEGER
             )
             """.trimIndent()
         )
@@ -91,20 +95,26 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         pruneNetworkEvents()
     }
 
-    fun appendAction(action: String, success: Boolean, summary: String) {
+    fun appendAction(
+        action: String,
+        success: Boolean,
+        summary: String,
+        durationMillis: Long? = null
+    ) {
         val safeAction = action.take(64)
         val safeSummary = summary.replace("\n", " ").replace("\r", " ").take(320)
         writableDatabase.execSQL(
             """
-            INSERT INTO action_receipts(receipt_id, ts_wall_ms, action, success, summary)
-            VALUES(?,?,?,?,?)
+            INSERT INTO action_receipts(receipt_id, ts_wall_ms, action, success, summary, duration_ms)
+            VALUES(?,?,?,?,?,?)
             """.trimIndent(),
             arrayOf(
                 UUID.randomUUID().toString(),
                 System.currentTimeMillis(),
                 safeAction,
                 if (success) 1 else 0,
-                safeSummary
+                safeSummary,
+                durationMillis?.coerceAtLeast(0L)
             )
         )
         pruneActionReceipts()
@@ -169,6 +179,15 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             "DELETE FROM action_receipts WHERE receipt_id IN (SELECT receipt_id FROM action_receipts ORDER BY ts_wall_ms DESC LIMIT -1 OFFSET ${TelemetryRetentionPolicy.ACTION_RECEIPT_MAX_ROWS})"
         )
     }
+
+    fun interruptionDurationStats(): Pair<Long, Long> =
+        readableDatabase.rawQuery(
+            "SELECT COALESCE(SUM(duration_ms), 0), COALESCE(MAX(duration_ms), 0) FROM action_receipts WHERE action LIKE 'INTERRUPTION_%' AND duration_ms IS NOT NULL",
+            null
+        ).use { cursor ->
+            cursor.moveToFirst()
+            cursor.getLong(0) to cursor.getLong(1)
+        }
 
     fun schemaVersion(): Int = readableDatabase.version
 
@@ -253,6 +272,7 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             while (cursor.moveToNext()) qualityCounts[cursor.getString(0)] = cursor.getInt(1)
         }
 
+        val interruptionDurations = interruptionDurationStats()
         val stability = stabilityWindow()
         return DiagnosticSummary(
             generatedAtMillis = System.currentTimeMillis(),
@@ -277,6 +297,8 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             microInterruptions = countActions("INTERRUPTION_MICRO"),
             shortInterruptions = countActions("INTERRUPTION_SHORT"),
             longInterruptions = countActions("INTERRUPTION_LONG"),
+            totalInterruptionMillis = interruptionDurations.first,
+            longestInterruptionMillis = interruptionDurations.second,
             passiveCauseCounts = actionCountsByPrefix("PASSIVE_CAUSE_"),
             coreSelfTestPasses = countActions("SELF_TEST_CORE"),
             observerSelfTestPasses = countActions("SELF_TEST_OBSERVER_CALLBACK"),
