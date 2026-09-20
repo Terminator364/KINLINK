@@ -40,6 +40,7 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         ContextCompat.startForegroundService(this, Intent(this, KinlinkObserverService::class.java))
         setContentView(R.layout.activity_main)
+
         stateText = findViewById(R.id.stateText)
         transportText = findViewById(R.id.transportText)
         internetText = findViewById(R.id.internetText)
@@ -51,10 +52,12 @@ class MainActivity : Activity() {
         technicalToggle = findViewById(R.id.technicalToggle)
         diagnosticExport = findViewById(R.id.diagnosticExport)
         wifiDoctorButton = findViewById(R.id.wifiDoctorButton)
+
         installSystemBarInsets()
         technicalToggle.setOnClickListener { toggleTechnicalDetails() }
         diagnosticExport.setOnClickListener { exportDiagnostic() }
         wifiDoctorButton.setOnClickListener { optimizeWifi() }
+
         ledger = TelemetryLedger(this)
         observer = NetworkObserver(this) { truth ->
             ledger.append(truth)
@@ -81,22 +84,31 @@ class MainActivity : Activity() {
         val nowVisible = detailText.visibility == View.VISIBLE
         detailText.visibility = if (nowVisible) View.GONE else View.VISIBLE
         diagnosticExport.visibility = if (nowVisible) View.GONE else View.VISIBLE
-        technicalToggle.text = if (nowVisible) "Voir les détails techniques" else "Masquer les détails techniques"
+        technicalToggle.text =
+            if (nowVisible) "Voir les détails techniques" else "Masquer les détails techniques"
     }
 
     private fun optimizeWifi() {
         wifiDoctorButton.isEnabled = false
-        adviceTitleText.text = "Optimisation Wi-Fi en cours"
-        adviceText.text = "Micro-test borné, Wi-Fi uniquement. Aucune donnée mobile n’est utilisée."
+        adviceTitleText.text = "Analyse de résilience Wi-Fi"
+        adviceText.text =
+            "Arbitrage Android + micro-tests bornés. Aucune donnée mobile n’est utilisée."
+
         Thread {
             val result = WifiOptimizer(this).optimize()
             runOnUiThread {
                 wifiDoctorButton.isEnabled = true
-                adviceTitleText.text = if (result.success) "Wi-Fi optimisé" else "Réévaluation Wi-Fi demandée"
+                adviceTitleText.text = when {
+                    result.success && result.androidValidated -> "Wi-Fi validé"
+                    result.success -> "Wi-Fi confirmé"
+                    else -> "Réévaluation Wi-Fi demandée"
+                }
                 adviceText.text = result.summary
                 detailText.text = detailText.text.toString() +
-                    "\n\nOptimisation explicite : ${result.action.name}" +
-                    "\nSignal Android : ${if (result.frameworkHintSent) "envoyé" else "non envoyé"}" +
+                    "\n\nAction résilience : ${result.action.name}" +
+                    "\nAndroid VALIDATED : ${if (result.androidValidated) "oui" else "non"}" +
+                    "\nMicro-tests tentés : ${result.probeAttempts}" +
+                    "\nSignal Android : ${if (result.frameworkHintSent) "envoyé" else "non nécessaire"}" +
                     "\nMétriques réseau : ${if (result.bandwidthRefreshRequested) "rafraîchissement demandé" else "inchangées"}"
             }
         }.start()
@@ -115,6 +127,7 @@ class MainActivity : Activity() {
         val assessment = ConnectivityStateClassifier.classify(truth)
         val vaultDecision = MobileVault.decide(truth, assessment)
         val doctorAdvice = WifiDoctor.advise(assessment)
+
         stateText.text = assessment.headline
         heroDetailText.text = assessment.explanation
         transportText.text = "Connexion en cours · ${transportLabel(truth)}"
@@ -126,16 +139,17 @@ class MainActivity : Activity() {
         }
         adviceTitleText.text = doctorAdvice.title
         adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}"
+
         detailText.text = buildString {
             append("État KINLINK : ${assessment.state.name}\n")
             append("Réseau local : ${lanLabel(truth)}\n")
             append("Contexte : ${contextLabel(truth)}\n")
             append("Diagnostic : ${failureLabel(truth)}\n")
-            append("Confiance : ${(truth.confidence * 100).toInt()} %\n\n")
+            append("Confiance Android : ${(truth.confidence * 100).toInt()} %\n\n")
             append("WHY : ${vaultDecision.why}\n")
             append("WHAT : ${vaultDecision.what.name}\n")
             append("RESULT : ${vaultDecision.result}\n\n")
-            append("Le bouton d’optimisation agit uniquement sur le Wi-Fi actif : micro-probe, signal de réévaluation Android et rafraîchissement des métriques.")
+            append("Règle anti-faux-positif : un échec de serveur de test ne peut jamais dégrader seul un réseau déjà VALIDATED par Android.")
         }
     }
 
@@ -182,7 +196,7 @@ class MainActivity : Activity() {
     private fun failureLabel(t: NetworkTruth): String = when (t.failureDomain.name) {
         "NONE" -> "Aucun problème détecté"
         "NO_LINK" -> "Aucune liaison réseau"
-        "ISP" -> "Accès Internet indisponible"
+        "ISP" -> "Accès Internet non confirmé"
         "ROUTER" -> "Connexion au routeur requise"
         else -> "En cours d’analyse"
     }
