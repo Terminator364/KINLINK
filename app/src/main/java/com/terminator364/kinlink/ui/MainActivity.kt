@@ -23,6 +23,8 @@ import com.terminator364.kinlink.core.MobileBudgetSnapshot
 import com.terminator364.kinlink.core.MobileBudgetTracker
 import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.NetworkObserver
+import com.terminator364.kinlink.core.RecoveryMode
+import com.terminator364.kinlink.core.RecoveryModeStore
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.WifiDoctor
 import com.terminator364.kinlink.core.WifiOptimizer
@@ -36,6 +38,7 @@ class MainActivity : Activity() {
     private lateinit var ledger: TelemetryLedger
     private lateinit var mobileBudget: MobileBudgetTracker
     private lateinit var profileStore: AutopilotProfileStore
+    private lateinit var recoveryModeStore: RecoveryModeStore
 
     private lateinit var stateText: TextView
     private lateinit var transportText: TextView
@@ -51,6 +54,7 @@ class MainActivity : Activity() {
     private lateinit var wifiDoctorButton: TextView
     private lateinit var budgetButton: TextView
     private lateinit var profileButton: TextView
+    private lateinit var safeModeButton: TextView
 
     private var latestTruth = NetworkTruth()
     private var currentProfile = AutopilotProfile.BALANCED
@@ -81,6 +85,7 @@ class MainActivity : Activity() {
         wifiDoctorButton = findViewById(R.id.wifiDoctorButton)
         budgetButton = findViewById(R.id.budgetButton)
         profileButton = findViewById(R.id.profileButton)
+        safeModeButton = findViewById(R.id.safeModeButton)
         val installedVersion = runCatching { packageManager.getPackageInfo(packageName, 0).versionName }.getOrNull() ?: "?"
         findViewById<TextView>(R.id.versionText).text = "KINLINK $installedVersion"
 
@@ -89,8 +94,10 @@ class MainActivity : Activity() {
         ledger = TelemetryLedger(this)
         mobileBudget = MobileBudgetTracker(this)
         profileStore = AutopilotProfileStore(this)
+        recoveryModeStore = RecoveryModeStore(this)
         currentProfile = profileStore.current()
         refreshProfileButton()
+        refreshSafeModeButton()
 
         technicalToggle.setOnClickListener { toggleTechnicalDetails() }
         diagnosticExport.setOnClickListener { exportDiagnostic() }
@@ -99,6 +106,21 @@ class MainActivity : Activity() {
         profileButton.setOnClickListener {
             currentProfile = profileStore.cycle()
             refreshProfileButton()
+            render(latestTruth, latestBudget, latestStability)
+        }
+        safeModeButton.setOnClickListener {
+            val mode = recoveryModeStore.toggle()
+            runCatching {
+                ledger.appendAction(
+                    "RECOVERY_MODE_${mode.name}",
+                    true,
+                    if (mode == RecoveryMode.OBSERVATION_ONLY)
+                        "Mode sûr activé par l’utilisateur : récupération active suspendue."
+                    else
+                        "Autopilot actif réactivé par l’utilisateur."
+                )
+            }
+            refreshSafeModeButton()
             render(latestTruth, latestBudget, latestStability)
         }
 
@@ -132,6 +154,15 @@ class MainActivity : Activity() {
 
     private fun refreshProfileButton() {
         profileButton.text = "Profil Autopilot · ${profileLabel(currentProfile)}"
+    }
+
+    private fun refreshSafeModeButton() {
+        val observationOnly = recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY
+        safeModeButton.text = if (observationOnly) {
+            "Mode sûr ACTIF · Observation uniquement"
+        } else {
+            "Mode sûr · Basculer en observation uniquement"
+        }
     }
 
     private fun profileLabel(profile: AutopilotProfile): String = when (profile) {
@@ -183,6 +214,11 @@ class MainActivity : Activity() {
     }
 
     private fun optimizeWifi() {
+        if (recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY) {
+            adviceTitleText.text = "Mode sûr actif"
+            adviceText.text = "KINLINK observe uniquement. Aucune optimisation active n’est exécutée."
+            return
+        }
         wifiDoctorButton.isEnabled = false
         adviceTitleText.text = "Analyse de résilience Wi-Fi"
         adviceText.text =
@@ -256,6 +292,7 @@ class MainActivity : Activity() {
         detailText.text = buildString {
             append("État KINLINK : ${assessment.state.name}\n")
             append("Profil Autopilot : ${currentProfile.name}\n")
+            append("Mode récupération : ${recoveryModeStore.current().name}\n")
             append("Réseau local : ${lanLabel(truth)}\n")
             append("Contexte : ${contextLabel(truth)}\n")
             append("Diagnostic : ${failureLabel(truth)}\n")

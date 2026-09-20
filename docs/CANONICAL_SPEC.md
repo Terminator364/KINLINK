@@ -62,3 +62,11 @@ Compilation alone never qualifies a version as final.
 - Wi-Fi exit transitions create local handoff receipts.
 - A subsequent cellular VALIDATED state records a successful handoff outcome.
 - Cellular present but not yet VALIDATED is recorded as evidence only; KINLINK takes no recovery action.
+
+
+## User fail-open control
+
+KINLINK exposes a persistent Recovery Mode:
+- AUTOMATIC: bounded Wi-Fi-only recovery is permitted by the normal policy gates.
+- OBSERVATION_ONLY: all active recovery and manual Wi-Fi optimization are suspended; telemetry and status remain available.
+- The user can switch modes without uninstalling the app.

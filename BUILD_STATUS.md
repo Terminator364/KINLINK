@@ -1,22 +1,16 @@
 # KINLINK build status
 
-## Proven machine state
+## Proven hardened baseline
 
-The following hardened batches are now fully green:
-- fail-open mobile handoff;
-- forbidden API CI fence;
-- low-memory/battery/thermal resource guard;
-- 5 s recovery watchdog and stale-network abort;
-- restart-storm observation-only degradation;
-- 5 s post-handoff settling window.
+All P0 handoff, watchdog, resource, lifecycle and post-handoff settling batches through `7a35ef299257c30f7548cc0fe3d9a447e69662af` are green.
 
-## Current product observability batch
+## Current integration
 
-Added:
-- explicit mobile observation-only status in the cockpit;
-- dynamic foreground notification by active transport;
-- handoff outcome tracking;
-- successful cellular VALIDATED receipt after Wi-Fi exit;
-- evidence receipt when mobile exists but is not yet validated.
+In addition to handoff outcome observability, KINLINK now gains a persistent user fail-open control:
+- AUTOMATIC mode;
+- OBSERVATION_ONLY safe mode;
+- safe mode blocks automatic recovery and manual Wi-Fi optimization;
+- safe mode does not stop passive diagnostics or telemetry;
+- current mode is visible in technical details and foreground notification.
 
-No mobile-data control API was introduced.
+No uninstall is required to disable active KINLINK behavior in future field testing.

@@ -14,6 +14,7 @@ class KinlinkObserverService : Service() {
     private lateinit var observer: NetworkObserver
     private lateinit var ledger: TelemetryLedger
     private lateinit var mobileBudget: MobileBudgetTracker
+    private lateinit var recoveryModeStore: RecoveryModeStore
     private var recovery: AutopilotRecoveryController? = null
     private val handoffAudit = NetworkHandoffAudit()
     private val handoffOutcomeTracker = HandoffOutcomeTracker()
@@ -36,6 +37,7 @@ class KinlinkObserverService : Service() {
 
         ledger = TelemetryLedger(this)
         mobileBudget = MobileBudgetTracker(this)
+        recoveryModeStore = RecoveryModeStore(this)
         val lifecycleDecision = LifecycleSafetyGuard(this).noteStart()
         runCatching {
             ledger.appendAction(
@@ -78,7 +80,9 @@ class KinlinkObserverService : Service() {
                     )
                 }
                 updateNotificationFor(truth)
-                recovery?.onTruth(truth, ledger.stabilityWindow().assessment.score)
+                if (recoveryModeStore.current() == RecoveryMode.AUTOMATIC) {
+                    recovery?.onTruth(truth, ledger.stabilityWindow().assessment.score)
+                }
             }
         }
         observer.start()
@@ -99,7 +103,10 @@ class KinlinkObserverService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun updateNotificationFor(truth: NetworkTruth) {
-        val text = when (truth.transport) {
+        val observationOnly = recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY
+        val text = if (observationOnly) {
+            "Mode sûr · observation uniquement · Android garde le contrôle"
+        } else when (truth.transport) {
             Transport.CELLULAR -> "Données mobiles · Android contrôle · KINLINK observe seulement"
             Transport.WIFI -> "Résilience Wi-Fi active · données mobiles hors contrôle KINLINK"
             Transport.ETHERNET -> "Ethernet · observation seulement"

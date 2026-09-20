@@ -1,20 +1,13 @@
 {
   "project": "KINLINK",
-  "phase": "P0_HANDOFF_OUTCOME_OBSERVABILITY_CI_PENDING",
+  "phase": "P0_USER_FAIL_OPEN_CONTROL_CI_PENDING",
   "status": "ACTIVE",
-  "incident_priority": "P0_MOBILE_HANDOFF",
   "delivery": "HOLD_UNTIL_CONSOLIDATED_PASS",
-  "proven_machine_batches": [
-    "hard fail-open handoff",
-    "forbidden network ownership API fence",
-    "resource guard",
-    "recovery watchdog and stale-network abort",
-    "restart-storm safe degradation",
-    "post-handoff settling window"
-  ],
+  "proven_machine_baseline_through": "7a35ef299257c30f7548cc0fe3d9a447e69662af",
   "integrating_now": [
-    "dynamic observation-only mobile status",
-    "handoff outcome evidence"
+    "handoff outcome observability",
+    "persistent observation-only safe mode",
+    "manual optimization disabled while safe mode is active"
   ],
-  "next_uncommitted_action": "pass CI, consolidate diagnostic/report UI and release gates, then prepare next stable-signed installer"
+  "next_uncommitted_action": "pass CI, finalize consolidated diagnostics/release evidence, bump consolidated candidate and promote only after signing/readback"
 }
