@@ -5,6 +5,7 @@ import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
 import com.terminator364.kinlink.core.PassiveProblemClassifier
 import com.terminator364.kinlink.core.PassiveGuidancePolicy
 import com.terminator364.kinlink.core.SessionHealthPolicy
+import com.terminator364.kinlink.core.ActionDurationPolicy
 
 /** Privacy-safe diagnostic summary: no SSID, SIM identifier, IP address, gateway or payload. */
 data class DiagnosticSummary(
@@ -35,7 +36,10 @@ data class DiagnosticSummary(
     val passiveCauseCounts: Map<String, Int> = emptyMap(),
     val coreSelfTestPasses: Int = 0,
     val observerSelfTestPasses: Int = 0,
-    val runtimeBudgetSessions: Int = 0
+    val runtimeBudgetSessions: Int = 0,
+    val recoveryActionDurationTotalMillis: Long = 0L,
+    val recoveryActionDurationMaxMillis: Long = 0L,
+    val recoveryActionDurationSamples: Int = 0
 )
 
 object DiagnosticReportBuilder {
@@ -103,6 +107,16 @@ object DiagnosticReportBuilder {
         appendLine("- Long (>=30 s): ${summary.longInterruptions}")
         appendLine("- Cumulative interruption time: ${summary.totalInterruptionMillis} ms")
         appendLine("- Longest retained interruption: ${summary.longestInterruptionMillis} ms")
+        appendLine()
+
+        appendLine("Automatic recovery control-path duration")
+        appendLine("- Samples: ${summary.recoveryActionDurationSamples}")
+        appendLine("- Total measured control-path time: ${summary.recoveryActionDurationTotalMillis} ms")
+        appendLine("- Longest action: ${summary.recoveryActionDurationMaxMillis} ms")
+        if (summary.recoveryActionDurationSamples > 0) {
+            appendLine("- Longest action class: ${ActionDurationPolicy.classify(summary.recoveryActionDurationMaxMillis).name}")
+        }
+        appendLine("- Note: this is KINLINK action execution time, not Internet/network latency.")
         appendLine()
 
         appendLine("Recovery effectiveness")

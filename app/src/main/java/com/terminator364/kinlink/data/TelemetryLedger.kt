@@ -180,6 +180,15 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         )
     }
 
+    fun actionDurationStats(actionPrefix: String): Triple<Long, Long, Int> =
+        readableDatabase.rawQuery(
+            "SELECT COALESCE(SUM(duration_ms), 0), COALESCE(MAX(duration_ms), 0), COUNT(duration_ms) FROM action_receipts WHERE action LIKE ? AND duration_ms IS NOT NULL",
+            arrayOf("$actionPrefix%")
+        ).use { cursor ->
+            cursor.moveToFirst()
+            Triple(cursor.getLong(0), cursor.getLong(1), cursor.getInt(2))
+        }
+
     fun interruptionDurationStats(): Pair<Long, Long> =
         readableDatabase.rawQuery(
             "SELECT COALESCE(SUM(duration_ms), 0), COALESCE(MAX(duration_ms), 0) FROM action_receipts WHERE action LIKE 'INTERRUPTION_%' AND duration_ms IS NOT NULL",
@@ -273,6 +282,7 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         }
 
         val interruptionDurations = interruptionDurationStats()
+        val recoveryDurations = actionDurationStats("AUTO_RECOVERY")
         val stability = stabilityWindow()
         return DiagnosticSummary(
             generatedAtMillis = System.currentTimeMillis(),
@@ -302,7 +312,10 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             passiveCauseCounts = actionCountsByPrefix("PASSIVE_CAUSE_"),
             coreSelfTestPasses = countActions("SELF_TEST_CORE"),
             observerSelfTestPasses = countActions("SELF_TEST_OBSERVER_CALLBACK"),
-            runtimeBudgetSessions = countActions("RUNTIME_BUDGET_SESSION")
+            runtimeBudgetSessions = countActions("RUNTIME_BUDGET_SESSION"),
+            recoveryActionDurationTotalMillis = recoveryDurations.first,
+            recoveryActionDurationMaxMillis = recoveryDurations.second,
+            recoveryActionDurationSamples = recoveryDurations.third
         )
     }
 }

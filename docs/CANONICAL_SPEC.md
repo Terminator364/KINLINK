@@ -238,3 +238,17 @@ Telemetry schema v4 adds an optional duration_ms field to action receipts.
 Interruption receipts store their measured duration structurally.
 Diagnostics report cumulative and longest retained interruption duration.
 Existing receipts migrate with NULL duration and remain valid.
+
+
+## Recovery action control-path timing
+
+Automatic recovery receipts now store the elapsed execution duration of the KINLINK action path.
+This is explicitly not labeled as network latency.
+
+Duration classes:
+- FAST <= 250 ms
+- BOUNDED >250 ms and <= half watchdog
+- NEAR_WATCHDOG > half watchdog and <= watchdog
+- OVER_WATCHDOG > watchdog
+
+After a micro-probe, if more than half of the 5 s watchdog budget is already consumed, KINLINK freezes further action and does not issue an additional bandwidth refresh.
