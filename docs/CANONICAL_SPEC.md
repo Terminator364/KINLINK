@@ -1,4 +1,4 @@
-# KINLINK Canonical Specification v0.3
+# KINLINK Canonical Specification v0.4
 
 ## Mission
 
@@ -18,6 +18,7 @@ The target is not a diagnostic toy. The target product is an install-once networ
 8. No root requirement.
 9. Battery, thermal and RAM overhead remain bounded.
 10. Any optimization stronger than observation must have a rollback path and evidence threshold.
+11. One network transition must be recorded once; UI observers may not duplicate background-service ledger writes.
 
 ## Evidence hierarchy
 
@@ -29,12 +30,47 @@ Highest-confidence public signals:
 - active transport and LinkProperties.
 
 Supporting evidence:
-- bounded user-initiated micro-probes;
-- DNS/gateway observations;
+- bounded user-initiated Wi-Fi micro-probes;
 - historical transition evidence;
-- future ConnectivityDiagnostics events.
+- local instability score;
+- mobile byte counters;
+- future data-plane diagnostics only when Android actually exposes them to KINLINK.
 
-A negative micro-probe is supporting evidence only. If Android already reports a validated network, a failed probe is recorded as endpoint-specific/inconclusive, not as WIFI_BAD.
+A negative micro-probe is supporting evidence only. If Android already reports a validated network, a failed probe is endpoint-specific/inconclusive, not WIFI_BAD.
+
+## Mobile Vault
+
+Mobile Vault is local-first and passive by default:
+- TrafficStats mobile RX/TX counters are sampled only when KINLINK already receives an event or renders the cockpit;
+- counters are persisted as deltas, never polled continuously;
+- daily envelope is optional and user-defined;
+- 80% of the configured envelope enters BUNDLE_LOW;
+- 100% enters BUNDLE_EXHAUSTED;
+- BUNDLE_LOW/EXHAUSTED suspend KINLINK mobile probes and retries;
+- a counter rollback after reboot resets the baseline without inventing traffic;
+- no carrier credential, SIM identifier or packet payload is stored.
+
+TrafficStats is a guardrail estimate, not carrier billing truth. Carrier balance/expiry integration remains a separate evidence source.
+
+## Stability and anti-flapping
+
+KINLINK keeps a bounded recent event window and derives:
+- number of state events;
+- Internet-state transitions;
+- validated-event ratio;
+- 0..100 instability score;
+- flapping flag.
+
+The adaptive policy is no-regret:
+- validated stable Wi-Fi is left alone;
+- unstable but still validated Wi-Fi is observed, not aggressively reset;
+- low/exhausted mobile budget overrides recovery;
+- captive portals require user action;
+- incomplete evidence defaults to observation.
+
+## Android platform constraints
+
+ConnectivityDiagnosticsManager is not treated as a guaranteed signal for the current app role. Android documents that callbacks are delivered only to apps that offer connectivity to the user, such as active VPNs, carrier apps or Wi-Fi suggesters, with relevant permissions. KINLINK therefore does not claim these callbacks until the future stabilizer data plane qualifies and is separately verified.
 
 ## Connectivity dimensions
 
@@ -48,7 +84,8 @@ KINLINK maintains independent state for:
 7. user/application intent;
 8. battery/thermal budget;
 9. diagnostic confidence;
-10. last bounded recovery action and outcome.
+10. bounded recovery action and outcome;
+11. recent instability/flapping evidence.
 
 ## Bounded action ladder
 
@@ -56,8 +93,8 @@ KINLINK maintains independent state for:
 - A1 Refresh — request fresh bandwidth/network metrics.
 - A2 Confirm — explicit Wi-Fi-only micro-probe with endpoint fallback.
 - A3 Revalidate — report coherent positive/negative evidence to Android only when Android is not already authoritative.
-- A4 Stabilizer — optional VpnService/TUN data plane, disabled until its own benchmark and fail-open gates pass.
-- A5 Adaptive autopilot — shadow evaluation first; promotion only after no-regret evidence.
+- A4 Stabilizer — optional VpnService/TUN data plane, disabled until benchmark and fail-open gates pass.
+- A5 Adaptive autopilot — current shadow/no-regret policy; active promotion only after field evidence.
 
 ## User-visible profiles
 
@@ -65,7 +102,7 @@ KINLINK maintains independent state for:
 - Balanced (default)
 - Maximum Stability
 
-The user should not need to tune internal thresholds manually.
+The user should not have to tune internal thresholds individually.
 
 ## Total-product acceptance gate
 
@@ -75,9 +112,11 @@ A version may be called product-grade only when all applicable gates pass:
 - install/update continuity;
 - Android 15/16 lifecycle behavior;
 - no contradictory state presentation;
-- mobile-data safety;
+- no duplicate telemetry;
+- mobile-data safety and budget guard;
 - LAN/WAN separation;
 - bounded recovery behavior;
+- anti-flapping behavior;
 - fail-open watchdog for any data plane;
 - privacy-safe diagnostics;
 - field evidence from the target phone;
