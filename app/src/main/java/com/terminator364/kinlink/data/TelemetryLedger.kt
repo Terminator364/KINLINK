@@ -67,7 +67,6 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         db.execSQL("CREATE INDEX IF NOT EXISTS idx_action_receipts_ts ON action_receipts(ts_wall_ms)")
     }
 
-    /** Stores only local metadata. No SSID, BSSID, payload or SIM identifier is recorded. */
     fun append(truth: NetworkTruth) {
         writableDatabase.execSQL(
             """
@@ -85,13 +84,9 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         pruneNetworkEvents()
     }
 
-    /**
-     * Stores a bounded privacy-safe result receipt for explicit KINLINK actions.
-     * Summary is truncated and normalized; network identifiers and payloads are never added here.
-     */
     fun appendAction(action: String, success: Boolean, summary: String) {
-        val safeAction = action.take(48)
-        val safeSummary = summary.replace("\n", " ").replace("\r", " ").take(240)
+        val safeAction = action.take(64)
+        val safeSummary = summary.replace("\n", " ").replace("\r", " ").take(320)
         writableDatabase.execSQL(
             """
             INSERT INTO action_receipts(receipt_id, ts_wall_ms, action, success, summary)
@@ -107,6 +102,23 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         )
         pruneActionReceipts()
     }
+
+    fun countActionsSince(actionPrefix: String, sinceWallMs: Long): Int =
+        readableDatabase.rawQuery(
+            "SELECT COUNT(*) FROM action_receipts WHERE action LIKE ? AND ts_wall_ms >= ?",
+            arrayOf("$actionPrefix%", sinceWallMs.toString())
+        ).use { cursor ->
+            cursor.moveToFirst()
+            cursor.getInt(0)
+        }
+
+    fun latestActionTimestamp(actionPrefix: String): Long? =
+        readableDatabase.rawQuery(
+            "SELECT ts_wall_ms FROM action_receipts WHERE action LIKE ? ORDER BY ts_wall_ms DESC LIMIT 1",
+            arrayOf("$actionPrefix%")
+        ).use { cursor ->
+            if (cursor.moveToFirst()) cursor.getLong(0) else null
+        }
 
     private fun pruneNetworkEvents() {
         writableDatabase.execSQL(
@@ -155,7 +167,6 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         var transitions = 0
         var validated = 0
         var previousState: String? = null
-
         readableDatabase.rawQuery(
             "SELECT internet_state FROM network_events WHERE ts_wall_ms >= ? ORDER BY ts_wall_ms ASC",
             arrayOf(since.toString())
@@ -168,12 +179,11 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
                 previousState = state
             }
         }
-
         return StabilityWindow(
-            events = events,
-            transitions = transitions,
-            validatedEvents = validated,
-            assessment = NetworkStabilityPolicy.assess(events, transitions, validated)
+            events,
+            transitions,
+            validated,
+            NetworkStabilityPolicy.assess(events, transitions, validated)
         )
     }
 
@@ -192,9 +202,7 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             "SELECT transport || '_' || internet_state, COUNT(*) FROM network_events GROUP BY transport, internet_state",
             null
         ).use { cursor ->
-            while (cursor.moveToNext()) {
-                counts[cursor.getString(0)] = cursor.getInt(1)
-            }
+            while (cursor.moveToNext()) counts[cursor.getString(0)] = cursor.getInt(1)
         }
 
         val stability = stabilityWindow()

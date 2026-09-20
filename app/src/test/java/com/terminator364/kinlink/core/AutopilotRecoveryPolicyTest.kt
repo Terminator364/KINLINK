@@ -1,0 +1,62 @@
+package com.terminator364.kinlink.core
+
+import org.junit.Assert.assertEquals
+import org.junit.Test
+
+class AutopilotRecoveryPolicyTest {
+    @Test fun neverActsOnCellular() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(transport = Transport.CELLULAR, internetState = InternetState.UNKNOWN),
+            AutopilotProfile.MAXIMUM_STABILITY, 100, false, 0, Long.MAX_VALUE
+        )
+        assertEquals(AutomaticRecoveryAction.NONE, d.action)
+    }
+
+    @Test fun meteredWifiNeverGetsAutomaticProbe() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(transport = Transport.WIFI, internetState = InternetState.UNKNOWN, lanState = LanState.LINK_PRESENT, metered = true),
+            AutopilotProfile.BALANCED, 70, false, 0, Long.MAX_VALUE
+        )
+        assertEquals(AutomaticRecoveryAction.NONE, d.action)
+    }
+
+    @Test fun unvalidatedUnmeteredWifiCanBeConfirmed() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(transport = Transport.WIFI, internetState = InternetState.UNKNOWN, lanState = LanState.LINK_PRESENT, metered = false),
+            AutopilotProfile.BALANCED, 60, false, 0, Long.MAX_VALUE
+        )
+        assertEquals(AutomaticRecoveryAction.CONFIRM_WIFI, d.action)
+    }
+
+    @Test fun stableValidatedWifiIsLeftAlone() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(transport = Transport.WIFI, internetState = InternetState.VALIDATED, lanState = LanState.LINK_PRESENT),
+            AutopilotProfile.BALANCED, 10, false, 0, Long.MAX_VALUE
+        )
+        assertEquals(AutomaticRecoveryAction.NONE, d.action)
+    }
+
+    @Test fun unstableValidatedWifiOnlyRefreshesMetrics() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(transport = Transport.WIFI, internetState = InternetState.VALIDATED, lanState = LanState.LINK_PRESENT),
+            AutopilotProfile.MAXIMUM_STABILITY, 70, false, 0, Long.MAX_VALUE
+        )
+        assertEquals(AutomaticRecoveryAction.REFRESH_METRICS, d.action)
+    }
+
+    @Test fun resourceConstraintBlocksRecovery() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(transport = Transport.WIFI, internetState = InternetState.UNKNOWN, lanState = LanState.LINK_PRESENT),
+            AutopilotProfile.MAXIMUM_STABILITY, 100, true, 0, Long.MAX_VALUE
+        )
+        assertEquals(AutomaticRecoveryAction.NONE, d.action)
+    }
+
+    @Test fun hourlyCapStopsRunawayRecovery() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(transport = Transport.WIFI, internetState = InternetState.UNKNOWN, lanState = LanState.LINK_PRESENT),
+            AutopilotProfile.BALANCED, 100, false, 4, Long.MAX_VALUE
+        )
+        assertEquals(AutomaticRecoveryAction.NONE, d.action)
+    }
+}

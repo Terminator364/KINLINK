@@ -196,7 +196,7 @@ class MainActivity : Activity() {
                 adviceTitleText.text = when {
                     result.success && result.androidValidated -> "Wi-Fi validé"
                     result.success -> "Wi-Fi confirmé"
-                    else -> "Réévaluation Wi-Fi demandée"
+                    else -> "Wi-Fi non confirmé"
                 }
                 adviceText.text = result.summary
                 detailText.text = detailText.text.toString() +
