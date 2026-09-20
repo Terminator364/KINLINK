@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.terminator364.kinlink.core.NetworkStabilityPolicy
+import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.StabilityAssessment
 import java.util.UUID
@@ -22,7 +23,7 @@ data class ActionReceipt(
     val summary: String
 )
 
-class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_telemetry.db", null, 2) {
+class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_telemetry.db", null, 3) {
     override fun onCreate(db: SQLiteDatabase) {
         createNetworkEvents(db)
         createActionReceipts(db)
@@ -30,6 +31,9 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 2) createActionReceipts(db)
+        if (oldVersion < 3) {
+            runCatching { db.execSQL("ALTER TABLE network_events ADD COLUMN quality_tier TEXT NOT NULL DEFAULT 'UNKNOWN'") }
+        }
     }
 
     private fun createNetworkEvents(db: SQLiteDatabase) {
@@ -45,7 +49,8 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
               interface_name TEXT,
               gateway TEXT,
               failure_domain TEXT NOT NULL,
-              confidence REAL NOT NULL
+              confidence REAL NOT NULL,
+              quality_tier TEXT NOT NULL DEFAULT 'UNKNOWN'
             )
             """.trimIndent()
         )
@@ -72,13 +77,14 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             """
             INSERT INTO network_events(
               event_id, ts_wall_ms, transport, internet_state, context_type, metered,
-              interface_name, gateway, failure_domain, confidence
-            ) VALUES(?,?,?,?,?,?,?,?,?,?)
+              interface_name, gateway, failure_domain, confidence, quality_tier
+            ) VALUES(?,?,?,?,?,?,?,?,?,?,?)
             """.trimIndent(),
             arrayOf(
                 UUID.randomUUID().toString(), truth.observedAtMillis, truth.transport.name,
                 truth.internetState.name, truth.context.name, if (truth.metered) 1 else 0,
-                truth.interfaceName, truth.gateway, truth.failureDomain.name, truth.confidence
+                truth.interfaceName, truth.gateway, truth.failureDomain.name, truth.confidence,
+                PassiveLinkQualityPolicy.assess(truth).quality.name
             )
         )
         pruneNetworkEvents()
@@ -214,12 +220,21 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             while (cursor.moveToNext()) counts[cursor.getString(0)] = cursor.getInt(1)
         }
 
+        val qualityCounts = linkedMapOf<String, Int>()
+        readableDatabase.rawQuery(
+            "SELECT quality_tier, COUNT(*) FROM network_events GROUP BY quality_tier",
+            null
+        ).use { cursor ->
+            while (cursor.moveToNext()) qualityCounts[cursor.getString(0)] = cursor.getInt(1)
+        }
+
         val stability = stabilityWindow()
         return DiagnosticSummary(
             generatedAtMillis = System.currentTimeMillis(),
             totalEvents = recentCount(),
             currentTruth = currentTruth,
             stateCounts = counts,
+            qualityCounts = qualityCounts,
             weeklyEvents = weeklyEvents,
             recentTransitions = stability.transitions,
             instabilityScore = stability.assessment.score,

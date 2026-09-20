@@ -120,3 +120,10 @@ The action remains REFRESH_METRICS only: no hidden probe, no route change, no mo
 The bounded Wi-Fi micro-probe re-checks before each endpoint that the originally captured network is still Android's active Wi-Fi.
 If a handoff started, remaining endpoints are skipped immediately.
 The probe never falls through to cellular.
+
+
+## Low-noise quality history
+
+Telemetry schema v3 stores only the passive quality tier with each deduplicated network event.
+It does not persist raw per-callback kbps fluctuations.
+Existing v2 databases migrate in place with UNKNOWN as the historical default.

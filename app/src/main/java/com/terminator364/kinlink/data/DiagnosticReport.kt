@@ -9,6 +9,7 @@ data class DiagnosticSummary(
     val totalEvents: Int,
     val currentTruth: NetworkTruth,
     val stateCounts: Map<String, Int>,
+    val qualityCounts: Map<String, Int> = emptyMap(),
     val weeklyEvents: Int = totalEvents,
     val recentTransitions: Int = 0,
     val instabilityScore: Int = 0,
@@ -65,6 +66,16 @@ object DiagnosticReportBuilder {
         } else {
             summary.recentActions.forEach { receipt ->
                 appendLine("- ${receipt.tsWallMs} · ${receipt.action} · ${if (receipt.success) "PASS" else "FAIL"} · ${receipt.summary}")
+            }
+        }
+        appendLine()
+
+        appendLine("Passive quality history")
+        if (summary.qualityCounts.isEmpty()) {
+            appendLine("- No passive quality history yet")
+        } else {
+            summary.qualityCounts.toSortedMap().forEach { (quality, count) ->
+                appendLine("- $quality: $count")
             }
         }
         appendLine()
