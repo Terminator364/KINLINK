@@ -31,5 +31,6 @@ data class NetworkTruth(
 /** A stable, non-identifying representation used to suppress duplicate telemetry. */
 fun NetworkTruth.telemetryFingerprint(): String = listOf(
     transport, internetState, lanState, budgetState, failureDomain, context,
-    metered, interfaceName, gateway, downstreamKbps, upstreamKbps
+    metered, interfaceName, gateway,
+    PassiveLinkQualityPolicy.assess(this).quality
 ).joinToString("|")
