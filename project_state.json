@@ -1,54 +1,46 @@
 {
   "project": "KINLINK",
-  "phase": "RC2_CONSOLIDATED_SAFE_INTEGRATION_PASS",
+  "phase": "RC2_PROMOTED_FIELD_VERIFICATION_PENDING",
   "status": "ACTIVE",
-  "stable_field_baseline": {
+  "candidate_version": "0.5.0-rc2",
+  "last_field_proven_baseline": {
     "version": "0.4.0-rc1",
-    "source_commit": "a818ddf31bf952a52a40d3df02cddb1e7914b933",
-    "apk_sha256": "030015ccd39f2536dea071434c987a243ecc4d0e29067d7b8b3e0ce41bd0e8d5",
-    "drive_file_id": "1EUEEkAFoX0pQEdCU3prP5UoawbzHoh4L"
+    "apk_sha256": "030015ccd39f2536dea071434c987a243ecc4d0e29067d7b8b3e0ce41bd0e8d5"
   },
-  "development_head": {
-    "commit": "11a0dc026e7b3ebe1ec798f12ca592fea506e000",
-    "ci_run": 35532848258,
+  "promoted_candidate": {
+    "version": "0.5.0-rc2",
+    "source_commit": "7124e1d1cc9b3430f24af74fc2501371c182c25a",
+    "ci_run": 35533990740,
     "ci_status": "PASS",
-    "scope": [
-      "permanent regression fix for contradictory Wi-Fi status",
-      "persistent Conservative/Balanced/Maximum Stability Autopilot profiles",
-      "bounded privacy-safe action receipt ledger",
-      "diagnostic export includes recent action receipts",
-      "installed version surfaced in cockpit",
-      "recovery qualification gates",
-      "bounded name-resolution recovery policy",
-      "fail-open recovery watchdog policy"
-    ]
+    "drive_file_id": "1EUEEkAFoX0pQEdCU3prP5UoawbzHoh4L",
+    "apk_sha256": "5f5229c0d17301dac46032318c0ef9bec344e2c2e9848ccd7378d1f3311b8d6a",
+    "signer_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
+    "drive_readback": "BYTE_IDENTICAL"
   },
-  "field_evidence": {
-    "observed_contradiction": "WIFI_HEALTHY was shown together with a negative Wi-Fi revalidation message in the previously installed build",
-    "root_cause": "single external connectivity endpoint had excessive authority",
-    "permanent_regression_rule": "Android VALIDATED cannot be overruled by isolated external probe failure",
-    "fixed_since": "0.4.0-rc1"
-  },
+  "implemented_now": [
+    "permanent Android VALIDATED versus probe arbitration",
+    "dual bounded Wi-Fi micro-probe",
+    "Mobile Vault",
+    "persistent Autopilot profiles",
+    "stability/flapping score",
+    "automatic Wi-Fi-only bounded recovery",
+    "no automatic negative Android connectivity hint",
+    "automatic probes blocked on metered Wi-Fi",
+    "cooldown and hourly recovery caps",
+    "battery-saver and severe-thermal guard",
+    "durable action receipt ledger",
+    "BOOT_COMPLETED and MY_PACKAGE_REPLACED observer restart"
+  ],
   "strong_recovery_gate": {
     "production_enabled": false,
     "requirements": [
-      "prototype evidence",
-      "name-resolution resilience evidence",
-      "watchdog teardown evidence",
+      "VpnService/TUN prototype evidence",
+      "DNS/name-resolution runtime evidence",
+      "watchdog teardown runtime evidence",
       "RAM and battery budget evidence",
       "latency budget evidence",
-      "rollback evidence"
-    ],
-    "reason": "strong recovery stays disabled until measured evidence proves it does not create a worse failure mode"
+      "rollback field evidence"
+    ]
   },
-  "p0_invariants": [
-    "never automatically speed-test mobile data",
-    "never let one external probe overrule Android VALIDATED",
-    "never permanently block normal Android networking",
-    "preserve LAN independently from WAN",
-    "preserve stable signer certificate across upgrades",
-    "do not make the user install every development increment",
-    "keep the last stable signed installer as rollback while integration continues"
-  ],
-  "next_uncommitted_action": "continue consolidating product-grade observability and qualification evidence; promote one stable-signed installer only when the batch is materially beyond RC1"
+  "next_uncommitted_action": "install RC2 as an in-place update on the target phone, verify no contradictory state, confirm Autopilot/service continuity, then continue M5 qualification without forcing another install unless materially useful"
 }

@@ -1,72 +1,26 @@
-# KINLINK implementation plan — consolidated
+# KINLINK implementation plan
 
-## Completed foundation
+## Proven
+- M0: repository, CI, evidence discipline.
+- M1: observer, LAN/WAN separation, ledger, cockpit, export.
+- M2: persistent signing, Android 15/16 FGS hardening, explicit Wi-Fi action.
+- M3: multi-signal arbitration and anti-false-negative regression.
+- M4: Mobile Vault.
+- M6-safe: stability window, anti-flapping and persistent profiles.
+- RC2: automatic bounded Wi-Fi recovery, rate limiting, metered guard, resource guard, reboot/update restart and action receipts.
 
-### M0 — Repository / CI / evidence discipline
-- Gradle/Kotlin Android baseline
-- CI unit tests + APK build
-- canonical state/checkpoint files
-- deterministic artifact hashes
+## Current promoted candidate
 
-### M1 — Observer Core
-- ConnectivityManager callbacks
-- NetworkCapabilities / LinkProperties reduction
-- LAN vs WAN separation
-- bounded local SQLite ledger
-- cockpit UI
-- privacy-safe diagnostic export
+0.5.0-rc2 passed CI, stable signing and Drive byte-for-byte readback. Field verification is the next gate.
 
-### M2 — Stable update baseline + first bounded action
-- persistent production signing certificate
-- Android 15/16 foreground-service hardening
-- explicit Wi-Fi-only micro-probe
-- Android connectivity re-evaluation hook
-- bandwidth-metric refresh request
+## M5 — optional strong stabilizer
 
-### M3 — Resilience Evidence Engine
-- Android VALIDATED outranks isolated probe failure
-- two-endpoint bounded fallback
-- captive-portal priority
-- coherent positive/negative report policy
-- field contradiction converted into permanent regression tests
+Still gated:
+- VpnService/TUN prototype;
+- DNS resilience/cache benchmark;
+- fail-open heartbeat/watchdog runtime;
+- RAM/battery/thermal benchmark;
+- added-latency benchmark;
+- rollback test.
 
-### M4 — Mobile Vault / Cost Guard — IMPLEMENTED IN RC1
-- passive device-wide mobile RX/TX delta tracking
-- reboot/counter-reset safe baseline
-- optional persisted daily envelope
-- BUNDLE_OK / LOW / EXHAUSTED policy
-- KINLINK probe/retry hold at LOW and EXHAUSTED
-- no continuous polling
-- duplicate UI/service ledger writes removed
-
-### M6 — Adaptive Intelligence, safe subset — IMPLEMENTED IN RC1
-- bounded 15-minute stability window
-- instability score and flapping flag
-- no-regret adaptive policy
-- healthy Wi-Fi left alone
-- unstable-but-validated Wi-Fi observed without hidden probe
-- budget state overrides recovery
-- captive portal remains user-driven
-
-## M5 — Stabilizer Data Plane — GATED, NOT YET PROMOTED
-
-Before activation:
-- VpnService/TUN prototype
-- DNS resilience/cache benchmark
-- per-flow classification
-- fail-open heartbeat/watchdog
-- no-lockdown default
-- battery/RAM/latency benchmark against plain Android
-- automatic disable when no measurable benefit exists
-- field rollback test
-
-Android ConnectivityDiagnostics callbacks are not assumed available to a normal app; KINLINK must first qualify as an active connectivity provider such as a VPN before relying on them.
-
-## Current integrated candidate
-
-0.4.0-rc1 combines M3 + M4 + safe M6 behavior. It is intentionally more complete than the previously installed M2 and is built as one upgrade candidate.
-
-## Final product gate
-
-Do not label KINLINK final/total merely because a milestone compiles.
-The final gate requires the integrated candidate to pass CI, stable-signing continuity, Drive readback, update-in-place installation, field behavior, and any future M5 data-plane benchmarks.
+M5 must automatically disable itself if it does not demonstrate a measurable benefit or if it risks creating a worse failure mode.

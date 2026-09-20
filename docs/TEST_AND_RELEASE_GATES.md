@@ -1,36 +1,39 @@
 # Test and Release Gates
 
-A successful Gradle build is not a release gate.
+## RC2 machine gate — PASS
+- unit/regression tests
+- APK compilation
+- deterministic CI artifact hash
+- stable signer continuity
+- signed APK verification
+- Drive replacement and byte-for-byte readback
 
-## Mandatory pre-field scenarios
-- Wi-Fi healthy
-- cellular healthy
-- cellular -> Wi-Fi
-- Wi-Fi -> cellular
-- trusted Wi-Fi without WAN
-- healthy LAN without Internet
+## Mandatory behavior scenarios
+- healthy validated Wi-Fi
+- validated Wi-Fi + failed external endpoint
+- unvalidated Wi-Fi + positive micro-probe
+- unvalidated Wi-Fi + negative micro-probes
+- metered Wi-Fi/hotspot
+- cellular
+- LAN without WAN
 - captive portal
-- DNS failure
-- IPv6 broken / IPv4 healthy
-- data stall
-- network flapping
-- simulated mobile bundle exhausted
-- mobile budget reached
-- control-process crash
-- network-process crash
-- reboot
-- Android battery saver
-- thermal throttling condition
-- update from previous signed version
-- diagnostic export after crash
-- fail-open recovery
+- flapping
+- mobile budget low/exhausted
+- battery saver
+- severe thermal pressure
+- recovery cooldown/hourly cap
+- reboot and package update restart
+- diagnostic export
 
-## Evidence
-Every scenario produces a machine-readable receipt containing:
-- build SHA
-- device/API profile
-- scenario
-- expected result
-- actual result
-- pass/fail/inconclusive
-- logs/telemetry references
+## Required assertions
+- no automatic cellular probe
+- no automatic metered-Wi-Fi probe
+- no automatic negative Android hint
+- Android VALIDATED cannot be downgraded by endpoint failure
+- stable Wi-Fi is left alone
+- recovery is rate-limited and receipt-carrying
+- resource pressure suspends recovery
+- networking remains fail-open
+
+## Remaining RC2 gate
+Target-phone in-place update and field behavior.

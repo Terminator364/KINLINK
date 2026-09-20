@@ -1,26 +1,19 @@
 # KINLINK build status
 
-## Stable rollback baseline
+## Promoted integrated candidate
 
-**0.4.0-rc1** remains the stable-signed Drive installer.
+- Version: **0.5.0-rc2**
+- Source commit: `7124e1d1cc9b3430f24af74fc2501371c182c25a`
+- CI run: `35533990740` — **PASS**
+- Unit/regression tests: **PASS**
+- Debug build gate: **PASS**
+- Stable signing: **PASS**
+- Signer SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+- Final APK SHA-256: `5f5229c0d17301dac46032318c0ef9bec344e2c2e9848ccd7378d1f3311b8d6a`
+- Drive replacement: **PASS**
+- Drive readback: **BYTE-IDENTICAL**
+- Field verification on target phone: **PENDING**
 
-## Consolidated development head
+RC2 materially exceeds RC1: automatic bounded Wi-Fi recovery, no automatic negative Android hints, metered-Wi-Fi guard, cooldown/rate limits, battery/thermal guard, reboot/update restart and durable action receipts.
 
-Commit: `11a0dc026e7b3ebe1ec798f12ca592fea506e000`  
-GitHub Actions run: `35532848258` — **PASS**
-
-Validated together:
-- Wi-Fi contradiction regression protection;
-- persistent Autopilot profiles;
-- local action receipts;
-- action receipts in diagnostic export;
-- installed build version shown in the cockpit;
-- recovery qualification policy;
-- bounded name-resolution policy;
-- fail-open watchdog policy;
-- existing Mobile Vault and anti-flapping behavior.
-
-## Delivery rule
-
-No user reinstall for this intermediate head.
-The next phone APK will be a consolidated stable-signed candidate, not a micro-update.
+The optional VpnService/TUN stabilizer remains gated and is not claimed as production-ready.

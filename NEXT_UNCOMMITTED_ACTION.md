@@ -1,19 +1,25 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Proven checkpoint
+## Proven machine checkpoint
 
-Development head `11a0dc026e7b3ebe1ec798f12ca592fea506e000` passed CI in run `35532848258`.
+KINLINK 0.5.0-rc2 passed CI and stable-sign promotion.
 
-Stable rollback remains **0.4.0-rc1** in Drive.
+- source: `7124e1d1cc9b3430f24af74fc2501371c182c25a`
+- CI: `35533990740` PASS
+- signed APK SHA-256: `5f5229c0d17301dac46032318c0ef9bec344e2c2e9848ccd7378d1f3311b8d6a`
+- signer: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+- Drive readback: byte-identical
 
-## Next machine work
+## Next human gate
 
-1. Continue product-grade evidence and failure-mode coverage.
-2. Keep strong recovery disabled until its measured gates pass.
-3. Preserve Mobile Vault and Android VALIDATED authority.
-4. Use local action receipts to reduce screenshot-driven diagnosis.
-5. Accumulate a materially larger batch before the next signed installer promotion.
+Install the existing `KINLINK_LATEST.apk` as an **in-place update**. No uninstall should be required because the signer certificate is continuous and versionCode increased from 5 to 6.
 
-## Human install policy
+Check:
+1. app opens as 0.5.0-rc2;
+2. healthy Wi-Fi never shows the previous contradictory negative message;
+3. Autopilot notification/service is active;
+4. normal browsing remains unaffected.
 
-Do not ask for another install until the next candidate is meaningfully more complete than RC1.
+## Next machine work after field gate
+
+Continue M5 prototype qualification (DNS resilience + watchdog + resource/latency benchmark) without promoting it until evidence gates pass.

@@ -1,24 +1,26 @@
 # KINLINK field evidence ledger
 
-## 2026-09-20 — M2 contradiction discovered on target phone
+## 2026-09-20 — contradiction from earlier build
 
-Observed simultaneously:
-- cockpit state: WIFI_HEALTHY
-- LAN: available
-- Android-derived Internet state: healthy/validated
-- explicit optimizer result: Réévaluation Wi-Fi demandée / Le Wi-Fi répond mal
+Observed:
+- WIFI_HEALTHY
+- LAN available
+- Android-derived Internet healthy
+- simultaneous negative Wi-Fi revalidation message
 
 Root cause:
-- M2 allowed one failed external 204 endpoint probe to choose the negative optimizer action even when Android already reported NET_CAPABILITY_VALIDATED.
+A failed external connectivity endpoint had excessive authority.
 
-Classification:
-- logic/evidence-arbitration defect;
-- false-negative diagnosis;
-- not proof of Wi-Fi failure.
+Permanent fix:
+Android VALIDATED cannot be downgraded by external probe failure. RC2 also forbids automatic negative connectivity hints entirely.
 
-Permanent regression rule:
-- Android VALIDATED must not be downgraded by a failed single external probe.
-- external endpoints are supporting evidence only.
-- if a probe fails while Android remains validated, classify the probe as inconclusive/endpoint-specific and preserve the healthy Internet state.
+## 2026-09-20 — RC2 machine promotion
 
-M3 adds a bounded fallback endpoint plus regression tests for this exact failure mechanism.
+- version: 0.5.0-rc2
+- source: 7124e1d1cc9b3430f24af74fc2501371c182c25a
+- CI run: 35533990740 PASS
+- final SHA-256: 5f5229c0d17301dac46032318c0ef9bec344e2c2e9848ccd7378d1f3311b8d6a
+- signer SHA-256: 2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3
+- Drive readback: byte-identical
+
+Field installation/behavior remains pending.
