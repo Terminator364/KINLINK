@@ -26,6 +26,10 @@ data class NetworkTruth(
     val upstreamKbps: Int = 0,
     val dnsServerCount: Int = 0,
     val privateDnsActive: Boolean = false,
+    val hasIpv4Address: Boolean = false,
+    val hasIpv6Address: Boolean = false,
+    val hasIpv4DefaultRoute: Boolean = false,
+    val hasIpv6DefaultRoute: Boolean = false,
     val confidence: Double = 0.0,
     val observedAtMillis: Long = System.currentTimeMillis()
 )
@@ -33,6 +37,7 @@ data class NetworkTruth(
 /** A stable, non-identifying representation used to suppress duplicate telemetry. */
 fun NetworkTruth.telemetryFingerprint(): String = listOf(
     transport, internetState, lanState, budgetState, failureDomain, context,
-    metered, interfaceName, gateway, dnsServerCount, privateDnsActive,
+    metered, dnsServerCount, privateDnsActive,
+    hasIpv4Address, hasIpv6Address, hasIpv4DefaultRoute, hasIpv6DefaultRoute,
     PassiveLinkQualityPolicy.assess(this).quality
 ).joinToString("|")

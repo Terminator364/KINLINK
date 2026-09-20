@@ -2,6 +2,8 @@ package com.terminator364.kinlink.core
 
 import android.net.NetworkCapabilities
 import android.net.LinkProperties
+import java.net.Inet4Address
+import java.net.Inet6Address
 
 object ConnectivityTruthEngine {
     /** Android-facing observation converted to a pure value before any policy reduction. */
@@ -16,7 +18,11 @@ object ConnectivityTruthEngine {
         val downstreamKbps: Int = 0,
         val upstreamKbps: Int = 0,
         val dnsServerCount: Int = 0,
-        val privateDnsActive: Boolean = false
+        val privateDnsActive: Boolean = false,
+        val hasIpv4Address: Boolean = false,
+        val hasIpv6Address: Boolean = false,
+        val hasIpv4DefaultRoute: Boolean = false,
+        val hasIpv6DefaultRoute: Boolean = false
     )
 
     fun reduce(capabilities: NetworkCapabilities?, linkProperties: LinkProperties?): NetworkTruth {
@@ -69,7 +75,15 @@ object ConnectivityTruthEngine {
                 downstreamKbps = capabilities.linkDownstreamBandwidthKbps.coerceAtLeast(0),
                 upstreamKbps = capabilities.linkUpstreamBandwidthKbps.coerceAtLeast(0),
                 dnsServerCount = linkProperties?.dnsServers?.size ?: 0,
-                privateDnsActive = linkProperties?.isPrivateDnsActive ?: false
+                privateDnsActive = linkProperties?.isPrivateDnsActive ?: false,
+                hasIpv4Address = linkProperties?.linkAddresses?.any { it.address is Inet4Address } == true,
+                hasIpv6Address = linkProperties?.linkAddresses?.any { it.address is Inet6Address } == true,
+                hasIpv4DefaultRoute = linkProperties?.routes?.any {
+                    it.isDefaultRoute && it.destination.address is Inet4Address
+                } == true,
+                hasIpv6DefaultRoute = linkProperties?.routes?.any {
+                    it.isDefaultRoute && it.destination.address is Inet6Address
+                } == true
             )
         )
     }
@@ -122,6 +136,10 @@ object ConnectivityTruthEngine {
             upstreamKbps = snapshot.upstreamKbps.coerceAtLeast(0),
             dnsServerCount = snapshot.dnsServerCount.coerceAtLeast(0),
             privateDnsActive = snapshot.privateDnsActive,
+            hasIpv4Address = snapshot.hasIpv4Address,
+            hasIpv6Address = snapshot.hasIpv6Address,
+            hasIpv4DefaultRoute = snapshot.hasIpv4DefaultRoute,
+            hasIpv6DefaultRoute = snapshot.hasIpv6DefaultRoute,
             confidence = if (validated || captive) 0.9 else 0.55
         )
     }
