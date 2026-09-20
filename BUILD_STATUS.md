@@ -1,52 +1,26 @@
 # KINLINK build status
 
-## RC3 consolidated candidate
+## Installed field baseline
+- 0.6.0-rc3
+- bidirectional Wi-Fi → cellular → Wi-Fi field gate: PASS
+- original mobile-block symptom: NOT REPRODUCED
+- canonical Drive artifact remains the installed RC3 baseline
 
-- Version: **0.6.0-rc3**
-- versionCode: **7**
-- P0 mobile handoff hardening: integrated
-- Active recovery gate: **AUTOMATIC + Wi-Fi only**
-- Cellular: **observation-only**
-- User safe mode: **persistent**
-- 5 s post-handoff quiet window: integrated
-- 5 s recovery watchdog: integrated
-- stale-network abort: integrated
-- restart-storm degradation: integrated
-- battery / thermal / low-memory guards: integrated
-- CI source fence against network ownership APIs: integrated
-- manifest fence against CHANGE_NETWORK_STATE / VpnService: integrated
-- diagnostics include handoff outcomes and watchdog aborts
+## Post-field development batch
+Integrated after the field gate:
+- suppress transient OFFLINE flash for 1.5 s during default-network handoff;
+- correct mobile-counter wording (Android device-wide TrafficStats observed by KINLINK, not KINLINK app usage);
+- capture Android passive down/up bandwidth estimates;
+- classify passive link quality independently from Android VALIDATED;
+- Autopilot no longer calls a constrained VALIDATED Wi-Fi simply steady;
+- explicit manual Wi-Fi micro-probe now reports bounded responsiveness (responsive/slow/very slow) with no extra requests;
+- diagnostic report includes passive capacity/quality;
+- telemetry fingerprints use quality tier instead of raw kbps to avoid churn;
+- hero state can show "Wi-Fi connecté mais limité" when Android validates Internet but reports very constrained capacity.
 
-Stable signing and Drive promotion remain blocked until the RC3 CI run is fully green.
-
-
-## Lifecycle evidence added
-
-RC3 now persists BOOT_COMPLETED / MY_PACKAGE_REPLACED service-start outcomes and imports them into the local action ledger on the next successful service creation.
-
-
-## RC3 signed candidate ready
-
-- Final CI source head: `dc7555b784562a059e16107c574839a66dff89cd`
-- Final CI run: `35536189018` — PASS
-- Signed APK SHA-256: `4fb4ac36765b6d3728194bf7884f3c98afff625f4a5bc0637b825db0703a700c`
-- Stable signer certificate SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
-- Drive canonical replacement: PENDING because the container-to-Drive bridge expired; old installer intentionally preserved.
-
-
-## RC3 canonical Drive promotion — PASS
-
-- Canonical Drive file ID preserved: `1EUEEkAFoX0pQEdCU3prP5UoawbzHoh4L`
-- Canonical name: `KINLINK_LATEST.apk`
-- Size: `6584911` bytes
-- Post-upload Drive readback SHA-256: `4fb4ac36765b6d3728194bf7884f3c98afff625f4a5bc0637b825db0703a700c`
-- Expected signed APK SHA-256: exact match
-- Temporary staging APK removed after readback proof
-- INSTALLER folder contains one canonical APK
-- Next gate: one in-place target-phone field update
-
-
-## Post-field quality awareness
-
-After the bidirectional handoff PASS, KINLINK now separates Android Internet validation from passive capacity estimates.
-A VALIDATED Wi-Fi with constrained/limited Android bandwidth estimates is no longer described by Autopilot as simply steady/healthy. It is observed as a potentially slow-but-valid link without hidden probes or cellular assist.
+## Safety invariants unchanged
+- no mobile routing ownership
+- no automatic mobile probe
+- no speedtest
+- no framework connectivity reporting
+- active recovery remains AUTOMATIC + Wi-Fi only

@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_PASSIVE_QUALITY_HARDENING",
+  "phase": "POST_FIELD_QUALITY_AWARENESS_CI_PENDING",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "pass CI for transition UX + passive quality awareness; then continue optimization-efficacy work without changing cellular ownership",
+  "next_uncommitted_action": "finish CI for post-field quality-awareness batch; then continue optimization-efficacy work and batch further material improvements before next signed install",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -56,9 +56,15 @@
     "transient_offline_flash": "OBSERVED_AND_FIX_INTEGRATING"
   },
   "post_field_improvements": [
+    "bidirectional handoff field gate PASS",
     "1.5s default-network-loss settle window",
     "truthful Android device-wide mobile counter wording",
     "passive Android bandwidth estimate capture",
-    "passive quality tier separate from Internet validation"
+    "passive quality tier separate from validation",
+    "Autopilot treats slow-but-validated Wi-Fi as OBSERVE_WIFI",
+    "manual bounded Wi-Fi micro-probe responsiveness classification",
+    "diagnostic export includes passive quality",
+    "telemetry dedupes bandwidth by quality tier to limit battery/storage churn",
+    "hero classifier surfaces validated-but-constrained Wi-Fi as degraded"
   ]
 }

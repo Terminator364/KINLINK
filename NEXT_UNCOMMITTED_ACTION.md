@@ -1,24 +1,23 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Field safety gate — PASS
+## Proven target-phone field gate
+PASS:
+- Wi-Fi → cellular
+- cellular Internet available
+- KINLINK observation-only on cellular
+- cellular → Wi-Fi
+- Wi-Fi Internet restored
+- original mobile-block symptom not reproduced
 
-Target phone RC3:
-- Wi-Fi → cellular: PASS
-- cellular Internet: PASS
-- KINLINK cellular observation-only: PASS
-- cellular → Wi-Fi: PASS
-- Wi-Fi Internet restored: PASS
-- original mobile-block symptom: NOT REPRODUCED
+## Current machine batch
+Validate in CI:
+1. handoff UI settle window;
+2. truthful mobile counter wording;
+3. passive bandwidth truth propagation;
+4. passive quality classification;
+5. slow-but-valid Wi-Fi Autopilot behavior;
+6. bounded manual probe responsiveness classification;
+7. low-noise quality-tier telemetry.
 
-## Current development batch
-
-Machine-validate:
-1. 1.5 s loss-settle UI hardening;
-2. truthful Android mobile-counter wording;
-3. passive Android bandwidth estimates in NetworkTruth;
-4. slow-but-VALIDATED Wi-Fi recognition in Autopilot;
-5. zero hidden probe / zero mobile assist remains invariant.
-
-## Delivery
-
-Do not replace the installed RC3 yet. Continue batching material improvements before the next install.
+## Delivery rule
+Keep the installed signed RC3 as field baseline. Do not ask for another install until the next build contains a materially larger set of improvements.
