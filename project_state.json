@@ -1,9 +1,24 @@
 {
   "project": "KINLINK",
-  "phase": "M2_ACTIVE_WIFI_OPTIMIZER_ANDROID16_HARDENED_CI_PENDING",
+  "phase": "M2_ACTIVE_WIFI_OPTIMIZER_PROMOTED_FIELD_GATE",
   "design_version": "0.2.0-m2",
   "status": "ACTIVE",
   "platform": "Android",
+  "binary_source_commit": "6010398a7f64e62d301c3e5b4317c6ce5f927b48",
+  "ci": {
+    "run_id": 35527033841,
+    "status": "PASS",
+    "artifact_id": 10609663647,
+    "artifact_digest_sha256": "b328bee347a10a332613209f18e66463d35837ab3652421176efba4f013c376f"
+  },
+  "installer": {
+    "version": "0.2.0-m2",
+    "apk_sha256": "7960160c137ff9776ba5ea694bdd961a7ad2a645ac2f3c7a757e46b4cf8b1cc9",
+    "size_bytes": 6450808,
+    "drive_path": "KINLINK/INSTALLER/KINLINK_LATEST.apk",
+    "drive_file_id": "1OE47FFE4SmIylMw4MGHdpYu4drJxY9Bo",
+    "readback_apk_count": 1
+  },
   "primary_constraints": [
     "zero-dollar baseline",
     "unstable Wi-Fi and cellular networks",
@@ -38,7 +53,7 @@
     "VPN/TUN traffic steering",
     "field-proven latency reduction"
   ],
-  "next_uncommitted_action": "validate hardened M2 in CI, capture APK hash and promote installer only on PASS",
+  "next_uncommitted_action": "human gate: install promoted KINLINK_LATEST.apk and run one explicit Wi-Fi optimization check",
   "android_baseline": {
     "compileSdk": 37,
     "targetSdk": 37,
@@ -46,8 +61,9 @@
     "jdk": 17
   },
   "last_proven_checkpoint": {
-    "commit": "01f9abe27948622da6add273ea590e111a55ed50",
-    "status": "M2_OPTIMIZER_COMMITTED_CI_RUNNING",
-    "note": "Active Wi-Fi optimizer committed; Android 15/16 observer lifetime hardening is being layered before field promotion."
+    "status": "M2_CI_VERIFIED_INSTALLER_PROMOTED",
+    "binary_source_commit": "6010398a7f64e62d301c3e5b4317c6ce5f927b48",
+    "ci_run": 35527033841,
+    "apk_sha256": "7960160c137ff9776ba5ea694bdd961a7ad2a645ac2f3c7a757e46b4cf8b1cc9"
   }
 }

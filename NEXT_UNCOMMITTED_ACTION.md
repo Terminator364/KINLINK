@@ -2,23 +2,25 @@
 
 ## Last proven checkpoint
 
-- M1 APK was built, installed and used on the target phone.
-- Commit `75337b7ca5119683f16c456e713da0fcf22f27ac` added the explicit Wi-Fi-only Doctor.
-- M1 remains safe but mostly diagnostic; it does not materially steer Android connectivity.
+KINLINK M2 is CI-verified and promoted as the single Drive installer.
 
-## Current candidate
+- Binary source commit: `6010398a7f64e62d301c3e5b4317c6ce5f927b48`
+- CI run: `35527033841` — PASS
+- APK SHA-256: `7960160c137ff9776ba5ea694bdd961a7ad2a645ac2f3c7a757e46b4cf8b1cc9`
+- Drive: `KINLINK/INSTALLER/KINLINK_LATEST.apk`
+- Drive readback: one APK only.
 
-M2 adds the first bounded active optimizer:
-1. explicit Wi-Fi-only micro-probe;
-2. report observed connectivity back to Android for framework re-evaluation;
-3. request refreshed bandwidth metrics;
-4. refuse all active optimization on cellular;
-5. preserve fail-open and no-speedtest guarantees.
+## Next action — HUMAN GATE
 
-## Next action
+Install/update `KINLINK_LATEST.apk` on the target Android phone, open KINLINK,
+keep Wi-Fi active, then press **Optimiser le Wi-Fi maintenant** once.
 
-Wait only for the GitHub Actions M2 result. If tests and APK build pass:
-- capture the APK SHA-256 and manifest;
-- promote the single installer candidate;
-- then request one focused phone install/use check.
-Do not send another diagnostic-only APK.
+Expected behavior:
+1. no forced switch to mobile data;
+2. bounded Wi-Fi-only probe;
+3. Android connectivity re-evaluation;
+4. refreshed network metrics request;
+5. clear success/degraded explanation in the cockpit.
+
+After that single field check, use the resulting observation to decide whether M2 can become the stable baseline
+or whether M3 data-plane work is justified. Do not produce another diagnostic-only APK.
