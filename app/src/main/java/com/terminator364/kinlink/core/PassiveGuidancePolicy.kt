@@ -34,6 +34,18 @@ object PassiveGuidancePolicy {
                 "Android n’expose aucun serveur DNS sur ce Wi-Fi alors qu’un lien local existe. Attends la stabilisation ou reconnecte le Wi-Fi si cela persiste."
             )
 
+        PassiveProblemCause.WEAK_WIFI_SIGNAL ->
+            PassiveGuidance(
+                "Signal Wi-Fi faible",
+                "Rapproche-toi du point d’accès si possible ou réduis les obstacles. KINLINK n’augmente pas la puissance radio et n’effectue aucune bascule forcée."
+            )
+
+        PassiveProblemCause.CONGESTION_SUSPECT ->
+            PassiveGuidance(
+                "Congestion possible",
+                "Android signale une capacité limitée et ne confirme pas l’état non congestionné. KINLINK observe plusieurs mesures avant toute action légère."
+            )
+
         PassiveProblemCause.LOW_CAPACITY ->
             PassiveGuidance(
                 "Wi-Fi lent mais connecté",

@@ -39,6 +39,8 @@ object SessionHealthPolicy {
             PassiveProblemCause.NONE ->
                 SessionHealthAssessment(SessionHealth.HEALTHY, "Connexion récente stable et utilisable.")
 
+            PassiveProblemCause.WEAK_WIFI_SIGNAL,
+            PassiveProblemCause.CONGESTION_SUSPECT,
             PassiveProblemCause.LOW_CAPACITY,
             PassiveProblemCause.WAN_UNVALIDATED,
             PassiveProblemCause.ADDRESSING_SUSPECT,

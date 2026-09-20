@@ -7,6 +7,8 @@ enum class PassiveProblemCause {
     ADDRESSING_SUSPECT,
     ROUTE_CONFIGURATION_SUSPECT,
     DNS_CONFIGURATION_SUSPECT,
+    WEAK_WIFI_SIGNAL,
+    CONGESTION_SUSPECT,
     LOW_CAPACITY,
     FLAPPING,
     WAN_UNVALIDATED,
@@ -67,6 +69,27 @@ object PassiveProblemClassifier {
                 PassiveProblemCause.DNS_CONFIGURATION_SUSPECT,
                 "Wi-Fi local présent, Internet non validé et aucun serveur DNS exposé par Android.",
                 70
+            )
+
+        truth.transport == Transport.WIFI &&
+            WifiRadioQualityPolicy.assess(truth).quality == WifiRadioQuality.WEAK ->
+            PassiveProblemAssessment(
+                PassiveProblemCause.WEAK_WIFI_SIGNAL,
+                "Le Wi-Fi est actif mais le signal radio exposé par Android est faible.",
+                80
+            )
+
+        truth.transport == Transport.WIFI &&
+            truth.internetState == InternetState.VALIDATED &&
+            !truth.androidNotCongested &&
+            (
+                PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.CONSTRAINED ||
+                PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.LIMITED
+            ) ->
+            PassiveProblemAssessment(
+                PassiveProblemCause.CONGESTION_SUSPECT,
+                "Internet est validé mais Android ne signale pas le réseau comme non congestionné et la capacité passive est limitée.",
+                68
             )
 
         truth.transport == Transport.WIFI &&
