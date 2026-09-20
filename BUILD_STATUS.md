@@ -79,6 +79,6 @@ Added:
 
 Machine status:
 - full PASS through `e8280bb1c32a019f0e8f32d2f8bd44073261ed02`;
-- schema-v4 head `5cce76cade7361e821a8eee36be8f0f1e5528412`: design-lint PASS, Android CI in progress at checkpoint time.
+- schema-v4 head `5cce76cade7361e821a8eee36be8f0f1e5528412`: design-lint PASS + full Android CI PASS.
 
 The installed RC3 baseline remains unchanged.

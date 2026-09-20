@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "finish CI for schema-v4 interruption duration head; continue resource/latency qualification evidence and longitudinal diagnosis before next consolidated release candidate",
+  "next_uncommitted_action": "continue 0.7.0-dev with bounded action-duration/latency evidence and resource qualification; keep RC3 canonical until next consolidated RC gate",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -104,13 +104,14 @@
       "time+row bounded telemetry retention",
       "structured interruption duration schema v4",
       "cumulative and longest interruption diagnostics"
-    ]
+    ],
+    "last_full_pass": "5cce76cade7361e821a8eee36be8f0f1e5528412"
   },
   "telemetry_schema_version": 4,
   "current_machine_gate": {
     "code_head": "5cce76cade7361e821a8eee36be8f0f1e5528412",
     "design_lint": "PASS",
-    "android_ci": "IN_PROGRESS",
-    "last_full_pass": "e8280bb1c32a019f0e8f32d2f8bd44073261ed02"
+    "android_ci": "PASS",
+    "full_machine_verdict": "PASS"
   }
 }
