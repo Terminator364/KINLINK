@@ -17,6 +17,16 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.6.0'
+      - name: Fail-open API fence
+        run: |
+          set -euo pipefail
+          SRC="app/src/main/java"
+          forbidden='bindProcessToNetwork|setProcessDefaultNetwork|reportNetworkConnectivity|requestNetwork\(|VpnService'
+          if grep -R -n -E "$forbidden" "$SRC"; then
+            echo "Forbidden network-ownership API found in production source."
+            exit 1
+          fi
+          echo "Fail-open API fence passed."
       - name: Unit tests
         run: gradle :app:testDebugUnitTest --stacktrace
       - name: Build CI debug APK

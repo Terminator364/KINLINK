@@ -1,32 +1,32 @@
 {
   "project": "KINLINK",
-  "phase": "P0_MOBILE_HANDOFF_HARDENING",
+  "phase": "P0_HANDOFF_FENCE_AND_OBSERVABILITY_CI_PENDING",
   "status": "ACTIVE",
   "field_incident": {
     "symptom": "after leaving Wi-Fi coverage, mobile data appeared unusable",
     "causality": "UNPROVEN",
     "priority": "P0",
-    "delivery_effect": "RC2 field promotion suspended"
+    "delivery_effect": "previous RC2 promotion suspended"
   },
-  "verified_absences": [
-    "no VpnService/TUN production path",
-    "no bindProcessToNetwork",
-    "no persistent requestNetwork ownership",
-    "no API capable of toggling Android mobile data"
-  ],
   "hard_fail_open_invariants": [
     "never call reportNetworkConnectivity",
-    "never bind the process to Wi-Fi",
-    "never own Android routing",
+    "never bind the process to a network",
+    "never create persistent requestNetwork ownership",
+    "never use VpnService in production until separately qualified",
     "automatic recovery is Wi-Fi-only",
     "cellular transport always yields NO_ACTION",
     "re-check active transport immediately before every automatic action"
   ],
-  "last_machine_baseline": {
-    "version": "0.5.0-rc2",
-    "source_commit": "7124e1d1cc9b3430f24af74fc2501371c182c25a",
-    "ci_run": 35533990740,
+  "new_observability": [
+    "passive Wi-Fi to cellular handoff receipts",
+    "passive cellular to Wi-Fi handoff receipts",
+    "passive no-network to cellular receipts",
+    "CI static fence for forbidden network ownership APIs"
+  ],
+  "last_machine_checkpoint": {
+    "commit": "e765cc1255039490be7068c4a0069e53cb0f4417",
+    "ci_run": 35534457752,
     "ci_status": "PASS"
   },
-  "next_uncommitted_action": "run full CI after mobile-handoff hardening; verify forbidden routing APIs absent; only then create the next consolidated signed candidate"
+  "next_uncommitted_action": "validate handoff observability and fail-open static fence in CI; then continue product-wide qualification before any new signed installer"
 }

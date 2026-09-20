@@ -1,28 +1,24 @@
 # KINLINK build status
 
-## P0 field incident under investigation
+## P0 handoff hardening
 
-Field evidence: after leaving home Wi-Fi, the user reported that mobile data no longer passed normally.
-Current code has no VPN, no process/network binding, no persistent network request and no API capable of toggling mobile data.
-Causality is therefore not proven.
+Commit `e765cc1255039490be7068c4a0069e53cb0f4417` passed full Android CI and design-lint.
 
-## Hardening decision
+Verified repository state after the field incident:
+- no `bindProcessToNetwork`;
+- no `requestNetwork` ownership;
+- no production `VpnService`;
+- no `reportNetworkConnectivity`;
+- automatic recovery remains Wi-Fi-only.
 
-RC2 field promotion is suspended until the handoff regression gate passes.
+## Current integration batch
 
-New fail-open invariant:
-- KINLINK never calls Android connectivity-validation reporting APIs;
-- no positive or negative probe result may alter Android's network-validation state;
-- automatic recovery remains Wi-Fi-only;
-- cellular transitions always result in NO_ACTION;
-- only bounded Wi-Fi metric refresh remains permitted.
+Added:
+- permanent CI fail-open API fence;
+- passive transport-handoff receipt ledger;
+- explicit Wi-Fi→mobile, mobile→Wi-Fi and no-network→mobile transition evidence;
+- canonical specification updated so framework connectivity hints are fully forbidden.
 
-## Existing machine evidence
+## Delivery
 
-- RC2 source baseline: `7124e1d1cc9b3430f24af74fc2501371c182c25a`
-- RC2 CI: PASS
-- Previously promoted signed APK: rollback only; do not field-promote after the new incident.
-
-## Next gate
-
-Run full CI/regression after the P0 handoff hardening. Promote no installer until PASS.
+No new phone install yet. The next signed APK will be promoted only after this batch and the remaining product-wide qualification gates pass.

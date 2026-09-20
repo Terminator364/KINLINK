@@ -15,6 +15,7 @@ class KinlinkObserverService : Service() {
     private lateinit var ledger: TelemetryLedger
     private lateinit var mobileBudget: MobileBudgetTracker
     private lateinit var recovery: AutopilotRecoveryController
+    private val handoffAudit = NetworkHandoffAudit()
 
     override fun onCreate() {
         super.onCreate()
@@ -41,6 +42,13 @@ class KinlinkObserverService : Service() {
             val truth = rawTruth.copy(budgetState = budget.state)
             runCatching {
                 ledger.append(truth)
+                handoffAudit.observe(truth.transport)?.let { transition ->
+                    ledger.appendAction(
+                        "HANDOFF_${transition.kind.name}",
+                        true,
+                        transition.summary
+                    )
+                }
                 recovery.onTruth(truth, ledger.stabilityWindow().assessment.score)
             }
         }

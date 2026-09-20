@@ -1,19 +1,17 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## P0 field incident
+## Proven P0 checkpoint
 
-Observed: after leaving Wi-Fi coverage, mobile data appeared unusable.
-The installed application must never be able to influence normal Android mobile-data handoff.
+The hard fail-open handoff patch passed CI.
 
-## Immediate machine action
+## Current batch
 
-1. Remove every use of `reportNetworkConnectivity`.
-2. Keep automatic actions strictly Wi-Fi-only.
-3. Preserve a runtime transport re-check immediately before every automatic action.
-4. Add regression tests proving cellular => NO_ACTION and probe results => no framework connectivity report.
-5. Run full CI and inspect the repository for forbidden network-binding/routing APIs.
+1. CI-enforced static ban on production network ownership/binding APIs.
+2. Passive handoff receipts for Wi-Fi→mobile and related transport transitions.
+3. No active action is introduced by handoff telemetry.
+4. Continue qualification of recovery, resource budgets and lifecycle behavior.
 
 ## Delivery rule
 
-Do not ask the user to install RC2 again.
-The next installer must be a consolidated, stable-signed candidate that passes this P0 handoff gate.
+Do not ask the user to install another incremental APK.
+Promote the next signed installer only after a materially consolidated batch passes machine gates.

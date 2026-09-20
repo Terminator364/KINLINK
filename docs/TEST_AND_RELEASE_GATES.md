@@ -28,7 +28,9 @@
 ## Required assertions
 - no automatic cellular probe
 - no automatic metered-Wi-Fi probe
-- no automatic negative Android hint
+- no Android connectivity-validation hint of any kind
+- production-source static fence rejects network-binding/routing ownership APIs
+- Wi-Fi→mobile handoff is passively receipt-carrying
 - Android VALIDATED cannot be downgraded by endpoint failure
 - stable Wi-Fi is left alone
 - recovery is rate-limited and receipt-carrying

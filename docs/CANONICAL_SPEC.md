@@ -9,7 +9,7 @@ KINLINK is an install-once, low-overhead Android network-resilience autopilot fo
 1. Never automatically speed-test or probe cellular data.
 2. Never automatically probe metered Wi-Fi/hotspots.
 3. Never let a failed external probe overrule Android NET_CAPABILITY_VALIDATED.
-4. Never automatically report negative connectivity in a way that could unnecessarily push Android away from Wi-Fi.
+4. Never call Android connectivity-validation reporting APIs from production KINLINK.
 5. Preserve LAN independently from WAN.
 6. Never permanently seize Android routing; stronger data planes require fail-open teardown.
 7. Preserve the stable signing certificate across upgrades.
@@ -29,11 +29,12 @@ Android VALIDATED, captive portal, active transport and LinkProperties outrank e
 - healthy validated Wi-Fi is left alone;
 - flapping validated Wi-Fi can receive metric refresh only;
 - unvalidated Wi-Fi with a local link may receive bounded confirmation;
-- positive confirmation may send only a positive Android connectivity hint;
-- automatic negative hints are forbidden;
+- positive confirmation remains local evidence only and never alters Android validation state;
+- all positive and negative framework connectivity hints are forbidden;
 - profile-dependent cooldown/hourly caps;
 - battery saver or severe thermal pressure suspends recovery;
-- every executed action generates a bounded local receipt.
+- every executed action generates a bounded local receipt;
+- every transport handoff is passively journaled so Wi-Fi→mobile incidents can be reconstructed without routing ownership.
 
 ## Lifecycle
 
