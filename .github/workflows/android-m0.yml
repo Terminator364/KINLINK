@@ -27,7 +27,7 @@ jobs:
           cat > app/build/outputs/apk/debug/KINLINK-build-manifest.json <<EOF
           {
             "product": "KINLINK",
-            "version": "0.1.1-m0",
+            "version": "0.1.0-m1",
             "variant": "debug-ci",
             "commit": "${GITHUB_SHA}",
             "built_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
