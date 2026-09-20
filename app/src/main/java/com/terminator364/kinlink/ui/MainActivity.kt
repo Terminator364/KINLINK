@@ -11,6 +11,8 @@ import com.terminator364.kinlink.R
 import com.terminator364.kinlink.core.ConnectivityStateClassifier
 import com.terminator364.kinlink.core.NetworkObserver
 import com.terminator364.kinlink.core.NetworkTruth
+import com.terminator364.kinlink.core.MobileVault
+import com.terminator364.kinlink.core.WifiDoctor
 import com.terminator364.kinlink.data.DiagnosticExporter
 import com.terminator364.kinlink.data.TelemetryLedger
 
@@ -85,6 +87,8 @@ class MainActivity : Activity() {
     private fun render(truth: NetworkTruth) {
         latestTruth = truth
         val assessment = ConnectivityStateClassifier.classify(truth)
+        val vaultDecision = MobileVault.decide(truth, assessment)
+        val doctorAdvice = WifiDoctor.advise(assessment)
         stateText.text = assessment.headline
         heroDetailText.text = assessment.explanation
         transportText.text = "Connexion en cours · ${transportLabel(truth)}"
@@ -94,18 +98,17 @@ class MainActivity : Activity() {
         } else {
             "Données mobiles · politique active"
         }
-        adviceTitleText.text = when {
-            assessment.preserveLan -> "Votre réseau local est préservé"
-            truth.internetState.name == "VALIDATED" -> "Aucune action nécessaire"
-            else -> "Aucune action automatique"
-        }
-        adviceText.text = assessment.explanation
+        adviceTitleText.text = doctorAdvice.title
+        adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}"
         detailText.text = buildString {
             append("État KINLINK : ${assessment.state.name}\n")
             append("Réseau local : ${lanLabel(truth)}\n")
             append("Contexte : ${contextLabel(truth)}\n")
             append("Diagnostic : ${failureLabel(truth)}\n")
             append("Confiance : ${(truth.confidence * 100).toInt()} %\n\n")
+            append("WHY : ${vaultDecision.why}\n")
+            append("WHAT : ${vaultDecision.what.name}\n")
+            append("RESULT : ${vaultDecision.result}\n\n")
             append("Exporter le diagnostic ne lance aucun speedtest, probe mobile ou changement réseau.")
         }
     }
