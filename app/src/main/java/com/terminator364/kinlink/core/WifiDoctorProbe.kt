@@ -6,6 +6,10 @@ import android.net.NetworkCapabilities
 import java.net.HttpURLConnection
 import java.net.URL
 
+object WifiProbeHttpPolicy {
+    fun confirmsInternet(code: Int): Boolean = code == 204
+}
+
 data class WifiProbeResult(
     val success: Boolean,
     val summary: String,
@@ -64,7 +68,7 @@ class WifiDoctorProbe(private val context: Context) {
                 val elapsed = (System.nanoTime() - started) / 1_000_000
                 lastLatency = elapsed
 
-                if (code in 200..399) {
+                if (WifiProbeHttpPolicy.confirmsInternet(code)) {
                     WifiProbeResult(
                         true,
                         "Accès Internet confirmé par un micro-test borné en $elapsed ms",
@@ -75,7 +79,7 @@ class WifiDoctorProbe(private val context: Context) {
                     )
                 } else {
                     failures += 1
-                    lastFailure = "réponse HTTP $code"
+                    lastFailure = if (code in 200..399) "réponse HTTP $code (portail/proxy possible)" else "réponse HTTP $code"
                     null
                 }
             }.getOrElse {
