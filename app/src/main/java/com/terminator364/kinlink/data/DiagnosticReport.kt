@@ -12,7 +12,11 @@ data class DiagnosticSummary(
     val recentTransitions: Int = 0,
     val instabilityScore: Int = 0,
     val flapping: Boolean = false,
-    val recentActions: List<ActionReceipt> = emptyList()
+    val recentActions: List<ActionReceipt> = emptyList(),
+    val handoffEvents: Int = 0,
+    val mobileValidatedOutcomes: Int = 0,
+    val mobilePendingOutcomes: Int = 0,
+    val watchdogAborts: Int = 0
 )
 
 object DiagnosticReportBuilder {
@@ -35,6 +39,13 @@ object DiagnosticReportBuilder {
         appendLine("- Instability score: ${summary.instabilityScore}/100")
         appendLine("- State transitions in bounded window: ${summary.recentTransitions}")
         appendLine("- Flapping detected: ${if (summary.flapping) "yes" else "no"}")
+        appendLine()
+
+        appendLine("Handoff evidence")
+        appendLine("- Handoff events retained: ${summary.handoffEvents}")
+        appendLine("- Mobile handoffs validated by Android: ${summary.mobileValidatedOutcomes}")
+        appendLine("- Mobile present but not yet validated receipts: ${summary.mobilePendingOutcomes}")
+        appendLine("- Watchdog/transport abort receipts: ${summary.watchdogAborts}")
         appendLine()
 
         appendLine("This week")

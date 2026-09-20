@@ -112,6 +112,15 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             cursor.getInt(0)
         }
 
+    fun countActions(actionPrefix: String): Int =
+        readableDatabase.rawQuery(
+            "SELECT COUNT(*) FROM action_receipts WHERE action LIKE ?",
+            arrayOf("$actionPrefix%")
+        ).use { cursor ->
+            cursor.moveToFirst()
+            cursor.getInt(0)
+        }
+
     fun latestActionTimestamp(actionPrefix: String): Long? =
         readableDatabase.rawQuery(
             "SELECT ts_wall_ms FROM action_receipts WHERE action LIKE ? ORDER BY ts_wall_ms DESC LIMIT 1",
@@ -215,7 +224,11 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             recentTransitions = stability.transitions,
             instabilityScore = stability.assessment.score,
             flapping = stability.assessment.flapping,
-            recentActions = recentActions()
+            recentActions = recentActions(),
+            handoffEvents = countActions("HANDOFF_"),
+            mobileValidatedOutcomes = countActions("HANDOFF_OUTCOME_MOBILE_VALIDATED"),
+            mobilePendingOutcomes = countActions("HANDOFF_OUTCOME_MOBILE_PRESENT_UNVALIDATED"),
+            watchdogAborts = countActions("AUTO_RECOVERY_WATCHDOG_")
         )
     }
 }
