@@ -106,3 +106,10 @@ This classification:
 - never runs on cellular;
 - never overrides Android validation by itself;
 - is diagnostic evidence only.
+
+
+## Passive-quality hysteresis
+
+Low passive capacity must persist for 3 consecutive VALIDATED Wi-Fi observations before it may request a metrics refresh.
+A single low estimate never triggers recovery.
+The action remains REFRESH_METRICS only: no hidden probe, no route change, no mobile assist.

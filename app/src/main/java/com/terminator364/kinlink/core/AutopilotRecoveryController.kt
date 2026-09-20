@@ -19,9 +19,11 @@ class AutopilotRecoveryController(
     private val inFlight = AtomicBoolean(false)
     @Volatile private var closed = false
     @Volatile private var lastTransportTransitionElapsedMillis: Long? = null
+    private var lowQualityStreak = 0
 
     fun onTransportTransition() {
         lastTransportTransitionElapsedMillis = SystemClock.elapsedRealtime()
+        lowQualityStreak = 0
     }
 
     fun onTruth(truth: NetworkTruth, instabilityScore: Int) {
@@ -33,6 +35,8 @@ class AutopilotRecoveryController(
         ) {
             return
         }
+        lowQualityStreak = PassiveQualityPersistencePolicy.nextStreak(lowQualityStreak, truth)
+        val persistentLowQuality = PassiveQualityPersistencePolicy.persistentLowQuality(lowQualityStreak)
         val now = System.currentTimeMillis()
         val since = now - AutopilotRecoveryPolicy.hourlyWindowMillis()
         val recent = runCatching { ledger.countActionsSince(ACTION_PREFIX, since) }.getOrDefault(0)
@@ -44,7 +48,8 @@ class AutopilotRecoveryController(
             instabilityScore,
             resourceGuard.snapshot().constrained,
             recent,
-            sinceLast
+            sinceLast,
+            persistentLowQuality
         )
         if (decision.action == AutomaticRecoveryAction.NONE) return
         if (!inFlight.compareAndSet(false, true)) return

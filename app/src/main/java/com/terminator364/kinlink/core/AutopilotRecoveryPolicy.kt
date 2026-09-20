@@ -20,7 +20,8 @@ object AutopilotRecoveryPolicy {
         instabilityScore: Int,
         resourceConstrained: Boolean,
         recentAutomaticActions: Int,
-        millisSinceLastAutomaticAction: Long
+        millisSinceLastAutomaticAction: Long,
+        persistentLowQuality: Boolean = false
     ): AutomaticRecoveryDecision {
         if (truth.transport != Transport.WIFI) {
             return AutomaticRecoveryDecision(AutomaticRecoveryAction.NONE, "Récupération automatique limitée au Wi-Fi.")
@@ -56,10 +57,13 @@ object AutopilotRecoveryPolicy {
                 AutopilotProfile.BALANCED -> 65
                 AutopilotProfile.MAXIMUM_STABILITY -> 50
             }
-            return if (instabilityScore >= threshold) {
+            return if (instabilityScore >= threshold || persistentLowQuality) {
                 AutomaticRecoveryDecision(
                     AutomaticRecoveryAction.REFRESH_METRICS,
-                    "Wi-Fi validé mais instable : rafraîchissement métrique sans probe."
+                    if (persistentLowQuality)
+                        "Wi-Fi validé mais capacité faible persistante : rafraîchissement métrique sans probe."
+                    else
+                        "Wi-Fi validé mais instable : rafraîchissement métrique sans probe."
                 )
             } else {
                 AutomaticRecoveryDecision(AutomaticRecoveryAction.NONE, "Wi-Fi validé : aucune intervention.")

@@ -44,6 +44,43 @@ class AutopilotRecoveryPolicyTest {
         assertEquals(AutomaticRecoveryAction.REFRESH_METRICS, d.action)
     }
 
+    @Test fun persistentLowQualityValidatedWifiRefreshesOnlyMetrics() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(
+                transport = Transport.WIFI,
+                internetState = InternetState.VALIDATED,
+                lanState = LanState.LINK_PRESENT,
+                downstreamKbps = 2_000,
+                upstreamKbps = 700
+            ),
+            AutopilotProfile.BALANCED,
+            10,
+            false,
+            0,
+            Long.MAX_VALUE,
+            persistentLowQuality = true
+        )
+        assertEquals(AutomaticRecoveryAction.REFRESH_METRICS, d.action)
+    }
+
+    @Test fun singleLowQualityObservationDoesNotAct() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(
+                transport = Transport.WIFI,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 2_000,
+                upstreamKbps = 700
+            ),
+            AutopilotProfile.BALANCED,
+            10,
+            false,
+            0,
+            Long.MAX_VALUE,
+            persistentLowQuality = false
+        )
+        assertEquals(AutomaticRecoveryAction.NONE, d.action)
+    }
+
     @Test fun resourceConstraintBlocksRecovery() {
         val d = AutopilotRecoveryPolicy.decide(
             NetworkTruth(transport = Transport.WIFI, internetState = InternetState.UNKNOWN, lanState = LanState.LINK_PRESENT),
