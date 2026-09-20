@@ -14,7 +14,9 @@ object ConnectivityTruthEngine {
         val interfaceName: String? = null,
         val gateway: String? = null,
         val downstreamKbps: Int = 0,
-        val upstreamKbps: Int = 0
+        val upstreamKbps: Int = 0,
+        val dnsServerCount: Int = 0,
+        val privateDnsActive: Boolean = false
     )
 
     fun reduce(capabilities: NetworkCapabilities?, linkProperties: LinkProperties?): NetworkTruth {
@@ -65,7 +67,9 @@ object ConnectivityTruthEngine {
                 interfaceName = linkProperties?.interfaceName,
                 gateway = gateway,
                 downstreamKbps = capabilities.linkDownstreamBandwidthKbps.coerceAtLeast(0),
-                upstreamKbps = capabilities.linkUpstreamBandwidthKbps.coerceAtLeast(0)
+                upstreamKbps = capabilities.linkUpstreamBandwidthKbps.coerceAtLeast(0),
+                dnsServerCount = linkProperties?.dnsServers?.size ?: 0,
+                privateDnsActive = linkProperties?.isPrivateDnsActive ?: false
             )
         )
     }
@@ -116,6 +120,8 @@ object ConnectivityTruthEngine {
             gateway = snapshot.gateway,
             downstreamKbps = snapshot.downstreamKbps.coerceAtLeast(0),
             upstreamKbps = snapshot.upstreamKbps.coerceAtLeast(0),
+            dnsServerCount = snapshot.dnsServerCount.coerceAtLeast(0),
+            privateDnsActive = snapshot.privateDnsActive,
             confidence = if (validated || captive) 0.9 else 0.55
         )
     }

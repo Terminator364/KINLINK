@@ -2,6 +2,7 @@ package com.terminator364.kinlink.data
 
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
+import com.terminator364.kinlink.core.PassiveProblemClassifier
 
 /** Privacy-safe diagnostic summary: no SSID, SIM identifier, IP address, gateway or payload. */
 data class DiagnosticSummary(
@@ -41,9 +42,17 @@ object DiagnosticReportBuilder {
         appendLine("- Mobile budget state: ${summary.currentTruth.budgetState.name}")
         appendLine("- Explanation: ${explanation(summary.currentTruth)}")
         val passiveQuality = PassiveLinkQualityPolicy.assess(summary.currentTruth)
+        val passiveProblem = PassiveProblemClassifier.classify(
+            summary.currentTruth,
+            summary.instabilityScore,
+            summary.flapping
+        )
         appendLine("- Recovery mode: ${summary.recoveryMode}")
         appendLine("- Android passive capacity: down=${summary.currentTruth.downstreamKbps} kbps, up=${summary.currentTruth.upstreamKbps} kbps")
         appendLine("- Passive quality: ${passiveQuality.quality.name} — ${passiveQuality.summary}")
+        appendLine("- Passive cause: ${passiveProblem.cause.name} — ${passiveProblem.summary} (confidence ${passiveProblem.confidence}%)")
+        appendLine("- Android DNS servers exposed: ${summary.currentTruth.dnsServerCount}")
+        appendLine("- Android private DNS active: ${summary.currentTruth.privateDnsActive}")
         appendLine()
 
         appendLine("Recent stability")

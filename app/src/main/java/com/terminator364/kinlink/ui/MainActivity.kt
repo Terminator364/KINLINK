@@ -26,6 +26,7 @@ import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.NetworkObserver
 import com.terminator364.kinlink.core.PassiveLinkQuality
 import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
+import com.terminator364.kinlink.core.PassiveProblemClassifier
 import com.terminator364.kinlink.core.RecoveryBlockReason
 import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
@@ -285,6 +286,11 @@ class MainActivity : Activity() {
         val vaultDecision = MobileVault.decide(truth, assessment)
         val doctorAdvice = WifiDoctor.advise(assessment)
         val passiveQuality = PassiveLinkQualityPolicy.assess(truth)
+        val passiveProblem = PassiveProblemClassifier.classify(
+            truth,
+            instabilityScore = stability?.assessment?.score ?: 0,
+            flapping = stability?.assessment?.flapping ?: false
+        )
         val adaptiveDecision = AdaptivePolicyEngine.evaluate(
             truth = truth,
             instabilityScore = stability?.assessment?.score ?: 0,
@@ -338,6 +344,9 @@ class MainActivity : Activity() {
             append("Autopilot : ${adaptiveDecision.intent.name}\n")
             append("Capacité Android : ↓${truth.downstreamKbps} kbps / ↑${truth.upstreamKbps} kbps\n")
             append("Qualité passive : ${passiveQuality.quality.name} · ${passiveQuality.summary}\n")
+            append("Cause passive : ${passiveProblem.cause.name} · confiance ${passiveProblem.confidence}%\n")
+            append("Cause passive détail : ${passiveProblem.summary}\n")
+            append("DNS Android : ${truth.dnsServerCount} serveur(s) · DNS privé ${if (truth.privateDnsActive) "actif" else "non signalé"}\n")
             stability?.let {
                 append("Instabilité 15 min : ${it.assessment.score}/100")
                 append(" · ${it.transitions} transition(s)")

@@ -147,3 +147,11 @@ No extra network request is generated for this evaluation.
 
 Within the bounded one-hour action window, two UNCHANGED or DEGRADED recovery outcomes suspend further automatic recovery attempts.
 This prevents KINLINK from repeatedly refreshing metrics when evidence shows no benefit.
+
+
+## Passive failure-cause classification
+
+KINLINK classifies likely causes without generating traffic:
+NO_LINK, CAPTIVE_PORTAL, DNS_CONFIGURATION_SUSPECT, LOW_CAPACITY, FLAPPING, WAN_UNVALIDATED, MOBILE_UNVALIDATED, NONE or UNKNOWN.
+
+DNS_CONFIGURATION_SUSPECT is deliberately cautious: it means a local Wi-Fi link exists, Internet is unvalidated and Android exposes zero DNS servers. It is evidence, not proof of a DNS outage.

@@ -24,6 +24,8 @@ data class NetworkTruth(
     val gateway: String? = null,
     val downstreamKbps: Int = 0,
     val upstreamKbps: Int = 0,
+    val dnsServerCount: Int = 0,
+    val privateDnsActive: Boolean = false,
     val confidence: Double = 0.0,
     val observedAtMillis: Long = System.currentTimeMillis()
 )
@@ -31,6 +33,6 @@ data class NetworkTruth(
 /** A stable, non-identifying representation used to suppress duplicate telemetry. */
 fun NetworkTruth.telemetryFingerprint(): String = listOf(
     transport, internetState, lanState, budgetState, failureDomain, context,
-    metered, interfaceName, gateway,
+    metered, interfaceName, gateway, dnsServerCount, privateDnsActive,
     PassiveLinkQualityPolicy.assess(this).quality
 ).joinToString("|")
