@@ -239,10 +239,13 @@ class MainActivity : Activity() {
         mobileText.text = when (truth.budgetState) {
             BudgetState.BUNDLE_EXHAUSTED -> "Données mobiles · plafond KINLINK atteint"
             BudgetState.BUNDLE_LOW -> "Données mobiles · plafond bientôt atteint"
-            else -> if (assessment.avoidAutomaticMobileUse) {
-                "Données mobiles · protégées"
-            } else {
-                "Données mobiles · politique active"
+            else -> when (truth.transport.name) {
+                "CELLULAR" -> "Données mobiles · Android contrôle · KINLINK observe seulement"
+                else -> if (assessment.avoidAutomaticMobileUse) {
+                    "Données mobiles · protégées"
+                } else {
+                    "Données mobiles · aucune prise de contrôle KINLINK"
+                }
             }
         }
         mobileBudgetText.text = mobileBudgetLabel(budget)

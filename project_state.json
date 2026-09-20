@@ -1,18 +1,20 @@
 {
   "project": "KINLINK",
-  "phase": "P0_TRANSPORT_SETTLING_CI_PENDING",
+  "phase": "P0_HANDOFF_OUTCOME_OBSERVABILITY_CI_PENDING",
   "status": "ACTIVE",
   "incident_priority": "P0_MOBILE_HANDOFF",
   "delivery": "HOLD_UNTIL_CONSOLIDATED_PASS",
-  "proven": {
-    "handoff_fail_open": "PASS",
-    "forbidden_api_fence": "PASS",
-    "resource_guard": "PASS",
-    "watchdog_stale_network_abort": "PASS"
-  },
-  "integrating": [
-    "restart-storm observation-only degradation",
-    "5-second post-handoff observation-only settling window"
+  "proven_machine_batches": [
+    "hard fail-open handoff",
+    "forbidden network ownership API fence",
+    "resource guard",
+    "recovery watchdog and stale-network abort",
+    "restart-storm safe degradation",
+    "post-handoff settling window"
   ],
-  "next_uncommitted_action": "validate lifecycle and transport-settling batches, then consolidate diagnostics and release qualification before signed promotion"
+  "integrating_now": [
+    "dynamic observation-only mobile status",
+    "handoff outcome evidence"
+  ],
+  "next_uncommitted_action": "pass CI, consolidate diagnostic/report UI and release gates, then prepare next stable-signed installer"
 }

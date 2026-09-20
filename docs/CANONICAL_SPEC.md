@@ -53,3 +53,12 @@ Lifecycle is fail-open:
 VpnService/TUN remains a separately gated M5 subsystem. It is not production-enabled until DNS resilience, watchdog teardown, RAM/battery, latency and rollback evidence pass.
 
 Compilation alone never qualifies a version as final.
+
+
+## Mobile handoff observability
+
+- Cellular transport is always observation-only.
+- The foreground notification states explicitly that Android retains control on cellular.
+- Wi-Fi exit transitions create local handoff receipts.
+- A subsequent cellular VALIDATED state records a successful handoff outcome.
+- Cellular present but not yet VALIDATED is recorded as evidence only; KINLINK takes no recovery action.

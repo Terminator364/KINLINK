@@ -1,17 +1,22 @@
 # KINLINK build status
 
-## Proven checkpoint
+## Proven machine state
 
-- P0 handoff/resource hardening: PASS.
-- Watchdog + stale-network abort `dbb107cd36598f5360bc893b45d64e43abdaf6f7`: Android CI PASS + design-lint PASS.
-- Restart-storm lifecycle batch is under CI.
+The following hardened batches are now fully green:
+- fail-open mobile handoff;
+- forbidden API CI fence;
+- low-memory/battery/thermal resource guard;
+- 5 s recovery watchdog and stale-network abort;
+- restart-storm observation-only degradation;
+- 5 s post-handoff settling window.
 
-## Current handoff-settling batch
+## Current product observability batch
 
-Added a 5-second observation-only period after every transport transition.
-During this window KINLINK:
-- records the transition;
-- performs no active recovery;
-- leaves Wi-Fi/mobile selection entirely to Android.
+Added:
+- explicit mobile observation-only status in the cockpit;
+- dynamic foreground notification by active transport;
+- handoff outcome tracking;
+- successful cellular VALIDATED receipt after Wi-Fi exit;
+- evidence receipt when mobile exists but is not yet validated.
 
-This specifically reduces race risk while Android is completing Wi-Fi → cellular or cellular → Wi-Fi handoff.
+No mobile-data control API was introduced.

@@ -16,6 +16,7 @@ class KinlinkObserverService : Service() {
     private lateinit var mobileBudget: MobileBudgetTracker
     private var recovery: AutopilotRecoveryController? = null
     private val handoffAudit = NetworkHandoffAudit()
+    private val handoffOutcomeTracker = HandoffOutcomeTracker()
 
     override fun onCreate() {
         super.onCreate()
@@ -62,12 +63,21 @@ class KinlinkObserverService : Service() {
                 ledger.append(truth)
                 handoffAudit.observe(truth.transport)?.let { transition ->
                     recovery?.onTransportTransition()
+                    handoffOutcomeTracker.onTransition(transition)
                     ledger.appendAction(
                         "HANDOFF_${transition.kind.name}",
                         true,
                         transition.summary + " Fenêtre calme 5 s avant toute récupération."
                     )
                 }
+                handoffOutcomeTracker.observe(truth)?.let { outcome ->
+                    ledger.appendAction(
+                        "HANDOFF_OUTCOME_${outcome.outcome.name}",
+                        outcome.outcome != HandoffOutcome.MOBILE_PRESENT_UNVALIDATED,
+                        outcome.summary
+                    )
+                }
+                updateNotificationFor(truth)
                 recovery?.onTruth(truth, ledger.stabilityWindow().assessment.score)
             }
         }
@@ -87,6 +97,23 @@ class KinlinkObserverService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    private fun updateNotificationFor(truth: NetworkTruth) {
+        val text = when (truth.transport) {
+            Transport.CELLULAR -> "Données mobiles · Android contrôle · KINLINK observe seulement"
+            Transport.WIFI -> "Résilience Wi-Fi active · données mobiles hors contrôle KINLINK"
+            Transport.ETHERNET -> "Ethernet · observation seulement"
+            Transport.VPN -> "VPN détecté · observation seulement"
+            Transport.NONE -> "Aucun réseau · observation passive"
+        }
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.stat_sys_warning)
+            .setContentTitle("KINLINK Autopilot")
+            .setContentText(text)
+            .setOngoing(true)
+            .build()
+        getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification)
+    }
 
     private fun createChannel() {
         getSystemService(NotificationManager::class.java).createNotificationChannel(
