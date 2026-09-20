@@ -12,7 +12,6 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.terminator364.kinlink.BuildConfig
 import com.terminator364.kinlink.R
 import com.terminator364.kinlink.core.AdaptivePolicyEngine
 import com.terminator364.kinlink.core.AutopilotProfile
@@ -82,7 +81,8 @@ class MainActivity : Activity() {
         wifiDoctorButton = findViewById(R.id.wifiDoctorButton)
         budgetButton = findViewById(R.id.budgetButton)
         profileButton = findViewById(R.id.profileButton)
-        findViewById<TextView>(R.id.versionText).text = "KINLINK ${BuildConfig.VERSION_NAME}"
+        val installedVersion = runCatching { packageManager.getPackageInfo(packageName, 0).versionName }.getOrNull() ?: "?"
+        findViewById<TextView>(R.id.versionText).text = "KINLINK $installedVersion"
 
         installSystemBarInsets()
 
