@@ -21,3 +21,10 @@ Validate in CI:
 
 ## Delivery rule
 Keep the installed signed RC3 as field baseline. Do not ask for another install until the next build contains a materially larger set of improvements.
+
+
+## Version identity fence
+- Installed/promoted field baseline remains immutable: 0.6.0-rc3 / versionCode 7.
+- All post-field development now builds as 0.7.0-dev / versionCode 8.
+- Do not overwrite the canonical Drive RC3 with a DEV artifact.
+- Promote only after a future consolidated release gate renames the DEV line to a release candidate.

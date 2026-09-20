@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_QUALITY_AWARENESS_CI_PENDING",
+  "phase": "POST_FIELD_0_7_0_DEV",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "finish CI for post-field quality-awareness batch; then continue optimization-efficacy work and batch further material improvements before next signed install",
+  "next_uncommitted_action": "continue substantive quality/optimization work on 0.7.0-dev; never overwrite canonical RC3 until a consolidated release gate passes",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -66,5 +66,15 @@
     "diagnostic export includes passive quality",
     "telemetry dedupes bandwidth by quality tier to limit battery/storage churn",
     "hero classifier surfaces validated-but-constrained Wi-Fi as degraded"
-  ]
+  ],
+  "installed_field_baseline": {
+    "version": "0.6.0-rc3",
+    "versionCode": 7,
+    "immutable": true
+  },
+  "development_line": {
+    "version": "0.7.0-dev",
+    "versionCode": 8,
+    "promotion": "FORBIDDEN_UNTIL_CONSOLIDATED_RC_GATE"
+  }
 }
