@@ -102,3 +102,19 @@ Added since the previous checkpoint:
 - runtime verification of required telemetry schema columns.
 
 Stable target-phone baseline remains 0.6.0-rc3 and is not overwritten.
+
+
+## 0.7.0-dev radio + reliability tranche
+
+Integrated after the previous deep-diagnostics checkpoint:
+- passive Wi-Fi radio-quality model (UNKNOWN / WEAK / FAIR / GOOD);
+- Android NOT_CONGESTED and NOT_SUSPENDED capability observation;
+- distinct passive causes for weak radio, possible congestion and suspended network;
+- Autopilot suppresses pointless metric refreshes for weak-radio/congestion/suspended cases;
+- readable 24 h reliability summary in the main cockpit;
+- passive quality trend (IMPROVING / STABLE / DEGRADING / INSUFFICIENT);
+- Autopilot profile recommendation from recent reliability burden;
+- slow-link episode burden now contributes to reliability severity even without outright outages.
+
+Canonical 0.6.0-rc3 remains untouched.
+Current code head: `00e4df0d3869daaab777d2b159a1c8228d9b2c7c`; CI is running at tranche checkpoint time.

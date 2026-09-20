@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_0_7_0_DEV_DEEP_DIAGNOSTICS_AND_FAILSAFE",
+  "phase": "POST_FIELD_0_7_0_DEV_RADIO_RELIABILITY_AND_CAUSE_AWARE_AUTOPILOT",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "continue 0.7.0-dev with radio/congestion diagnosis, user-facing 24h reliability summary, resource qualification and consolidated release gating; keep RC3 canonical",
+  "next_uncommitted_action": "finish CI for radio/reliability/profile-recommendation batch; if green, continue consolidated 0.7.0-dev feature work without replacing canonical RC3",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -76,7 +76,7 @@
     "version": "0.7.0-dev",
     "versionCode": 8,
     "promotion": "FORBIDDEN_UNTIL_CONSOLIDATED_RC_GATE",
-    "head": "3467ffdcf5da78cfd17e0e13f9b73b6b9cf0f317",
+    "head": "00e4df0d3869daaab777d2b159a1c8228d9b2c7c",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -117,15 +117,24 @@
       "manual diagnosis outcome aggregation",
       "active recovery suspended on failed runtime self-test",
       "passive 30-minute runtime resource checkpoint",
-      "runtime telemetry schema-integrity verification"
+      "runtime telemetry schema-integrity verification",
+      "passive Wi-Fi radio quality model",
+      "Android NOT_CONGESTED/NOT_SUSPENDED observation",
+      "weak-radio and possible-congestion passive causes",
+      "NETWORK_SUSPENDED passive cause",
+      "cause-aware suppression of pointless automatic recovery",
+      "readable 24h cockpit reliability summary",
+      "passive recent quality trend",
+      "Autopilot profile recommendation from reliability burden",
+      "slow-link burden included in reliability classification"
     ],
     "last_full_pass": "3467ffdcf5da78cfd17e0e13f9b73b6b9cf0f317"
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "3467ffdcf5da78cfd17e0e13f9b73b6b9cf0f317",
-    "design_lint": "PASS",
-    "android_ci": "PASS",
-    "full_machine_verdict": "PASS"
+    "code_head": "00e4df0d3869daaab777d2b159a1c8228d9b2c7c",
+    "design_lint": "QUEUED",
+    "android_ci": "QUEUED",
+    "last_known_full_pass": "92f140a0391a6dc52b39718616ef5d02e477f024"
   }
 }

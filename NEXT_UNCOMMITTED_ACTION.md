@@ -1,34 +1,28 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Immutable target-phone baseline
-- 0.6.0-rc3 / versionCode 7
-- signed + Drive-canonical
-- bidirectional handoff field PASS
-- original mobile-block symptom not reproduced
+## Stable field baseline
+0.6.0-rc3 remains installed and Drive-canonical.
 
-## 0.7.0-dev current machine checkpoint
-- source head: `3467ffdcf5da78cfd17e0e13f9b73b6b9cf0f317`
-- design-lint: PASS
-- full Android CI: PASS
-- telemetry schema: v5
-- promotion: FORBIDDEN until consolidated release gate
+## Active development line
+0.7.0-dev / versionCode 8.
 
-## Material work integrated
-- reliability + slow-link longitudinal evidence
-- incident marker + focused context timeline
-- action duration + circuit breaker
-- privacy-safe IP topology and cause separation
-- bounded DNS-vs-HTTP manual Wi-Fi diagnosis
-- exact captured-network probe pinning
-- fail-safe post-update self-test
-- passive 30-minute resource checkpoint
-- schema-integrity verification
+## This tranche integrated
+1. passive Wi-Fi radio signal model;
+2. Android congestion/suspension evidence;
+3. weak-radio / possible-congestion / suspended-network causes;
+4. cause-aware Autopilot suppression of useless recovery;
+5. visible 24 h reliability summary;
+6. recent passive quality trend;
+7. profile recommendation from reliability burden;
+8. slow-link burden contributes to reliability severity.
 
-## Next material work
-1. passive radio/congestion diagnosis without traffic;
-2. visible 24h reliability summary in the cockpit;
-3. accumulate RAM/battery evidence on a future field build;
-4. harden migration/self-test evidence for v4 -> v5;
-5. continue large-feature batching before deciding on the next signed RC.
+## Current gate
+Complete design-lint + Android CI for code head `00e4df0d3869daaab777d2b159a1c8228d9b2c7c`.
 
-Do not overwrite the canonical RC3 Drive installer and do not ask for a new install yet.
+## After gate
+Continue large 0.7.0-dev functionality:
+- longitudinal radio/cause evidence;
+- resource and wakeup qualification;
+- migration proof;
+- consolidated release-readiness gate;
+- no new signed install until the feature batch is materially larger and all gates pass.
