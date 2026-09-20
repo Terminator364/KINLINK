@@ -1,13 +1,27 @@
 {
   "project": "KINLINK",
-  "phase": "P0_USER_FAIL_OPEN_CONTROL_CI_PENDING",
+  "phase": "RC3_CONSOLIDATED_CANDIDATE_CI",
   "status": "ACTIVE",
-  "delivery": "HOLD_UNTIL_CONSOLIDATED_PASS",
-  "proven_machine_baseline_through": "7a35ef299257c30f7548cc0fe3d9a447e69662af",
-  "integrating_now": [
-    "handoff outcome observability",
+  "candidate": {
+    "version": "0.6.0-rc3",
+    "versionCode": 7
+  },
+  "p0_mobile_handoff": {
+    "status": "MACHINE_HARDENED",
+    "original_incident_causality": "UNPROVEN",
+    "cellular_behavior": "OBSERVATION_ONLY",
+    "network_ownership_apis": "FORBIDDEN_BY_CI",
+    "post_handoff_quiet_period_ms": 5000,
+    "recovery_deadline_ms": 5000
+  },
+  "rc3_scope": [
+    "central ActiveRecoveryPolicy",
     "persistent observation-only safe mode",
-    "manual optimization disabled while safe mode is active"
+    "handoff outcome observability",
+    "watchdog abort observability",
+    "manifest safety fence",
+    "versionCode 7"
   ],
-  "next_uncommitted_action": "pass CI, finalize consolidated diagnostics/release evidence, bump consolidated candidate and promote only after signing/readback"
+  "delivery": "HOLD_UNTIL_CI_SIGNING_READBACK_PASS",
+  "next_uncommitted_action": "finish RC3 CI then stable-sign and Drive-readback before one field update"
 }

@@ -1,16 +1,20 @@
 # KINLINK build status
 
-## Proven hardened baseline
+## RC3 consolidated candidate
 
-All P0 handoff, watchdog, resource, lifecycle and post-handoff settling batches through `7a35ef299257c30f7548cc0fe3d9a447e69662af` are green.
+- Version: **0.6.0-rc3**
+- versionCode: **7**
+- P0 mobile handoff hardening: integrated
+- Active recovery gate: **AUTOMATIC + Wi-Fi only**
+- Cellular: **observation-only**
+- User safe mode: **persistent**
+- 5 s post-handoff quiet window: integrated
+- 5 s recovery watchdog: integrated
+- stale-network abort: integrated
+- restart-storm degradation: integrated
+- battery / thermal / low-memory guards: integrated
+- CI source fence against network ownership APIs: integrated
+- manifest fence against CHANGE_NETWORK_STATE / VpnService: integrated
+- diagnostics include handoff outcomes and watchdog aborts
 
-## Current integration
-
-In addition to handoff outcome observability, KINLINK now gains a persistent user fail-open control:
-- AUTOMATIC mode;
-- OBSERVATION_ONLY safe mode;
-- safe mode blocks automatic recovery and manual Wi-Fi optimization;
-- safe mode does not stop passive diagnostics or telemetry;
-- current mode is visible in technical details and foreground notification.
-
-No uninstall is required to disable active KINLINK behavior in future field testing.
+Stable signing and Drive promotion remain blocked until the RC3 CI run is fully green.

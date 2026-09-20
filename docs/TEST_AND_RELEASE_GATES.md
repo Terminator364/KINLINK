@@ -1,6 +1,6 @@
-# Test and Release Gates
+# Test and Release Gates — RC3
 
-## RC2 machine gate — PASS
+## RC2 baseline machine gate — PASS
 - unit/regression tests
 - APK compilation
 - deterministic CI artifact hash
@@ -46,3 +46,11 @@
 
 ## Remaining RC2 gate
 Target-phone in-place update and field behavior.
+
+
+## RC3 additional gates
+- persistent observation-only safe mode
+- pure-policy proof: active recovery = AUTOMATIC + Wi-Fi only
+- manifest safety fence rejects CHANGE_NETWORK_STATE and VpnService
+- diagnostic export includes aggregate handoff outcomes and watchdog abort evidence
+- versionCode monotonic upgrade to 7

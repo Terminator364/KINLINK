@@ -1,4 +1,4 @@
-# KINLINK Canonical Specification v0.5
+# KINLINK Canonical Specification v0.6
 
 ## Mission
 
@@ -70,3 +70,10 @@ KINLINK exposes a persistent Recovery Mode:
 - AUTOMATIC: bounded Wi-Fi-only recovery is permitted by the normal policy gates.
 - OBSERVATION_ONLY: all active recovery and manual Wi-Fi optimization are suspended; telemetry and status remain available.
 - The user can switch modes without uninstalling the app.
+
+
+## RC3 consolidated safety contract
+
+Active recovery is now governed by one pure policy gate: only AUTOMATIC mode + active Wi-Fi may authorize bounded recovery. Cellular, unknown transport and OBSERVATION_ONLY always block active recovery.
+
+The privacy-safe diagnostic export also carries aggregate handoff and watchdog evidence so a future Wi-Fi→mobile incident can be reconstructed without SSID, SIM identifiers, IP addresses, payloads or forced probes.

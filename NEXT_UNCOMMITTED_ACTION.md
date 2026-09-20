@@ -1,16 +1,15 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Current machine batch
+## RC3 promotion pipeline
 
-1. Validate runtime watchdog enforcement in CI.
-2. Validate stale Wi-Fi work abort after transport changes.
-3. Continue lifecycle/restart qualification.
-4. Continue bounded resource/telemetry qualification.
+1. Wait for full RC3 CI (policy tests + source fence + manifest fence + APK build).
+2. Inspect failures automatically; repair before any user action.
+3. Fetch RC3 CI artifact and verify its build manifest/hash.
+4. Stable-sign with the existing KINLINK signer.
+5. Verify signer continuity.
+6. Replace only the canonical Drive installer and perform byte-for-byte readback.
+7. Then request one in-place field update.
 
 ## Human action
 
-None. Do not request another incremental install.
-
-## Promotion rule
-
-Only create the next stable-signed APK after the consolidated P0 handoff/watchdog/lifecycle batch passes.
+None until all machine gates above are complete.
