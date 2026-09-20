@@ -1,35 +1,22 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Stable field baseline
-0.6.0-rc3 remains installed, signed, Drive-canonical and field-validated.
+## Immutable target-phone baseline
+- 0.6.0-rc3 / versionCode 7
+- signed + Drive-canonical
+- bidirectional handoff field PASS
+- original mobile-block symptom not reproduced
 
-## Active DEV line
-0.7.0-dev / versionCode 8.
+## 0.7.0-dev current scope
+Quality-aware recovery, cause-aware diagnostics, outage duration evidence, post-update self-test, resource evidence hooks, background-churn reduction and bounded telemetry retention are integrated.
 
-## Newly integrated
-1. passive root-cause classification;
-2. passive DNS metadata observation;
-3. interruption duration/severity evidence;
-4. cause-aware guidance and notification;
-5. passive cause-transition history;
-6. qualitative session health;
-7. once-per-version post-update self-test:
-   - DB schema >= 3;
-   - RecoveryMode readable;
-   - first NetworkCallback observed.
+## Current gate
+Finish Android CI for source head `5cce76cade7361e821a8eee36be8f0f1e5528412`.
 
-## Current machine gate
-Finish complete CI for the self-test head.
+## Next material work
+1. collect/qualify runtime RAM + battery evidence on a future target build;
+2. add bounded action-duration/latency evidence;
+3. strengthen longitudinal interruption/cause summaries;
+4. audit schema v3 -> v4 migration on the next install candidate;
+5. only then evaluate promotion from 0.7.0-dev to the next consolidated RC.
 
-## Next material block
-- resource-budget qualification hooks/evidence;
-- background churn/wakeup discipline;
-- richer longitudinal outage/cause summary;
-- only then assess readiness for a consolidated next release candidate.
-
-Do not promote 0.7.0-dev and do not ask the user to install it yet.
-
-
-## Resource qualification protocol
-See docs/RESOURCE_QUALIFICATION.md.
-Before the next signed candidate, collect at least one >=30 minute target-device session receipt and evaluate RAM/battery evidence against RecoveryQualificationPolicy.
+Do not overwrite the canonical RC3 Drive installer and do not ask for a new install yet.

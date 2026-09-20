@@ -63,3 +63,22 @@ Integrated:
 
 Proven CI PASS already covers passive-cause diagnosis, guidance/notification and session-health commits.
 Post-update runtime self-test is the current CI gate.
+
+
+## 0.7.0-dev resource + longitudinal diagnostics tranche
+
+Added:
+- lightweight service-session PSS/battery qualification receipts;
+- charging sessions treated as battery-INCONCLUSIVE;
+- resource qualification protocol and release thresholds;
+- unchanged foreground notification updates deduplicated;
+- device-wide mobile TrafficStats sampling cached for 15 seconds;
+- telemetry retention bounded by age and row count;
+- telemetry schema v4 structured interruption duration;
+- cumulative and longest interruption duration in diagnostics.
+
+Machine status:
+- full PASS through `e8280bb1c32a019f0e8f32d2f8bd44073261ed02`;
+- schema-v4 head `5cce76cade7361e821a8eee36be8f0f1e5528412`: design-lint PASS, Android CI in progress at checkpoint time.
+
+The installed RC3 baseline remains unchanged.

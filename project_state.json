@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_0_7_0_DEV_DIAGNOSTIC_DEPTH_AND_SELF_TEST_CI",
+  "phase": "POST_FIELD_0_7_0_DEV_RESOURCE_AND_LONGITUDINAL_DIAGNOSTICS",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "finish CI for post-update runtime self-test; then continue resource-budget qualification and longitudinal diagnostics before next consolidated release candidate",
+  "next_uncommitted_action": "finish CI for schema-v4 interruption duration head; continue resource/latency qualification evidence and longitudinal diagnosis before next consolidated release candidate",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -76,7 +76,7 @@
     "version": "0.7.0-dev",
     "versionCode": 8,
     "promotion": "FORBIDDEN_UNTIL_CONSOLIDATED_RC_GATE",
-    "head": "ccfe2db259d42f85173e412f2b08d5f61833c72c",
+    "head": "5cce76cade7361e821a8eee36be8f0f1e5528412",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -97,7 +97,20 @@
       "cause-aware foreground notification",
       "passive cause transition history",
       "qualitative session health synthesis",
-      "post-update zero-network runtime self-test"
+      "post-update zero-network runtime self-test",
+      "runtime resource session receipts",
+      "notification update dedupe",
+      "15-second mobile counter sampling cache",
+      "time+row bounded telemetry retention",
+      "structured interruption duration schema v4",
+      "cumulative and longest interruption diagnostics"
     ]
+  },
+  "telemetry_schema_version": 4,
+  "current_machine_gate": {
+    "code_head": "5cce76cade7361e821a8eee36be8f0f1e5528412",
+    "design_lint": "PASS",
+    "android_ci": "IN_PROGRESS",
+    "last_full_pass": "e8280bb1c32a019f0e8f32d2f8bd44073261ed02"
   }
 }
