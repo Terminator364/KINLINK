@@ -291,3 +291,13 @@ KINLINK now measures continuous Wi-Fi periods where Android still reports VALIDA
 The episode ends when quality returns to COMFORTABLE/UNKNOWN or the active transport changes.
 Receipts store duration_ms and worst observed severity.
 No probe or polling loop is added.
+
+
+## 24-hour slow-link burden
+
+The 24-hour reliability window now includes completed slow-but-validated Wi-Fi episodes:
+- episode count;
+- cumulative duration;
+- longest episode.
+
+This is reported separately from hard Internet interruptions so "connected but painfully slow" is not hidden inside an availability-only view.

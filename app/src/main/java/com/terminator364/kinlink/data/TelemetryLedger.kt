@@ -21,7 +21,10 @@ data class RecentReliabilityWindow(
     val interruptionCount: Int,
     val cumulativeMillis: Long,
     val longestMillis: Long,
-    val dominantCause: String?
+    val dominantCause: String?,
+    val lowQualityEpisodeCount: Int = 0,
+    val lowQualityCumulativeMillis: Long = 0L,
+    val lowQualityLongestMillis: Long = 0L
 )
 
 data class ActionReceipt(
@@ -219,6 +222,15 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             Triple(cursor.getInt(0), cursor.getLong(1), cursor.getLong(2))
         }
 
+    fun lowQualityDurationStatsSince(sinceWallMs: Long): Triple<Int, Long, Long> =
+        readableDatabase.rawQuery(
+            "SELECT COUNT(duration_ms), COALESCE(SUM(duration_ms), 0), COALESCE(MAX(duration_ms), 0) FROM action_receipts WHERE action LIKE 'LOW_QUALITY_EPISODE_%' AND duration_ms IS NOT NULL AND ts_wall_ms >= ?",
+            arrayOf(sinceWallMs.toString())
+        ).use { cursor ->
+            cursor.moveToFirst()
+            Triple(cursor.getInt(0), cursor.getLong(1), cursor.getLong(2))
+        }
+
     fun lowQualityDurationStats(): Pair<Long, Long> =
         readableDatabase.rawQuery(
             "SELECT COALESCE(SUM(duration_ms), 0), COALESCE(MAX(duration_ms), 0) FROM action_receipts WHERE action LIKE 'LOW_QUALITY_EPISODE_%' AND duration_ms IS NOT NULL",
@@ -243,13 +255,17 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
     ): RecentReliabilityWindow {
         val since = nowMillis - windowMillis
         val interruptions = interruptionDurationStatsSince(since)
+        val lowQuality = lowQualityDurationStatsSince(since)
         val causes = actionCountsByPrefixSince("PASSIVE_CAUSE_", since)
         val dominant = causes.maxByOrNull { it.value }?.key
         return RecentReliabilityWindow(
             interruptionCount = interruptions.first,
             cumulativeMillis = interruptions.second,
             longestMillis = interruptions.third,
-            dominantCause = dominant
+            dominantCause = dominant,
+            lowQualityEpisodeCount = lowQuality.first,
+            lowQualityCumulativeMillis = lowQuality.second,
+            lowQualityLongestMillis = lowQuality.third
         )
     }
 

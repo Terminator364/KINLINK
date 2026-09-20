@@ -48,6 +48,9 @@ data class DiagnosticSummary(
     val recent24hInterruptionMillis: Long = 0L,
     val recent24hLongestInterruptionMillis: Long = 0L,
     val recent24hCauseCounts: Map<String, Int> = emptyMap(),
+    val recent24hLowQualityEpisodeCount: Int = 0,
+    val recent24hLowQualityMillis: Long = 0L,
+    val recent24hLowQualityLongestMillis: Long = 0L,
     val lowQualityEpisodes: Int = 0,
     val totalLowQualityMillis: Long = 0L,
     val longestLowQualityMillis: Long = 0L
@@ -121,6 +124,7 @@ object DiagnosticReportBuilder {
         appendLine("- 24h qualitative burden: ${recentBurden.name}")
         appendLine("- Last 1h: ${summary.recent1hInterruptionCount} interruption(s), ${summary.recent1hInterruptionMillis} ms cumulative, longest ${summary.recent1hLongestInterruptionMillis} ms")
         appendLine("- Last 24h: ${summary.recent24hInterruptionCount} interruption(s), ${summary.recent24hInterruptionMillis} ms cumulative, longest ${summary.recent24hLongestInterruptionMillis} ms")
+        appendLine("- Slow-but-validated Wi-Fi 24h: ${summary.recent24hLowQualityEpisodeCount} episode(s), ${summary.recent24hLowQualityMillis} ms cumulative, longest ${summary.recent24hLowQualityLongestMillis} ms")
         if (summary.recent24hCauseCounts.isNotEmpty()) {
             val dominant = summary.recent24hCauseCounts.maxByOrNull { it.value }
             if (dominant != null) {

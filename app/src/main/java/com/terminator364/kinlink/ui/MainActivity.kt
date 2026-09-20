@@ -378,6 +378,9 @@ class MainActivity : Activity() {
                 append(" · cumul ${reliability.cumulativeMillis} ms")
                 append(" · max ${reliability.longestMillis} ms")
                 append(" · ${burden.name}\n")
+                append("Wi-Fi lent validé 24 h : ${reliability.lowQualityEpisodeCount} épisode(s)")
+                append(" · cumul ${reliability.lowQualityCumulativeMillis} ms")
+                append(" · max ${reliability.lowQualityLongestMillis} ms\n")
                 reliability.dominantCause?.let { cause ->
                     append("Cause dominante 24 h : $cause\n")
                 }
