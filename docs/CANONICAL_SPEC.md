@@ -179,3 +179,10 @@ Guidance never triggers routing, DNS replacement, mobile-data toggling or hidden
 
 The foreground notification reflects the current passive cause on Wi-Fi (limited capacity, captive portal, DNS configuration suspicion, WAN unvalidated, flapping) without creating traffic.
 Diagnostic exports aggregate passive cause transitions from the bounded action ledger.
+
+
+## Session health synthesis
+
+KINLINK produces a qualitative session-health state: HEALTHY, WATCH, DEGRADED or CRITICAL.
+It combines current Internet state, passive cause and recent instability/flapping.
+No opaque numeric score is exposed as a claim of objective network quality.

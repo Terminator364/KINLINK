@@ -31,6 +31,7 @@ import com.terminator364.kinlink.core.PassiveGuidancePolicy
 import com.terminator364.kinlink.core.RecoveryBlockReason
 import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
+import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.WifiDoctor
 import com.terminator364.kinlink.core.WifiOptimizer
@@ -293,6 +294,12 @@ class MainActivity : Activity() {
             flapping = stability?.assessment?.flapping ?: false
         )
         val passiveGuidance = PassiveGuidancePolicy.guidance(passiveProblem)
+        val sessionHealth = SessionHealthPolicy.assess(
+            truth,
+            instabilityScore = stability?.assessment?.score ?: 0,
+            flapping = stability?.assessment?.flapping ?: false,
+            passiveProblem = passiveProblem
+        )
         val adaptiveDecision = AdaptivePolicyEngine.evaluate(
             truth = truth,
             instabilityScore = stability?.assessment?.score ?: 0,
@@ -348,6 +355,7 @@ class MainActivity : Activity() {
             append("Qualité passive : ${passiveQuality.quality.name} · ${passiveQuality.summary}\n")
             append("Cause passive : ${passiveProblem.cause.name} · confiance ${passiveProblem.confidence}%\n")
             append("Cause passive détail : ${passiveProblem.summary}\n")
+            append("Santé de session : ${sessionHealth.health.name} · ${sessionHealth.summary}\n")
             append("DNS Android : ${truth.dnsServerCount} serveur(s) · DNS privé ${if (truth.privateDnsActive) "actif" else "non signalé"}\n")
             stability?.let {
                 append("Instabilité 15 min : ${it.assessment.score}/100")

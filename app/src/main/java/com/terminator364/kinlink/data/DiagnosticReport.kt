@@ -4,6 +4,7 @@ import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
 import com.terminator364.kinlink.core.PassiveProblemClassifier
 import com.terminator364.kinlink.core.PassiveGuidancePolicy
+import com.terminator364.kinlink.core.SessionHealthPolicy
 
 /** Privacy-safe diagnostic summary: no SSID, SIM identifier, IP address, gateway or payload. */
 data class DiagnosticSummary(
@@ -56,8 +57,15 @@ object DiagnosticReportBuilder {
         appendLine("- Android passive capacity: down=${summary.currentTruth.downstreamKbps} kbps, up=${summary.currentTruth.upstreamKbps} kbps")
         appendLine("- Passive quality: ${passiveQuality.quality.name} — ${passiveQuality.summary}")
         val guidance = PassiveGuidancePolicy.guidance(passiveProblem)
+        val sessionHealth = SessionHealthPolicy.assess(
+            summary.currentTruth,
+            summary.instabilityScore,
+            summary.flapping,
+            passiveProblem
+        )
         appendLine("- Passive cause: ${passiveProblem.cause.name} — ${passiveProblem.summary} (confidence ${passiveProblem.confidence}%)")
         appendLine("- Suggested handling: ${guidance.title} — ${guidance.message}")
+        appendLine("- Session health: ${sessionHealth.health.name} — ${sessionHealth.summary}")
         appendLine("- Android DNS servers exposed: ${summary.currentTruth.dnsServerCount}")
         appendLine("- Android private DNS active: ${summary.currentTruth.privateDnsActive}")
         appendLine()
