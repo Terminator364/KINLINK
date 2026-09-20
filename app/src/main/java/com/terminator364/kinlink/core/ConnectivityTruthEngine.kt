@@ -29,7 +29,10 @@ object ConnectivityTruthEngine {
         }
 
         val captive = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_CAPTIVE_PORTAL)
-        val partial = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_PARTIAL_CONNECTIVITY)
+        // Android does not expose a stable public partial-connectivity capability
+        // across the supported SDK toolchains.  M0 therefore reports UNKNOWN
+        // rather than inferring a partial WAN state from hidden APIs.
+        val partial = false
         val validated = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
         val internetState = when {
             captive -> InternetState.CAPTIVE_PORTAL
