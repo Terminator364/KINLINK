@@ -41,6 +41,8 @@ object SessionHealthPolicy {
 
             PassiveProblemCause.LOW_CAPACITY,
             PassiveProblemCause.WAN_UNVALIDATED,
+            PassiveProblemCause.ADDRESSING_SUSPECT,
+            PassiveProblemCause.ROUTE_CONFIGURATION_SUSPECT,
             PassiveProblemCause.DNS_CONFIGURATION_SUSPECT ->
                 SessionHealthAssessment(SessionHealth.WATCH, "Connexion utilisable ou locale, mais un signal passif mérite surveillance.")
 

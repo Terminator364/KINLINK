@@ -16,6 +16,18 @@ object PassiveGuidancePolicy {
         PassiveProblemCause.CAPTIVE_PORTAL ->
             PassiveGuidance("Connexion Wi-Fi requise", "Ouvre la page de connexion du réseau. KINLINK ne contourne pas le portail captif.")
 
+        PassiveProblemCause.ADDRESSING_SUSPECT ->
+            PassiveGuidance(
+                "Adresse IP à surveiller",
+                "Le Wi-Fi est associé mais Android n’expose pas encore d’adresse IP utilisable. Attends quelques secondes ou reconnecte le Wi-Fi si cela persiste."
+            )
+
+        PassiveProblemCause.ROUTE_CONFIGURATION_SUSPECT ->
+            PassiveGuidance(
+                "Route réseau à surveiller",
+                "Le Wi-Fi est associé mais aucune route par défaut n’est exposée par Android. KINLINK ne force aucune bascule."
+            )
+
         PassiveProblemCause.DNS_CONFIGURATION_SUSPECT ->
             PassiveGuidance(
                 "DNS à surveiller",

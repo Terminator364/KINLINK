@@ -4,6 +4,8 @@ enum class PassiveProblemCause {
     NONE,
     NO_LINK,
     CAPTIVE_PORTAL,
+    ADDRESSING_SUSPECT,
+    ROUTE_CONFIGURATION_SUSPECT,
     DNS_CONFIGURATION_SUSPECT,
     LOW_CAPACITY,
     FLAPPING,
@@ -34,6 +36,28 @@ object PassiveProblemClassifier {
 
         truth.internetState == InternetState.CAPTIVE_PORTAL ->
             PassiveProblemAssessment(PassiveProblemCause.CAPTIVE_PORTAL, "Portail captif signalé par Android.", 95)
+
+        truth.transport == Transport.WIFI &&
+            truth.lanState == LanState.LINK_PRESENT &&
+            truth.internetState != InternetState.VALIDATED &&
+            !truth.hasIpv4Address &&
+            !truth.hasIpv6Address ->
+            PassiveProblemAssessment(
+                PassiveProblemCause.ADDRESSING_SUSPECT,
+                "Wi-Fi local présent mais Android n’expose aucune adresse IP utilisable.",
+                80
+            )
+
+        truth.transport == Transport.WIFI &&
+            truth.lanState == LanState.LINK_PRESENT &&
+            truth.internetState != InternetState.VALIDATED &&
+            !truth.hasIpv4DefaultRoute &&
+            !truth.hasIpv6DefaultRoute ->
+            PassiveProblemAssessment(
+                PassiveProblemCause.ROUTE_CONFIGURATION_SUSPECT,
+                "Wi-Fi local présent mais Android n’expose aucune route par défaut.",
+                78
+            )
 
         truth.transport == Transport.WIFI &&
             truth.lanState == LanState.LINK_PRESENT &&
