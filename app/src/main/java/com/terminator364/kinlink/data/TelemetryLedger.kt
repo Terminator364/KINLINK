@@ -58,6 +58,10 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
     ).use { cursor -> cursor.moveToFirst(); cursor.getInt(0) }
 
     fun diagnosticSummary(currentTruth: NetworkTruth): DiagnosticSummary {
+        val weekStartMillis = System.currentTimeMillis() - 7L * 24L * 60L * 60L * 1000L
+        val weeklyEvents = readableDatabase.rawQuery(
+            "SELECT COUNT(*) FROM network_events WHERE ts_wall_ms >= ?", arrayOf(weekStartMillis.toString())
+        ).use { cursor -> cursor.moveToFirst(); cursor.getInt(0) }
         val counts = linkedMapOf<String, Int>()
         readableDatabase.rawQuery(
             "SELECT transport || '_' || internet_state, COUNT(*) FROM network_events GROUP BY transport, internet_state",
@@ -71,7 +75,8 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             generatedAtMillis = System.currentTimeMillis(),
             totalEvents = recentCount(),
             currentTruth = currentTruth,
-            stateCounts = counts
+            stateCounts = counts,
+            weeklyEvents = weeklyEvents
         )
     }
 }
