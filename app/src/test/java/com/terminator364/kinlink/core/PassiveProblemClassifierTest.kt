@@ -10,7 +10,9 @@ class PassiveProblemClassifierTest {
                 transport = Transport.WIFI,
                 internetState = InternetState.UNKNOWN,
                 lanState = LanState.LINK_PRESENT,
-                dnsServerCount = 0
+                dnsServerCount = 0,
+                hasIpv4Address = true,
+                hasIpv4DefaultRoute = true
             )
         )
         assertEquals(PassiveProblemCause.DNS_CONFIGURATION_SUSPECT, a.cause)
@@ -22,7 +24,9 @@ class PassiveProblemClassifierTest {
                 transport = Transport.WIFI,
                 internetState = InternetState.UNKNOWN,
                 lanState = LanState.LINK_PRESENT,
-                dnsServerCount = 2
+                dnsServerCount = 2,
+                hasIpv4Address = true,
+                hasIpv4DefaultRoute = true
             )
         )
         assertEquals(PassiveProblemCause.WAN_UNVALIDATED, a.cause)
