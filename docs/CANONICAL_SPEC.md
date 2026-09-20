@@ -41,6 +41,12 @@ Android VALIDATED, captive portal, active transport and LinkProperties outrank e
 
 The observer uses Android specialUse foreground-service semantics and restarts after BOOT_COMPLETED or MY_PACKAGE_REPLACED where Android permits.
 
+Lifecycle is fail-open:
+- service starts/stops are receipt-carrying;
+- more than 3 service creations inside 10 minutes is treated as a restart storm;
+- during a restart storm, passive observation remains available but active recovery is suspended;
+- no restart storm may cause routing ownership or mobile-data intervention.
+
 ## Strong stabilizer
 
 VpnService/TUN remains a separately gated M5 subsystem. It is not production-enabled until DNS resilience, watchdog teardown, RAM/battery, latency and rollback evidence pass.

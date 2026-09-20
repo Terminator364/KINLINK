@@ -14,7 +14,7 @@ class KinlinkObserverService : Service() {
     private lateinit var observer: NetworkObserver
     private lateinit var ledger: TelemetryLedger
     private lateinit var mobileBudget: MobileBudgetTracker
-    private lateinit var recovery: AutopilotRecoveryController
+    private var recovery: AutopilotRecoveryController? = null
     private val handoffAudit = NetworkHandoffAudit()
 
     override fun onCreate() {
@@ -35,7 +35,25 @@ class KinlinkObserverService : Service() {
 
         ledger = TelemetryLedger(this)
         mobileBudget = MobileBudgetTracker(this)
-        recovery = AutopilotRecoveryController(this, ledger)
+        val lifecycleDecision = LifecycleSafetyGuard(this).noteStart()
+        runCatching {
+            ledger.appendAction(
+                "SERVICE_START",
+                lifecycleDecision.recoveryAllowed,
+                "starts10m=${lifecycleDecision.startsInWindow}; ${lifecycleDecision.reason}"
+            )
+        }
+        if (lifecycleDecision.recoveryAllowed) {
+            recovery = AutopilotRecoveryController(this, ledger)
+        } else {
+            runCatching {
+                ledger.appendAction(
+                    "RECOVERY_SUSPENDED_RESTART_STORM",
+                    false,
+                    lifecycleDecision.reason
+                )
+            }
+        }
 
         observer = NetworkObserver(this) { rawTruth ->
             val budget = mobileBudget.sample()
@@ -49,7 +67,7 @@ class KinlinkObserverService : Service() {
                         transition.summary
                     )
                 }
-                recovery.onTruth(truth, ledger.stabilityWindow().assessment.score)
+                recovery?.onTruth(truth, ledger.stabilityWindow().assessment.score)
             }
         }
         observer.start()
@@ -59,8 +77,11 @@ class KinlinkObserverService : Service() {
 
     override fun onDestroy() {
         if (::observer.isInitialized) observer.stop()
-        if (::recovery.isInitialized) recovery.close()
-        if (::ledger.isInitialized) ledger.close()
+        recovery?.close()
+        if (::ledger.isInitialized) {
+            runCatching { ledger.appendAction("SERVICE_STOP", true, "Service arrêté proprement.") }
+            ledger.close()
+        }
         super.onDestroy()
     }
 

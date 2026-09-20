@@ -26,6 +26,7 @@
 - recovery hard deadline
 - transport changes during recovery
 - reboot and package update restart
+- restart-storm degradation to observation-only
 - diagnostic export
 
 ## Required assertions
@@ -40,6 +41,7 @@
 - resource pressure (battery saver / thermal / low-memory) suspends recovery
 - networking remains fail-open
 - stale Wi-Fi work cannot continue after Android changes active transport
+- repeated service relaunches suspend active recovery instead of escalating
 
 ## Remaining RC2 gate
 Target-phone in-place update and field behavior.
