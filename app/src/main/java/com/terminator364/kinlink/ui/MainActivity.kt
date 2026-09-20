@@ -1,32 +1,43 @@
 package com.terminator364.kinlink.ui
 
 import android.app.Activity
-import android.os.Bundle
+import android.app.AlertDialog
 import android.content.Intent
-import androidx.core.content.ContextCompat
+import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import android.view.WindowInsets
+import android.widget.EditText
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.terminator364.kinlink.R
+import com.terminator364.kinlink.core.BudgetState
 import com.terminator364.kinlink.core.ConnectivityStateClassifier
-import com.terminator364.kinlink.core.NetworkObserver
 import com.terminator364.kinlink.core.KinlinkObserverService
-import com.terminator364.kinlink.core.NetworkTruth
+import com.terminator364.kinlink.core.MobileBudgetSnapshot
+import com.terminator364.kinlink.core.MobileBudgetTracker
 import com.terminator364.kinlink.core.MobileVault
+import com.terminator364.kinlink.core.NetworkObserver
+import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.WifiDoctor
 import com.terminator364.kinlink.core.WifiOptimizer
 import com.terminator364.kinlink.data.DiagnosticExporter
+import com.terminator364.kinlink.data.StabilityWindow
 import com.terminator364.kinlink.data.TelemetryLedger
+import java.util.Locale
 
 class MainActivity : Activity() {
     private lateinit var observer: NetworkObserver
     private lateinit var ledger: TelemetryLedger
+    private lateinit var mobileBudget: MobileBudgetTracker
+
     private lateinit var stateText: TextView
     private lateinit var transportText: TextView
     private lateinit var internetText: TextView
     private lateinit var mobileText: TextView
+    private lateinit var mobileBudgetText: TextView
     private lateinit var detailText: TextView
     private lateinit var heroDetailText: TextView
     private lateinit var adviceTitleText: TextView
@@ -34,7 +45,16 @@ class MainActivity : Activity() {
     private lateinit var technicalToggle: TextView
     private lateinit var diagnosticExport: TextView
     private lateinit var wifiDoctorButton: TextView
+    private lateinit var budgetButton: TextView
+
     private var latestTruth = NetworkTruth()
+    private var latestBudget = MobileBudgetSnapshot(
+        supported = false,
+        usedTodayBytes = 0L,
+        dailyLimitBytes = null,
+        state = BudgetState.BALANCE_UNKNOWN
+    )
+    private var latestStability: StabilityWindow? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +65,7 @@ class MainActivity : Activity() {
         transportText = findViewById(R.id.transportText)
         internetText = findViewById(R.id.internetText)
         mobileText = findViewById(R.id.mobileText)
+        mobileBudgetText = findViewById(R.id.mobileBudgetText)
         detailText = findViewById(R.id.detailText)
         heroDetailText = findViewById(R.id.heroDetailText)
         adviceTitleText = findViewById(R.id.adviceTitleText)
@@ -52,16 +73,28 @@ class MainActivity : Activity() {
         technicalToggle = findViewById(R.id.technicalToggle)
         diagnosticExport = findViewById(R.id.diagnosticExport)
         wifiDoctorButton = findViewById(R.id.wifiDoctorButton)
+        budgetButton = findViewById(R.id.budgetButton)
 
         installSystemBarInsets()
+
+        ledger = TelemetryLedger(this)
+        mobileBudget = MobileBudgetTracker(this)
+
         technicalToggle.setOnClickListener { toggleTechnicalDetails() }
         diagnosticExport.setOnClickListener { exportDiagnostic() }
         wifiDoctorButton.setOnClickListener { optimizeWifi() }
+        budgetButton.setOnClickListener { configureMobileBudget() }
 
-        ledger = TelemetryLedger(this)
-        observer = NetworkObserver(this) { truth ->
-            ledger.append(truth)
-            runOnUiThread { render(truth) }
+        observer = NetworkObserver(this) { rawTruth ->
+            val budget = mobileBudget.sample()
+            val enrichedTruth = rawTruth.copy(budgetState = budget.state)
+            val stability = runCatching { ledger.stabilityWindow() }.getOrNull()
+
+            runOnUiThread {
+                latestBudget = budget
+                latestStability = stability
+                render(enrichedTruth, budget, stability)
+            }
         }
     }
 
@@ -86,6 +119,40 @@ class MainActivity : Activity() {
         diagnosticExport.visibility = if (nowVisible) View.GONE else View.VISIBLE
         technicalToggle.text =
             if (nowVisible) "Voir les détails techniques" else "Masquer les détails techniques"
+    }
+
+    private fun configureMobileBudget() {
+        val input = EditText(this).apply {
+            inputType = InputType.TYPE_CLASS_NUMBER
+            hint = "Ex. 100"
+            mobileBudget.configuredDailyLimitMiB()?.let { setText(it.toString()) }
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Protection des données mobiles")
+            .setMessage(
+                "Plafond de garde optionnel en MiB par jour. " +
+                    "KINLINK ne lance jamais de speedtest mobile, même sans plafond."
+            )
+            .setView(input)
+            .setPositiveButton("Enregistrer") { _, _ ->
+                val value = input.text.toString().trim().toIntOrNull()
+                mobileBudget.setDailyLimitMiB(value)
+                refreshBudgetUi()
+            }
+            .setNeutralButton("Sans plafond") { _, _ ->
+                mobileBudget.setDailyLimitMiB(null)
+                refreshBudgetUi()
+            }
+            .setNegativeButton("Annuler", null)
+            .show()
+    }
+
+    private fun refreshBudgetUi() {
+        val snapshot = mobileBudget.sample()
+        latestBudget = snapshot
+        val enriched = latestTruth.copy(budgetState = snapshot.state)
+        render(enriched, snapshot, latestStability)
     }
 
     private fun optimizeWifi() {
@@ -122,7 +189,11 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun render(truth: NetworkTruth) {
+    private fun render(
+        truth: NetworkTruth,
+        budget: MobileBudgetSnapshot = latestBudget,
+        stability: StabilityWindow? = latestStability
+    ) {
         latestTruth = truth
         val assessment = ConnectivityStateClassifier.classify(truth)
         val vaultDecision = MobileVault.decide(truth, assessment)
@@ -132,11 +203,17 @@ class MainActivity : Activity() {
         heroDetailText.text = assessment.explanation
         transportText.text = "Connexion en cours · ${transportLabel(truth)}"
         internetText.text = "Internet · ${internetLabel(truth)}"
-        mobileText.text = if (assessment.avoidAutomaticMobileUse) {
-            "Données mobiles · protégées"
-        } else {
-            "Données mobiles · politique active"
+        mobileText.text = when (truth.budgetState) {
+            BudgetState.BUNDLE_EXHAUSTED -> "Données mobiles · plafond KINLINK atteint"
+            BudgetState.BUNDLE_LOW -> "Données mobiles · plafond bientôt atteint"
+            else -> if (assessment.avoidAutomaticMobileUse) {
+                "Données mobiles · protégées"
+            } else {
+                "Données mobiles · politique active"
+            }
         }
+        mobileBudgetText.text = mobileBudgetLabel(budget)
+
         adviceTitleText.text = doctorAdvice.title
         adviceText.text = "${doctorAdvice.message}\n\n${vaultDecision.why} · ${vaultDecision.result}"
 
@@ -145,11 +222,36 @@ class MainActivity : Activity() {
             append("Réseau local : ${lanLabel(truth)}\n")
             append("Contexte : ${contextLabel(truth)}\n")
             append("Diagnostic : ${failureLabel(truth)}\n")
-            append("Confiance Android : ${(truth.confidence * 100).toInt()} %\n\n")
-            append("WHY : ${vaultDecision.why}\n")
+            append("Confiance Android : ${(truth.confidence * 100).toInt()} %\n")
+            append("Budget mobile : ${truth.budgetState.name}\n")
+            stability?.let {
+                append("Instabilité 15 min : ${it.assessment.score}/100")
+                append(" · ${it.transitions} transition(s)")
+                if (it.assessment.flapping) append(" · FLAPPING")
+                append("\n")
+            }
+            if (budget.counterResetDetected) {
+                append("Compteur mobile : baseline réinitialisée après reset/reboot\n")
+            }
+            append("\nWHY : ${vaultDecision.why}\n")
             append("WHAT : ${vaultDecision.what.name}\n")
             append("RESULT : ${vaultDecision.result}\n\n")
-            append("Règle anti-faux-positif : un échec de serveur de test ne peut jamais dégrader seul un réseau déjà VALIDATED par Android.")
+            append(
+                "Règle anti-faux-positif : un échec de serveur de test ne peut jamais " +
+                    "dégrader seul un réseau déjà VALIDATED par Android."
+            )
+        }
+    }
+
+    private fun mobileBudgetLabel(snapshot: MobileBudgetSnapshot): String {
+        if (!snapshot.supported) return "Suivi data mobile · indisponible sur cet appareil"
+
+        val used = String.format(Locale.US, "%.1f", snapshot.usedTodayMiB)
+        val limit = snapshot.dailyLimitMiB
+        return if (limit == null) {
+            "Suivi KINLINK · $used MiB aujourd’hui · plafond non configuré"
+        } else {
+            "Suivi KINLINK · $used / $limit MiB aujourd’hui"
         }
     }
 
