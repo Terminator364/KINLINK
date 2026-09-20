@@ -287,6 +287,35 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         )
     }
 
+    fun schemaIntegrityOk(): Boolean {
+        fun columns(table: String): Set<String> {
+            val result = linkedSetOf<String>()
+            readableDatabase.rawQuery("PRAGMA table_info($table)", null).use { cursor ->
+                val nameIndex = cursor.getColumnIndex("name")
+                while (cursor.moveToNext()) {
+                    if (nameIndex >= 0) result += cursor.getString(nameIndex)
+                }
+            }
+            return result
+        }
+
+        val networkColumns = columns("network_events")
+        val actionColumns = columns("action_receipts")
+        return networkColumns.containsAll(
+            setOf(
+                "event_id",
+                "ts_wall_ms",
+                "quality_tier",
+                "ipv4_address",
+                "ipv6_address",
+                "ipv4_default_route",
+                "ipv6_default_route"
+            )
+        ) && actionColumns.containsAll(
+            setOf("receipt_id", "ts_wall_ms", "action", "success", "summary", "duration_ms")
+        )
+    }
+
     fun schemaVersion(): Int = readableDatabase.version
 
     fun recentCount(): Int = readableDatabase.rawQuery(
