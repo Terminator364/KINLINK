@@ -7,6 +7,7 @@ import com.terminator364.kinlink.core.NetworkStabilityPolicy
 import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.StabilityAssessment
+import com.terminator364.kinlink.core.TelemetryRetentionPolicy
 import java.util.UUID
 
 data class StabilityWindow(
@@ -149,15 +150,23 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             if (cursor.moveToFirst()) cursor.getLong(0) else null
         }
 
-    private fun pruneNetworkEvents() {
+    private fun pruneNetworkEvents(nowWallMs: Long = System.currentTimeMillis()) {
         writableDatabase.execSQL(
-            "DELETE FROM network_events WHERE event_id IN (SELECT event_id FROM network_events ORDER BY ts_wall_ms DESC LIMIT -1 OFFSET 5000)"
+            "DELETE FROM network_events WHERE ts_wall_ms < ?",
+            arrayOf(TelemetryRetentionPolicy.networkCutoff(nowWallMs))
+        )
+        writableDatabase.execSQL(
+            "DELETE FROM network_events WHERE event_id IN (SELECT event_id FROM network_events ORDER BY ts_wall_ms DESC LIMIT -1 OFFSET ${TelemetryRetentionPolicy.NETWORK_EVENT_MAX_ROWS})"
         )
     }
 
-    private fun pruneActionReceipts() {
+    private fun pruneActionReceipts(nowWallMs: Long = System.currentTimeMillis()) {
         writableDatabase.execSQL(
-            "DELETE FROM action_receipts WHERE receipt_id IN (SELECT receipt_id FROM action_receipts ORDER BY ts_wall_ms DESC LIMIT -1 OFFSET 500)"
+            "DELETE FROM action_receipts WHERE ts_wall_ms < ?",
+            arrayOf(TelemetryRetentionPolicy.actionCutoff(nowWallMs))
+        )
+        writableDatabase.execSQL(
+            "DELETE FROM action_receipts WHERE receipt_id IN (SELECT receipt_id FROM action_receipts ORDER BY ts_wall_ms DESC LIMIT -1 OFFSET ${TelemetryRetentionPolicy.ACTION_RECEIPT_MAX_ROWS})"
         )
     }
 

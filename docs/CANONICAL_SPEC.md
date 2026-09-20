@@ -221,3 +221,12 @@ Device-wide Android mobile TrafficStats are cached for 15 seconds per epoch day.
 Repeated network callbacks inside that window reuse the cached snapshot.
 Changing the configured prudence threshold invalidates the cache immediately.
 No polling loop is introduced.
+
+
+## Telemetry retention
+
+Privacy/storage bounds are enforced by both age and row count:
+- network events: max 7 days and max 5,000 rows;
+- action receipts: max 14 days and max 500 rows.
+
+Pruning occurs only when KINLINK already writes an event/receipt; no maintenance polling job is added.
