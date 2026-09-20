@@ -83,14 +83,10 @@ class AutopilotRecoveryController(
                 val probe = WifiDoctorProbe(context).run()
                 val refreshed = runCatching { cm.requestBandwidthUpdate(network) }.getOrDefault(false)
                 if (probe.success) {
-                    val positiveHint = runCatching {
-                        cm.reportNetworkConnectivity(network, true)
-                        true
-                    }.getOrDefault(false)
                     record(
                         true,
                         "WIFI_CONFIRMED",
-                        "Internet confirmé en ${probe.latencyMillis ?: -1} ms; signal positif Android=$positiveHint; refresh=$refreshed"
+                        "Internet confirmé localement en ${probe.latencyMillis ?: -1} ms; aucun signal de validation envoyé à Android; refresh=$refreshed"
                     )
                 } else {
                     record(

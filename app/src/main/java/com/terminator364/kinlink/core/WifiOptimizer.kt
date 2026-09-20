@@ -39,8 +39,8 @@ object WifiOptimizerPolicy {
         else -> WifiOptimizationAction.INCONCLUSIVE_REFRESH
     }
 
-    fun connectivityReport(action: WifiOptimizationAction): Boolean? =
-        if (action == WifiOptimizationAction.CONFIRM_AND_REFRESH) true else null
+    /** Hard fail-open rule: KINLINK never reports connectivity truth back to Android. */
+    fun connectivityReport(action: WifiOptimizationAction): Boolean? = null
 }
 
 class WifiOptimizer(private val context: Context) {
@@ -67,11 +67,9 @@ class WifiOptimizer(private val context: Context) {
 
         val probe = WifiDoctorProbe(context).run()
         val action = WifiOptimizerPolicy.action(true, androidValidated, false, probe.success)
-        val reportValue = WifiOptimizerPolicy.connectivityReport(action)
-        val hintSent = if (reportValue == null) false else runCatching {
-            cm.reportNetworkConnectivity(network, reportValue)
-            true
-        }.getOrDefault(false)
+        // P0 handoff invariant: never influence Android's network validation state.
+        // requestBandwidthUpdate only refreshes metrics for the currently observed Wi-Fi.
+        val hintSent = false
         val bandwidthRefresh = runCatching { cm.requestBandwidthUpdate(network) }.getOrDefault(false)
 
         val summary = when (action) {
@@ -82,7 +80,7 @@ class WifiOptimizer(private val context: Context) {
                     "Android confirme Internet. Les micro-tests n’ont pas répondu : KINLINK conserve l’état sain et rafraîchit seulement les métriques."
                 }
             WifiOptimizationAction.CONFIRM_AND_REFRESH ->
-                "Android n’avait pas encore validé Internet, mais le micro-test l’a confirmé. KINLINK transmet uniquement ce signal positif et rafraîchit les métriques."
+                "Android n’avait pas encore validé Internet, mais le micro-test l’a confirmé localement. KINLINK ne modifie pas l’état réseau Android et rafraîchit seulement les métriques."
             WifiOptimizationAction.NEGATIVE_EVIDENCE_REFRESH ->
                 "Internet n’est pas confirmé par les micro-tests. KINLINK ne signale pas de panne à Android et ne provoque aucune bascule mobile; seules les métriques sont rafraîchies."
             WifiOptimizationAction.CAPTIVE_PORTAL_REQUIRED -> "Portail Wi-Fi détecté : connexion utilisateur requise."

@@ -1,46 +1,32 @@
 {
   "project": "KINLINK",
-  "phase": "RC2_PROMOTED_FIELD_VERIFICATION_PENDING",
+  "phase": "P0_MOBILE_HANDOFF_HARDENING",
   "status": "ACTIVE",
-  "candidate_version": "0.5.0-rc2",
-  "last_field_proven_baseline": {
-    "version": "0.4.0-rc1",
-    "apk_sha256": "030015ccd39f2536dea071434c987a243ecc4d0e29067d7b8b3e0ce41bd0e8d5"
+  "field_incident": {
+    "symptom": "after leaving Wi-Fi coverage, mobile data appeared unusable",
+    "causality": "UNPROVEN",
+    "priority": "P0",
+    "delivery_effect": "RC2 field promotion suspended"
   },
-  "promoted_candidate": {
+  "verified_absences": [
+    "no VpnService/TUN production path",
+    "no bindProcessToNetwork",
+    "no persistent requestNetwork ownership",
+    "no API capable of toggling Android mobile data"
+  ],
+  "hard_fail_open_invariants": [
+    "never call reportNetworkConnectivity",
+    "never bind the process to Wi-Fi",
+    "never own Android routing",
+    "automatic recovery is Wi-Fi-only",
+    "cellular transport always yields NO_ACTION",
+    "re-check active transport immediately before every automatic action"
+  ],
+  "last_machine_baseline": {
     "version": "0.5.0-rc2",
     "source_commit": "7124e1d1cc9b3430f24af74fc2501371c182c25a",
     "ci_run": 35533990740,
-    "ci_status": "PASS",
-    "drive_file_id": "1EUEEkAFoX0pQEdCU3prP5UoawbzHoh4L",
-    "apk_sha256": "5f5229c0d17301dac46032318c0ef9bec344e2c2e9848ccd7378d1f3311b8d6a",
-    "signer_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
-    "drive_readback": "BYTE_IDENTICAL"
+    "ci_status": "PASS"
   },
-  "implemented_now": [
-    "permanent Android VALIDATED versus probe arbitration",
-    "dual bounded Wi-Fi micro-probe",
-    "Mobile Vault",
-    "persistent Autopilot profiles",
-    "stability/flapping score",
-    "automatic Wi-Fi-only bounded recovery",
-    "no automatic negative Android connectivity hint",
-    "automatic probes blocked on metered Wi-Fi",
-    "cooldown and hourly recovery caps",
-    "battery-saver and severe-thermal guard",
-    "durable action receipt ledger",
-    "BOOT_COMPLETED and MY_PACKAGE_REPLACED observer restart"
-  ],
-  "strong_recovery_gate": {
-    "production_enabled": false,
-    "requirements": [
-      "VpnService/TUN prototype evidence",
-      "DNS/name-resolution runtime evidence",
-      "watchdog teardown runtime evidence",
-      "RAM and battery budget evidence",
-      "latency budget evidence",
-      "rollback field evidence"
-    ]
-  },
-  "next_uncommitted_action": "install RC2 as an in-place update on the target phone, verify no contradictory state, confirm Autopilot/service continuity, then continue M5 qualification without forcing another install unless materially useful"
+  "next_uncommitted_action": "run full CI after mobile-handoff hardening; verify forbidden routing APIs absent; only then create the next consolidated signed candidate"
 }

@@ -1,19 +1,28 @@
 # KINLINK build status
 
-## Promoted integrated candidate
+## P0 field incident under investigation
 
-- Version: **0.5.0-rc2**
-- Source commit: `7124e1d1cc9b3430f24af74fc2501371c182c25a`
-- CI run: `35533990740` — **PASS**
-- Unit/regression tests: **PASS**
-- Debug build gate: **PASS**
-- Stable signing: **PASS**
-- Signer SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
-- Final APK SHA-256: `5f5229c0d17301dac46032318c0ef9bec344e2c2e9848ccd7378d1f3311b8d6a`
-- Drive replacement: **PASS**
-- Drive readback: **BYTE-IDENTICAL**
-- Field verification on target phone: **PENDING**
+Field evidence: after leaving home Wi-Fi, the user reported that mobile data no longer passed normally.
+Current code has no VPN, no process/network binding, no persistent network request and no API capable of toggling mobile data.
+Causality is therefore not proven.
 
-RC2 materially exceeds RC1: automatic bounded Wi-Fi recovery, no automatic negative Android hints, metered-Wi-Fi guard, cooldown/rate limits, battery/thermal guard, reboot/update restart and durable action receipts.
+## Hardening decision
 
-The optional VpnService/TUN stabilizer remains gated and is not claimed as production-ready.
+RC2 field promotion is suspended until the handoff regression gate passes.
+
+New fail-open invariant:
+- KINLINK never calls Android connectivity-validation reporting APIs;
+- no positive or negative probe result may alter Android's network-validation state;
+- automatic recovery remains Wi-Fi-only;
+- cellular transitions always result in NO_ACTION;
+- only bounded Wi-Fi metric refresh remains permitted.
+
+## Existing machine evidence
+
+- RC2 source baseline: `7124e1d1cc9b3430f24af74fc2501371c182c25a`
+- RC2 CI: PASS
+- Previously promoted signed APK: rollback only; do not field-promote after the new incident.
+
+## Next gate
+
+Run full CI/regression after the P0 handoff hardening. Promote no installer until PASS.
