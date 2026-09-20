@@ -34,6 +34,12 @@ object PassiveGuidancePolicy {
                 "Android n’expose aucun serveur DNS sur ce Wi-Fi alors qu’un lien local existe. Attends la stabilisation ou reconnecte le Wi-Fi si cela persiste."
             )
 
+        PassiveProblemCause.NETWORK_SUSPENDED ->
+            PassiveGuidance(
+                "Réseau suspendu",
+                "Android signale momentanément le Wi-Fi comme suspendu. KINLINK attend la reprise et n’envoie aucun trafic de récupération."
+            )
+
         PassiveProblemCause.WEAK_WIFI_SIGNAL ->
             PassiveGuidance(
                 "Signal Wi-Fi faible",

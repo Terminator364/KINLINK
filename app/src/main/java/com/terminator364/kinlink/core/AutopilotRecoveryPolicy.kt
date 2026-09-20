@@ -37,6 +37,12 @@ object AutopilotRecoveryPolicy {
             instabilityScore = instabilityScore,
             flapping = instabilityScore >= 70
         ).cause
+        if (passiveCause == PassiveProblemCause.NETWORK_SUSPENDED) {
+            return AutomaticRecoveryDecision(
+                AutomaticRecoveryAction.NONE,
+                "Réseau suspendu par Android : aucune récupération active tant que la suspension persiste."
+            )
+        }
         if (passiveCause == PassiveProblemCause.WEAK_WIFI_SIGNAL) {
             return AutomaticRecoveryDecision(
                 AutomaticRecoveryAction.NONE,

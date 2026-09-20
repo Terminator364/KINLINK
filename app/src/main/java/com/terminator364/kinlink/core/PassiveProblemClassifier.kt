@@ -7,6 +7,7 @@ enum class PassiveProblemCause {
     ADDRESSING_SUSPECT,
     ROUTE_CONFIGURATION_SUSPECT,
     DNS_CONFIGURATION_SUSPECT,
+    NETWORK_SUSPENDED,
     WEAK_WIFI_SIGNAL,
     CONGESTION_SUSPECT,
     LOW_CAPACITY,
@@ -69,6 +70,14 @@ object PassiveProblemClassifier {
                 PassiveProblemCause.DNS_CONFIGURATION_SUSPECT,
                 "Wi-Fi local présent, Internet non validé et aucun serveur DNS exposé par Android.",
                 70
+            )
+
+        truth.transport == Transport.WIFI &&
+            !truth.androidNotSuspended ->
+            PassiveProblemAssessment(
+                PassiveProblemCause.NETWORK_SUSPENDED,
+                "Android signale le réseau Wi-Fi comme suspendu ou non disponible pour le trafic courant.",
+                88
             )
 
         truth.transport == Transport.WIFI &&
