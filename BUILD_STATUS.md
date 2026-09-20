@@ -24,3 +24,19 @@ Integrated after the field gate:
 - no speedtest
 - no framework connectivity reporting
 - active recovery remains AUTOMATIC + Wi-Fi only
+
+
+## 0.7.0-dev tranche — quality-aware efficiency
+
+Field baseline remains immutable:
+- 0.6.0-rc3 / versionCode 7
+- bidirectional handoff field gate PASS
+- canonical Drive installer unchanged
+
+Development line:
+- 0.7.0-dev / versionCode 8
+- passive-quality hysteresis: 3 consecutive low-quality Wi-Fi observations before metrics refresh
+- remaining Wi-Fi probe endpoints abort immediately if Android handoff starts
+- telemetry schema v3 persists low-noise quality tiers, with in-place v2 migration
+- manual optimization on metered Wi-Fi performs metrics-only refresh and zero HTTP micro-probes
+- all mobile-routing and hidden-probe safety invariants remain unchanged

@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_0_7_0_DEV",
+  "phase": "POST_FIELD_0_7_0_DEV_QUALITY_EFFICIENCY_CI",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "continue substantive quality/optimization work on 0.7.0-dev; never overwrite canonical RC3 until a consolidated release gate passes",
+  "next_uncommitted_action": "finish CI for metered-Wi-Fi protection and 0.7.0-dev head; then add recovery efficacy/outcome evidence before any next release candidate",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -75,6 +75,19 @@
   "development_line": {
     "version": "0.7.0-dev",
     "versionCode": 8,
-    "promotion": "FORBIDDEN_UNTIL_CONSOLIDATED_RC_GATE"
+    "promotion": "FORBIDDEN_UNTIL_CONSOLIDATED_RC_GATE",
+    "head": "10f4cfd1aa1a6d6f0239aee2698e0b265fea2da9",
+    "integrated": [
+      "passive bandwidth estimates",
+      "quality tiering",
+      "quality-aware hero/autopilot",
+      "three-observation low-quality hysteresis",
+      "quality-tier telemetry dedupe",
+      "SQLite v3 quality history",
+      "probe abort on handoff",
+      "metered Wi-Fi zero-HTTP manual optimization",
+      "truthful device-wide mobile counter wording",
+      "1.5s transient-loss UI settle"
+    ]
   }
 }
