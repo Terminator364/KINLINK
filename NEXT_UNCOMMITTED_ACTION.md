@@ -28,3 +28,8 @@ Finish complete CI for the self-test head.
 - only then assess readiness for a consolidated next release candidate.
 
 Do not promote 0.7.0-dev and do not ask the user to install it yet.
+
+
+## Resource qualification protocol
+See docs/RESOURCE_QUALIFICATION.md.
+Before the next signed candidate, collect at least one >=30 minute target-device session receipt and evaluate RAM/battery evidence against RecoveryQualificationPolicy.
