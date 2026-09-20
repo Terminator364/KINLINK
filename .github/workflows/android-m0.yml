@@ -8,6 +8,11 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      KINLINK_KEYSTORE_BASE64: ${{ secrets.KINLINK_KEYSTORE_BASE64 }}
+      KINLINK_KEYSTORE_PASSWORD: ${{ secrets.KINLINK_KEYSTORE_PASSWORD }}
+      KINLINK_KEY_ALIAS: ${{ secrets.KINLINK_KEY_ALIAS }}
+      KINLINK_KEY_PASSWORD: ${{ secrets.KINLINK_KEY_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -19,26 +24,39 @@ jobs:
           gradle-version: '9.6.0'
       - name: Unit tests
         run: gradle :app:testDebugUnitTest --stacktrace
-      - name: Build debug APK
+      - name: Build CI debug APK
         run: gradle :app:assembleDebug --stacktrace
+      - name: Build signed release APK
+        if: env.KINLINK_KEYSTORE_BASE64 != ''
+        env:
+          KINLINK_KEYSTORE_PATH: ${{ runner.temp }}/kinlink-release.jks
+        run: |
+          printf '%s' "$KINLINK_KEYSTORE_BASE64" | base64 --decode > "$KINLINK_KEYSTORE_PATH"
+          gradle :app:assembleRelease --stacktrace
       - name: SHA-256
         run: |
           sha256sum app/build/outputs/apk/debug/app-debug.apk | tee app/build/outputs/apk/debug/KINLINK-debug.apk.sha256
           cat > app/build/outputs/apk/debug/KINLINK-build-manifest.json <<EOF
           {
             "product": "KINLINK",
-            "version": "0.1.0-m0",
-            "variant": "debug",
+            "version": "0.1.1-m0",
+            "variant": "debug-ci",
             "commit": "${GITHUB_SHA}",
             "built_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "verification": "CI build and unit tests passed; field verification pending"
           }
           EOF
+          if [ -f app/build/outputs/apk/release/app-release.apk ]; then
+            sha256sum app/build/outputs/apk/release/app-release.apk | tee app/build/outputs/apk/release/KINLINK-release.apk.sha256
+          fi
       - uses: actions/upload-artifact@v4
         with:
-          name: KINLINK-m0-debug
+          name: KINLINK-m0-build
           path: |
             app/build/outputs/apk/debug/app-debug.apk
             app/build/outputs/apk/debug/KINLINK-debug.apk.sha256
             app/build/outputs/apk/debug/KINLINK-build-manifest.json
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/apk/release/KINLINK-release.apk.sha256
+          if-no-files-found: warn
           retention-days: 7
