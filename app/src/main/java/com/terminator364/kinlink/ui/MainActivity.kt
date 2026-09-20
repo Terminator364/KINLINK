@@ -2,6 +2,8 @@ package com.terminator364.kinlink.ui
 
 import android.app.Activity
 import android.os.Bundle
+import android.content.Intent
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.view.WindowInsets
 import android.widget.ScrollView
@@ -10,6 +12,7 @@ import android.widget.Toast
 import com.terminator364.kinlink.R
 import com.terminator364.kinlink.core.ConnectivityStateClassifier
 import com.terminator364.kinlink.core.NetworkObserver
+import com.terminator364.kinlink.core.KinlinkObserverService
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.WifiDoctor
@@ -33,6 +36,7 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ContextCompat.startForegroundService(this, Intent(this, KinlinkObserverService::class.java))
         setContentView(R.layout.activity_main)
         stateText = findViewById(R.id.stateText)
         transportText = findViewById(R.id.transportText)
