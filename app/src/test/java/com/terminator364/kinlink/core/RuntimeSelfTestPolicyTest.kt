@@ -6,15 +6,15 @@ import org.junit.Test
 
 class RuntimeSelfTestPolicyTest {
     @Test fun currentSchemaAndReadableModePassCore() {
-        assertTrue(RuntimeSelfTestPolicy.core(4, true).pass)
+        assertTrue(RuntimeSelfTestPolicy.core(5, true).pass)
     }
 
     @Test fun oldSchemaFailsCore() {
-        assertFalse(RuntimeSelfTestPolicy.core(3, true).pass)
+        assertFalse(RuntimeSelfTestPolicy.core(4, true).pass)
     }
 
     @Test fun unreadableModeFailsCore() {
-        assertFalse(RuntimeSelfTestPolicy.core(4, false).pass)
+        assertFalse(RuntimeSelfTestPolicy.core(5, false).pass)
     }
 
     @Test fun callbackProofIsExplicit() {

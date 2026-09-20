@@ -34,7 +34,7 @@ data class ActionReceipt(
     val summary: String
 )
 
-class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_telemetry.db", null, 4) {
+class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_telemetry.db", null, 5) {
     override fun onCreate(db: SQLiteDatabase) {
         createNetworkEvents(db)
         createActionReceipts(db)
@@ -47,6 +47,12 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         }
         if (oldVersion < 4) {
             runCatching { db.execSQL("ALTER TABLE action_receipts ADD COLUMN duration_ms INTEGER") }
+        }
+        if (oldVersion < 5) {
+            runCatching { db.execSQL("ALTER TABLE network_events ADD COLUMN ipv4_address INTEGER NOT NULL DEFAULT 0") }
+            runCatching { db.execSQL("ALTER TABLE network_events ADD COLUMN ipv6_address INTEGER NOT NULL DEFAULT 0") }
+            runCatching { db.execSQL("ALTER TABLE network_events ADD COLUMN ipv4_default_route INTEGER NOT NULL DEFAULT 0") }
+            runCatching { db.execSQL("ALTER TABLE network_events ADD COLUMN ipv6_default_route INTEGER NOT NULL DEFAULT 0") }
         }
     }
 
@@ -64,7 +70,11 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
               gateway TEXT,
               failure_domain TEXT NOT NULL,
               confidence REAL NOT NULL,
-              quality_tier TEXT NOT NULL DEFAULT 'UNKNOWN'
+              quality_tier TEXT NOT NULL DEFAULT 'UNKNOWN',
+              ipv4_address INTEGER NOT NULL DEFAULT 0,
+              ipv6_address INTEGER NOT NULL DEFAULT 0,
+              ipv4_default_route INTEGER NOT NULL DEFAULT 0,
+              ipv6_default_route INTEGER NOT NULL DEFAULT 0
             )
             """.trimIndent()
         )
@@ -92,14 +102,19 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             """
             INSERT INTO network_events(
               event_id, ts_wall_ms, transport, internet_state, context_type, metered,
-              interface_name, gateway, failure_domain, confidence, quality_tier
-            ) VALUES(?,?,?,?,?,?,?,?,?,?,?)
+              interface_name, gateway, failure_domain, confidence, quality_tier,
+              ipv4_address, ipv6_address, ipv4_default_route, ipv6_default_route
+            ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """.trimIndent(),
             arrayOf(
                 UUID.randomUUID().toString(), truth.observedAtMillis, truth.transport.name,
                 truth.internetState.name, truth.context.name, if (truth.metered) 1 else 0,
-                truth.interfaceName, truth.gateway, truth.failureDomain.name, truth.confidence,
-                PassiveLinkQualityPolicy.assess(truth).quality.name
+                null, null, truth.failureDomain.name, truth.confidence,
+                PassiveLinkQualityPolicy.assess(truth).quality.name,
+                if (truth.hasIpv4Address) 1 else 0,
+                if (truth.hasIpv6Address) 1 else 0,
+                if (truth.hasIpv4DefaultRoute) 1 else 0,
+                if (truth.hasIpv6DefaultRoute) 1 else 0
             )
         )
         pruneNetworkEvents()

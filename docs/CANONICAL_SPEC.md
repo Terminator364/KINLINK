@@ -317,3 +317,14 @@ Its purpose is to preserve evidence when the user experiences a bad connection s
 
 When a user incident marker exists, diagnostic export includes a bounded chronological action window from the latest marker onward (max 30 receipts).
 This allows post-incident analysis to focus on what changed after the user experienced the problem, without requiring screenshots or full unbounded logs.
+
+
+## Telemetry schema v5 — privacy-safe topology
+
+New telemetry rows persist only boolean IP topology evidence:
+- IPv4 address present;
+- IPv6 address present;
+- IPv4 default route present;
+- IPv6 default route present.
+
+Legacy interface_name and gateway columns remain only for backward-compatible schema migration and receive NULL for all new rows. Runtime diagnostics may inspect topology, but new local history no longer stores raw interface/gateway identifiers.
