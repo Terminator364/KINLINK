@@ -1,4 +1,4 @@
-name: android-m2
+name: android-m3
 on:
   workflow_dispatch:
   push:
@@ -27,16 +27,16 @@ jobs:
           cat > app/build/outputs/apk/debug/KINLINK-build-manifest.json <<EOF
           {
             "product": "KINLINK",
-            "version": "0.2.0-m2",
+            "version": "0.3.0-m3",
             "variant": "debug-ci",
             "commit": "${GITHUB_SHA}",
             "built_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "verification": "CI build and unit tests passed; field verification pending"
+            "verification": "CI build and unit tests passed; stable-sign promotion and field verification pending"
           }
           EOF
       - uses: actions/upload-artifact@v4
         with:
-          name: KINLINK-m2-ci-build
+          name: KINLINK-m3-ci-build
           path: |
             app/build/outputs/apk/debug/app-debug.apk
             app/build/outputs/apk/debug/KINLINK-debug.apk.sha256
