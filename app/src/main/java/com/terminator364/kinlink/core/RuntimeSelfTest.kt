@@ -8,13 +8,17 @@ data class RuntimeSelfTestResult(
 )
 
 object RuntimeSelfTestPolicy {
-    fun core(databaseVersion: Int, recoveryModeReadable: Boolean): RuntimeSelfTestResult =
-        if (databaseVersion >= 5 && recoveryModeReadable) {
+    fun core(
+        databaseVersion: Int,
+        recoveryModeReadable: Boolean,
+        schemaIntegrity: Boolean = true
+    ): RuntimeSelfTestResult =
+        if (databaseVersion >= 5 && recoveryModeReadable && schemaIntegrity) {
             RuntimeSelfTestResult(true, "Base/migration et mode de récupération lisibles.")
         } else {
             RuntimeSelfTestResult(
                 false,
-                "Self-test core incomplet: dbVersion=$databaseVersion; recoveryModeReadable=$recoveryModeReadable"
+                "Self-test core incomplet: dbVersion=$databaseVersion; recoveryModeReadable=$recoveryModeReadable; schemaIntegrity=$schemaIntegrity"
             )
         }
 

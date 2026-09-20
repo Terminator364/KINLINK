@@ -17,6 +17,10 @@ class RuntimeSelfTestPolicyTest {
         assertFalse(RuntimeSelfTestPolicy.core(5, false).pass)
     }
 
+    @Test fun missingSchemaIntegrityFailsCore() {
+        assertFalse(RuntimeSelfTestPolicy.core(5, true, schemaIntegrity = false).pass)
+    }
+
     @Test fun callbackProofIsExplicit() {
         assertTrue(RuntimeSelfTestPolicy.observerCallback(true).pass)
         assertFalse(RuntimeSelfTestPolicy.observerCallback(false).pass)
