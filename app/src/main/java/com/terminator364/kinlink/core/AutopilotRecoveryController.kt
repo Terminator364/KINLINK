@@ -44,6 +44,12 @@ class AutopilotRecoveryController(
         val ineffective =
             runCatching { ledger.countActionsSince("RECOVERY_OUTCOME_UNCHANGED", since) }.getOrDefault(0) +
             runCatching { ledger.countActionsSince("RECOVERY_OUTCOME_DEGRADED", since) }.getOrDefault(0)
+        val safetyWindowStart = now - SAFETY_ABORT_WINDOW_MS
+        val safetyAborts =
+            runCatching { ledger.countActionsSince("AUTO_RECOVERY_WATCHDOG_", safetyWindowStart) }.getOrDefault(0) +
+            runCatching { ledger.countActionsSince("AUTO_RECOVERY_ABORT_NON_WIFI", safetyWindowStart) }.getOrDefault(0) +
+            runCatching { ledger.countActionsSince("AUTO_RECOVERY_NO_NETWORK", safetyWindowStart) }.getOrDefault(0) +
+            runCatching { ledger.countActionsSince("AUTO_RECOVERY_NO_CAPS", safetyWindowStart) }.getOrDefault(0)
         val last = runCatching { ledger.latestActionTimestamp(ACTION_PREFIX) }.getOrNull()
         val sinceLast = last?.let { (now - it).coerceAtLeast(0L) } ?: Long.MAX_VALUE
         val decision = AutopilotRecoveryPolicy.decide(
@@ -54,7 +60,8 @@ class AutopilotRecoveryController(
             recent,
             sinceLast,
             persistentLowQuality,
-            ineffective
+            ineffective,
+            safetyAborts
         )
         if (decision.action == AutomaticRecoveryAction.NONE) return
         if (!inFlight.compareAndSet(false, true)) return
@@ -194,5 +201,6 @@ class AutopilotRecoveryController(
     companion object {
         const val ACTION_PREFIX = "AUTO_RECOVERY"
         const val RECOVERY_DEADLINE_MS = 5_000L
+        const val SAFETY_ABORT_WINDOW_MS = RecoveryCircuitBreakerPolicy.WINDOW_MS
     }
 }

@@ -22,7 +22,8 @@ object AutopilotRecoveryPolicy {
         recentAutomaticActions: Int,
         millisSinceLastAutomaticAction: Long,
         persistentLowQuality: Boolean = false,
-        recentIneffectiveOutcomes: Int = 0
+        recentIneffectiveOutcomes: Int = 0,
+        recentSafetyAborts: Int = 0
     ): AutomaticRecoveryDecision {
         if (truth.transport != Transport.WIFI) {
             return AutomaticRecoveryDecision(AutomaticRecoveryAction.NONE, "Récupération automatique limitée au Wi-Fi.")
@@ -45,6 +46,12 @@ object AutopilotRecoveryPolicy {
             AutopilotProfile.MAXIMUM_STABILITY -> 8
         }
 
+        if (RecoveryCircuitBreakerPolicy.open(recentSafetyAborts)) {
+            return AutomaticRecoveryDecision(
+                AutomaticRecoveryAction.NONE,
+                "Circuit breaker : plusieurs abandons de sécurité récents, observation passive temporaire."
+            )
+        }
         if (recentIneffectiveOutcomes >= 2) {
             return AutomaticRecoveryDecision(
                 AutomaticRecoveryAction.NONE,

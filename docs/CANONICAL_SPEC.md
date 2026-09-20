@@ -264,3 +264,10 @@ Diagnostics expose 1-hour and 24-hour interruption burden:
 
 A qualitative burden is derived as QUIET / NOTICEABLE / UNSTABLE / SEVERE.
 KINLINK deliberately does not infer an availability percentage from sparse Android callbacks.
+
+
+## Automatic recovery safety circuit breaker
+
+Within a 30-minute window, two safety aborts (watchdog, transport changed, network/capabilities disappeared) open a circuit breaker.
+While open, Autopilot performs no automatic recovery action and falls back to passive observation.
+The breaker naturally closes as old abort receipts age out of the window.

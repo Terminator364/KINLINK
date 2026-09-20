@@ -89,6 +89,25 @@ class AutopilotRecoveryPolicyTest {
         assertEquals(AutomaticRecoveryAction.NONE, d.action)
     }
 
+    @Test fun repeatedSafetyAbortsOpenCircuitBreaker() {
+        val d = AutopilotRecoveryPolicy.decide(
+            NetworkTruth(
+                transport = Transport.WIFI,
+                internetState = InternetState.UNKNOWN,
+                lanState = LanState.LINK_PRESENT
+            ),
+            AutopilotProfile.MAXIMUM_STABILITY,
+            90,
+            false,
+            0,
+            Long.MAX_VALUE,
+            persistentLowQuality = false,
+            recentIneffectiveOutcomes = 0,
+            recentSafetyAborts = 2
+        )
+        assertEquals(AutomaticRecoveryAction.NONE, d.action)
+    }
+
     @Test fun repeatedIneffectiveOutcomesStopAutomaticRecovery() {
         val d = AutopilotRecoveryPolicy.decide(
             NetworkTruth(
