@@ -30,6 +30,9 @@ data class NetworkTruth(
     val hasIpv6Address: Boolean = false,
     val hasIpv4DefaultRoute: Boolean = false,
     val hasIpv6DefaultRoute: Boolean = false,
+    val signalStrengthDbm: Int? = null,
+    val androidNotCongested: Boolean = true,
+    val androidNotSuspended: Boolean = true,
     val confidence: Double = 0.0,
     val observedAtMillis: Long = System.currentTimeMillis()
 )
@@ -39,5 +42,7 @@ fun NetworkTruth.telemetryFingerprint(): String = listOf(
     transport, internetState, lanState, budgetState, failureDomain, context,
     metered, dnsServerCount, privateDnsActive,
     hasIpv4Address, hasIpv6Address, hasIpv4DefaultRoute, hasIpv6DefaultRoute,
+    WifiRadioQualityPolicy.assess(this).quality,
+    androidNotCongested, androidNotSuspended,
     PassiveLinkQualityPolicy.assess(this).quality
 ).joinToString("|")
