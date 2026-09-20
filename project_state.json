@@ -1,25 +1,26 @@
 {
   "project": "KINLINK",
-  "phase": "RC2_INTEGRATION_SAFE_FEATURES_ACTIVE",
-  "design_version": "0.4.x-dev",
+  "phase": "RC2_CONSOLIDATED_SAFE_INTEGRATION_PASS",
   "status": "ACTIVE",
   "stable_field_baseline": {
     "version": "0.4.0-rc1",
     "source_commit": "a818ddf31bf952a52a40d3df02cddb1e7914b933",
-    "ci_run": 35529443848,
     "apk_sha256": "030015ccd39f2536dea071434c987a243ecc4d0e29067d7b8b3e0ce41bd0e8d5",
-    "signer_certificate_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
     "drive_file_id": "1EUEEkAFoX0pQEdCU3prP5UoawbzHoh4L"
   },
   "development_head": {
-    "commit": "7feaec6975638fe224614757e16977ff91302917",
-    "ci_run": 35532459908,
+    "commit": "11a0dc026e7b3ebe1ec798f12ca592fea506e000",
+    "ci_run": 35532848258,
     "ci_status": "PASS",
-    "new_scope": [
-      "persistent Autopilot profile store",
-      "user-visible Conservative / Balanced / Maximum Stability selector",
-      "adaptive policy receives persisted profile",
-      "profile included in technical state"
+    "scope": [
+      "permanent regression fix for contradictory Wi-Fi status",
+      "persistent Conservative/Balanced/Maximum Stability Autopilot profiles",
+      "bounded privacy-safe action receipt ledger",
+      "diagnostic export includes recent action receipts",
+      "installed version surfaced in cockpit",
+      "recovery qualification gates",
+      "bounded name-resolution recovery policy",
+      "fail-open recovery watchdog policy"
     ]
   },
   "field_evidence": {
@@ -28,15 +29,26 @@
     "permanent_regression_rule": "Android VALIDATED cannot be overruled by isolated external probe failure",
     "fixed_since": "0.4.0-rc1"
   },
+  "strong_recovery_gate": {
+    "production_enabled": false,
+    "requirements": [
+      "prototype evidence",
+      "name-resolution resilience evidence",
+      "watchdog teardown evidence",
+      "RAM and battery budget evidence",
+      "latency budget evidence",
+      "rollback evidence"
+    ],
+    "reason": "strong recovery stays disabled until measured evidence proves it does not create a worse failure mode"
+  },
   "p0_invariants": [
     "never automatically speed-test mobile data",
     "never let one external probe overrule Android VALIDATED",
-    "never classify one unreachable diagnostic endpoint as proof of Wi-Fi failure",
     "never permanently block normal Android networking",
     "preserve LAN independently from WAN",
     "preserve stable signer certificate across upgrades",
     "do not make the user install every development increment",
     "keep the last stable signed installer as rollback while integration continues"
   ],
-  "next_uncommitted_action": "continue integrated safe-feature work and observability before promoting one consolidated installer; keep 0.4.0-rc1 as rollback baseline"
+  "next_uncommitted_action": "continue consolidating product-grade observability and qualification evidence; promote one stable-signed installer only when the batch is materially beyond RC1"
 }
