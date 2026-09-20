@@ -2,18 +2,17 @@
 
 ## Last proven checkpoint
 
-- Commit `5ece5aaa7cf1e2f0869b30165357b5d200d19905`: redesigned human cockpit.
-- GitHub Actions run `35521808716`: **PASS** — unit tests and debug APK build.
-- CI now compiles and tests only. No keystore, password, token, telemetry, or signing secret is sent to GitHub.
+- Commit `336ede392ce7616b991a227e940b05cfc101a60a`: offline-only signing bootstrap and documentation.
+- GitHub Actions run `35522715744`: **PASS** — unit tests and CI debug APK build.
+- The first installed M0 APK is only an observer bootstrap. Its field screenshot confirmed that the product needs clearer human diagnostics before another phone action.
 
 ## Next action
 
-Prepare the one-time **offline signing station** on the user's Windows PC:
-1. create the persistent KINLINK release keystore locally and make one offline backup;
-2. build the release APK locally with that keystore;
-3. verify package/version/certificate/SHA-256;
-4. replace the sole APK in Drive `KINLINK/INSTALLER` in place;
-5. perform the exceptional migration from the temporary M0 debug signer;
-6. thereafter, build all updates with the same local signing key.
+Implement the **minimum field diagnostic package**:
+1. bounded local event summary from the existing ledger;
+2. user-initiated diagnostic export with no SSID, SIM identifier, token, payload, or password;
+3. human-readable explanation of LAN/WAN, Wi-Fi/mobile, offline and metered states;
+4. tests and CI build;
+5. request one focused field check only after the next APK has a concrete diagnostic benefit.
 
-Do not publish a CI debug APK as an update. The redesigned cockpit is CI-verified but field-unverified.
+Release signing remains offline-only and is deferred until a viable field candidate is ready. Do not publish a CI debug APK as an update.
