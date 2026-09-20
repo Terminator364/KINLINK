@@ -127,3 +127,10 @@ The probe never falls through to cellular.
 Telemetry schema v3 stores only the passive quality tier with each deduplicated network event.
 It does not persist raw per-callback kbps fluctuations.
 Existing v2 databases migrate in place with UNKNOWN as the historical default.
+
+
+## Metered Wi-Fi protection
+
+Explicit manual optimization also respects metered Wi-Fi.
+When Android marks the active Wi-Fi as metered, KINLINK performs no HTTP micro-probe and only requests a passive bandwidth-metric refresh.
+This protects tethered/hotspot data plans from hidden probe traffic.

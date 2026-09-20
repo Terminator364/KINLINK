@@ -7,6 +7,7 @@ import android.net.NetworkCapabilities
 enum class WifiOptimizationAction {
     BLOCKED_NON_WIFI,
     CAPTIVE_PORTAL_REQUIRED,
+    METERED_WIFI_REFRESH_ONLY,
     KEEP_VALIDATED_AND_REFRESH,
     CONFIRM_AND_REFRESH,
     NEGATIVE_EVIDENCE_REFRESH,
@@ -29,10 +30,12 @@ object WifiOptimizerPolicy {
         isWifi: Boolean,
         androidValidated: Boolean,
         captivePortal: Boolean,
-        probeSucceeded: Boolean?
+        probeSucceeded: Boolean?,
+        meteredWifi: Boolean = false
     ): WifiOptimizationAction = when {
         !isWifi -> WifiOptimizationAction.BLOCKED_NON_WIFI
         captivePortal -> WifiOptimizationAction.CAPTIVE_PORTAL_REQUIRED
+        meteredWifi -> WifiOptimizationAction.METERED_WIFI_REFRESH_ONLY
         androidValidated -> WifiOptimizationAction.KEEP_VALIDATED_AND_REFRESH
         probeSucceeded == true -> WifiOptimizationAction.CONFIRM_AND_REFRESH
         probeSucceeded == false -> WifiOptimizationAction.NEGATIVE_EVIDENCE_REFRESH
@@ -56,6 +59,7 @@ class WifiOptimizer(private val context: Context) {
 
         val androidValidated = caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
         val captivePortal = caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_CAPTIVE_PORTAL)
+        val meteredWifi = !caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
         if (captivePortal) {
             return WifiOptimizationResult(
                 false,
@@ -65,8 +69,21 @@ class WifiOptimizer(private val context: Context) {
             )
         }
 
+        if (meteredWifi) {
+            val refreshed = runCatching { cm.requestBandwidthUpdate(network) }.getOrDefault(false)
+            return WifiOptimizationResult(
+                success = androidValidated,
+                action = WifiOptimizationAction.METERED_WIFI_REFRESH_ONLY,
+                summary = "Wi-Fi mesuré détecté : aucun micro-test HTTP. KINLINK rafraîchit seulement les métriques Android.",
+                frameworkHintSent = false,
+                bandwidthRefreshRequested = refreshed,
+                androidValidated = androidValidated,
+                probeAttempts = 0
+            )
+        }
+
         val probe = WifiDoctorProbe(context).run()
-        val action = WifiOptimizerPolicy.action(true, androidValidated, false, probe.success)
+        val action = WifiOptimizerPolicy.action(true, androidValidated, false, probe.success, meteredWifi = false)
         // P0 handoff invariant: never influence Android's network validation state.
         // requestBandwidthUpdate only refreshes metrics for the currently observed Wi-Fi.
         val hintSent = false
@@ -86,6 +103,7 @@ class WifiOptimizer(private val context: Context) {
             WifiOptimizationAction.NEGATIVE_EVIDENCE_REFRESH ->
                 "Internet n’est pas confirmé par les micro-tests. KINLINK ne signale pas de panne à Android et ne provoque aucune bascule mobile; seules les métriques sont rafraîchies."
             WifiOptimizationAction.CAPTIVE_PORTAL_REQUIRED -> "Portail Wi-Fi détecté : connexion utilisateur requise."
+            WifiOptimizationAction.METERED_WIFI_REFRESH_ONLY -> "Wi-Fi mesuré : métriques seulement, sans micro-test."
             WifiOptimizationAction.BLOCKED_NON_WIFI -> "Action bloquée hors Wi-Fi."
             WifiOptimizationAction.INCONCLUSIVE_REFRESH -> "État encore incertain : KINLINK rafraîchit les métriques sans déclarer de panne."
         }
