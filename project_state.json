@@ -20,8 +20,9 @@
     "handoff outcome observability",
     "watchdog abort observability",
     "manifest safety fence",
-    "versionCode 7"
+    "versionCode 7",
+    "durable boot/package-restart start receipts"
   ],
   "delivery": "HOLD_UNTIL_CI_SIGNING_READBACK_PASS",
-  "next_uncommitted_action": "finish RC3 CI then stable-sign and Drive-readback before one field update"
+  "next_uncommitted_action": "pass final RC3 CI including Android lint and startup receipts; then fetch artifact, verify hash, stable-sign and Drive-readback"
 }

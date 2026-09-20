@@ -77,3 +77,8 @@ KINLINK exposes a persistent Recovery Mode:
 Active recovery is now governed by one pure policy gate: only AUTOMATIC mode + active Wi-Fi may authorize bounded recovery. Cellular, unknown transport and OBSERVATION_ONLY always block active recovery.
 
 The privacy-safe diagnostic export also carries aggregate handoff and watchdog evidence so a future Wi-Fi→mobile incident can be reconstructed without SSID, SIM identifiers, IP addresses, payloads or forced probes.
+
+
+## Lifecycle start receipts
+
+BOOT_COMPLETED and MY_PACKAGE_REPLACED start attempts are persisted before the service can disappear from view. The next successful service creation imports that pending receipt into the bounded action ledger. A rejected background foreground-service start is therefore diagnosable later instead of being silently lost.

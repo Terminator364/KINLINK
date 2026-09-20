@@ -18,3 +18,8 @@
 - diagnostics include handoff outcomes and watchdog aborts
 
 Stable signing and Drive promotion remain blocked until the RC3 CI run is fully green.
+
+
+## Lifecycle evidence added
+
+RC3 now persists BOOT_COMPLETED / MY_PACKAGE_REPLACED service-start outcomes and imports them into the local action ledger on the next successful service creation.
