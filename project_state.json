@@ -68,9 +68,14 @@
     "hero classifier surfaces validated-but-constrained Wi-Fi as degraded"
   ],
   "installed_field_baseline": {
-    "version": "0.6.0-rc3",
-    "versionCode": 7,
-    "immutable": true
+    "version": "0.7.0",
+    "versionCode": 8,
+    "signed_apk_sha256": "cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc",
+    "installed": true,
+    "usable": true,
+    "canonical": false,
+    "promotion_invalidated": true,
+    "superseded_by": "0.7.1_STAGE_A_PASS_NOT_YET_DRIVE_STAGED"
   },
   "development_line": {
     "version": "0.7.1",
@@ -261,8 +266,18 @@
       "CA-001",
       "CA-002",
       "CA-003",
-      "CA-004"
-    ]
+      "CA-004",
+      "CA-005",
+      "CA-006",
+      "CA-007",
+      "CA-008",
+      "CA-009",
+      "CA-010",
+      "CA-011",
+      "CA-012",
+      "CA-013"
+    ],
+    "replacement_line": "0.7.1"
   },
   "gmail": {
     "project_label": "KINLINK",
@@ -315,5 +330,11 @@
     "drive_staging": "PENDING_INTERNAL_FILE_BRIDGE",
     "installed": false,
     "canonical": false
+  },
+  "canonical_drive_baseline": {
+    "version": "0.6.0-rc3",
+    "versionCode": 7,
+    "signed_apk_sha256": "4fb4ac36765b6d3728194bf7884f3c98afff625f4a5bc0637b825db0703a700c",
+    "role": "ROLLBACK_AND_CANONICAL_INSTALLER_UNTIL_STAGE_B_PASS"
   }
 }
