@@ -1,45 +1,33 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Stable field baseline
-0.6.0-rc3 / versionCode 7 remains installed and Drive-canonical.
+## Stable canonical baseline
+0.6.0-rc3 / versionCode 7 remains installed and Drive-canonical. Do not uninstall it merely to force an update.
 
-## Frozen candidate line
-0.7.0 / versionCode 8.
+## Final consolidated field candidate
+- Version: 0.7.0
+- versionCode: 8
+- Source commit: `4153720cde8c6bd0004b8e69baeadf5254735abe`
+- Android candidate CI run: `35550539216` — PASS
+- design-lint run: `35550539365` — PASS
+- Final signed APK SHA-256: `cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc`
+- Signer certificate SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+- APK Signature Scheme v3: PASS
+- Signers: 1
+- Stage A: PASS
+- Canonical promotion: FORBIDDEN until Stage B
 
-## Current final app head for this tranche
-`6b5c31d7c16d916c0d5768fd0284823165d3c210`.
+## Important
+The earlier signed artifact `aed0643...` was superseded before delivery and must never be installed.
 
-No more app-code changes should be made until this exact head finishes candidate CI.
+## Next human gate
+1. Install ONLY the exact final signed 0.7.0 candidate over RC3.
+2. Do not uninstall RC3 first. If Android rejects the in-place update, stop and preserve RC3.
+3. Open KINLINK once after update.
+4. Keep the phone off the charger for a clean resource window; if it was charging, unplugging automatically resets a fresh 30-minute baseline.
+5. Produce one Wi-Fi -> validated cellular handoff and one cellular -> Wi-Fi return.
+6. KINLINK version-scoped receipts decide QUALIFIED/BLOCKED automatically; old RC3 evidence cannot qualify v8.
+7. Export diagnostic only when promotion evidence must be transferred.
+8. Do not replace Drive canonical RC3 until FIELD_HANDOFF + RESOURCE_QUALIFICATION PASS on this exact hash.
 
-## Latest earlier full machine PASS
-`9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab`.
-
-A signed artifact from that earlier head was produced and verified but was **never delivered or installed**. It is superseded before field delivery because additional qualification hardening was added.
-
-## Hardening added after that preliminary signing
-1. executable SQLite migration simulation v1 -> v5 with sentinel-data preservation;
-2. successful self-test receipts are counted separately from failures;
-3. field-candidate qualification is automatically evaluated and sealed locally;
-4. every qualification receipt is scoped to the running versionCode;
-5. RC3 handoff/self-test history therefore cannot qualify 0.7.0;
-6. resource PASS/BLOCKED evidence is version-scoped;
-7. foreground notification surfaces QUALIFIED/BLOCKED state;
-8. main UI shows 0.7.0 field qualification state;
-9. diagnostic export computes the field verdict from current-version evidence only;
-10. intermediate CI runs are automatically cancelled so only the newest branch head matters.
-
-## Current machine gate
-- head: `6b5c31d7c16d916c0d5768fd0284823165d3c210`
-- design-lint: pending/running at checkpoint time
-- Android candidate CI: pending at checkpoint time
-- canonical RC3 untouched
-
-## Next durable action
-1. read both CI results for `6b5c31d7c16d916c0d5768fd0284823165d3c210`;
-2. if both PASS, download that exact unsigned release-like artifact;
-3. verify ZIP digest + APK hash + manifest identity;
-4. stable-sign exactly that artifact with the canonical KINLINK signer;
-5. verify signed hash, v3 signature and certificate fingerprint;
-6. deliver/install only that one consolidated field candidate;
-7. collect automatically version-scoped handoff + >=30 min resource evidence;
-8. canonical promotion remains forbidden until Stage B PASS.
+## Resume command
+`KINLINKGO`
