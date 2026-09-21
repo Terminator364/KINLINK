@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 data class WifiDnsProbeResult(
@@ -32,13 +31,16 @@ class WifiDnsProbe(
             )
         }
 
-        val executor = Executors.newSingleThreadExecutor()
         val started = System.nanoTime()
-        val future = executor.submit<Boolean> {
+        val future = BoundedProbeExecutor.submit(java.util.concurrent.Callable<Boolean> {
             runCatching {
                 network.getAllByName(HOST).isNotEmpty()
             }.getOrDefault(false)
-        }
+        }) ?: return WifiDnsProbeResult(
+            false,
+            0L,
+            "Résolution DNS non lancée : capacité de diagnostic temporairement occupée."
+        )
 
         return try {
             val success = future.get(TIMEOUT_MS, TimeUnit.MILLISECONDS)
@@ -59,8 +61,6 @@ class WifiDnsProbe(
                 elapsed,
                 "Résolution DNS Wi-Fi non confirmée dans la fenêtre bornée."
             )
-        } finally {
-            executor.shutdownNow()
         }
     }
 
