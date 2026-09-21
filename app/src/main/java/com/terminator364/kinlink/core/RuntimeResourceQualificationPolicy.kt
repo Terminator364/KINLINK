@@ -61,11 +61,17 @@ object RuntimeResourceQualificationPolicy {
             reasons += "BACKGROUND_CHURN_OVER_LIMIT"
         }
 
-        val hardFailure = reasons.any { it != "SESSION_TOO_SHORT" }
+        val hardFailure = reasons.any {
+            it == "PSS_GROWTH_OVER_LIMIT" ||
+                it == "BACKGROUND_CHURN_OVER_LIMIT"
+        }
+        val batteryConcern = reasons.contains("BATTERY_RATE_OVER_LIMIT")
         val verdict = when {
             hardFailure -> RuntimeResourceVerdict.BLOCKED
-            evidence.durationMillis < limits.minimumQualifiedDurationMillis -> RuntimeResourceVerdict.INCONCLUSIVE
-            battery == null -> RuntimeResourceVerdict.INCONCLUSIVE
+            evidence.durationMillis < limits.minimumQualifiedDurationMillis ->
+                RuntimeResourceVerdict.INCONCLUSIVE
+            battery == null || batteryConcern ->
+                RuntimeResourceVerdict.INCONCLUSIVE
             else -> RuntimeResourceVerdict.PASS
         }
         if (battery == null) reasons += "BATTERY_RATE_INCONCLUSIVE"
