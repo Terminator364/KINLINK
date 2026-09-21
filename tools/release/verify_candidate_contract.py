@@ -247,3 +247,10 @@ require(
     and "mobileAssistEvidenceHandler.removeCallbacksAndMessages(null)" in SERVICE,
     "candidate contract: bounded one-shot Mobile Assist evidence confirmation missing",
 )
+
+require(
+    "ACTION_TRACK_MANUAL_MOBILE_ASSIST" in SERVICE
+    and "ACTION_TRACK_MANUAL_MOBILE_ASSIST" in MAIN_ACTIVITY
+    and "MOBILE_ASSIST_EVIDENCE_MANUAL_WINDOW_STARTED" in SERVICE,
+    "candidate contract: manual Mobile Assist is detached from the proof loop",
+)
