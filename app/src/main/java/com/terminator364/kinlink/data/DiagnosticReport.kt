@@ -60,9 +60,15 @@ data class DiagnosticSummary(
     val recent24hLowQualityEpisodeCount: Int = 0,
     val recent24hLowQualityMillis: Long = 0L,
     val recent24hLowQualityLongestMillis: Long = 0L,
+    val recent24hMobileLowQualityEpisodeCount: Int = 0,
+    val recent24hMobileLowQualityMillis: Long = 0L,
+    val recent24hMobileLowQualityLongestMillis: Long = 0L,
     val lowQualityEpisodes: Int = 0,
     val totalLowQualityMillis: Long = 0L,
     val longestLowQualityMillis: Long = 0L,
+    val mobileLowQualityEpisodes: Int = 0,
+    val totalMobileLowQualityMillis: Long = 0L,
+    val longestMobileLowQualityMillis: Long = 0L,
     val userIncidentMarkers: Int = 0,
     val latestUserIncidentMarkerMillis: Long? = null,
     val incidentWindowActions: List<ActionReceipt> = emptyList(),
@@ -165,15 +171,21 @@ object DiagnosticReportBuilder {
             summary.recent24hInterruptionCount,
             summary.recent24hInterruptionMillis,
             summary.recent24hLongestInterruptionMillis,
-            summary.recent24hLowQualityEpisodeCount,
-            summary.recent24hLowQualityMillis,
-            summary.recent24hLowQualityLongestMillis
+            summary.recent24hLowQualityEpisodeCount +
+                summary.recent24hMobileLowQualityEpisodeCount,
+            summary.recent24hLowQualityMillis +
+                summary.recent24hMobileLowQualityMillis,
+            maxOf(
+                summary.recent24hLowQualityLongestMillis,
+                summary.recent24hMobileLowQualityLongestMillis
+            )
         )
         appendLine("Recent interruption burden")
         appendLine("- 24h qualitative burden: ${recentBurden.name}")
         appendLine("- Last 1h: ${summary.recent1hInterruptionCount} interruption(s), ${summary.recent1hInterruptionMillis} ms cumulative, longest ${summary.recent1hLongestInterruptionMillis} ms")
         appendLine("- Last 24h: ${summary.recent24hInterruptionCount} interruption(s), ${summary.recent24hInterruptionMillis} ms cumulative, longest ${summary.recent24hLongestInterruptionMillis} ms")
         appendLine("- Slow-but-validated Wi-Fi 24h: ${summary.recent24hLowQualityEpisodeCount} episode(s), ${summary.recent24hLowQualityMillis} ms cumulative, longest ${summary.recent24hLowQualityLongestMillis} ms")
+        appendLine("- Slow-but-validated mobile 24h: ${summary.recent24hMobileLowQualityEpisodeCount} episode(s), ${summary.recent24hMobileLowQualityMillis} ms cumulative, longest ${summary.recent24hMobileLowQualityLongestMillis} ms")
         if (summary.recent24hCauseCounts.isNotEmpty()) {
             val dominant = summary.recent24hCauseCounts.maxByOrNull { it.value }
             if (dominant != null) {
@@ -187,6 +199,12 @@ object DiagnosticReportBuilder {
         appendLine("- Episodes retained: ${summary.lowQualityEpisodes}")
         appendLine("- Cumulative degraded-quality time: ${summary.totalLowQualityMillis} ms")
         appendLine("- Longest degraded-quality episode: ${summary.longestLowQualityMillis} ms")
+        appendLine()
+
+        appendLine("Observed slow-but-validated mobile episodes")
+        appendLine("- Episodes retained: ${summary.mobileLowQualityEpisodes}")
+        appendLine("- Cumulative degraded-quality time: ${summary.totalMobileLowQualityMillis} ms")
+        appendLine("- Longest degraded-quality episode: ${summary.longestMobileLowQualityMillis} ms")
         appendLine()
 
         appendLine("Observed interruptions")
