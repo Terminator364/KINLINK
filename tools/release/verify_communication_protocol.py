@@ -11,7 +11,7 @@ def require(condition: bool, message: str) -> None:
 def main() -> int:
     data = json.loads(PATH.read_text(encoding="utf-8"))
     require(data.get("project") == "KINLINK", "communication protocol: project mismatch")
-    require(data.get("cadence_minutes") == 25, "communication protocol: cadence must be 25 minutes")
+    require(data.get("cadence_minutes") == 30, "communication protocol: cadence must be 30 minutes")
     require(
         data.get("start_sequence") == [
             "SEND_GMAIL_START",
