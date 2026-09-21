@@ -30,6 +30,7 @@ class KinlinkObserverService : Service() {
     private var runtimeBudgetStart: RuntimeBudgetSnapshot? = null
     private var coreRuntimeReady = true
     private var runtimeBudgetCheckpointWritten = false
+    private var runtimeCallbackEvents = 0
 
     override fun onCreate() {
         super.onCreate()
@@ -117,6 +118,7 @@ class KinlinkObserverService : Service() {
         }
 
         observer = NetworkObserver(this) { rawTruth ->
+            runtimeCallbackEvents += 1
             val budget = mobileBudget.sample()
             val truth = rawTruth.copy(budgetState = budget.state)
             latestTruth = truth
@@ -210,12 +212,25 @@ class KinlinkObserverService : Service() {
         val rate = evidence.batteryPercentPerHour?.let {
             String.format(java.util.Locale.US, "%.2f", it)
         } ?: "inconclusive"
+        val resourceAssessment = RuntimeResourceQualificationPolicy.evaluate(
+            RuntimeResourceEvidence(
+                durationMillis = evidence.durationMillis,
+                pssDeltaMiB = evidence.pssDeltaMiB,
+                batteryPercentPerHour = evidence.batteryPercentPerHour,
+                backgroundChurnEvents = runtimeCallbackEvents
+            )
+        )
 
         runCatching {
             ledger.appendAction(
                 "RUNTIME_BUDGET_CHECKPOINT",
                 true,
-                "durationMs=${evidence.durationMillis}; pssStartMiB=${evidence.startPssMiB}; pssEndMiB=${evidence.endPssMiB}; pssDeltaMiB=${evidence.pssDeltaMiB}; batteryDelta=${evidence.batteryDeltaPercent ?: -1}; batteryPctPerHour=$rate"
+                "durationMs=${evidence.durationMillis}; pssStartMiB=${evidence.startPssMiB}; pssEndMiB=${evidence.endPssMiB}; pssDeltaMiB=${evidence.pssDeltaMiB}; batteryDelta=${evidence.batteryDeltaPercent ?: -1}; batteryPctPerHour=$rate; callbackEvents=$runtimeCallbackEvents"
+            )
+            ledger.appendAction(
+                "RUNTIME_RESOURCE_GATE_${resourceAssessment.verdict.name}",
+                resourceAssessment.verdict == RuntimeResourceVerdict.PASS,
+                "reasons=${resourceAssessment.reasons.sorted().joinToString(",")}; callbackEvents=$runtimeCallbackEvents"
             )
         }
         runtimeBudgetCheckpointWritten = true
