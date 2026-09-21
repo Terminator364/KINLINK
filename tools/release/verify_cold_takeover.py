@@ -25,6 +25,9 @@ req(state["continuity"]["resume_capsule"]==".project-memory/RESUME_CAPSULE.json"
 req(state["continuity"]["cold_takeover_verifier"]=="tools/release/verify_cold_takeover.py","project_state cold takeover verifier missing")
 req(state["active_integrated_successor"]["version"]=="0.8.0-dev","active successor version stale")
 req(state["active_integrated_successor"]["versionCode"]==12,"active successor versionCode stale")
+req(state.get("state_authority",{}).get("schema")=="kinlink.state_authority/1","project_state authority map missing")
+req(state["full_spec"]["active_wave"]==state["active_integrated_successor"]["active_wave"],"active wave drift between full_spec and successor")
+req(state["full_spec"]["active_wave"]=="W2_CONTEXT_AND_MOBILE_VAULT_CORE","cold takeover did not advance to W2")
 
 next_text=(ROOT/"NEXT_UNCOMMITTED_ACTION.md").read_text(encoding="utf-8")
 build_text=(ROOT/"BUILD_STATUS.md").read_text(encoding="utf-8")
