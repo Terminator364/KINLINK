@@ -16,7 +16,8 @@
       ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
       ".project-memory/B_EXPANSION_LEDGER.json",
       "docs/RESEARCH_NETWORK_QUALITY_TRUTH_0_8.md",
-      "docs/B_EXPANSION_V3.md"
+      "docs/B_EXPANSION_V3.md",
+      "docs/B_EXPANSION_V4.md"
     ],
     "C_evolution": [
       ".project-memory/PRODUCT_EVOLUTION_C.json",
@@ -70,6 +71,8 @@
     "B depth is loaded separately from the macro ledger so research can deepen requirements without gaming the completion denominator.",
     "ConnectivityDiagnostics eligibility is capability-gated; Lite Observer never assumes callback delivery from registration success.",
     "Canonical context pack is derived and must match scorecard/anchors; it never replaces chronicle/history.",
-    "Exactly one KINLINK communication watchdog policy is canonical; automation is a safety net, not a substitute for primary START/END protocol."
+    "Exactly one KINLINK communication watchdog policy is canonical; automation is a safety net, not a substitute for primary START/END protocol.",
+    "Android 17 LAN permission is feature-scoped: never add a blanket startup permission prompt merely because targetSdk is 37.",
+    "B-depth growth must update the integrity verifier and context pack without changing the 80-macro denominator automatically."
   ]
 }

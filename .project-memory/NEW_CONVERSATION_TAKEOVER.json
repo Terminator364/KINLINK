@@ -36,7 +36,8 @@
     "docs/B_EXPANSION_V2.md",
     "docs/B_EXPANSION_V3.md",
     ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json",
-    ".project-memory/DEAD_END_REGISTRY.json"
+    ".project-memory/DEAD_END_REGISTRY.json",
+    "docs/B_EXPANSION_V4.md"
   ],
   "takeover_algorithm": [
     "DO_NOT_ASK_USER_TO_RECONSTRUCT_PRIOR_CHAT",
@@ -74,7 +75,8 @@
     "macro_capabilities": 80,
     "previous_56_percent": "superseded because it omitted original preconception breadth",
     "no_micro_beta": true,
-    "next_action": "continue integrated 0.8 against FULL_REQUIREMENTS_LEDGER; no install until coherent batch closes"
+    "next_action": "requalify 0.8 after capability discovery and visual semantic cleanup; no install until coherent batch closes",
+    "b_depth": "B31-B90 canonical; macro denominator remains 80"
   },
   "full_spec_rule": "ALWAYS_LOAD_A_PLUS_B_PLUS_C_BEFORE_SCOPING_OR_PERCENT_COMPLETE; recent traceability is a derivative view, never the full product spec. B depth is a separate canonical layer; deepen it without silently changing the macro denominator."
 }

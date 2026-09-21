@@ -81,6 +81,17 @@
       ],
       "safe_alternative": "Watchdog closes stale tranche and leaves NEXT_UNCOMMITTED_ACTION; foreground worker opens a fresh START before substantive work.",
       "supersession_condition": "A future automation is explicitly authorized to execute substantive product work after START."
+    },
+    {
+      "id": "DEAD-008",
+      "premise": "Targeting Android 17 means KINLINK should request local-network permission at startup even when current features only observe default-network state or reach public Internet endpoints.",
+      "verdict": "REJECTED_AS_OVERPERMISSION",
+      "evidence": [
+        "Android 17 ACCESS_LOCAL_NETWORK behavior change",
+        "docs/B_EXPANSION_V4.md"
+      ],
+      "safe_alternative": "Classify operations first; request ACCESS_LOCAL_NETWORK just in time only for a direct LAN feature that requires it. Core observer/public-Internet diagnostics remain functional without a gratuitous LAN prompt.",
+      "supersession_condition": "Only a future default-on feature that genuinely requires direct LAN sockets/discovery and has explicit user-approved product scope may change the request timing."
     }
   ]
 }

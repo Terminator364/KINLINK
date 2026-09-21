@@ -146,3 +146,19 @@ The B layer is further deepened in `docs/B_EXPANSION_V3.md`.
 This batch adds platform-grounded constraints for callback race safety, callback registration budgets, Network-generation identity, multi-transport truth, bandwidth-estimate semantics, meteredness, callback-thread work budgets, telephony freshness/permissions/multi-SIM isolation, always-on/lockdown VPN behavior, revocation, underlying-network declarations, VPN loop prevention, visibility-vs-usability, prohibition of background alternate-network activation in Lite mode, telephony feature detection, context priors, reconnect reset semantics and an explicit quality-evidence hierarchy.
 
 The global macro denominator remains 80 pending deduplication; B depth cannot game the completion score.
+
+
+## B depth v4 — Android 17 and platform-capability hardening
+
+`docs/B_EXPANSION_V4.md` and `.project-memory/B_EXPANSION_LEDGER.json` now extend B through **B90**.
+
+Key additions:
+- Android 17 `ACCESS_LOCAL_NETWORK` is feature-scoped and just-in-time, not a blanket startup permission;
+- direct LAN operations are distinguished from public Internet probes and platform observation;
+- future VpnService uses explicit LAN-preservation routes where supported;
+- Strong Stabilizer needs MTU/fragmentation safety and explicit always-on qualification;
+- foreground-service legality is version/start-source aware;
+- Data Saver, Usage Access and other platform capabilities become explicit policy inputs;
+- 0.8 begins implementing a read-only runtime capability inventory.
+
+The denominator remains 80 macro capabilities until deduplication proves a genuinely independent new product capability.

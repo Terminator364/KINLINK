@@ -1,8 +1,8 @@
 {
   "schema": "kinlink.b_expansion_ledger/2",
-  "version": "B3",
+  "version": "B4",
   "generated_at": "2026-09-21",
-  "rule": "B is concrete depth, not vague enhancement. B31-B80 are subrequirements mapped to existing macro capabilities; they do not change the macro completion denominator unless a deduplication review proves a genuinely new independent product capability.",
+  "rule": "B is concrete depth, not vague enhancement. B31-B90 are subrequirements mapped to existing macro capabilities; they do not change the macro completion denominator unless a deduplication review proves a genuinely new independent product capability.",
   "critical_research_corrections": [
     {
       "id": "B-RESEARCH-001",
@@ -650,6 +650,144 @@
       "design": "Formalize source precedence: explicit user incident + sustained local experience history > direct current validated state > platform capability estimates > static defaults. Confidence is source-aware and can abstain.",
       "acceptance": "Contradiction tests show optimistic bandwidth estimates cannot override repeated stalls/user incident, while old incidents decay and do not permanently poison a recovered link.",
       "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
+    },
+    {
+      "id": "B81",
+      "title": "Android 17 local-network permission gate",
+      "parent_macro_ids": [
+        "K041",
+        "K061",
+        "K064"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Because KINLINK targets API 37, any future direct LAN socket/discovery feature must be capability-gated behind Android 17 ACCESS_LOCAL_NETWORK or an appropriate system-mediated alternative. Lite external-Internet observation must not request this permission unnecessarily.",
+      "acceptance": "No direct LAN feature starts on API 37+ unless permission/capability state is explicit. Existing Internet-only Wi-Fi probes remain classified separately and do not trigger a LAN permission prompt.",
+      "source": "https://developer.android.com/about/versions/17/behavior-changes-17"
+    },
+    {
+      "id": "B82",
+      "title": "Local-vs-Internet operation classifier",
+      "parent_macro_ids": [
+        "K006",
+        "K041",
+        "K061"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Classify every network operation as LOCAL_LAN, PUBLIC_INTERNET, PLATFORM_OBSERVATION or VPN_DATA_PLANE before activation so permission, cost and privacy rules are applied correctly.",
+      "acceptance": "Static/runtime policy tests prove public connectivity checks are never mistaken for LAN access and LAN operations cannot bypass their permission gate.",
+      "source": "https://developer.android.com/about/versions/16/behavior-changes-16"
+    },
+    {
+      "id": "B83",
+      "title": "Just-in-time LAN permission UX",
+      "parent_macro_ids": [
+        "K002",
+        "K041",
+        "K058"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "If a future router/LAN feature needs ACCESS_LOCAL_NETWORK, request it only when the user invokes that feature, explain the exact benefit, and keep all unrelated KINLINK functions usable when denied.",
+      "acceptance": "Fresh install has no gratuitous LAN permission prompt; denial leaves observer/mobile/autopilot-safe functions operational.",
+      "source": "https://developer.android.com/about/versions/17/behavior-changes-17"
+    },
+    {
+      "id": "B84",
+      "title": "VPN LAN-preservation route policy",
+      "parent_macro_ids": [
+        "K007",
+        "K019",
+        "K023"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "For API 33+, future Strong Stabilizer should model explicit LAN route exclusions with VpnService.Builder.excludeRoute where preservation is required, instead of accidentally tunnelling/breaking local traffic.",
+      "acceptance": "IPv4/IPv6 LAN fixtures prove selected local prefixes bypass the VPN while Internet routes remain controlled; older APIs fail closed or use a separately proven route plan.",
+      "source": "https://developer.android.com/reference/android/net/VpnService.Builder#excludeRoute(android.net.IpPrefix)"
+    },
+    {
+      "id": "B85",
+      "title": "VPN MTU and packet-size safety",
+      "parent_macro_ids": [
+        "K019",
+        "K023",
+        "K025"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Strong Stabilizer must treat MTU as an explicit compatibility parameter, detect black-hole/fragmentation symptoms and roll back rather than hard-code an aggressive value.",
+      "acceptance": "Test matrix covers IPv4/IPv6, small/large MTU, truncated packets and PMTU-related failure without loops or silent data loss.",
+      "source": "https://developer.android.com/reference/android/net/VpnService.Builder#setMtu(int)"
+    },
+    {
+      "id": "B86",
+      "title": "Always-on support declaration gate",
+      "parent_macro_ids": [
+        "K025",
+        "K056"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Do not advertise always-on VPN support merely because Android defaults the metadata to true. Strong Stabilizer must explicitly opt in only after reboot, upgrade, revoke, lockdown and escape-path qualification.",
+      "acceptance": "Manifest metadata and release gate agree; an unqualified VPN build cannot be exposed as always-on capable.",
+      "source": "https://developer.android.com/reference/android/net/VpnService#SERVICE_META_DATA_SUPPORTS_ALWAYS_ON"
+    },
+    {
+      "id": "B87",
+      "title": "Foreground-service type and boot legality audit",
+      "parent_macro_ids": [
+        "K045",
+        "K058"
+      ],
+      "stage": "PARTIAL",
+      "design": "Every long-lived observer/VPN service must have an Android-version-aware foreground-service type/start-source contract, including BOOT_COMPLETED restrictions and user-visible notification semantics.",
+      "acceptance": "CI/field tests cover cold start, boot, package replacement, user stop, background start denial and graceful degraded behavior across supported API levels.",
+      "source": "https://developer.android.com/develop/background-work/services/fgs/service-types"
+    },
+    {
+      "id": "B88",
+      "title": "Data Saver state as policy evidence",
+      "parent_macro_ids": [
+        "K014",
+        "K060"
+      ],
+      "stage": "IMPLEMENTED_UNQUALIFIED",
+      "design": "Observe ConnectivityManager restrictBackgroundStatus and expose DISABLED/WHITELISTED/ENABLED/UNKNOWN as a capability fact. Future background work must respect it rather than infer cost only from transport.",
+      "acceptance": "PlatformCapabilityDiscovery reports Data Saver without changing settings; policy tests map Android constants deterministically.",
+      "source": "https://developer.android.com/reference/android/net/ConnectivityManager#getRestrictBackgroundStatus()",
+      "evidence": [
+        "dev:app/src/main/java/com/terminator364/kinlink/core/PlatformCapabilityDiscovery.kt",
+        "git:b54020291f866042103ad0f63cae3645977638d1"
+      ]
+    },
+    {
+      "id": "B89",
+      "title": "Optional NetworkStats usage-access lane",
+      "parent_macro_ids": [
+        "K017",
+        "K041"
+      ],
+      "stage": "PARTIAL",
+      "design": "Discover Usage Access explicitly and keep richer NetworkStatsManager accounting optional/off-main-thread. Absence of Usage Access must never block core KINLINK.",
+      "acceptance": "Capability snapshot distinguishes granted/not-granted; no NetworkStats query runs on the UI thread and no operator-balance claim is derived from these counters.",
+      "source": "https://developer.android.com/reference/android/app/usage/NetworkStatsManager",
+      "evidence": [
+        "dev:app/src/main/java/com/terminator364/kinlink/core/PlatformCapabilityDiscovery.kt",
+        "git:b54020291f866042103ad0f63cae3645977638d1"
+      ]
+    },
+    {
+      "id": "B90",
+      "title": "Runtime platform capability inventory",
+      "parent_macro_ids": [
+        "K041",
+        "K053",
+        "K058"
+      ],
+      "stage": "IMPLEMENTED_UNQUALIFIED",
+      "design": "Before optional features activate, maintain a read-only capability snapshot: API level, Wi-Fi/telephony presence, Android 17 LAN-permission state, Data Saver, Usage Access, VpnService route-exclusion support and advanced-diagnostics eligibility.",
+      "acceptance": "Discovery performs no permission request, VPN start or socket; unit tests cover policy boundaries and technical diagnostics expose capability state.",
+      "source": "https://developer.android.com/guide/topics/permissions/overview",
+      "evidence": [
+        "dev:app/src/main/java/com/terminator364/kinlink/core/PlatformCapabilityDiscovery.kt",
+        "git:b54020291f866042103ad0f63cae3645977638d1"
+      ]
     }
   ],
   "research_notes": [
@@ -657,6 +795,9 @@
     "A Network object is generation-specific; reconnecting to the same physical network yields a new Network object.",
     "NetworkCapabilities transport is not a reliable proxy for bandwidth or meteredness; VPN may expose multiple transports.",
     "Telephony signal strength may be cached/stale under power saving and can be null/unsupported.",
-    "VpnService permission can be revoked; onRevoke must cleanly shut down. protect() prevents tunnel self-routing loops."
+    "VpnService permission can be revoked; onRevoke must cleanly shut down. protect() prevents tunnel self-routing loops.",
+    "Android 17 (API 37 target) introduces ACCESS_LOCAL_NETWORK for direct LAN communication; KINLINK must request it only for features that actually need LAN sockets/discovery.",
+    "VpnService.Builder.excludeRoute exists from API 33 and is relevant to preserving LAN reachability in a future Strong Stabilizer.",
+    "Foreground-service types/start legality and always-on VPN support must be explicitly qualified rather than assumed from manifest defaults."
   ]
 }
