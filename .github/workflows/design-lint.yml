@@ -29,3 +29,5 @@ jobs:
           test -f docs/TELEMETRY_AND_DIAGNOSTICS.md
       - name: Release-readiness ledger consistency
         run: python tools/release/verify_release_readiness.py --audit
+      - name: Canonical signer continuity contract
+        run: python tools/release/verify_signer_contract.py
