@@ -55,13 +55,29 @@ VpnService/TUN remains a separately gated M5 subsystem. It is not production-ena
 Compilation alone never qualifies a version as final.
 
 
-## Mobile handoff observability
+## Mobile resilience and handoff observability
 
-- Cellular transport is always observation-only.
-- The foreground notification states explicitly that Android retains control on cellular.
-- Wi-Fi exit transitions create local handoff receipts.
-- A subsequent cellular VALIDATED state records a successful handoff outcome.
-- Cellular present but not yet VALIDATED is recorded as evidence only; KINLINK takes no recovery action.
+Android retains routing/modem control on cellular, but KINLINK is no longer limited to passive wording only.
+
+Mobile Assist Level 1 may perform zero-probe, bounded assistance:
+- passive cellular degradation classification;
+- Android bandwidth-metric refresh on validated degraded cellular only;
+- 5-minute cooldown and 6/hour cap;
+- anti-repeat suspension after two recent ineffective outcomes;
+- battery/thermal/low-memory and Mobile Vault suppression;
+- explicit-user launch of the Android Internet connectivity panel for unvalidated/suspended mobile states.
+
+P0 remains unchanged:
+- no automatic cellular HTTP/DNS probe;
+- no cellular speed test;
+- no requestNetwork/bindProcessToNetwork mobile recovery;
+- no forced mobile-data toggle;
+- no routing ownership;
+- no override of Android VALIDATED.
+
+Wi-Fi exit transitions still create local handoff receipts.
+A subsequent cellular VALIDATED state records a successful handoff outcome.
+The stronger VpnService/TUN Mobile Stabilizer remains separately gated.
 
 
 ## User fail-open control
@@ -372,3 +388,8 @@ Release rule for 0.7.1:
 6. one in-place target-phone installation;
 7. versionCode 9 handoff + resource Stage B evidence PASS;
 8. only then canonical INSTALLER promotion.
+
+
+## Mobile resilience reference
+
+Detailed Level 1 / Level 2 contracts are maintained in `docs/MOBILE_RESILIENCE.md`.
