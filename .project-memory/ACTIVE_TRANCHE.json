@@ -5,7 +5,7 @@
   "primary_work_budget_minutes": 22,
   "closeout_reserve_minutes": 3,
   "max_mutation_groups_before_forced_closeout": 12,
-  "mutation_groups_used": 1,
+  "mutation_groups_used": 6,
   "status": "RUNNING",
   "forced_closeout_entered": false,
   "gmail_start_message_id": "1a0c442003db93d7",
@@ -18,7 +18,7 @@
   "technical_branch": "dev/0.7.2-continuous-improvement",
   "installed_field_build": "0.7.1/versionCode9 installed and frozen",
   "delivery_state": "START_ACKNOWLEDGED",
-  "next_atomic_action": "audit latest exact 0.7.2 head and CI; patch only demonstrated P0/P1 issues; then forced closeout at reserve boundary",
+  "next_atomic_action": "wait/read exact-head Android CI for ab6e0a9d...; if PASS perform final P0/P1 counter-audit and freeze candidate identity; if FAIL patch only exact failure",
   "notes": [
     "22 min useful work + 3 min forced closeout",
     "No APK by Gmail",
@@ -32,5 +32,34 @@
     "hard_end_guard_armed": true,
     "closeout_trigger_minutes": 22,
     "hard_end_trigger_minutes": 25
+  },
+  "last_durable_checkpoint": {
+    "dev_branch": "dev/0.7.2-continuous-improvement",
+    "dev_head": "ab6e0a9d5f95410c685c649b8fae440a92effdac",
+    "push_design_lint": {
+      "run": 35609948316,
+      "status": "PASS"
+    },
+    "pr_design_lint": {
+      "run": 35609948586,
+      "status": "PASS"
+    },
+    "android_ci": {
+      "run": 35609947110,
+      "status": "IN_PROGRESS"
+    },
+    "important_fixes": [
+      "manual Mobile Assist proof baseline captured before requestBandwidthUpdate",
+      "manual baseline timestamp uses SystemClock.elapsedRealtime at action time",
+      "new Mobile Assist action cancels stale relapse recheck generation",
+      "large-font cockpit no longer clips proof at five lines",
+      "paired controls use wrap_content height"
+    ],
+    "communication": [
+      "BCP-inspired work/delivery state machine persisted",
+      "delivery ledger created",
+      "closeout watchdog armed at +22m",
+      "hard end guard armed at +25m"
+    ]
   }
 }
