@@ -32,15 +32,20 @@ When this command is used in another KINLINK conversation/workspace:
 
 ## Current durable state
 
-- Field baseline: `0.6.0-rc3`, versionCode 7.
-- Field handoff gate: Wi-Fi -> cellular -> Wi-Fi PASS.
-- Original mobile-block symptom: NOT REPRODUCED.
-- Canonical Drive APK remains RC3.
-- Development line: `0.7.0-dev`, versionCode 8.
-- Promotion of DEV: FORBIDDEN until consolidated RC gate.
-- Telemetry schema: v5.
-- Latest full machine PASS code head: `4153720cde8c6bd0004b8e69baeadf5254735abe`.
-- Final consolidated field-candidate code head: `4153720cde8c6bd0004b8e69baeadf5254735abe`.
+- Canonical Drive rollback/stable installer: `0.6.0-rc3`, versionCode 7.
+- Phone currently runs the exact signed `0.7.0`, versionCode 8 field build.
+- Installed 0.7.0 is usable but **not eligible for canonical promotion** after post-install counter-audit.
+- Active consolidated successor: `0.7.1`, versionCode 9.
+- No micro-beta chain: do not request another install until 0.7.1 is fully audited, machine-green, stable-signed and Drive-staged.
+- Telemetry schema remains v5.
+- Last fully green exact successor head before newest hardening: `a8e4b1a6510ee3bf06d1143253b08437e745cab4`.
+- Current counter-audit repairs extend through CA-009.
+- Drive delivery folders:
+  - INSTALLER = canonical promoted build only;
+  - FIELD_CANDIDATE = one exact noncanonical candidate;
+  - SIGNING = private signing material only.
+- Gmail label for project reports: `KINLINK`.
+- Machine-readable tranche protocol: `.project-memory/COMMUNICATION_PROTOCOL.json`.
 
 ## 0.7.0-dev integrated scope
 
@@ -60,11 +65,14 @@ Includes, among other items:
 
 ## Next durable action
 
-1. deliver/install only the exact final signed 0.7.0 APK SHA-256 `cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc` over RC3;
-2. never uninstall RC3 merely to force the update;
-3. collect versionCode 8 FIELD_HANDOFF + >=30-minute RESOURCE_QUALIFICATION evidence automatically;
-4. old RC3 evidence cannot qualify v8;
-5. canonical RC3 remains Drive-canonical until Stage B passes.
+1. Finish exact-head Android CI + design-lint for the full 0.7.1 CA-001..CA-009 batch.
+2. Download and read back the exact unsigned 0.7.1 CI artifact.
+3. Run second counter-audit on that exact source/artifact identity.
+4. Stable-sign exactly that artifact with the canonical KINLINK certificate.
+5. Verify signed hash/signer and Drive FIELD_CANDIDATE readback.
+6. Only then ask for one human in-place 0.7.1 install.
+7. Collect versionCode 9 handoff + resource evidence.
+8. Promote to canonical INSTALLER only after Stage B PASS.
 
 ## Exact short code to give the user
 
