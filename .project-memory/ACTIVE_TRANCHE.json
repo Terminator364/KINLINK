@@ -5,7 +5,7 @@
   "primary_work_budget_minutes": 22,
   "closeout_reserve_minutes": 3,
   "max_mutation_groups_before_forced_closeout": 12,
-  "mutation_groups_used": 3,
+  "mutation_groups_used": 4,
   "status": "CLOSED",
   "forced_closeout_entered": true,
   "gmail_start_message_id": "1a0c40fc5bc4a549",
@@ -68,5 +68,7 @@
       "durable next atomic action",
       "no user ping required to close a tranche"
     ]
-  }
+  },
+  "prior_unclosed_tranche_repaired": true,
+  "prior_unclosed_tranche_repair_gmail_end_message_id": "1a0c43f18e88c49f"
 }
