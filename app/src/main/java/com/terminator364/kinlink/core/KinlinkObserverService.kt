@@ -254,6 +254,9 @@ class KinlinkObserverService : Service() {
 
     override fun onDestroy() {
         runtimeBudgetHandler.removeCallbacks(runtimeBudgetCheckpointRunnable)
+        if (::ledger.isInitialized) {
+            maybeRecordRuntimeBudgetCheckpoint()
+        }
         if (::observer.isInitialized) observer.stop()
         recovery?.close()
         if (::ledger.isInitialized) {
