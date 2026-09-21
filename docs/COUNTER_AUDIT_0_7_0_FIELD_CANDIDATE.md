@@ -251,3 +251,18 @@ Repair integrated:
 - current-default refreshes without a callback-supplied network remain allowed;
 - regression tests cover before/after identity combinations;
 - candidate-contract CI requires the two-phase active-default fence.
+
+
+### CA-013 — stale callbacks could cancel the delayed offline settle without being accepted
+
+The observer uses a short delayed loss-settle window to avoid flashing OFFLINE during normal Android handoff. Before this repair, onCapabilitiesChanged and onAvailable incremented the loss-generation counter before the callback was checked against the active default network.
+
+A late callback from the old network could therefore be rejected as stale but still invalidate the pending onLost settle timer. If no newer callback arrived, KINLINK could retain stale connectivity truth instead of publishing the current default/offline state.
+
+**Verdict: blocking stale-state/liveness defect for the consolidated successor.**
+
+Repair integrated:
+- only callbacks that still match Android's active default can cancel a pending loss-settle generation;
+- stale callbacks are rejected without touching the pending loss timer;
+- regression tests prove stale callbacks cannot suppress the settle;
+- candidate-contract CI fences this invariant.
