@@ -10,6 +10,7 @@ enum class AutopilotIntent {
     HOLD_STEADY,
     PROTECT_MOBILE,
     OBSERVE_WIFI,
+    MOBILE_ASSIST,
     CAPTIVE_PORTAL_ACTION,
     RECOVERY_CANDIDATE,
     WAIT_FOR_EVIDENCE
@@ -87,6 +88,45 @@ object AdaptivePolicyEngine {
                     allowMobileAssist = false
                 )
             }
+        }
+
+        if (truth.transport == Transport.CELLULAR) {
+            if (!truth.androidNotSuspended) {
+                return AdaptiveDecision(
+                    AutopilotIntent.WAIT_FOR_EVIDENCE,
+                    "Android signale le réseau mobile suspendu : aucune action active.",
+                    allowAutomaticProbe = false,
+                    allowMobileAssist = false
+                )
+            }
+            if (truth.internetState == InternetState.VALIDATED) {
+                val quality = PassiveLinkQualityPolicy.assess(truth).quality
+                val degraded =
+                    quality == PassiveLinkQuality.CONSTRAINED ||
+                        quality == PassiveLinkQuality.LIMITED ||
+                        !truth.androidNotCongested
+                return if (degraded) {
+                    AdaptiveDecision(
+                        AutopilotIntent.MOBILE_ASSIST,
+                        "Données mobiles validées mais dégradées : Mobile Assist zéro-probe peut rafraîchir les métriques Android.",
+                        allowAutomaticProbe = false,
+                        allowMobileAssist = true
+                    )
+                } else {
+                    AdaptiveDecision(
+                        AutopilotIntent.HOLD_STEADY,
+                        "Données mobiles validées et utilisables : ne pas perturber la liaison.",
+                        allowAutomaticProbe = false,
+                        allowMobileAssist = false
+                    )
+                }
+            }
+            return AdaptiveDecision(
+                AutopilotIntent.WAIT_FOR_EVIDENCE,
+                "Transport mobile présent mais Internet non validé : pas de probe payant; assistance système seulement sur action utilisateur.",
+                allowAutomaticProbe = false,
+                allowMobileAssist = false
+            )
         }
 
         if (truth.transport == Transport.NONE || truth.internetState == InternetState.OFFLINE) {
