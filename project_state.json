@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_0_UNSIGNED_CANDIDATE_IDENTITY_HARDENING",
+  "phase": "KINLINK_0_7_0_FIELD_QUALIFICATION_AUTOMATION_CI",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "read android-0.7-candidate result for current head 9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab; design-lint PASS, Android CI in progress; latest full machine PASS is a00ed98ab269a851f38fb33cfda8bb77a624e502; after current head PASS, download exact unsigned 0.7.0 candidate, verify identity/hash, then stable-sign one field candidate without replacing RC3",
+  "next_uncommitted_action": "qualify head f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3; previous signed artifact aed0643... was never delivered/installed and is superseded; after PASS build/download/sign one final consolidated field candidate, then collect automatic field qualification receipt",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -76,7 +76,7 @@
     "version": "0.7.0",
     "versionCode": 8,
     "promotion": "FIELD_CANDIDATE_ONLY_AFTER_STAGE_A_PASS",
-    "head": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
+    "head": "f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -152,17 +152,21 @@
       "public repo fence rejects private signing material/credential files",
       "candidate CI verifies package name/versionCode/versionName",
       "candidate CI proves artifact is unsigned before upload",
-      "offline signing helper is input-hash pinned and signer-fingerprint pinned"
+      "offline signing helper is input-hash pinned and signer-fingerprint pinned",
+      "self-test diagnostics count only successful receipts",
+      "automatic field candidate qualification policy",
+      "service auto-seals FIELD_CANDIDATE_QUALIFIED or BLOCKED receipt",
+      "diagnostic export exposes automatic field qualification state"
     ],
     "last_full_pass": "a00ed98ab269a851f38fb33cfda8bb77a624e502"
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
-    "design_lint": "PASS",
-    "android_ci": "IN_PROGRESS",
+    "code_head": "f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3",
+    "design_lint": "QUEUED",
+    "android_ci": "QUEUED",
     "full_machine_verdict": "PENDING",
-    "latest_full_pass": "a00ed98ab269a851f38fb33cfda8bb77a624e502"
+    "latest_full_pass": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab"
   },
   "continuity": {
     "command": "KINLINKGO",
@@ -206,5 +210,12 @@
       ],
       "result": "CANONICAL_PROMOTION"
     }
+  },
+  "preliminary_signed_candidate": {
+    "sha256": "aed0643ea4d03e46f9befdc99866bcbbb4a599c9fddbb552ea7397e285ea8b79",
+    "source_commit": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
+    "status": "SUPERSEDED_BEFORE_DELIVERY",
+    "delivered": false,
+    "installed": false
   }
 }
