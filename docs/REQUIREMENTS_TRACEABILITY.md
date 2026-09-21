@@ -52,7 +52,7 @@ Status meanings:
 | Mobile prudence threshold | PROVEN machine-side | Android device-wide TrafficStats heuristic; not operator balance |
 | Incident marker | PROVEN machine-side | passive local snapshot, zero probe |
 | Field qualification status | PROVEN machine-side | version-scoped receipts and current assessment |
-| Diagnostic export | PARTIAL | current implementation exports one privacy-safe TXT report; canonical multi-file ZIP layout is not yet implemented |
+| Diagnostic export | PARTIAL | 0.7.1 now exports a privacy-safe ZIP core bundle (`manifest.json`, `summary.json`, `recent_actions.jsonl`, `report.txt`); the larger canonical bundle still has additional future files to implement |
 | Weekly report | PARTIAL | diagnostic contains “This week” summary; dedicated richer weekly report engine is not yet implemented |
 | Drive install/distribution master | PROVEN operationally | INSTALLER / FIELD_CANDIDATE / SIGNING / master continuity structure |
 | Gmail tranche reporting | PROVEN operationally | dedicated KINLINK label + mandatory 25-minute protocol |
