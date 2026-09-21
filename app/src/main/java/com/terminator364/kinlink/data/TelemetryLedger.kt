@@ -500,6 +500,20 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
                                 RuntimeResourceVerdict.BLOCKED,
                                 version
                             )
+                        ),
+                    latestRuntimeResourcePassMillis =
+                        latestActionTimestamp(
+                            QualificationReceiptNames.resourceGate(
+                                RuntimeResourceVerdict.PASS,
+                                version
+                            )
+                        ),
+                    latestRuntimeResourceBlockMillis =
+                        latestActionTimestamp(
+                            QualificationReceiptNames.resourceGate(
+                                RuntimeResourceVerdict.BLOCKED,
+                                version
+                            )
                         )
                 )
             )
