@@ -266,3 +266,8 @@ require(
     and "mobileAssistEvidenceGeneration.get()" in SERVICE,
     "candidate contract: Mobile Assist one-shot generation fence is not thread-safe",
 )
+
+require(
+    "@Volatile\n    private var latestTruth" in SERVICE,
+    "candidate contract: service latestTruth is not safely published across callback/start-command threads",
+)
