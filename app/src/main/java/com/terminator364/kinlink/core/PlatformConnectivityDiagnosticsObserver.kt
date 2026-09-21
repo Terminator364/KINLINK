@@ -11,7 +11,15 @@ data class PlatformDiagnosticEvent(
     val summary: String
 )
 
+enum class PlatformDiagnosticsEligibility {
+    LITE_OBSERVER_INELIGIBLE,
+    ELIGIBLE_CONNECTIVITY_PROVIDER
+}
+
 object PlatformDiagnosticPolicy {
+    fun registrationAllowed(eligibility: PlatformDiagnosticsEligibility): Boolean =
+        eligibility == PlatformDiagnosticsEligibility.ELIGIBLE_CONNECTIVITY_PROVIDER
+
     fun shouldPersistConnectivityReport(
         validated: Boolean,
         captivePortal: Boolean,
@@ -102,7 +110,10 @@ class PlatformConnectivityDiagnosticsObserver(
             }
         }
 
-    fun start(): Boolean {
+    fun start(
+        eligibility: PlatformDiagnosticsEligibility
+    ): Boolean {
+        if (!PlatformDiagnosticPolicy.registrationAllowed(eligibility)) return false
         if (registered) return true
         return runCatching {
             val request = NetworkRequest.Builder()
