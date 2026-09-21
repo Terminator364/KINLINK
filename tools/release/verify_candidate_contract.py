@@ -293,3 +293,21 @@ require(
     and "mobileAssistRelapseGeneration" in SERVICE,
     "candidate contract: continuous Mobile Assist relapse re-evaluation path missing",
 )
+
+require(
+    "MOBILE_ASSIST_EVIDENCE_RESOURCE_ABORT" in SERVICE
+    and "MOBILE_ASSIST_RELAPSE_RESOURCE_ABORT" in SERVICE
+    and "mobileAssistEvidenceResourceGuard.snapshot().constrained" in SERVICE,
+    "candidate contract: Mobile Assist proof sampling ignores resource pressure",
+)
+require(
+    "ACTION_MOBILE_ASSIST_EVIDENCE_UPDATED" in SERVICE
+    and ".setPackage(packageName)" in SERVICE
+    and "ContextCompat.RECEIVER_NOT_EXPORTED" in MAIN_ACTIVITY,
+    "candidate contract: proof-card refresh is not package-scoped/non-exported",
+)
+require(
+    'qualityScoreText.text = "Qualité passive · $qualityLabel"' in MAIN_ACTIVITY
+    and 'Indice passif : ${passiveScore.score}/100' in MAIN_ACTIVITY,
+    "candidate contract: passive numeric score is not kept behind technical detail",
+)
