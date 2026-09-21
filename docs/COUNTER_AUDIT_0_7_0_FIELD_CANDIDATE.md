@@ -165,3 +165,21 @@ Repair integrated:
 - a newer blocking resource verdict can revoke the live PASS display;
 - candidate-contract CI rejects reintroduction of the stale-PASS shortcut.
 
+
+
+### CA-008 — socket timeouts alone did not make DNS/connection setup a strict wall-clock bound
+
+CA-001 reduced the configured connect/read timeout envelope below 5 seconds. A second counter-audit identified a stricter issue: socket connect/read timeouts alone are not a complete wall-clock proof for every stage around DNS/connection setup.
+
+For the canonical “hard deadline” claim, the automatic micro-probe needs an outer deadline as well as socket-level timeouts.
+
+**Verdict: blocking hard-deadline proof defect.**
+
+Repair integrated:
+- each HTTP endpoint now runs behind a 1.5 s outer wall-clock future deadline;
+- timeout path explicitly disconnects the active `HttpURLConnection` before cancelling the worker;
+- two-endpoint outer envelope is 3.0 s, leaving margin below the 5.0 s recovery deadline;
+- socket-level 900 ms connect/read limits remain as inner bounds;
+- regression tests prove both envelopes;
+- candidate-contract CI requires the outer timeout/disconnect mechanism.
+
