@@ -40,15 +40,16 @@ jobs:
         run: python tools/release/verify_release_readiness.py --audit
       - name: Active 0.7.1 readiness ledger consistency
         run: python tools/release/verify_release_readiness.py --ledger .project-memory/RELEASE_READINESS_0_7_1_DEV.json --audit
-      - name: 0.7.1 candidate contract counter-audit
+      - name: Candidate contract counter-audit
         run: python tools/release/verify_candidate_contract.py
       - name: Release evidence hash integrity
         run: python tools/release/verify_release_evidence_integrity.py
-      - name: Installed field-candidate app freeze
+      - name: Installed field-candidate app freeze on main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, pathlib, subprocess, sys
+          import json, pathlib, subprocess
           p = pathlib.Path(".project-memory/FIELD_CANDIDATE_FREEZE.json")
           data = json.loads(p.read_text(encoding="utf-8"))
           if not data.get("active"):
@@ -59,11 +60,26 @@ jobs:
           subprocess.run(["git","fetch","--no-tags","--depth=1","origin",base], check=True)
           proc = subprocess.run(["git","diff","--quiet",base,"HEAD","--",*paths])
           if proc.returncode != 0:
-              print("Installed field candidate invalidated: protected app surface changed.")
+              print("Installed field candidate invalidated on canonical main.")
               subprocess.run(["git","diff","--name-only",base,"HEAD","--",*paths], check=False)
               raise SystemExit(1)
           print("field-candidate-freeze: PASS")
           print("sealed source:", base)
+          PY
+      - name: Dev PR must remain draft while installed field candidate is frozen
+        if: github.event_name == 'pull_request'
+        run: |
+          python - <<'PY'
+          import json, os, pathlib
+          freeze = json.loads(pathlib.Path(".project-memory/FIELD_CANDIDATE_FREEZE.json").read_text(encoding="utf-8"))
+          event = json.loads(pathlib.Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
+          pr = event.get("pull_request", {})
+          if freeze.get("active"):
+              if not pr.get("draft", False):
+                  raise SystemExit("installed field candidate is frozen: dev PR must remain draft")
+              print("dev-pr-freeze: PASS — isolated draft work allowed while main candidate remains frozen")
+          else:
+              print("dev-pr-freeze: INACTIVE")
           PY
       - name: Canonical signer continuity contract
         run: python tools/release/verify_signer_contract.py
