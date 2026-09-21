@@ -1,0 +1,61 @@
+{
+  "schema": "kinlink.continuity_context_manifest/1",
+  "project": "KINLINK",
+  "purpose": "prevent recent-slice amnesia and force A+B+C reconstruction before scope/progress/release decisions",
+  "immutable_history_anchors": {
+    "repo_initial_commit": "e066f17a7d804acad538aa58b5cb35cda06b6014",
+    "preconception_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
+    "rule": "Historical A is never deleted or silently narrowed by a recent implementation slice."
+  },
+  "mandatory_context_layers": {
+    "A_original": [
+      ".project-memory/PRECONCEPTION_BASELINE_A.json",
+      "docs/FULL_PRODUCT_SPEC_A_B_C.md"
+    ],
+    "B_expansion": [
+      ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
+      "docs/RESEARCH_NETWORK_QUALITY_TRUTH_0_8.md"
+    ],
+    "C_evolution": [
+      ".project-memory/PRODUCT_EVOLUTION_C.json",
+      ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json",
+      ".project-memory/COMMUNICATION_PROTOCOL.json",
+      ".project-memory/DELIVERY_SECURITY_POLICY.json"
+    ],
+    "live_state": [
+      "project_state.json",
+      "NEXT_UNCOMMITTED_ACTION.md",
+      "BUILD_STATUS.md",
+      ".project-memory/ACTIVE_TRANCHE.json",
+      ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl"
+    ]
+  },
+  "full_completion_contract": {
+    "scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
+    "ledger": ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
+    "expected_macro_capabilities": 80,
+    "current_percent": 44.8,
+    "superseded_metric": "56% recent-slice weighted metric",
+    "rule": "Never quote completion from REQUIREMENTS_TRACEABILITY alone."
+  },
+  "startup_order": [
+    "RECONCILE_COMMUNICATION_STATE",
+    "LOAD_A_ORIGINAL",
+    "LOAD_B_EXPANSION",
+    "LOAD_C_EVOLUTION",
+    "LOAD_FULL_REQUIREMENTS_AND_SCORECARD",
+    "LOAD_LIVE_ENGINEERING_STATE",
+    "SEND_GMAIL_START_ACK",
+    "ONLY_THEN_SCOPE_AND_WORK"
+  ],
+  "anti_amnesia_invariants": [
+    "A+B+C is loaded before any percentage-complete answer.",
+    "Original major modules remain visible even when gated/not started.",
+    "A recent release traceability table cannot redefine the product ambition.",
+    "Every field correction is appended to C and linked to a durable test/policy when practical.",
+    "Every new researched capability added to B gets explicit provenance and a release/safety gate.",
+    "The installed field baseline and active development successor are distinct.",
+    "No micro-beta chain is created merely to show progress.",
+    "Gmail END provider ACK and durable END_ACK precede final app closeout."
+  ]
+}

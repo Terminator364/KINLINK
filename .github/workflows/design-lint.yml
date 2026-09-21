@@ -33,6 +33,13 @@ jobs:
           test -f docs/REQUIREMENTS_TRACEABILITY.md
           test -f docs/DELIVERY_SECURITY_AND_INSTALLATION.md
           test -f .project-memory/DELIVERY_SECURITY_POLICY.json
+          test -f .project-memory/CONTINUITY_CONTEXT_MANIFEST.json
+          test -f .project-memory/PRECONCEPTION_BASELINE_A.json
+          test -f .project-memory/FULL_REQUIREMENTS_LEDGER.json
+          test -f .project-memory/PRODUCT_EVOLUTION_C.json
+          test -f docs/FULL_PRODUCT_SPEC_A_B_C.md
+      - name: Full A+B+C continuity context contract
+        run: python tools/release/verify_continuity_context.py
       - name: Communication protocol contract
         run: python tools/release/verify_communication_protocol.py
       - name: Delivery security contract
