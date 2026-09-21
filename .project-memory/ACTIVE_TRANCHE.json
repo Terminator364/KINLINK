@@ -10,15 +10,15 @@
   "backup_earliest_offset_minutes": 26,
   "hard_guard_offset_minutes": 29,
   "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSE_INTENT_PERSISTED",
-  "status": "CLOSING",
+  "delivery_state": "END_ACKNOWLEDGED",
+  "status": "CLOSED",
   "close_intent_persisted": true,
   "close_owner": "PRIMARY_ASSISTANT",
-  "close_mode": "NORMAL",
+  "close_mode": "NORMAL_STANDALONE_END_AFTER_THREAD_REPLY_REJECTED",
   "gmail_start_message_id": "1a0c45639cea9e87",
   "gmail_start_thread_id": "1a0c45639cea9e87",
-  "gmail_end_message_id": null,
-  "end_mail_verified": false,
+  "gmail_end_message_id": "1a0c4694cd64b197",
+  "end_mail_verified": true,
   "end_mail_reply_to_start": true,
   "end_subject_key": "K25-20260921-1516-01",
   "gmail_label": "KINLINK",
@@ -80,5 +80,10 @@
     "strong_stabilizer_android_run": 35613125066,
     "strong_stabilizer_shadow_machine": "PASS",
     "strong_stabilizer_status": "experiment/shadow only; not included in frozen 0.7.2 candidate"
-  }
+  },
+  "gmail_end_thread_id": "1a0c4694cd64b197",
+  "normal_thread_reply_attempts": 2,
+  "normal_thread_reply_provider_result": "REJECTED_NO_MESSAGE_CREATED",
+  "end_delivery_fallback": "STANDALONE_NORMAL_END_SAME_DELIVERY_KEY",
+  "closed_state": true
 }
