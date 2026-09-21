@@ -20,8 +20,8 @@ def require(ok: bool, message: str) -> None:
     if not ok:
         raise SystemExit(message)
 
-require('versionCode = 10' in GRADLE, "candidate contract: versionCode 10 missing")
-require('versionName = "0.7.2"' in GRADLE, "candidate contract: versionName 0.7.2 missing")
+require('versionCode = 11' in GRADLE, "candidate contract: versionCode 11 missing")
+require('versionName = "0.7.3-dev"' in GRADLE, "candidate contract: versionName 0.7.3-dev missing")
 require(
     'transport != Transport.WIFI -> RecoveryBlockReason.NON_WIFI' in ACTIVE,
     "candidate contract: central non-Wi-Fi active-recovery block missing",
@@ -121,7 +121,7 @@ tests = list((ROOT / "app/src/test").rglob("*Test.kt"))
 require(len(tests) >= 64, f"candidate contract: regression suite unexpectedly shrank to {len(tests)} tests")
 
 print("candidate-contract: PASS")
-print("version: 0.7.2 / code 10")
+print("version: 0.7.3-dev / code 11")
 print(f"probe_socket_envelope_ms: {socket_envelope}")
 print(f"probe_hard_envelope_ms: {hard_envelope}")
 print(f"recovery_deadline_ms: {deadline_ms}")
@@ -307,9 +307,9 @@ require(
     "candidate contract: proof-card refresh is not package-scoped/non-exported",
 )
 require(
-    'qualityScoreText.text = "Qualité passive · $qualityLabel"' in MAIN_ACTIVITY
+    '"Qualité · " + passiveScore.score + "/100 · " + qualityLabel' in MAIN_ACTIVITY
     and 'Indice passif : ${passiveScore.score}/100' in MAIN_ACTIVITY,
-    "candidate contract: passive numeric score is not kept behind technical detail",
+    "candidate contract: passive numeric score is missing from cockpit or technical detail",
 )
 
 EVIDENCE_SUMMARY = (SRC / "com/terminator364/kinlink/core/MobileAssistEvidenceSummaryPolicy.kt").read_text(encoding="utf-8")
@@ -364,4 +364,28 @@ require(
     "Mobile Assist · améliorer maintenant" not in LAYOUT
     and 'android:maxLines="5"' not in LAYOUT,
     "candidate contract: compact cockpit can overclaim or clip continuous-care evidence",
+)
+
+require(
+    'android:id="@+id/beforeScoreText"' in LAYOUT
+    and 'android:id="@+id/nowScoreText"' in LAYOUT
+    and 'android:id="@+id/deltaScoreText"' in LAYOUT
+    and 'android:id="@+id/maintainedText"' in LAYOUT
+    and 'android:id="@+id/evidenceText"' in LAYOUT,
+    "candidate contract: before/now/delta/maintenance proof cockpit missing",
+)
+require(
+    'android:id="@+id/versionText"' in LAYOUT
+    and 'android:layout_width="match_parent"' in LAYOUT.split('android:id="@+id/versionText"', 1)[1][:400],
+    "candidate contract: version/header can regress to narrow wrap-content compression",
+)
+require(
+    "ContinuousControlPanelPolicy.build(" in MAIN_ACTIVITY
+    and 'ledger.latestActionReceipt("MOBILE_ASSIST_EVIDENCE_")' in MAIN_ACTIVITY,
+    "candidate contract: proof cockpit is not bound to latest durable evidence",
+)
+require(
+    "Maintenant bon" in MAIN_ACTIVITY
+    and "24 h " in MAIN_ACTIVITY,
+    "candidate contract: current state and historical burden are not distinguished",
 )
