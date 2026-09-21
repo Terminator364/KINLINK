@@ -30,7 +30,7 @@ Machine PASS includes:
 - versionCode: `8`
 - versionName: `0.7.0`
 - Variant: `candidate-unsigned`
-- Unsigned APK SHA-256: `3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb`
+- Unsigned APK SHA-256: `3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb8`
 - Unsigned APK size: `308944` bytes
 - Build-manifest commit: `4153720cde8c6bd0004b8e69baeadf5254735abe`
 - Public-CI unsigned-state fence: PASS
