@@ -21,7 +21,11 @@
     ".project-memory/FIELD_CANDIDATE_FREEZE.json",
     ".project-memory/DELIVERY_SECURITY_POLICY.json",
     ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
-    ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json"
+    ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json",
+    ".project-memory/PRECONCEPTION_BASELINE_A.json",
+    ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
+    ".project-memory/PRODUCT_EVOLUTION_C.json",
+    "docs/FULL_PRODUCT_SPEC_A_B_C.md"
   ],
   "takeover_algorithm": [
     "DO_NOT_ASK_USER_TO_RECONSTRUCT_PRIOR_CHAT",
@@ -49,11 +53,13 @@
     "apk_delivery": "Drive KINLINK INSTALLER only; never Gmail attachment"
   },
   "product_truth": {
-    "installed_field_build": "0.7.3-dev/versionCode11 installed but rejected as near-final by target visual/truthfulness counter-audit",
-    "active_integrated_successor": "0.8.0-dev/versionCode12 on dev/0.8.0-integrated-truth-and-control",
-    "completion_scorecard": "56.0% weighted user-facing+architecture maturity at current baseline; 71.1% mechanical PROVEN rows is safety-heavy and must not be misrepresented as total completion",
-    "improvement_capability": "50.0% weighted subset; strong causal mobile stabilizer remains gated/unbuilt",
-    "micro_beta_policy": "Do not deliver 0.7.4 micro-patch chain; next install only after coherent 0.8 integrated gates",
-    "next_action": "continue 0.8 integrated work, exact-head CI, visual truth audit, then signing/Drive; no premature install"
-  }
+    "installed_field_build": "0.7.3-dev/versionCode11 field baseline; not near-final",
+    "active_integrated_successor": "0.8.0-dev/versionCode12",
+    "full_abc_maturity_percent": 44.8,
+    "macro_capabilities": 80,
+    "previous_56_percent": "superseded because it omitted original preconception breadth",
+    "no_micro_beta": true,
+    "next_action": "continue integrated 0.8 against FULL_REQUIREMENTS_LEDGER; no install until coherent batch closes"
+  },
+  "full_spec_rule": "ALWAYS_LOAD_A_PLUS_B_PLUS_C_BEFORE_SCOPING_OR_PERCENT_COMPLETE; recent traceability is a derivative view, never the full product spec."
 }

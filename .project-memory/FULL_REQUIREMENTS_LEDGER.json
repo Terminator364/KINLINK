@@ -1,56 +1,15 @@
 {
-  "schema": "kinlink.full_product_completion_scorecard/2",
-  "supersedes": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json v1 based on recent traceability only",
-  "measured_at": "2026-09-21",
-  "canonical_scope": "A+B+C deduplicated macro-capability ledger",
-  "provenance_definition": {
-    "A": "Original preconception/frozen design recovered from git commit c565b6f1164d327caaa17e1de47d1cf48ed3c885 and library DESIGN/PRE-IMPLEMENTATION artifacts.",
-    "B": "Concrete expansion beyond A using Android platform capabilities, current research, architecture hardening and realistic new value.",
-    "C": "Accumulated user feedback, field screenshots, release-process preferences, delivery/communication/continuity requirements and later product corrections."
-  },
-  "scoring": {
+  "schema": "kinlink.full_requirements_ledger/1",
+  "generated_at": "2026-09-21",
+  "stage_points": {
     "FIELD_PROVEN": 1,
     "MACHINE_PROVEN": 0.8,
     "IMPLEMENTED_UNQUALIFIED": 0.6,
     "PARTIAL": 0.35,
     "DESIGN_ONLY": 0.15,
-    "NOT_STARTED": 0,
-    "rule": "80 deduplicated macro capabilities, equal macro weight to prevent dozens of safety checks from inflating one missing major product capability.",
-    "caveat": "This is a management maturity metric. It is intentionally conservative and not a scientific probability or line-of-code percentage."
+    "NOT_STARTED": 0
   },
-  "result": {
-    "macro_capabilities": 80,
-    "overall_percent": 44.8,
-    "A_percent": 39.9,
-    "A_capabilities": 63,
-    "B_percent": 26.1,
-    "B_capabilities": 31,
-    "C_percent": 60.4,
-    "C_capabilities": 53,
-    "stage_counts": {
-      "IMPLEMENTED_UNQUALIFIED": 9,
-      "PARTIAL": 11,
-      "MACHINE_PROVEN": 29,
-      "DESIGN_ONLY": 16,
-      "FIELD_PROVEN": 1,
-      "NOT_STARTED": 14
-    },
-    "verdict": "The full A+B+C product is materially below the earlier 56% estimate because that estimate did not include the recovered preconception breadth. Current macro maturity is the number in overall_percent."
-  },
-  "major_missing_value_blocks": [
-    "Strong Mobile Stabilizer / VpnService data plane",
-    "separate data-plane process and fail-open supervisor for that plane",
-    "DNS resilience backend",
-    "application/flow IntentClassifier",
-    "safe per-flow routing and bounded shaping",
-    "full Mobile Vault envelopes + Carrier Wallet/operator adapters",
-    "real SHADOW adaptive learner",
-    "complete Diagnostic / This week / Mobile Vault / Settings / Emergency screens",
-    "full structured diagnostics and weekly report",
-    "trusted-context/home-Wi-Fi memory",
-    "optional BCP bridge"
-  ],
-  "epics": [
+  "macro_capabilities": [
     {
       "id": "K001",
       "title": "Install-once Autopilot",

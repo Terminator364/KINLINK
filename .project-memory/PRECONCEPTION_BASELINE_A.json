@@ -1,0 +1,60 @@
+{
+  "schema": "kinlink.preconception_baseline_a/1",
+  "recovered": true,
+  "recovery_date": "2026-09-21",
+  "git_anchor": {
+    "repository": "Terminator364/KINLINK",
+    "preconception_implementation_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
+    "repo_initial_commit": "e066f17a7d804acad538aa58b5cb35cda06b6014"
+  },
+  "library_anchors": [
+    "README(5).md — DESIGN / PRE-IMPLEMENTATION",
+    "AGENTS.md — KINLINK Engineering Governor"
+  ],
+  "original_principles": [
+    "context-aware",
+    "cost-aware",
+    "application-aware",
+    "battery-aware",
+    "fail-open",
+    "local-first telemetry",
+    "shadow-before-autonomy",
+    "measure-act-remeasure-rollback"
+  ],
+  "original_major_components": [
+    "ObserverCore",
+    "ConnectivityTruthEngine",
+    "ContextEngine",
+    "IntentClassifier",
+    "MobileVault",
+    "CarrierWallet",
+    "PolicyEngine",
+    "AdaptiveLearner",
+    "ActionExecutor",
+    "TelemetryLedger",
+    "DiagnosticExporter",
+    "FailOpenSupervisor",
+    "optional VpnService/TUN Network Data Plane",
+    "DNS resilience",
+    "safe per-flow routing",
+    "bounded shaping/admission controls",
+    "Personal Network Twin"
+  ],
+  "original_user_surfaces": [
+    "Home/Cockpit",
+    "Diagnostic path",
+    "This week",
+    "Mobile Vault",
+    "Settings",
+    "Emergency action"
+  ],
+  "original_operating_modes": [
+    "Lite Observer",
+    "Full Autopilot with explicit VPN consent/qualification"
+  ],
+  "original_reports": [
+    "full structured diagnostic ZIP",
+    "local weekly report"
+  ],
+  "rule": "A is immutable historical intent. Later safety hardening may constrain implementation but must not silently delete A requirements."
+}

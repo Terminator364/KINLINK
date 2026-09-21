@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_3_INSTALLED_FIELD_COUNTER_AUDIT_0_8_INTEGRATED_ACTIVE",
-  "status": "0_7_3_FIELD_VISUAL_AND_TRUTH_REJECTED_0_8_ENGINEERING_ACTIVE",
+  "phase": "KINLINK_FULL_A_B_C_RECONVERGENCE_0_8_ACTIVE",
+  "status": "FULL_PRECONCEPTION_RECOVERED_AND_CANONICALIZED",
   "candidate": {
     "version": "0.7.3-dev",
     "versionCode": 11
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "SINGLE_HUMAN_INSTALL_SURFACE_READY",
-  "next_uncommitted_action": "poll Android run 35634654534 for exact 0.8 head 6a8564409ced58d319e666f9068ed9093562ea9c; if PASS fetch/inspect all rendered screenshots manually before any sign/Drive/install; if FAIL inspect exact logs and fix evidence-based only",
+  "next_uncommitted_action": "continue 0.8 integrated toward full A+B+C: add native platform data-stall diagnostics, extend rendered matrix to dialogs/details, fix any visual findings, then re-run exact-head CI; no field install yet",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -210,7 +210,11 @@
       ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl",
       ".project-memory/DELIVERY_SECURITY_POLICY.json",
       ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
-      ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json"
+      ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json",
+      ".project-memory/PRECONCEPTION_BASELINE_A.json",
+      ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
+      ".project-memory/PRODUCT_EVOLUTION_C.json",
+      "docs/FULL_PRODUCT_SPEC_A_B_C.md"
     ],
     "repository": "Terminator364/KINLINK",
     "branch": "main",
@@ -462,35 +466,22 @@
     "version": "0.8.0-dev",
     "versionCode": 12,
     "branch": "dev/0.8.0-integrated-truth-and-control",
-    "status": "ENGINEERING_AND_FRESH_CI_IN_PROGRESS",
-    "micro_beta_chain": false,
-    "objectives": [
-      "truthful user-experience model",
-      "no user-facing pseudo-quality score",
-      "history and user report override optimistic framework estimates",
-      "mobile anti-repeat escalates to Android system controls on user request",
-      "human MB/GB data presentation",
-      "compact responsive controls/dialogs",
-      "fresh field visual counter-audit before delivery"
-    ],
     "exact_head": "6a8564409ced58d319e666f9068ed9093562ea9c",
-    "design_lint_run": 35634654511,
-    "design_lint_status": "PASS",
-    "android_ci_run": 35634654534,
-    "android_ci_status": "IN_PROGRESS_AT_CLOSE_INTENT",
-    "android_completed_gates": [
-      "fail-open API fence PASS",
-      "manifest safety fence PASS",
-      "background wakeup fence PASS",
-      "unit tests PASS",
-      "Android lint PASS",
-      "unsigned candidate build PASS",
-      "candidate package/version identity PASS",
-      "unsigned fence PASS",
-      "KVM enable PASS"
-    ],
-    "android_pending_gate": "rendered responsive UI matrix"
+    "ci_run": 35634654534,
+    "ci_status": "PASS_MACHINE_RENDERED_MATRIX",
+    "manual_visual_audit": "PENDING_AND_REQUIRED",
+    "scope_policy": "expand toward full A+B+C; no micro-beta chain"
   },
   "product_completion_scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
-  "visual_counter_audit_policy": ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json"
+  "visual_counter_audit_policy": ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json",
+  "full_spec": {
+    "document": "docs/FULL_PRODUCT_SPEC_A_B_C.md",
+    "ledger": ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
+    "preconception_A": ".project-memory/PRECONCEPTION_BASELINE_A.json",
+    "evolution_C": ".project-memory/PRODUCT_EVOLUTION_C.json",
+    "scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
+    "macro_capabilities": 80,
+    "overall_maturity_percent": 44.8,
+    "previous_56_percent": "SUPERSEDED_AS_INCOMPLETE_SCOPE"
+  }
 }

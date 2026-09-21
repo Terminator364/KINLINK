@@ -2,59 +2,36 @@
 
 Resume with `KINLINKGO`.
 
-## Communication gate
+## Mandatory memory before scope or completion claims
 
-Before substantive work:
-1. load ACTIVE_TRANCHE, COMMUNICATION_PROTOCOL, COMMUNICATION_STATE_MACHINE and COMMUNICATION_DELIVERY_LEDGER;
-2. reconcile any unclosed prior tranche;
-3. send Gmail START and persist provider ACK;
-4. never reuse a CLOSED tranche;
-5. before final app closeout: checkpoint -> CLOSE_INTENT -> Gmail END -> provider ACK -> durable END_ACK/CLOSED.
+Read, in this order:
+1. `.project-memory/PRECONCEPTION_BASELINE_A.json`
+2. `docs/FULL_PRODUCT_SPEC_A_B_C.md`
+3. `.project-memory/FULL_REQUIREMENTS_LEDGER.json`
+4. `.project-memory/PRODUCT_EVOLUTION_C.json`
+5. `.project-memory/PRODUCT_COMPLETION_SCORECARD.json`
+6. current project/communication/delivery state.
 
-Platform/security controls are never bypassed. A hold causes a durable checkpoint and later proof-based resume.
+Do not use recent REQUIREMENTS_TRACEABILITY alone as “the cahier des charges”.
 
-## Installed field truth
+Current full A+B+C macro maturity: **44.8% across 80 deduplicated macro capabilities**. The prior 56% subset metric is superseded.
 
-Installed on target:
-- KINLINK 0.7.3-dev / versionCode 11;
-- source: `2aeac4cf801e60986c33347676e12310790d1d98`;
-- installation succeeded;
-- **rejected as near-final** by target-device visual/truthfulness counter-audit.
+## Active successor
 
-Do not ask the user to reinstall 0.7.3.
+- 0.8.0-dev / versionCode 12
+- branch: `dev/0.8.0-integrated-truth-and-control`
+- machine CI run 35634654534: PASS
+- manual visual counter-audit of rendered proof: REQUIRED
+- no field install yet
+- no micro-beta chain
 
-## Completion truth
+## Exact next engineering work
 
-Read `.project-memory/PRODUCT_COMPLETION_SCORECARD.json`.
+1. integrate Android native ConnectivityDiagnosticsManager events into privacy-safe KINLINK evidence;
+2. let platform data stalls influence recent experience truth without generating KINLINK traffic;
+3. expand rendered UI proof to include Mobile Data dialog and expanded technical details;
+4. fix any visual/semantic finding (including large-font hero truncation if confirmed);
+5. rerun exact-head CI;
+6. only after full visual/truth audit: sign, Drive stage/readback and one coherent field update.
 
-Current honest planning metrics:
-- 71.1% mechanical PROVEN-like traceability rows — safety-heavy, NOT total completion;
-- 56.0% weighted broad user-facing + architecture maturity;
-- 50.0% weighted improvement-capability maturity.
-
-Strong causal mobile stabilization remains gated/unbuilt.
-
-## Active integrated successor
-
-- line: **0.8.0 integrated truth + control**;
-- versionCode: 12;
-- branch: `dev/0.8.0-integrated-truth-and-control`;
-- current exact head must be read from GitHub, never guessed;
-- micro-beta chain: FORBIDDEN.
-
-Integrated objectives:
-- remove user-facing pseudo-quality scores;
-- user report + recent reliability override optimistic Android estimates;
-- Android bandwidth values remain technical estimates, not experienced speed;
-- only show before/now/delta as improvement when sustained benefit evidence is confirmed;
-- repeated ineffective mobile refreshes/manual problem report escalate to Android's connectivity controls instead of pretending to boost throughput;
-- human decimal MB/GB UI;
-- compact responsive controls and data dialog;
-- auto visual counter-audit on target screenshots;
-- fresh CI/render/sign/readback proof for the entire integrated batch.
-
-## Exact next action
-
-Poll exact-head 0.8 design-lint + Android CI. Fix only evidence-backed failures. If machine gates pass, fetch and manually inspect the complete rendered screenshot matrix. Do not sign/stage/install until the visual/truthfulness audit also passes.
-
-No new phone installation is requested at this checkpoint.
+Communication: Gmail START ACK before substantive work; Gmail END ACK + durable END_ACK before final app response.
