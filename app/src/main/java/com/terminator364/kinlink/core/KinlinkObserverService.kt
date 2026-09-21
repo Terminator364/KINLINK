@@ -297,12 +297,18 @@ class KinlinkObserverService : Service() {
         truth: NetworkTruth
     ): MobileAssistEvidence? {
         val evidence = mobileAssistEvidenceTracker.observe(truth) ?: return null
-        runCatching {
+        val written = runCatching {
             ledger.appendAction(
                 "MOBILE_ASSIST_EVIDENCE_${evidence.result.name}",
                 evidence.result == MobileAssistEvidenceResult.METRICS_AVAILABLE ||
                     evidence.result == MobileAssistEvidenceResult.SUSTAINED_BETTER,
                 "${evidence.summary} baseline=${evidence.baseline.name}/${evidence.baselineScore}; current=${evidence.current.name}/${evidence.currentScore}; elapsedMs=${evidence.elapsedMillis}; transport=CELLULAR"
+            )
+        }.isSuccess
+        if (written) {
+            sendBroadcast(
+                Intent(ACTION_MOBILE_ASSIST_EVIDENCE_UPDATED)
+                    .setPackage(packageName)
             )
         }
         return evidence
@@ -670,5 +676,7 @@ class KinlinkObserverService : Service() {
         const val ACTION_REFRESH_MODE = "com.terminator364.kinlink.REFRESH_RECOVERY_MODE"
         const val ACTION_TRACK_MANUAL_MOBILE_ASSIST =
             "com.terminator364.kinlink.TRACK_MANUAL_MOBILE_ASSIST"
+        const val ACTION_MOBILE_ASSIST_EVIDENCE_UPDATED =
+            "com.terminator364.kinlink.MOBILE_ASSIST_EVIDENCE_UPDATED"
     }
 }
