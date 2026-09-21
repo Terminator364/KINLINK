@@ -6,7 +6,7 @@
   "closeout_reserve_minutes": 5,
   "max_mutation_groups_before_forced_closeout": 12,
   "mutation_groups_used": 10,
-  "status": "FORCED_CLOSEOUT_RESERVE",
+  "status": "END_MAIL_PENDING",
   "forced_closeout_entered": true,
   "gmail_start_message_id": "1a0c40fc5bc4a549",
   "gmail_end_message_id": null,
@@ -26,5 +26,18 @@
   ],
   "no_more_technical_mutations": true,
   "closeout_note": "Reserved closeout entered: only CI readback, durable checkpoint, Gmail end, message-id verification and tranche closure may follow.",
-  "latest_dev_head": "d529533b5c7ef8c72b73e9e4ab6fb4cf22cc046a"
+  "latest_dev_head": "d529533b5c7ef8c72b73e9e4ab6fb4cf22cc046a",
+  "final_technical_checkpoint": {
+    "installed_field_build": "0.7.1/versionCode9 installed + frozen",
+    "dev_branch": "dev/0.7.2-continuous-improvement",
+    "dev_head": "d529533b5c7ef8c72b73e9e4ab6fb4cf22cc046a",
+    "design_lint_run": 35604679827,
+    "design_lint": "PASS",
+    "android_run": 35604679752,
+    "android_ci": "PASS",
+    "artifact_id": 10641472446,
+    "artifact_zip_sha256": "dde386d56535af4a1ef191994ce1a0c5c1a84b37f41f6e63b1a4c9e72e141dd2",
+    "communication_watchdog": "PERSISTED_AND_VERIFIER_UPDATED",
+    "next_gate": "END_MAIL_THEN_CLOSE; no 0.7.2 install requested"
+  }
 }
