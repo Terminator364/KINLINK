@@ -440,40 +440,46 @@ class MainActivity : Activity() {
         }
 
         val totalInput = field(
-            "Taille du forfait · ex. 5 GB",
+            "Forfait total · 5 GB",
             MobileVaultFormPolicy.formatEditable(current?.totalBytes)
         )
         val usedInput = field(
-            "Déjà consommé · optionnel",
+            "Consommé · optionnel",
             MobileVaultFormPolicy.formatEditable(
                 evidence?.userReconciledUsedBytes
             )
         )
         val reserveInput = field(
-            "Réserve protégée · ex. 500 MB",
+            "Réserve protégée · 500 MB",
             MobileVaultFormPolicy.formatEditable(
                 current?.protectedReserveBytes
             )
         )
         val rescueInput = field(
-            "Réserve secours · ex. 200 MB",
+            "Secours · 200 MB",
             MobileVaultFormPolicy.formatEditable(
                 current?.rescueAllowanceBytes
             )
         )
         val criticalInput = field(
-            "Réserve critique · ex. 100 MB",
+            "Critique · 100 MB",
             MobileVaultFormPolicy.formatEditable(
                 current?.criticalInteractiveAllowanceBytes
             )
         )
         val expiryInput = field(
-            "Expiration · AAAA-MM-JJ · optionnel",
+            "Expiration · AAAA-MM-JJ",
             MobileVaultFormPolicy.formatInclusiveExpiryDate(
                 current?.expiryAtEpochMillis
             )
         )
 
+        val clearAction = TextView(this).apply {
+            text = "Effacer le forfait"
+            gravity = android.view.Gravity.CENTER
+            minHeight = (48 * resources.displayMetrics.density).toInt()
+            setPadding(0, 8, 0, 8)
+        }
         val form = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             val pad = (16 * resources.displayMetrics.density).toInt()
@@ -484,18 +490,15 @@ class MainActivity : Activity() {
             addView(rescueInput)
             addView(criticalInput)
             addView(expiryInput)
+            addView(clearAction)
         }
         val scroll = ScrollView(this).apply { addView(form) }
 
         val dialog = AlertDialog.Builder(this)
             .setTitle("Mobile Vault · forfait")
-            .setMessage(
-                "MB ou GB acceptés. Les réserves sont protégées. " +
-                    "La consommation saisie reste locale au téléphone."
-            )
+            .setMessage("MB/GB · réserves protégées · données locales.")
             .setView(scroll)
             .setPositiveButton("Enregistrer", null)
-            .setNeutralButton("Effacer", null)
             .setNegativeButton("Annuler", null)
             .create()
 
@@ -571,7 +574,7 @@ class MainActivity : Activity() {
                 dialog.dismiss()
                 refreshBudgetUi()
             }
-            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+            clearAction.setOnClickListener {
                 mobilePlanVaultStore.clear()
                 mobileUsageEvidenceStore.clearUserReconciled()
                 runCatching {
