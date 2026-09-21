@@ -343,3 +343,32 @@ These cases remain observable and user-visible, but KINLINK avoids useless actio
 
 If Android no longer exposes NET_CAPABILITY_NOT_SUSPENDED on active Wi-Fi, KINLINK classifies NETWORK_SUSPENDED and blocks active recovery until Android resumes the network.
 No probe or routing action is attempted while suspended.
+
+
+## 0.7.1 consolidated hardening contract
+
+The current successor line is KINLINK 0.7.1 / versionCode 9. It is a consolidated repair release, not a micro-beta chain.
+
+Additional mandatory invariants:
+- automatic Wi-Fi HTTP diagnostics have both socket-level limits and an outer wall-clock deadline below the 5 s recovery deadline;
+- DNS/HTTP diagnostic helper execution is globally bounded to at most two concurrent workers, with fail-open rejection when saturated;
+- stale default-network callbacks are rejected before truth reduction and rechecked after reduction before delivery;
+- stale callbacks may not cancel a pending delayed loss-settle timer;
+- manual Wi-Fi optimization must recheck that the captured Wi-Fi is still Android's active default before any post-diagnostic refresh;
+- version-scoped qualification receipts are queried by exact action equality, not prefix matching;
+- historical terminal receipts cannot force a stale live PASS/BLOCKED display over newer authoritative evidence;
+- irreplaceable self-test/qualification receipts survive normal telemetry pruning;
+- battery percentage quantization cannot be falsely attributed as KINLINK battery fault;
+- resource qualification retries are bounded and hard PSS/churn failures do not loop automatically;
+- diagnostic export is a local user-initiated privacy-safe ZIP core bundle;
+- P0 transport/resource behavior is exercised by an exhaustive regression scenario sweep in addition to targeted unit tests.
+
+Release rule for 0.7.1:
+1. exact-head Android CI PASS;
+2. exact-head design-lint/candidate-contract PASS;
+3. executable migration simulation PASS;
+4. stable signer continuity PASS;
+5. exact signed APK Drive FIELD_CANDIDATE readback PASS;
+6. one in-place target-phone installation;
+7. versionCode 9 handoff + resource Stage B evidence PASS;
+8. only then canonical INSTALLER promotion.
