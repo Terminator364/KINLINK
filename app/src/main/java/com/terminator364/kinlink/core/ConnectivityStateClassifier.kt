@@ -86,11 +86,38 @@ object ConnectivityStateClassifier {
                 avoidAutomaticMobileUse = true
             )
 
+        truth.transport == Transport.CELLULAR &&
+            truth.internetState == InternetState.VALIDATED &&
+            (
+                PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.CONSTRAINED ||
+                PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.LIMITED ||
+                !truth.androidNotCongested
+            ) ->
+            ConnectivityAssessment(
+                OperationalState.MOBILE_DEGRADED,
+                "Données mobiles lentes",
+                "Internet mobile est validé mais dégradé. Mobile Assist peut rafraîchir les métriques Android sans speedtest ni prise de contrôle du routage.",
+                false,
+                true
+            )
+
         truth.transport == Transport.CELLULAR && truth.internetState == InternetState.VALIDATED ->
-            ConnectivityAssessment(OperationalState.MOBILE_HEALTHY, "Données mobiles disponibles", "Connexion mobile active, sans test automatique.", false, true)
+            ConnectivityAssessment(
+                OperationalState.MOBILE_HEALTHY,
+                "Données mobiles disponibles",
+                "Internet mobile est validé. Mobile Assist surveille passivement et Android garde le routage.",
+                false,
+                true
+            )
 
         truth.transport == Transport.CELLULAR ->
-            ConnectivityAssessment(OperationalState.MOBILE_DEGRADED, "Données mobiles à vérifier", "KINLINK n’insiste pas par retries ni gros probes.", false, true)
+            ConnectivityAssessment(
+                OperationalState.MOBILE_DEGRADED,
+                "Données mobiles à vérifier",
+                "Internet mobile n’est pas encore validé. KINLINK n’envoie aucun probe payant; une action utilisateur peut ouvrir le contrôle Android.",
+                false,
+                true
+            )
 
         else -> ConnectivityAssessment(OperationalState.RECOVERING, "Vérification en cours", "KINLINK attend une observation fiable avant toute décision.", false, true)
     }
