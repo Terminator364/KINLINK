@@ -107,7 +107,9 @@ class MainActivity : Activity() {
     private lateinit var wifiDoctorButton: TextView
     private lateinit var mobileAssistButton: TextView
     private lateinit var budgetButton: TextView
-    private lateinit var profileButton: TextView
+    private lateinit var modeConservativeButton: TextView
+    private lateinit var modeBalancedButton: TextView
+    private lateinit var modeMaxButton: TextView
     private lateinit var safeModeButton: TextView
     private lateinit var versionText: TextView
 
@@ -171,7 +173,9 @@ class MainActivity : Activity() {
         wifiDoctorButton = findViewById(R.id.wifiDoctorButton)
         mobileAssistButton = findViewById(R.id.mobileAssistButton)
         budgetButton = findViewById(R.id.budgetButton)
-        profileButton = findViewById(R.id.profileButton)
+        modeConservativeButton = findViewById(R.id.modeConservativeButton)
+        modeBalancedButton = findViewById(R.id.modeBalancedButton)
+        modeMaxButton = findViewById(R.id.modeMaxButton)
         safeModeButton = findViewById(R.id.safeModeButton)
         versionText = findViewById(R.id.versionText)
         runCatching { packageManager.getPackageInfo(packageName, 0) }.getOrNull()?.let { info ->
@@ -196,7 +200,7 @@ class MainActivity : Activity() {
         recoveryModeStore = RecoveryModeStore(this)
         refreshFieldQualificationLabel(force = true)
         currentProfile = profileStore.current()
-        refreshProfileButton()
+        refreshModeButtons()
         refreshSafeModeButton()
 
         incidentMarkerButton.setOnClickListener { recordUserIncidentMarker() }
@@ -205,10 +209,14 @@ class MainActivity : Activity() {
         wifiDoctorButton.setOnClickListener { optimizeWifi() }
         mobileAssistButton.setOnClickListener { optimizeMobile() }
         budgetButton.setOnClickListener { configureMobileBudget() }
-        profileButton.setOnClickListener {
-            currentProfile = profileStore.cycle()
-            refreshProfileButton()
-            render(latestTruth, latestBudget, latestStability)
+        modeConservativeButton.setOnClickListener {
+            selectProfile(AutopilotProfile.CONSERVATIVE)
+        }
+        modeBalancedButton.setOnClickListener {
+            selectProfile(AutopilotProfile.BALANCED)
+        }
+        modeMaxButton.setOnClickListener {
+            selectProfile(AutopilotProfile.MAXIMUM_STABILITY)
         }
         safeModeButton.setOnClickListener {
             val mode = recoveryModeStore.toggle()
@@ -281,8 +289,44 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun refreshProfileButton() {
-        profileButton.text = "Mode · ${profileLabel(currentProfile)}"
+    private fun selectProfile(profile: AutopilotProfile) {
+        currentProfile = profile
+        profileStore.set(profile)
+        refreshModeButtons()
+        runCatching {
+            ledger.appendAction(
+                "AUTOPILOT_PROFILE_${profile.name}",
+                true,
+                "Mode Autopilot sélectionné : ${profileLabel(profile)}"
+            )
+        }
+        render(latestTruth, latestBudget, latestStability)
+    }
+
+    private fun refreshModeButtons() {
+        val selectedColor = android.graphics.Color.WHITE
+        val normalColor = android.graphics.Color.parseColor("#0B57D0")
+
+        fun style(button: TextView, selected: Boolean) {
+            button.setBackgroundResource(
+                if (selected) R.drawable.button_selected
+                else R.drawable.button_outline
+            )
+            button.setTextColor(if (selected) selectedColor else normalColor)
+        }
+
+        style(
+            modeConservativeButton,
+            currentProfile == AutopilotProfile.CONSERVATIVE
+        )
+        style(
+            modeBalancedButton,
+            currentProfile == AutopilotProfile.BALANCED
+        )
+        style(
+            modeMaxButton,
+            currentProfile == AutopilotProfile.MAXIMUM_STABILITY
+        )
     }
 
     private fun refreshSafeModeButton() {
@@ -296,8 +340,8 @@ class MainActivity : Activity() {
 
     private fun profileLabel(profile: AutopilotProfile): String = when (profile) {
         AutopilotProfile.CONSERVATIVE -> "Conservateur"
-        AutopilotProfile.BALANCED -> "Équilibré"
-        AutopilotProfile.MAXIMUM_STABILITY -> "Stabilité max"
+        AutopilotProfile.BALANCED -> "Stable"
+        AutopilotProfile.MAXIMUM_STABILITY -> "Max"
     }
 
     private fun recordUserIncidentMarker() {
