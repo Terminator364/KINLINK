@@ -86,14 +86,6 @@ object MobileAssistPolicy {
             )
         }
 
-        if (recentIneffectiveOutcomes >= 2) {
-            return MobileAssistDecision(
-                MobileAssistAction.NONE,
-                MobileAssistBlockReason.INEFFECTIVE_RECENTLY,
-                "Deux assistances mobiles récentes n’ont pas amélioré la qualité : pause anti-répétition."
-            )
-        }
-
         if (recentActions >= MAX_ACTIONS_PER_HOUR) {
             return MobileAssistDecision(
                 MobileAssistAction.NONE,
