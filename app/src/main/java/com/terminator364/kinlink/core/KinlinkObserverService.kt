@@ -488,6 +488,20 @@ class KinlinkObserverService : Service() {
                 PassiveProblemClassifier.classify(latestTruth)
             )
         }
+        if (
+            intent?.action == ACTION_TRACK_MANUAL_MOBILE_ASSIST &&
+            latestTruth.transport == Transport.CELLULAR &&
+            latestTruth.internetState == InternetState.VALIDATED
+        ) {
+            startMobileAssistEvidenceWindow(latestTruth)
+            runCatching {
+                ledger.appendAction(
+                    "MOBILE_ASSIST_EVIDENCE_MANUAL_WINDOW_STARTED",
+                    true,
+                    "Fenêtre de preuve passive démarrée après action utilisateur; aucun probe mobile."
+                )
+            }
+        }
         return START_STICKY
     }
 
@@ -590,5 +604,7 @@ class KinlinkObserverService : Service() {
         private const val CHANNEL_ID = "kinlink_observer"
         private const val NOTIFICATION_ID = 114
         const val ACTION_REFRESH_MODE = "com.terminator364.kinlink.REFRESH_RECOVERY_MODE"
+        const val ACTION_TRACK_MANUAL_MOBILE_ASSIST =
+            "com.terminator364.kinlink.TRACK_MANUAL_MOBILE_ASSIST"
     }
 }
