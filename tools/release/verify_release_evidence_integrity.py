@@ -39,11 +39,16 @@ def main() -> int:
     for label, value in values.items():
         require_hex64(label, value)
 
+    key_suffixes = {
+        "unsigned_apk_sha256": (".unsigned_apk_sha256",),
+        "signed_apk_sha256": (".signed_apk_sha256",),
+        "signer_cert_sha256": (".signer_cert_sha256",),
+    }
     for key, expected in EXPECTED.items():
         candidates = [
             value.lower()
             for label, value in values.items()
-            if key in label
+            if label.endswith(key_suffixes[key])
         ]
         if candidates and any(value != expected for value in candidates):
             raise SystemExit(f"{key} mismatch across durable evidence: {candidates}")
