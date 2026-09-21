@@ -47,18 +47,13 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (oldVersion < 2) createActionReceipts(db)
-        if (oldVersion < 3) {
-            runCatching { db.execSQL("ALTER TABLE network_events ADD COLUMN quality_tier TEXT NOT NULL DEFAULT 'UNKNOWN'") }
+        check(TelemetryMigrationPlan.isContiguousFrom(oldVersion, newVersion)) {
+            "Unsupported telemetry migration path v$oldVersion -> v$newVersion"
         }
-        if (oldVersion < 4) {
-            runCatching { db.execSQL("ALTER TABLE action_receipts ADD COLUMN duration_ms INTEGER") }
-        }
-        if (oldVersion < 5) {
-            runCatching { db.execSQL("ALTER TABLE network_events ADD COLUMN ipv4_address INTEGER NOT NULL DEFAULT 0") }
-            runCatching { db.execSQL("ALTER TABLE network_events ADD COLUMN ipv6_address INTEGER NOT NULL DEFAULT 0") }
-            runCatching { db.execSQL("ALTER TABLE network_events ADD COLUMN ipv4_default_route INTEGER NOT NULL DEFAULT 0") }
-            runCatching { db.execSQL("ALTER TABLE network_events ADD COLUMN ipv6_default_route INTEGER NOT NULL DEFAULT 0") }
+        TelemetryMigrationPlan.path(oldVersion, newVersion).forEach { step ->
+            step.sqlStatements.forEach { sql ->
+                runCatching { db.execSQL(sql) }
+            }
         }
     }
 
