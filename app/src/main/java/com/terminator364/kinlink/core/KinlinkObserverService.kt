@@ -266,7 +266,7 @@ class KinlinkObserverService : Service() {
         val generation = mobileAssistEvidenceGeneration
         mobileAssistEvidenceTracker.start(baseline)
 
-        for (delayMs in MOBILE_EVIDENCE_SAMPLE_DELAYS_MS) {
+        for (delayMs in MobileAssistEvidenceSamplingPolicy.sampleDelaysMs) {
             mobileAssistEvidenceHandler.postDelayed({
                 if (generation != mobileAssistEvidenceGeneration) return@postDelayed
                 val cm = getSystemService(ConnectivityManager::class.java)
@@ -590,7 +590,5 @@ class KinlinkObserverService : Service() {
         private const val CHANNEL_ID = "kinlink_observer"
         private const val NOTIFICATION_ID = 114
         const val ACTION_REFRESH_MODE = "com.terminator364.kinlink.REFRESH_RECOVERY_MODE"
-        val MOBILE_EVIDENCE_SAMPLE_DELAYS_MS =
-            longArrayOf(21_000L, 42_000L, 65_000L)
     }
 }
