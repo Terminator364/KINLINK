@@ -1,74 +1,28 @@
 {
   "project": "KINLINK",
-  "tranche_id": "KINLINK-2026-09-21-25M-WATCHDOG-AND-FINALIZATION",
+  "tranche_id": "KINLINK-2026-09-21-25M-CONTINUITY-AND-FINAL-LIKE",
   "cadence_minutes": 25,
   "primary_work_budget_minutes": 22,
   "closeout_reserve_minutes": 3,
-  "max_mutation_groups_before_forced_closeout": 12,
-  "mutation_groups_used": 5,
-  "status": "CLOSED",
-  "forced_closeout_entered": true,
-  "gmail_start_message_id": "1a0c40fc5bc4a549",
-  "gmail_end_message_id": "1a0c4232560cc00e",
-  "end_mail_verified": true,
+  "max_mutation_groups_before_forced_closeout": 10,
+  "mutation_groups_used": 1,
+  "status": "RUNNING",
+  "forced_closeout_entered": false,
+  "gmail_start_message_id": "1a0c442003db93d7",
+  "gmail_end_message_id": null,
+  "end_mail_verified": false,
   "gmail_label": "KINLINK",
   "end_mail_required_before_app_reply": true,
   "system_interruption_guard": true,
-  "goal": "make communication interruption-safe and advance 0.7.2 toward final-like machine-clean state",
-  "prior_unclosed_tranche_recovery_note": "previous response exposed protocol weakness; current tranche adds reserved closeout window and mutation budget",
+  "goal": "harden BCP-inspired communication/continuity and advance exact-head-passing 0.7.2 toward a final-like field candidate",
   "technical_branch": "dev/0.7.2-continuous-improvement",
-  "installed_field_build": "0.7.1/versionCode9 remains frozen and installed",
+  "installed_field_build": "0.7.1/versionCode9 installed and frozen",
+  "delivery_state": "START_ACKNOWLEDGED",
+  "next_atomic_action": "read exact 0.7.2 branch head and CI, then counter-audit final-like readiness",
   "notes": [
+    "22 min useful work + 3 min forced closeout",
     "No APK by Gmail",
-    "No app reply before verified Gmail end",
-    "At reserve boundary stop technical mutations even if work remains",
-    "If interrupted, next session must send missing end mail before any new work"
-  ],
-  "no_more_technical_mutations": true,
-  "closeout_note": "Reserved closeout entered: only CI readback, durable checkpoint, Gmail end, message-id verification and tranche closure may follow.",
-  "latest_dev_head": "d529533b5c7ef8c72b73e9e4ab6fb4cf22cc046a",
-  "final_technical_checkpoint": {
-    "installed_field_build": "0.7.1/versionCode9 installed + frozen",
-    "dev_branch": "dev/0.7.2-continuous-improvement",
-    "dev_head": "d529533b5c7ef8c72b73e9e4ab6fb4cf22cc046a",
-    "design_lint_run": 35604679827,
-    "design_lint": "PASS",
-    "android_run": 35604679752,
-    "android_ci": "PASS",
-    "artifact_id": 10641472446,
-    "artifact_zip_sha256": "dde386d56535af4a1ef191994ce1a0c5c1a84b37f41f6e63b1a4c9e72e141dd2",
-    "communication_watchdog": "PERSISTED_AND_VERIFIER_UPDATED",
-    "next_gate": "END_MAIL_THEN_CLOSE; no 0.7.2 install requested"
-  },
-  "close_verdict": "COMMUNICATION_WATCHDOG_PERSISTED_AND_0_7_2_EXACT_HEAD_MACHINE_PASS",
-  "closed_dev_head": "d529533b5c7ef8c72b73e9e4ab6fb4cf22cc046a",
-  "closed_design_lint_run": 35604679827,
-  "closed_android_run": 35604679752,
-  "delivery_state": "WORKING",
-  "start_provider_ack": true,
-  "watchdogs": {
-    "closeout_watchdog_armed": true,
-    "hard_end_guard_armed": true,
-    "purpose": "independent recovery path if the main assistant turn is interrupted before Gmail END"
-  },
-  "bcp_comparison": {
-    "inspected": [
-      "BCP API_PROJECT_CONTINUITY.md",
-      "OFFLINE_MISSION_SENTINEL_AND_RESUME_ARCHITECTURE",
-      "TELEGRAM_PROGRESS_RELAY_AND_UPDATE_ARCHITECTURE",
-      "CONVERSATION_DELIVERY_LEDGER_AND_TELEGRAM_INBOX_R23",
-      "DUAL_CONVERSATION_CONTINUITY",
-      "GIT_WRITER_LEASE_AND_BRANCH_PROTOCOL"
-    ],
-    "imported": [
-      "provider-acknowledged START/END handshake",
-      "one-shot END watchdog",
-      "hard recovery guard",
-      "delivery state distinct from work state",
-      "durable next atomic action",
-      "no user ping required to close a tranche"
-    ]
-  },
-  "prior_unclosed_tranche_repaired": true,
-  "prior_unclosed_tranche_repair_gmail_end_message_id": "1a0c43f18e88c49f"
+    "No app reply before verified Gmail END",
+    "If interrupted, watchdog must close from latest durable checkpoint"
+  ]
 }
