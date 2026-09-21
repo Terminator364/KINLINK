@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.InputType
 import android.view.View
 import android.view.WindowInsets
@@ -34,6 +35,7 @@ import com.terminator364.kinlink.core.RecoveryModeStore
 import com.terminator364.kinlink.core.ReliabilitySummaryPolicy
 import com.terminator364.kinlink.core.RecentReliabilityPolicy
 import com.terminator364.kinlink.core.ProfileRecommendationPolicy
+import com.terminator364.kinlink.core.QualificationReceiptNames
 import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.WifiDoctor
@@ -69,6 +71,7 @@ class MainActivity : Activity() {
     private lateinit var budgetButton: TextView
     private lateinit var profileButton: TextView
     private lateinit var safeModeButton: TextView
+    private lateinit var versionText: TextView
 
     private var latestTruth = NetworkTruth()
     private var currentProfile = AutopilotProfile.BALANCED
@@ -80,6 +83,9 @@ class MainActivity : Activity() {
     )
     private var latestStability: StabilityWindow? = null
     private var latestReliability: RecentReliabilityWindow? = null
+    private var installedVersionName: String = "?"
+    private var installedVersionCode: Long = -1L
+    private var lastQualificationUiRefreshElapsed: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,8 +110,11 @@ class MainActivity : Activity() {
         budgetButton = findViewById(R.id.budgetButton)
         profileButton = findViewById(R.id.profileButton)
         safeModeButton = findViewById(R.id.safeModeButton)
-        val installedVersion = runCatching { packageManager.getPackageInfo(packageName, 0).versionName }.getOrNull() ?: "?"
-        findViewById<TextView>(R.id.versionText).text = "KINLINK $installedVersion"
+        versionText = findViewById(R.id.versionText)
+        runCatching { packageManager.getPackageInfo(packageName, 0) }.getOrNull()?.let { info ->
+            installedVersionName = info.versionName ?: "?"
+            installedVersionCode = info.longVersionCode
+        }
 
         installSystemBarInsets()
 
@@ -113,6 +122,7 @@ class MainActivity : Activity() {
         mobileBudget = MobileBudgetTracker(this)
         profileStore = AutopilotProfileStore(this)
         recoveryModeStore = RecoveryModeStore(this)
+        refreshFieldQualificationLabel(force = true)
         currentProfile = profileStore.current()
         refreshProfileButton()
         refreshSafeModeButton()
@@ -344,6 +354,7 @@ class MainActivity : Activity() {
         stability: StabilityWindow? = latestStability
     ) {
         latestTruth = truth
+        refreshFieldQualificationLabel()
         val assessment = ConnectivityStateClassifier.classify(truth)
         val vaultDecision = MobileVault.decide(truth, assessment)
         val doctorAdvice = WifiDoctor.advise(assessment)
@@ -483,6 +494,32 @@ class MainActivity : Activity() {
                     "dégrader seul un réseau déjà VALIDATED par Android."
             )
         }
+    }
+
+    private fun refreshFieldQualificationLabel(force: Boolean = false) {
+        if (!::ledger.isInitialized || !::versionText.isInitialized) return
+        if (installedVersionCode < 8L) {
+            versionText.text = "KINLINK $installedVersionName"
+            return
+        }
+
+        val now = SystemClock.elapsedRealtime()
+        if (!force && now - lastQualificationUiRefreshElapsed < 30_000L) return
+        lastQualificationUiRefreshElapsed = now
+
+        val qualified = ledger.countSuccessfulActions(
+            QualificationReceiptNames.fieldQualified(installedVersionCode)
+        ) > 0
+        val blocked = ledger.countActions(
+            QualificationReceiptNames.fieldBlocked(installedVersionCode)
+        ) > 0
+
+        val state = when {
+            qualified -> "terrain QUALIFIÉ"
+            blocked -> "terrain BLOQUÉ"
+            else -> "qualification terrain en cours"
+        }
+        versionText.text = "KINLINK $installedVersionName · $state"
     }
 
     private fun mobileBudgetLabel(snapshot: MobileBudgetSnapshot): String {
