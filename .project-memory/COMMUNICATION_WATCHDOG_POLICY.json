@@ -37,7 +37,7 @@
   ],
   "idempotency": "Provider message_id/thread_id plus delivery_key are reconciliation keys.",
   "limitation": "Hourly watchdog cannot guarantee sub-hour repair; primary in-turn protocol remains the first line of defense.",
-  "stale_work_threshold_minutes": 35,
+  "stale_work_threshold_minutes": 28,
   "stale_work_recovery": {
     "condition": "START_ACKNOWLEDGED/WORKING with no END and START age > 35 minutes",
     "action": "persist interruption close intent from durable facts only, send/verify exactly one END, persist CLOSED",
@@ -46,5 +46,17 @@
   "foreground_resume": {
     "auto_open_new_start": false,
     "rule": "Watchdog never opens an orphan START. It leaves NEXT_UNCOMMITTED_ACTION intact; the next foreground worker must open a fresh START before substantive work."
+  },
+  "close_intent_priority": {
+    "immediate": true,
+    "rule": "CLOSE_INTENT_PERSISTED/END_SEND_PENDING/no_more_product_mutations/status=CLOSING with no durable END ACK is a P0 missed-END fault independent of age.",
+    "repair": "verify START thread and existing END first; then persist ACK or send exactly one truthful END; provider readback; persist CLOSED"
+  },
+  "primary_protocol_deadline": {
+    "work_minutes": 22,
+    "close_reserve_minutes": 3,
+    "expected_end_by_minutes": 25,
+    "breach_after_minutes": 28,
+    "note": "Automation is hourly and cannot guarantee minute-25 delivery; the foreground protocol remains primary."
   }
 }

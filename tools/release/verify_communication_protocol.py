@@ -24,5 +24,7 @@ req(any(r.get("delivery_key")==a.get("delivery_key") and r.get("event")=="START_
 if a.get("status")=="CLOSED":
     req(bool(a.get("gmail_end_message_id")) and a.get("end_mail_verified") is True,"closed tranche END ACK missing")
 req(p.get("interruption_recovery",{}).get("reconcile_first") is True,"interruption reconciliation missing")
+req(p.get("close_intent_must_complete",{}).get("missed_end_class")=="P0_COMMUNICATION_FAULT","missed-END P0 class missing")
+req(p.get("foreground_handoff",{}).get("required_order",[])[:2]==["RECONCILE_OLD_END","PERSIST_CLOSED"],"foreground missed-END reconciliation order drift")
 req("PDF/report/artifact" in p.get("interruption_recovery",{}).get("in_tranche_deliverables",""),"intermediate deliverable classification missing")
 print("communication-protocol-v5: PASS")

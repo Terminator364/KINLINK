@@ -92,6 +92,17 @@
       ],
       "safe_alternative": "Classify operations first; request ACCESS_LOCAL_NETWORK just in time only for a direct LAN feature that requires it. Core observer/public-Internet diagnostics remain functional without a gratuitous LAN prompt.",
       "supersession_condition": "Only a future default-on feature that genuinely requires direct LAN sockets/discovery and has explicit user-approved product scope may change the request timing."
+    },
+    {
+      "id": "DEAD-009",
+      "premise": "Persisting CLOSE_INTENT is sufficient even if the Gmail END is not sent before a turn/tool interruption.",
+      "verdict": "REJECTED",
+      "evidence": [
+        "KINLINK K25-11 had CLOSE_INTENT_PERSISTED but no END until user reported the fault",
+        ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl"
+      ],
+      "safe_alternative": "CLOSE_INTENT creates an immediate foreground END obligation. The next foreground turn reconciles old END before any new START/work; hourly watchdog is fallback only.",
+      "supersession_condition": "Only a platform-level atomic close transaction that proves Gmail provider ACK and durable CLOSED in one operation could replace this rule."
     }
   ]
 }

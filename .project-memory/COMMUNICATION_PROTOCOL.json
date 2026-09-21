@@ -80,5 +80,21 @@
     "in_tranche_deliverables": "PDF/report/artifact messages are neither START nor END unless explicitly typed as such",
     "no_false_end": "Do not treat an intermediate requested deliverable as tranche completion.",
     "idempotency": "Search/verify provider message IDs before replaying START or END."
+  },
+  "close_intent_must_complete": {
+    "rule": "Once CLOSE_INTENT is durable, the same foreground worker must attempt Gmail END immediately; it must not perform further product mutations or return a normal app reply first.",
+    "missed_end_class": "P0_COMMUNICATION_FAULT",
+    "recovery": "verify provider thread before replay, then exactly-one END + ACK + CLOSED",
+    "deadline_minutes": 25
+  },
+  "foreground_handoff": {
+    "rule": "A tool/user interruption after CLOSE_INTENT does not cancel the END obligation. The next foreground turn reconciles and closes the old tranche before opening a new START.",
+    "required_order": [
+      "RECONCILE_OLD_END",
+      "PERSIST_CLOSED",
+      "SEND_NEW_START",
+      "PERSIST_START_ACK",
+      "RESUME_WORK"
+    ]
   }
 }
