@@ -20,9 +20,10 @@
 
 ## Active development line
 
-- Version: 0.7.0-dev
-- versionCode: 8
-- Promotion to Drive is forbidden until a consolidated release gate passes.
+- Version: 0.7.1
+- versionCode: 9
+- The previous signed Stage A artifact was superseded before field delivery when the mobile-resilience requirement was restored.
+- No human install is allowed until the Mobile Assist batch passes fresh exact-head CI, audit, signing and Drive readback.
 
 Integrated in 0.7.0-dev:
 - truthful mobile-counter semantics;
@@ -78,3 +79,18 @@ No VpnService/TUN capability may be enabled or promoted until separate evidence 
 - no regression of Wi-Fi/mobile handoff.
 
 Strong recovery must automatically disable itself if it does not demonstrate benefit or risks creating a worse failure mode.
+
+
+## Mobile-resilience restoration
+
+Current engineering priority:
+1. finish Mobile Assist Level 1 in 0.7.1;
+2. keep automatic cellular traffic at zero;
+3. classify passive mobile low-capacity / congestion / suspension;
+4. rate-limit zero-probe Android metric refresh;
+5. measure whether Mobile Assist actually helps and stop repeating ineffective work;
+6. expose one user-invoked Android connectivity-panel fallback;
+7. rerun full exact-head CI/counter-audit/signing;
+8. only then stage one consolidated candidate.
+
+The strong VpnService/TUN Mobile Stabilizer remains the next separately gated architecture, not a shortcut around evidence.
