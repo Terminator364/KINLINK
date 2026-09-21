@@ -42,6 +42,16 @@ jobs:
             exit 1
           fi
           echo "Manifest safety fence passed."
+      - name: Background wakeup fence
+        run: |
+          set -euo pipefail
+          SRC="app/src/main/java"
+          forbidden_wakeup='AlarmManager|WorkManager|PeriodicWorkRequest|ScheduledExecutorService|scheduleAtFixedRate|TimerTask'
+          if grep -R -n -E "$forbidden_wakeup" "$SRC"; then
+            echo "Repeating/background wakeup scheduler found in production source."
+            exit 1
+          fi
+          echo "Background wakeup fence passed: no repeating scheduler API found."
       - name: Unit tests
         run: gradle :app:testDebugUnitTest --stacktrace
       - name: Android lint
