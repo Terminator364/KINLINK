@@ -140,3 +140,24 @@ No unverified VPN code is allowed into the frozen 0.7.2 field candidate.
 ## Short code
 
 `KINLINKGO`
+
+
+## New-conversation hard handoff
+
+When a fresh conversation receives `KINLINKGO`, it must first load:
+- `.project-memory/NEW_CONVERSATION_TAKEOVER.json`
+- `docs/KINLINK_NEW_CONVERSATION_TAKEOVER.md`
+
+This handoff preserves both engineering state **and** the Gmail/25-minute communication protocol.
+
+The receiving conversation must not ask the user to reconstruct prior context, must not restart from zero, and must not replace the normal Gmail-first/Gmail-last workflow with a long ChatGPT explanation.
+
+Current exact 0.7.3 engineering head:
+`6ef270d83461628aa8a6a6356b0d56dece6f0ca1`
+
+Exact-head CI:
+- design-lint `35616879792`: PASS
+- Android `35616879783`: PASS
+
+Next gate:
+final counter-audit + responsive/emulator UI proof before any new field install.
