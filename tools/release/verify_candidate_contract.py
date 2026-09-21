@@ -237,3 +237,11 @@ require(
     "Cela améliore l’observation, pas directement le débit" in MAIN_ACTIVITY,
     "candidate contract: UI overclaims Mobile Assist throughput improvement",
 )
+
+require(
+    "MOBILE_EVIDENCE_SAMPLE_DELAYS_MS" in SERVICE
+    and "longArrayOf(21_000L, 42_000L, 65_000L)" in SERVICE
+    and "postDelayed" in SERVICE
+    and "mobileAssistEvidenceHandler.removeCallbacksAndMessages(null)" in SERVICE,
+    "candidate contract: bounded one-shot Mobile Assist evidence confirmation missing",
+)
