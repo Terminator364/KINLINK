@@ -12,6 +12,17 @@ object DefaultNetworkCallbackAcceptancePolicy {
     fun accept(callbackNetworkPresent: Boolean, callbackMatchesActive: Boolean): Boolean =
         !callbackNetworkPresent || callbackMatchesActive
 
+    fun snapshotReady(
+        hasCapabilities: Boolean,
+        hasLinkProperties: Boolean,
+        callbackMatchedBeforeReduction: Boolean,
+        callbackMatchedAfterReduction: Boolean
+    ): Boolean =
+        hasCapabilities &&
+            hasLinkProperties &&
+            callbackMatchedBeforeReduction &&
+            callbackMatchedAfterReduction
+
     fun acceptStable(
         callbackNetworkPresent: Boolean,
         callbackMatchedBeforeReduction: Boolean,
@@ -34,34 +45,56 @@ class NetworkObserver(
     private var lastFingerprint: String? = null
     private val handler = Handler(Looper.getMainLooper())
     private var lossGeneration = 0L
+    private var callbackNetwork: Network? = null
+    private var callbackCapabilities: NetworkCapabilities? = null
+    private var callbackLinkProperties: LinkProperties? = null
 
     private val callback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            if (DefaultNetworkCallbackAcceptancePolicy.shouldCancelPendingLoss(
-                    network == cm.activeNetwork
-                )
-            ) {
-                lossGeneration += 1L
-            }
-            safePublish(network)
+            if (network != cm.activeNetwork) return
+            lossGeneration += 1L
+            callbackNetwork = network
+            callbackCapabilities = null
+            callbackLinkProperties = null
+            // Android delivers capabilities/link properties after onAvailable.
+            // Do not synchronously query them here: that creates a documented race.
         }
+
         override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
-            if (DefaultNetworkCallbackAcceptancePolicy.shouldCancelPendingLoss(
-                    network == cm.activeNetwork
-                )
-            ) {
-                lossGeneration += 1L
+            if (network != cm.activeNetwork) return
+            lossGeneration += 1L
+            if (callbackNetwork != network) {
+                callbackNetwork = network
+                callbackLinkProperties = null
             }
-            safePublish(network, caps)
+            callbackCapabilities = caps
+            publishCallbackSnapshotIfReady(network)
         }
-        override fun onLinkPropertiesChanged(network: Network, lp: LinkProperties) =
-            safePublish(network, null, lp)
+
+        override fun onLinkPropertiesChanged(network: Network, lp: LinkProperties) {
+            if (network != cm.activeNetwork) return
+            if (callbackNetwork != network) {
+                callbackNetwork = network
+                callbackCapabilities = null
+            }
+            callbackLinkProperties = lp
+            publishCallbackSnapshotIfReady(network)
+        }
 
         override fun onLost(network: Network) {
+            if (callbackNetwork == network) {
+                callbackNetwork = null
+                callbackCapabilities = null
+                callbackLinkProperties = null
+            }
             val generation = ++lossGeneration
             handler.postDelayed({
                 if (!registered || generation != lossGeneration) return@postDelayed
-                safePublish(cm.activeNetwork)
+                if (cm.activeNetwork == null) {
+                    publishTruth(NetworkTruth())
+                }
+                // If another default network exists, its callback sequence will publish
+                // once both capabilities and link properties are available.
             }, NetworkLossSettlingPolicy.LOSS_SETTLE_MS)
         }
     }
@@ -71,7 +104,6 @@ class NetworkObserver(
         runCatching {
             cm.registerDefaultNetworkCallback(callback)
             registered = true
-            safePublish(cm.activeNetwork)
         }.onFailure {
             // Fail-open: no retry loop and no Android network change.
             deliver(NetworkTruth())
@@ -83,46 +115,37 @@ class NetworkObserver(
         registered = false
         lossGeneration += 1L
         handler.removeCallbacksAndMessages(null)
+        callbackNetwork = null
+        callbackCapabilities = null
+        callbackLinkProperties = null
         runCatching { cm.unregisterNetworkCallback(callback) }
     }
 
-    private fun safePublish(
-        network: Network?,
-        providedCaps: NetworkCapabilities? = null,
-        providedLp: LinkProperties? = null
-    ) {
+    private fun publishCallbackSnapshotIfReady(network: Network) {
         runCatching {
-            val activeNow = cm.activeNetwork
-            if (!DefaultNetworkCallbackAcceptancePolicy.accept(
-                    callbackNetworkPresent = network != null,
-                    callbackMatchesActive = network != null && network == activeNow
+            val activeBefore = cm.activeNetwork
+            val caps = callbackCapabilities
+            val lp = callbackLinkProperties
+            val activeAfter = cm.activeNetwork
+            if (!DefaultNetworkCallbackAcceptancePolicy.snapshotReady(
+                    hasCapabilities = caps != null,
+                    hasLinkProperties = lp != null,
+                    callbackMatchedBeforeReduction = network == activeBefore,
+                    callbackMatchedAfterReduction = network == activeAfter
                 )
             ) {
                 return
             }
-            val active = activeNow
-            val caps = providedCaps ?: active?.let(cm::getNetworkCapabilities)
-            val lp = providedLp ?: active?.let(cm::getLinkProperties)
-            val truth = ConnectivityTruthEngine.reduce(caps, lp)
-            if (!DefaultNetworkCallbackAcceptancePolicy.acceptStable(
-                    callbackNetworkPresent = network != null,
-                    callbackMatchedBeforeReduction = network == activeNow,
-                    callbackMatchedAfterReduction = network != null && network == cm.activeNetwork
-                )
-            ) {
-                return
-            }
-            val fingerprint = truth.telemetryFingerprint()
-            if (fingerprint == lastFingerprint) return
-            lastFingerprint = fingerprint
-            deliver(truth)
+            publishTruth(ConnectivityTruthEngine.reduce(caps, lp))
         }.onFailure {
-            // The observer may degrade, but it may never take ownership of routing.
-            deliver(NetworkTruth())
+            // Fail open: a malformed callback snapshot cannot seize routing or loop.
         }
     }
 
-    private fun deliver(truth: NetworkTruth) {
+    private fun publishTruth(truth: NetworkTruth) {
+        val fingerprint = truth.telemetryFingerprint()
+        if (fingerprint == lastFingerprint) return
+        lastFingerprint = fingerprint
         runCatching { onTruth(truth) }
     }
 }
