@@ -136,8 +136,10 @@ require(
 
 require(
     "DefaultNetworkCallbackAcceptancePolicy" in OBSERVER
-    and "callbackMatchesActive = network != null && network == activeNow" in OBSERVER,
-    "candidate contract: stale non-default NetworkCallback events can reach truth/qualification logic",
+    and "callbackMatchesActive = network != null && network == activeNow" in OBSERVER
+    and "acceptStable(" in OBSERVER
+    and "callbackMatchedAfterReduction = network != null && network == cm.activeNetwork" in OBSERVER,
+    "candidate contract: NetworkCallback active-default identity is not fenced before and after reduction",
 )
 
 require(
