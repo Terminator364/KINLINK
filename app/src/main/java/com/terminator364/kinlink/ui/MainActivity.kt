@@ -1,10 +1,13 @@
 package com.terminator364.kinlink.ui
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
+import android.content.pm.PackageManager
 import android.text.InputType
 import android.view.View
 import android.view.WindowInsets
@@ -44,6 +47,7 @@ import com.terminator364.kinlink.core.HandoffOutcome
 import com.terminator364.kinlink.core.RuntimeResourceVerdict
 import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.NetworkTruth
+import com.terminator364.kinlink.core.NotificationPermissionPolicy
 import com.terminator364.kinlink.core.WifiDoctor
 import com.terminator364.kinlink.core.WifiOptimizer
 import com.terminator364.kinlink.data.DiagnosticExporter
@@ -97,6 +101,7 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         ContextCompat.startForegroundService(this, Intent(this, KinlinkObserverService::class.java))
         setContentView(R.layout.activity_main)
+        ensureNotificationVisibilityPermission()
 
         heroEyebrow = findViewById(R.id.heroEyebrow)
         stateText = findViewById(R.id.stateText)
@@ -193,6 +198,21 @@ class MainActivity : Activity() {
     override fun onDestroy() {
         ledger.close()
         super.onDestroy()
+    }
+
+    private fun ensureNotificationVisibilityPermission() {
+        val granted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
+        if (NotificationPermissionPolicy.shouldRequest(Build.VERSION.SDK_INT, granted)) {
+            requestPermissions(
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                REQUEST_POST_NOTIFICATIONS
+            )
+        }
     }
 
     private fun refreshProfileButton() {
@@ -631,4 +651,8 @@ class MainActivity : Activity() {
         "ROUTER" -> "Connexion au routeur requise"
         else -> "En cours d’analyse"
     }
+    companion object {
+        private const val REQUEST_POST_NOTIFICATIONS = 4107
+    }
+
 }
