@@ -120,7 +120,6 @@ class ResponsiveRenderMatrixTest {
                 cellularDegraded,
                 constrainedResources
             )
-            captureExpandedSurfaces(scenario, cellularDegraded)
             scenario.onActivity { activity ->
                 val evidence = activity.findViewById<TextView>(R.id.evidenceText)
                 assertTrue(
@@ -128,6 +127,7 @@ class ResponsiveRenderMatrixTest {
                     evidence.text.toString().startsWith("Protection ·")
                 )
             }
+            captureExpandedSurfaces(scenario, cellularDegraded)
         }
     }
 
