@@ -12,8 +12,8 @@
   "forced_stop_new_mutations_local": "2026-09-22T00:58:00+01:00",
   "foreground_time_check_rule": "CHECK_TIME_BEFORE_EVERY_MAJOR_MUTATION_BATCH_AND_AFTER_AT_MOST_3_TOOL_BATCHES",
   "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSE_INTENT_PERSISTED",
-  "status": "CLOSING",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "gmail_start_message_id": "1a0c655d61b9e72e",
   "gmail_start_thread_id": "1a0c655d61b9e72e",
   "gmail_label": "KINLINK",
@@ -93,5 +93,11 @@
       "xl_mobile_vault_clear_action": "VISIBLE_AND_SCROLLABLE",
       "install_requested": false
     }
-  }
+  },
+  "gmail_end_message_id": "1a0c660e07d7826a",
+  "gmail_end_thread_id": "1a0c655d61b9e72e",
+  "end_mail_verified": true,
+  "closed_state": true,
+  "closed_at_provider_ts": "2026-09-21T23:50:33",
+  "closed_at_local": "2026-09-22T00:51:00+01:00"
 }
