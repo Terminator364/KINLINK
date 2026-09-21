@@ -226,12 +226,28 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
     }
 
     private fun pruneActionReceipts(nowWallMs: Long = System.currentTimeMillis()) {
+        val pinnedPatterns = TelemetryRetentionPolicy.PINNED_QUALIFICATION_ACTION_PATTERNS
+        val pinnedClause = pinnedPatterns.joinToString(" AND ") { "action NOT LIKE ?" }
+
         writableDatabase.execSQL(
-            "DELETE FROM action_receipts WHERE ts_wall_ms < ?",
-            arrayOf(TelemetryRetentionPolicy.actionCutoff(nowWallMs))
+            "DELETE FROM action_receipts WHERE ts_wall_ms < ? AND $pinnedClause",
+            arrayOf(
+                TelemetryRetentionPolicy.actionCutoff(nowWallMs),
+                *pinnedPatterns.toTypedArray()
+            )
         )
         writableDatabase.execSQL(
-            "DELETE FROM action_receipts WHERE receipt_id IN (SELECT receipt_id FROM action_receipts ORDER BY ts_wall_ms DESC LIMIT -1 OFFSET ${TelemetryRetentionPolicy.ACTION_RECEIPT_MAX_ROWS})"
+            """
+            DELETE FROM action_receipts
+            WHERE receipt_id IN (
+                SELECT receipt_id
+                FROM action_receipts
+                WHERE $pinnedClause
+                ORDER BY ts_wall_ms DESC
+                LIMIT -1 OFFSET ${TelemetryRetentionPolicy.ACTION_RECEIPT_MAX_ROWS}
+            )
+            """.trimIndent(),
+            pinnedPatterns.toTypedArray()
         )
     }
 
