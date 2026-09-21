@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_0_INSTALLED_COUNTER_AUDIT_BLOCKING_REPAIR",
-  "status": "ENGINEERING_REPAIR_ACTIVE_NO_HUMAN_GATE_YET",
+  "phase": "KINLINK_0_7_1_CONSOLIDATED_COUNTER_AUDIT_HARDENING",
+  "status": "ENGINEERING_ACTIVE_NO_HUMAN_GATE",
   "candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "repair CA-001..CA-004 in one consolidated successor with new versionCode, full GitHub CI/audit/counter-audit, stable signer, Drive FIELD_CANDIDATE delivery; ask for human install only after replacement is fully proven",
+  "next_uncommitted_action": "qualify exact main head 18b18df13ed8af5d298e56cad860e805ba851424; close all counter-audit findings CA-001..CA-009 with full Android CI + design-lint; then seal/download/readback exact 0.7.1 unsigned artifact, stable-sign with canonical certificate, second counter-audit, Drive FIELD_CANDIDATE delivery; only then ask for one human install",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -75,7 +75,7 @@
   "development_line": {
     "version": "0.7.1-dev",
     "versionCode": 9,
-    "promotion": "REPAIR_BATCH_IN_PROGRESS_NO_INSTALL_YET",
+    "promotion": "NO_INSTALL_UNTIL_CONSOLIDATED_SUCCESSOR_FULLY_PROVEN",
     "base": "4153720cde8c6bd0004b8e69baeadf5254735abe",
     "objective": "close CA-001..CA-004 without micro-beta chain",
     "integrated": [
@@ -161,19 +161,26 @@
       "charging status sampled explicitly for battery qualification",
       "flat battery while charging cannot masquerade as zero drain",
       "power disconnect automatically resets resource qualification baseline",
-      "resource qualification restarts a clean 30-minute window after unplug"
+      "resource qualification restarts a clean 30-minute window after unplug",
+      "CA-006 exact SQL equality for version-scoped qualification receipts",
+      "CA-007 live field qualification PASS revocable by newer blocking evidence",
+      "CA-008 outer wall-clock timeout/disconnect around each Wi-Fi HTTP attempt",
+      "CA-009 stale non-default NetworkCallback rejection",
+      "cross-policy critical scenario matrix",
+      "requirements traceability matrix distinguishes current proof from gated future architecture"
     ],
-    "last_full_pass": "4153720cde8c6bd0004b8e69baeadf5254735abe"
+    "last_full_pass": "4153720cde8c6bd0004b8e69baeadf5254735abe",
+    "head": "18b18df13ed8af5d298e56cad860e805ba851424"
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "4153720cde8c6bd0004b8e69baeadf5254735abe",
-    "design_lint": "PASS",
-    "design_lint_run": 35550539365,
-    "android_ci": "PASS",
-    "android_ci_run": 35550539216,
-    "full_machine_verdict": "PASS",
-    "latest_full_pass": "4153720cde8c6bd0004b8e69baeadf5254735abe"
+    "code_head": "18b18df13ed8af5d298e56cad860e805ba851424",
+    "design_lint": "PENDING",
+    "android_ci": "PENDING",
+    "full_machine_verdict": "PENDING",
+    "last_known_full_pass": "a8e4b1a6510ee3bf06d1143253b08437e745cab4",
+    "last_known_full_pass_android_run": 35575247146,
+    "last_known_full_pass_design_run": 35575247175
   },
   "continuity": {
     "command": "KINLINKGO",
@@ -191,14 +198,14 @@
   "communication_protocol": {
     "tranche_style": "LONG_25_MIN_COHERENT",
     "target_minutes": 25,
-    "feedback_policy": "IGNORE_INTERMEDIATE_FEEDBACK_FOR_TRANCHE_FLOW_UNLESS_TRUE_HUMAN_GATE",
-    "start": "SEND_GMAIL_FIRST_BEFORE_WORK",
-    "end": "SEND_COMPLETE_GMAIL_REPORT_BEFORE_ANY_APP_MESSAGE",
+    "feedback_policy": "CONTINUE_ACTIVE_TRANCHE_REGARDLESS_OF_INTERMEDIATE_FEEDBACK",
+    "start": "SEND_GMAIL_AND_APPLY_KINLINK_LABEL_BEFORE_WORK",
+    "end": "SEND_COMPLETE_GMAIL_END_AND_APPLY_KINLINK_LABEL_BEFORE_ANY_APP_MESSAGE",
     "app_response": "ONLY_CHECK_GMAIL_PLUS_KINSHASA_DATE_TIME",
-    "human_gate_exception": "ONLY_WHEN_OBJECTIVELY_REQUIRED_TO_CONTINUE",
-    "duplicate_report_in_app": false,
-    "gmail_label": "KINLINK",
-    "apk_via_email": false
+    "human_gate_exception": "ONLY_TRUE_OBJECTIVE_GATE_REQUIRED_TO_CONTINUE",
+    "apk_via_email": false,
+    "apk_delivery": "GOOGLE_DRIVE_KINLINK",
+    "canonical_protocol_file": ".project-memory/COMMUNICATION_PROTOCOL.json"
   },
   "release_flow": {
     "stage_a_field_candidate": {
@@ -258,7 +265,39 @@
   },
   "gmail": {
     "project_label": "KINLINK",
-    "labeled_messages_backfill": 60,
-    "future_rule": "label every KINLINK tranche mail; Gmail is reports only, never APK delivery"
+    "future_rule": "label every KINLINK tranche mail; Gmail reports only; never APK delivery"
+  },
+  "installed_phone_candidate": {
+    "version": "0.7.0",
+    "versionCode": 8,
+    "source_commit": "4153720cde8c6bd0004b8e69baeadf5254735abe",
+    "signed_apk_sha256": "cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc",
+    "installed": true,
+    "usable": true,
+    "canonical": false,
+    "promotion_invalidated": true,
+    "reason": "post-install counter-audit findings; keep installed until one consolidated successor is fully proven"
+  },
+  "counter_audit": {
+    "source_candidate": "0.7.0 / v8",
+    "successor": "0.7.1 / v9",
+    "findings": {
+      "CA-001": "REPAIRED",
+      "CA-002": "REPAIRED",
+      "CA-003": "REPAIRED",
+      "CA-004": "REPAIRED",
+      "CA-005": "REPAIRED",
+      "CA-006": "REPAIRED_PENDING_EXACT_HEAD_CI",
+      "CA-007": "REPAIRED_PENDING_EXACT_HEAD_CI",
+      "CA-008": "REPAIRED_PENDING_EXACT_HEAD_CI",
+      "CA-009": "REPAIRED_PENDING_EXACT_HEAD_CI"
+    }
+  },
+  "drive_delivery": {
+    "root_folder_id": "1hZSgKtpRZXRQxZyfnFMMXpueWWeLjr_n",
+    "installer_folder_id": "1YeKn5z_ZIP3MDVgw46KNUfLSafSvGhUM",
+    "field_candidate_folder_id": "1h_ptqB7kGycdfJHrN1MdK1vOqgbsyTWB",
+    "signing_folder_id": "1V5ywV1P5WoM1mMcLyhtsT0SBf6sqnxCm",
+    "master_document_id": "1x8_wnTxvPEeNyYJTtQkdnC3Z8qulBYJNoDjMf2IHZBg"
   }
 }
