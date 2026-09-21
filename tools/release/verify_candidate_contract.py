@@ -271,3 +271,12 @@ require(
     "@Volatile\n    private var latestTruth" in SERVICE,
     "candidate contract: service latestTruth is not safely published across callback/start-command threads",
 )
+
+LAYOUT = (ROOT / "app/src/main/res/layout/activity_main.xml").read_text(encoding="utf-8")
+require(
+    'android:id="@+id/qualityProgress"' in LAYOUT
+    and 'android:max="100"' in LAYOUT
+    and "qualityProgress.progress = passiveScore.score" in MAIN_ACTIVITY
+    and "Qualité passive" in MAIN_ACTIVITY,
+    "candidate contract: compact quality meter is missing or detached from passive score",
+)
