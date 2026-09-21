@@ -51,6 +51,10 @@ Status meanings:
 | Automatic Wi-Fi recovery | PROVEN machine-side | bounded/reversible; never owns cellular routing |
 | Manual “Optimiser le Wi-Fi” | PROVEN machine-side | Wi-Fi only; metered Wi-Fi = zero HTTP |
 | Mobile prudence threshold | PROVEN machine-side | Android device-wide TrafficStats heuristic; not operator balance |
+| Mobile Assist passive diagnosis | INTEGRATED_PENDING_FINAL_CI | cellular low-capacity/congestion/suspension/unvalidated causes from Android passive evidence |
+| Mobile Assist zero-probe metric refresh | INTEGRATED_PENDING_FINAL_CI | validated degraded cellular only; no HTTP/DNS/speedtest; cooldown/hourly cap/resource/budget gates |
+| Mobile Assist manual system recovery bridge | INTEGRATED_PENDING_FINAL_CI | explicit user tap opens Android Internet panel for unvalidated/suspended mobile state |
+| Mobile Assist effectiveness/anti-repeat | INTEGRATED_PENDING_FINAL_CI | two-observation outcome evidence; pause after two recent unchanged/degraded outcomes |
 | Incident marker | PROVEN machine-side | passive local snapshot, zero probe |
 | Field qualification status | PROVEN machine-side | version-scoped receipts and current assessment |
 | Diagnostic export | PARTIAL | 0.7.1 now exports a privacy-safe ZIP core bundle (`manifest.json`, `summary.json`, `recent_actions.jsonl`, `report.txt`); the larger canonical bundle still has additional future files to implement |
@@ -62,7 +66,7 @@ Status meanings:
 
 | Architecture item | Status | Gate |
 |---|---|---|
-| VpnService/TUN strong stabilizer | GATED_FUTURE | M5 DNS/watchdog/RAM/battery/latency/rollback qualification |
+| VpnService/TUN strong mobile stabilizer | GATED_FUTURE | M5 measurable benefit + DNS/watchdog/RAM/battery/latency/rollback + user VPN consent |
 | Independent network data-plane process | GATED_FUTURE | only required when strong stabilizer is enabled |
 | Personal Network Twin / learner / shadow evaluation | GATED_FUTURE | evidence model and resource budget not yet qualified |
 | Full carrier/operator wallet integration | GATED_FUTURE | current build only has local device-wide mobile-byte prudence |
