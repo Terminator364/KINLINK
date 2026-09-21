@@ -1,14 +1,18 @@
 {
   "active": true,
-  "version": "0.7.1",
-  "versionCode": 9,
-  "source_commit": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
-  "signed_apk_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
-  "drive_file_id": "1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1",
+  "version": "0.7.2",
+  "versionCode": 10,
+  "source_commit": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
+  "source_branch": "dev/0.7.2-continuous-improvement",
+  "signed_apk_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
+  "drive_file_id": "1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU",
   "drive_readback_status": "PASS",
+  "drive_readback_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
   "protected_paths": [
     "app/src",
-    "app/build.gradle.kts"
+    "app/build.gradle.kts",
+    ".github/workflows/android-m0.yml",
+    "tools/release/verify_candidate_contract.py"
   ],
-  "rule": "While 0.7.1 Stage B is pending, app source/build identity is frozen. Any app-code change invalidates this field candidate before mutation."
+  "rule": "0.7.2 is frozen as the single next field candidate. Any product/code identity change creates a new candidate and must not inherit this CI/signing/readback proof."
 }
