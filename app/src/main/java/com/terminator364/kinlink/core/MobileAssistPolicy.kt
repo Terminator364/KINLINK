@@ -12,6 +12,7 @@ enum class MobileAssistBlockReason {
     OBSERVATION_ONLY,
     RESOURCE_CONSTRAINED,
     NETWORK_SUSPENDED,
+    WEAK_SIGNAL,
     BUDGET_PROTECTED,
     HEALTHY_OR_UNKNOWN,
     COOLDOWN,
@@ -66,6 +67,17 @@ object MobileAssistPolicy {
                 "Android signale le réseau mobile suspendu; aucune action automatique."
             )
         }
+        if (
+            MobileRadioQualityPolicy.assess(truth).quality ==
+                MobileRadioQuality.WEAK
+        ) {
+            return MobileAssistDecision(
+                MobileAssistAction.NONE,
+                MobileAssistBlockReason.WEAK_SIGNAL,
+                "Signal mobile faible : un refresh de métriques ne peut pas renforcer la couverture."
+            )
+        }
+
         if (
             truth.budgetState == BudgetState.BUNDLE_LOW ||
             truth.budgetState == BudgetState.BUNDLE_EXHAUSTED ||
