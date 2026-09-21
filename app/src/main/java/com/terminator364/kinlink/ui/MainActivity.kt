@@ -26,6 +26,8 @@ import com.terminator364.kinlink.core.AutopilotProfile
 import com.terminator364.kinlink.core.AutopilotProfileStore
 import com.terminator364.kinlink.core.BudgetState
 import com.terminator364.kinlink.core.ConnectivityStateClassifier
+import com.terminator364.kinlink.core.CockpitPrimaryAction
+import com.terminator364.kinlink.core.CockpitPrimaryActionPolicy
 import com.terminator364.kinlink.core.DeviceResourceGuard
 import com.terminator364.kinlink.core.KinlinkObserverService
 import com.terminator364.kinlink.core.MobileBudgetSnapshot
@@ -39,6 +41,7 @@ import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.NetworkObserver
 import com.terminator364.kinlink.core.PassiveLinkQuality
 import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
+import com.terminator364.kinlink.core.PassiveQualityScorePolicy
 import com.terminator364.kinlink.core.PassiveProblemClassifier
 import com.terminator364.kinlink.core.PassiveGuidancePolicy
 import com.terminator364.kinlink.core.RecoveryBlockReason
@@ -106,6 +109,9 @@ class MainActivity : Activity() {
     private var installedVersionName: String = "?"
     private var installedVersionCode: Long = -1L
     private var lastQualificationUiRefreshElapsed: Long = 0L
+    private var lastAssistEvidenceRefreshElapsed: Long = 0L
+    private var cachedAssistEvidenceLabel: String =
+        "Preuve 24 h · aucune action Mobile Assist évaluée"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -228,15 +234,15 @@ class MainActivity : Activity() {
     }
 
     private fun refreshProfileButton() {
-        profileButton.text = "Profil Autopilot · ${profileLabel(currentProfile)}"
+        profileButton.text = "Profil · ${profileLabel(currentProfile)}"
     }
 
     private fun refreshSafeModeButton() {
         val observationOnly = recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY
         safeModeButton.text = if (observationOnly) {
-            "Mode sûr ACTIF · Observation uniquement"
+            "Mode sûr · ON"
         } else {
-            "Mode sûr · Basculer en observation uniquement"
+            "Mode sûr · OFF"
         }
     }
 
@@ -296,7 +302,7 @@ class MainActivity : Activity() {
         detailText.visibility = if (nowVisible) View.GONE else View.VISIBLE
         diagnosticExport.visibility = if (nowVisible) View.GONE else View.VISIBLE
         technicalToggle.text =
-            if (nowVisible) "Voir les détails techniques" else "Masquer les détails techniques"
+            if (nowVisible) "Détails techniques" else "Masquer les détails"
     }
 
     private fun configureMobileBudget() {
@@ -462,11 +468,11 @@ class MainActivity : Activity() {
                 }
 
                 val quality = PassiveLinkQualityPolicy.assess(latestTruth)
-                adviceTitleText.text = "Mobile Assist · données mobiles"
+                adviceTitleText.text = "Mobile Assist · mesure actualisée"
                 adviceText.text = if (refreshed)
-                    "Métriques Android rafraîchies sans speedtest. Qualité passive : ${quality.quality.name}. Android garde le routage."
+                    "Android a accepté une actualisation des métriques. Cela améliore l’observation, pas directement le débit. Qualité passive : ${quality.quality.name}."
                 else
-                    "Aucune action forcée. Qualité passive : ${quality.quality.name}. Android garde le routage."
+                    "Android n’a pas accepté l’actualisation. Aucun changement réseau n’a été forcé. Qualité passive : ${quality.quality.name}."
             }
 
             MobileAssistManualAction.NONE -> {
