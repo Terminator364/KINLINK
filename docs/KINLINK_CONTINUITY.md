@@ -6,44 +6,58 @@
 
 ## Resume procedure
 
-1. Open `Terminator364/KINLINK`, branch `main`.
-2. Reload in order:
+1. Open `Terminator364/KINLINK`.
+2. Reload:
    - `project_state.json`
    - `NEXT_UNCOMMITTED_ACTION.md`
    - `BUILD_STATUS.md`
    - `docs/CANONICAL_SPEC.md`
    - `docs/KINLINK_CONTINUITY.md`
+   - `.project-memory/FIELD_CANDIDATE_FREEZE.json`
+   - `.project-memory/RELEASE_READINESS_0_7_2.json`
    - `.project-memory/COMMUNICATION_PROTOCOL.json`
+   - `.project-memory/COMMUNICATION_STATE_MACHINE.json`
    - `.project-memory/ACTIVE_TRANCHE.json`
-3. Read latest commits and exact relevant CI runs.
+   - `.project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl`
+3. Read exact Git heads and exact-head CI; never inherit green status from another SHA.
 4. Resume from `next_uncommitted_action`; never restart M0/M1.
-5. Preserve the exact field-candidate freeze until Stage B is resolved.
+5. Preserve frozen release branches and Drive hashes.
 
-## Communication protocol — mandatory
+## Communication v2 — mandatory
 
-Current cadence: **25 minutes**.
+Cadence:
+- 22 min useful work;
+- 3 min primary normal close reserve.
 
-Start:
-1. send Gmail start;
-2. apply Gmail label `KINLINK`;
-3. persist `gmail_start_message_id` in `.project-memory/ACTIVE_TRANCHE.json`;
-4. begin work.
+Normal close owner:
+`PRIMARY_ASSISTANT`
 
-During tranche:
-- intermediate feedback is queued/integrated without restarting the tranche;
-- network/tool interruption creates a durable checkpoint and resumes from it;
-- early stop is allowed only for a true human gate objectively required to continue.
+START:
+1. reconcile any prior incomplete tranche;
+2. send Gmail START;
+3. require provider message ID + thread ID;
+4. apply `KINLINK` label;
+5. persist a unique delivery key;
+6. begin work.
 
-End:
-1. persist final technical checkpoint;
-2. send complete Gmail end report;
-3. apply Gmail label `KINLINK`;
-4. verify returned Gmail message ID;
-5. persist tranche CLOSED with end message ID;
-6. only then reply in the ChatGPT app with Gmail + Kinshasa date/time.
+END:
+1. minute 22: stop new product mutations;
+2. persist exact technical checkpoint + CLOSE_INTENT;
+3. send normal FIN as a reply in the START Gmail thread;
+4. require provider END message ID;
+5. apply `KINLINK` label;
+6. persist END_ACKNOWLEDGED/CLOSED;
+7. only then app pointer.
 
-APK distribution:
-- never via Gmail attachment;
+Post-nominal redundancy:
+- backup cannot preempt normal close;
+- backup first searches Gmail thread + delivery key;
+- if END exists, persist its receipt without resend;
+- if absent, send the same normal FIN semantics;
+- user-visible “RECOVERY/RATTRAPAGE/WATCHDOG” subject wording is forbidden for ordinary tranche close.
+
+APK:
+- never by Gmail;
 - Drive KINLINK only.
 
 ## Durable product state
@@ -53,54 +67,76 @@ Canonical rollback:
 - `KINLINK/INSTALLER/KINLINK_LATEST.apk` unchanged.
 
 Installed phone:
-- `0.7.0` / versionCode 8;
-- usable but promotion-invalidated.
-
-Current consolidated field candidate:
 - `0.7.1` / versionCode 9;
-- exact functional source: `a15a784ab51ae048e37ae31c998092ad2cd3f03c`;
-- design-lint `35594766801`: PASS;
-- Android candidate `35594766821`: PASS;
-- signed SHA-256: `0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae`;
-- signer cert: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`;
-- Drive file ID: `1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1`;
-- Drive readback: PASS;
-- frozen for field qualification.
+- usable;
+- superseded before canonical promotion by the consolidated 0.7.2 candidate.
 
-Mobile Assist Level 1:
-- zero hidden cellular probe;
-- passive mobile degradation diagnosis;
-- bounded Android metric refresh;
-- cooldown/hourly/resource/budget/weak-radio/anti-repeat gates;
-- explicit system-panel fallback;
-- mobile reliability evidence and diagnostics.
+Current frozen final-like field candidate:
+- `0.7.2` / versionCode 10;
+- immutable source branch: `release/0.7.2-field-candidate`;
+- exact source: `cc48c1dea1a151af25edc1942bb4efa983c5ff13`;
+- design-lint `35610708971`: PASS;
+- design-lint `35610716886`: PASS;
+- Android candidate `35610708876`: PASS;
+- signed SHA-256:
+  `a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b`;
+- signer cert:
+  `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`;
+- Drive file ID:
+  `1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU`;
+- Drive readback: PASS.
 
-Strong VpnService/TUN stabilizer remains gated future work until proof of measurable benefit + RAM/battery/latency/DNS/watchdog/rollback safety.
+0.7.2 major delta:
+- compact status/action/proof cockpit;
+- contextual primary action;
+- passive quality without speedtest;
+- truthful metric-refresh semantics;
+- sustained correlated-benefit evidence;
+- transient and post-sustained relapse;
+- bounded one-shot follow-up;
+- healthy-path CPU/SQLite reduction;
+- moderate-thermal active-work suppression;
+- inherited fail-open/data-cost/privacy protections.
 
-## Next true action
+Drive FIELD_CANDIDATE:
+- current 0.7.2 candidate at root;
+- installed 0.7.1 history in `INSTALLED_SUPERSEDED_0.7.1`;
+- older 0.7.0 history in `INSTALLED_SUPERSEDED_0.7.0`.
 
-One in-place installation of the exact 0.7.1 Drive field candidate is now required.
+## Current true action
 
-After installation:
-- collect versionCode 9 self-test;
-- collect Wi-Fi -> mobile and mobile -> Wi-Fi handoff;
-- collect >=30-minute resource qualification;
-- promote to canonical INSTALLER only after Stage B PASS.
+One in-place update to exact 0.7.2 is the next field gate.
+
+Do not uninstall 0.7.1 first.
+
+After versionCode 10 install:
+- core self-test;
+- observer callback self-test;
+- Wi-Fi -> validated cellular;
+- cellular -> Wi-Fi return;
+- >=30-minute resource qualification;
+- continuous Mobile Assist evidence/relapse field receipts;
+- target-phone visual cockpit validation.
+
+Canonical INSTALLER promotion remains forbidden until Stage B PASS.
+
+## Strong stabilizer
+
+Experiment branch:
+`experiment/strong-mobile-stabilizer-s0`
+
+The strong VpnService/TUN path remains gated behind:
+- user VPN consent;
+- DNS correctness;
+- watchdog/crash teardown;
+- handoff safety;
+- resource qualification;
+- latency regression gate;
+- no data amplification;
+- repeated measured benefit.
+
+No unverified VPN code is allowed into the frozen 0.7.2 field candidate.
 
 ## Short code
 
 `KINLINKGO`
-
-
-## Interruption-safe tranche watchdog
-
-A 25-minute tranche now reserves its final **5 minutes** for closeout. The first 20 minutes are the primary work budget.
-
-Mandatory rule:
-- no new technical mutation may begin after the closeout reserve is entered;
-- the reserve is used for exact-head CI state, durable checkpoint, Gmail end report, returned Gmail message ID and tranche closure;
-- a tranche has a maximum of 12 mutation groups before forced closeout even if wall-clock information is unavailable;
-- if a previous ACTIVE_TRANCHE lacks a verified Gmail end message ID, the next session must repair that missing end mail **before** new project work or any app reply;
-- a system/tool interruption never converts an unclosed tranche into a normal final response.
-
-This rule exists specifically to prevent a system interruption from consuming the end-mail slot.
