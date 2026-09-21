@@ -35,8 +35,8 @@ When this command is used in another KINLINK conversation/workspace:
 - Development line: `0.7.0-dev`, versionCode 8.
 - Promotion of DEV: FORBIDDEN until consolidated RC gate.
 - Telemetry schema: v5.
-- Latest full machine PASS code head: `c8999e902e92af51e34c95349073135df4de6ecc`.
-- Current functional code head under Android CI qualification: `6c18244535e01405bd642e778dc0e94366bd62df`.
+- Latest full machine PASS code head: `71111619ada624bdf717e869323ac309bd07c7de`.
+- Current functional code head under Android CI qualification: `e1e2e7169d6a13f5fce8b808574cc63ed9fe915d`.
 
 ## 0.7.0-dev integrated scope
 
@@ -57,11 +57,11 @@ Includes, among other items:
 ## Next durable action
 
 Continue the large 0.7.0-dev batch with:
-1. finish Android CI qualification of `6c18244535e01405bd642e778dc0e94366bd62df`;
-2. collect automatic >=30-minute target-device resource evidence in the future consolidated candidate;
-3. keep migration proof and release-readiness ledger consistent;
-4. require MACHINE + MIGRATION + SIGNER_CONTINUITY + FIELD_HANDOFF + RESOURCE_QUALIFICATION before signed promotion;
-5. no new signed install until the consolidated gate is ready.
+1. finish Android CI qualification of `e1e2e7169d6a13f5fce8b808574cc63ed9fe915d`;
+2. close Stage A: MACHINE + MIGRATION + SIGNER_CONTINUITY;
+3. only then produce one consolidated signed field candidate, without replacing RC3;
+4. collect FIELD_HANDOFF + >=30-minute RESOURCE_QUALIFICATION on that candidate;
+5. promote canonically only when all five gates are PASS; no micro-beta chain.
 
 ## Exact short code to give the user
 
