@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "recheck exact-head 0.7.3 CI for 6ef270d83461628aa8a6a6356b0d56dece6f0ca1; if PASS run final counter-audit then freeze/sign/Drive-readback one consolidated 0.7.3 candidate; do not ask user to reinstall before that",
+  "next_uncommitted_action": "new chat takeover via KINLINKGO; then final counter-audit exact 0.7.3 head 6ef270d83461628aa8a6a6356b0d56dece6f0ca1, responsive/emulator UI proof, freeze/sign/Drive readback one consolidated candidate; no reinstall request before gates",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -210,11 +210,18 @@
       "NEXT_UNCOMMITTED_ACTION.md",
       "BUILD_STATUS.md",
       "docs/CANONICAL_SPEC.md",
-      "docs/KINLINK_CONTINUITY.md"
+      "docs/KINLINK_CONTINUITY.md",
+      ".project-memory/NEW_CONVERSATION_TAKEOVER.json",
+      ".project-memory/COMMUNICATION_PROTOCOL.json",
+      ".project-memory/COMMUNICATION_STATE_MACHINE.json",
+      ".project-memory/ACTIVE_TRANCHE.json",
+      ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl"
     ],
     "repository": "Terminator364/KINLINK",
     "branch": "main",
-    "rule": "resume_from_latest_durable_main_without_restart"
+    "rule": "new conversation must reload durable state and communication protocol before substantive work; no chat reconstruction",
+    "takeover_bootstrap": ".project-memory/NEW_CONVERSATION_TAKEOVER.json",
+    "takeover_doc": "docs/KINLINK_NEW_CONVERSATION_TAKEOVER.md"
   },
   "communication_protocol": {
     "version": 3,
