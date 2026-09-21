@@ -48,12 +48,25 @@ class MobileAssistEvidenceTracker {
 
     @Synchronized
     fun start(truth: NetworkTruth) {
-        sustainedWatch = null
         val quality = PassiveLinkQualityPolicy.assess(truth).quality
+        startBaseline(
+            quality = quality,
+            score = PassiveQualityScorePolicy.score(truth).score,
+            observedAtMillis = truth.observedAtMillis
+        )
+    }
+
+    @Synchronized
+    fun startBaseline(
+        quality: PassiveLinkQuality,
+        score: Int,
+        observedAtMillis: Long
+    ) {
+        sustainedWatch = null
         active = Active(
             baseline = quality,
-            baselineScore = PassiveQualityScorePolicy.score(truth).score,
-            startedAt = truth.observedAtMillis,
+            baselineScore = score.coerceIn(0, 100),
+            startedAt = observedAtMillis,
             baselineWasUnknown = quality == PassiveLinkQuality.UNKNOWN
         )
     }
