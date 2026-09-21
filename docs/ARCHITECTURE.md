@@ -44,3 +44,28 @@ The data plane is not allowed to perform aggressive work simply because it is in
 
 ## Local-first design
 No cloud is required for normal operation. Diagnostic exports are user-initiated or sent through a future trusted BCP bridge.
+
+
+### Mobile Assist Level 1
+
+Runs in the existing control plane and does not require VpnService.
+
+Inputs:
+- active Android transport/validation;
+- passive bandwidth estimates;
+- NOT_CONGESTED / NOT_SUSPENDED capabilities;
+- Mobile Vault budget state;
+- battery/thermal/low-memory guard;
+- recent Mobile Assist receipts.
+
+Permitted executor action:
+- requestBandwidthUpdate on the still-active validated cellular network.
+
+The action is metadata refresh only. It does not create a test flow, own routing, request a new cellular network or alter Android validation state.
+
+Manual fallback:
+- explicit user tap may open Android's Internet connectivity panel when the current cellular network is unvalidated/suspended.
+
+### Strong Mobile Stabilizer Level 2
+
+Remains in the separately gated Network Data Plane. See `docs/MOBILE_RESILIENCE.md`.
