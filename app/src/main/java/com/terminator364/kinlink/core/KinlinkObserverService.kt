@@ -21,6 +21,7 @@ class KinlinkObserverService : Service() {
     private lateinit var ledger: TelemetryLedger
     private lateinit var mobileBudget: MobileBudgetTracker
     private lateinit var recoveryModeStore: RecoveryModeStore
+    private lateinit var profileStore: AutopilotProfileStore
     private var recovery: AutopilotRecoveryController? = null
     private var mobileAssist: MobileAssistController? = null
     private val handoffAudit = NetworkHandoffAudit()
@@ -87,6 +88,7 @@ class KinlinkObserverService : Service() {
         ledger = TelemetryLedger(this)
         mobileBudget = MobileBudgetTracker(this)
         recoveryModeStore = RecoveryModeStore(this)
+        profileStore = AutopilotProfileStore(this)
         postUpdateSelfTestStore = PostUpdateSelfTestStore(this)
         runtimeBudgetSampler = RuntimeBudgetSampler(this)
         runtimeBudgetStart = runtimeBudgetSampler.sample()
@@ -258,7 +260,11 @@ class KinlinkObserverService : Service() {
                 updateNotificationFor(truth, passiveProblem)
                 val recoveryMode = recoveryModeStore.current()
                 if (truth.transport == Transport.CELLULAR) {
-                    mobileAssist?.onTruth(truth, recoveryMode)
+                    mobileAssist?.onTruth(
+                        truth,
+                        recoveryMode,
+                        profileStore.current()
+                    )
                 }
                 if (ActiveRecoveryPolicy.allowed(recoveryMode, truth.transport)) {
                     recovery?.onTruth(truth, stability.assessment.score)
@@ -369,7 +375,8 @@ class KinlinkObserverService : Service() {
             }
             mobileAssist?.onTruth(
                 truth,
-                recoveryModeStore.current()
+                recoveryModeStore.current(),
+                profileStore.current()
             )
         }
     }
