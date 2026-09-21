@@ -1,7 +1,7 @@
 {
   "schema": "kinlink.resume_capsule/1",
   "project": "KINLINK",
-  "generated_at": "2026-09-21T23:05:00+01:00",
+  "generated_at": "2026-09-21T23:34:00+01:00",
   "purpose": "cold-start a new conversation from durable truth and detect stale/partially synchronized memory before product work",
   "immutable_history": {
     "repo_initial_commit": "e066f17a7d804acad538aa58b5cb35cda06b6014",
@@ -27,7 +27,7 @@
     },
     {
       "path": ".project-memory/COMMUNICATION_PROTOCOL.json",
-      "git_blob_sha1": "2e9db7016ebadfe26536d17603882f630654bbcc"
+      "git_blob_sha1": "a313852def984cb002955741b97ac05f8d57a125"
     },
     {
       "path": ".project-memory/COMMUNICATION_STATE_MACHINE.json",
@@ -35,11 +35,11 @@
     },
     {
       "path": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json",
-      "git_blob_sha1": "22bfc81c6d8ddd03bc19bf045b1165e2b9f82f61"
+      "git_blob_sha1": "8104e5013facb5ec241cca2e27993055315e3c91"
     },
     {
       "path": ".project-memory/DEAD_END_REGISTRY.json",
-      "git_blob_sha1": "ecc3e824380a372ff5c2027ef00d517fba0764f1"
+      "git_blob_sha1": "a9fa8a1757aa3addb5cc5756bef996e0d25aa9bb"
     },
     {
       "path": ".project-memory/DELIVERY_SECURITY_POLICY.json",
@@ -122,6 +122,7 @@
     "Volatile state is always read fresh and is never trusted from this capsule.",
     "A CLOSED tranche is never reused.",
     "The watchdog repairs communication state only; it never starts orphan product work.",
-    "User-facing install is not the unit of engineering progress."
+    "User-facing install is not the unit of engineering progress.",
+    "CLOSE_INTENT without END ACK is a P0 fault; any next foreground takeover must reconcile it before opening new work."
   ]
 }

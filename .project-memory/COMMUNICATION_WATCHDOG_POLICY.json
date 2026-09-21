@@ -39,7 +39,7 @@
   "limitation": "Hourly watchdog cannot guarantee sub-hour repair; primary in-turn protocol remains the first line of defense.",
   "stale_work_threshold_minutes": 28,
   "stale_work_recovery": {
-    "condition": "START_ACKNOWLEDGED/WORKING with no END and START age > 35 minutes",
+    "condition": "START_ACKNOWLEDGED/WORKING with no END and START age >= 28 minutes unless durable state proves an intentional active extension",
     "action": "persist interruption close intent from durable facts only, send/verify exactly one END, persist CLOSED",
     "invent_unproved_work": false
   },
