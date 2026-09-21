@@ -1,46 +1,47 @@
 {
   "project": "KINLINK",
-  "line": "0.7.1-dev",
+  "line": "0.7.1",
   "versionCode": 9,
-  "code_head": "4e1459b802ae52b9edcb5de382db50927ebc6fcd",
-  "latest_full_machine_pass": "18907ecb5c365335a4f9c102a2b0610796da3983",
-  "field_candidate_allowed": false,
+  "code_head": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
+  "latest_full_machine_pass": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
+  "field_candidate_allowed": true,
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
-      "status": "PENDING",
-      "evidence": "exact-head Android CI + design-lint pending for 0.7.1 CA-001..CA-012 consolidated batch"
+      "status": "PASS",
+      "evidence": "android-0.7.1-candidate run 35590793691 PASS + design-lint run 35590793645 PASS on exact head 9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5"
     },
     "MIGRATION": {
-      "status": "PENDING",
-      "evidence": "telemetry schema remains v5; executable migration simulation must pass on final exact head"
+      "status": "PASS",
+      "evidence": "design-lint run 35590793645 executed telemetry migration simulation successfully on exact head 9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5"
     },
     "SIGNER_CONTINUITY": {
-      "status": "PENDING",
-      "evidence": "successor must be signed with canonical certificate SHA-256 2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
+      "status": "PASS",
+      "evidence": "exact CI unsigned APK 25ff61529a7bc009543fe39edad05bd356b4ec4664be9da591af45721c34feff stable-signed privately; signed APK db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329 verifies APK Signature Scheme v3 with one signer and canonical cert 2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
     },
     "FIELD_HANDOFF": {
       "status": "PENDING",
-      "evidence": "must be collected with versionCode 9 scoped receipts on exact signed successor"
+      "evidence": "must be collected on exact signed 0.7.1 / versionCode 9 after Drive staging and one in-place field install"
     },
     "RESOURCE_QUALIFICATION": {
       "status": "PENDING",
-      "evidence": "must be collected with versionCode 9 scoped receipts after quantization/retry repair"
+      "evidence": "must be collected on exact signed 0.7.1 / versionCode 9 after Drive staging and one in-place field install"
     }
   },
   "counter_audit_repairs": {
-    "CA-001": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
-    "CA-002": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
-    "CA-003": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
-    "CA-004": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
-    "CA-005": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
-    "CA-006": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
-    "CA-007": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
-    "CA-008": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
-    "CA-009": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
-    "CA-010": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
-    "CA-011": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
-    "CA-012": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI"
+    "CA-001": "CLOSED_MACHINE_PASS",
+    "CA-002": "CLOSED_MACHINE_PASS",
+    "CA-003": "CLOSED_MACHINE_PASS",
+    "CA-004": "CLOSED_MACHINE_PASS",
+    "CA-005": "CLOSED_MACHINE_PASS",
+    "CA-006": "CLOSED_MACHINE_PASS",
+    "CA-007": "CLOSED_MACHINE_PASS",
+    "CA-008": "CLOSED_MACHINE_PASS",
+    "CA-009": "CLOSED_MACHINE_PASS",
+    "CA-010": "CLOSED_MACHINE_PASS",
+    "CA-011": "CLOSED_MACHINE_PASS",
+    "CA-012": "CLOSED_MACHINE_PASS",
+    "CA-013": "CLOSED_MACHINE_PASS"
   },
   "invariants": [
     "No micro-beta chain",
@@ -65,5 +66,26 @@
     "bounded shared diagnostic helper executor",
     "structured privacy-safe diagnostic ZIP core bundle",
     "exhaustive P0 transport/resource scenario sweep"
-  ]
+  ],
+  "machine_artifact": {
+    "source_commit": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
+    "android_ci_run": 35590793691,
+    "design_lint_run": 35590793645,
+    "artifact_id": 10634896108,
+    "artifact_zip_sha256": "96b903ba823196ef119bb77975b8bc6ad307b96206492960a7bd1c344c93d315",
+    "unsigned_apk_sha256": "25ff61529a7bc009543fe39edad05bd356b4ec4664be9da591af45721c34feff",
+    "unsigned_size_bytes": 318300
+  },
+  "signed_field_candidate": {
+    "version": "0.7.1",
+    "versionCode": 9,
+    "source_commit": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
+    "signed_apk_sha256": "db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329",
+    "signed_size_bytes": 336843,
+    "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
+    "signature_scheme": "V3_PASS",
+    "signers": 1,
+    "delivery": "DRIVE_STAGE_PENDING_INTERNAL_FILE_BRIDGE",
+    "canonical": false
+  }
 }
