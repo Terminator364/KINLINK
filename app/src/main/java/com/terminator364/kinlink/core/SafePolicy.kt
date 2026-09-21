@@ -50,7 +50,7 @@ object MobileVault {
             SafeDecision(
                 "État insuffisant ou mobile actif",
                 VaultAction.NO_ACTION,
-                "Fail-open : Android conserve le contrôle"
+                "Mode sûr : Android conserve le contrôle"
             )
     }
 }
