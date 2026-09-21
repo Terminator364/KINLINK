@@ -4,6 +4,7 @@ enum class MobileAssistEvidenceResult {
     METRICS_AVAILABLE,
     SUSTAINED_BETTER,
     RELAPSED,
+    RELAPSED_AFTER_SUSTAINED,
     NO_BETTER,
     INCONCLUSIVE
 }
@@ -31,9 +32,17 @@ class MobileAssistEvidenceTracker {
         var firstBetterAt: Long? = null
     )
 
+    private data class SustainedWatch(
+        val originalBaseline: PassiveLinkQuality,
+        val confirmedQuality: PassiveLinkQuality,
+        val confirmedAt: Long
+    )
+
     private var active: Active? = null
+    private var sustainedWatch: SustainedWatch? = null
 
     fun start(truth: NetworkTruth) {
+        sustainedWatch = null
         active = Active(
             baseline = PassiveLinkQualityPolicy.assess(truth).quality,
             startedAt = truth.observedAtMillis,
@@ -43,6 +52,28 @@ class MobileAssistEvidenceTracker {
     }
 
     fun observe(truth: NetworkTruth): MobileAssistEvidence? {
+        sustainedWatch?.let { watch ->
+            val age = truth.observedAtMillis - watch.confirmedAt
+            if (age < 0L || age > RELAPSE_MONITOR_WINDOW_MS) {
+                sustainedWatch = null
+            } else if (
+                truth.transport == Transport.CELLULAR &&
+                truth.internetState == InternetState.VALIDATED &&
+                rank(PassiveLinkQualityPolicy.assess(truth).quality) <=
+                    rank(watch.originalBaseline)
+            ) {
+                val current = PassiveLinkQualityPolicy.assess(truth).quality
+                sustainedWatch = null
+                return MobileAssistEvidence(
+                    MobileAssistEvidenceResult.RELAPSED_AFTER_SUSTAINED,
+                    watch.originalBaseline,
+                    current,
+                    age,
+                    "La qualité était restée meilleure puis est retombée au niveau de départ; KINLINK peut réévaluer après cooldown."
+                )
+            }
+        }
+
         val state = active ?: return null
         val elapsed = truth.observedAtMillis - state.startedAt
         val current = PassiveLinkQualityPolicy.assess(truth).quality
@@ -83,6 +114,11 @@ class MobileAssistEvidenceTracker {
             }
             if (truth.observedAtMillis - firstBetter >= MIN_SUSTAINED_BETTER_MS) {
                 active = null
+                sustainedWatch = SustainedWatch(
+                    originalBaseline = state.baseline,
+                    confirmedQuality = current,
+                    confirmedAt = truth.observedAtMillis
+                )
                 return MobileAssistEvidence(
                     MobileAssistEvidenceResult.SUSTAINED_BETTER,
                     state.baseline,
@@ -130,5 +166,6 @@ class MobileAssistEvidenceTracker {
         const val MIN_SUSTAINED_BETTER_MS = 20_000L
         const val NO_BENEFIT_AFTER_MS = 60_000L
         const val MAX_EVIDENCE_WINDOW_MS = 180_000L
+        const val RELAPSE_MONITOR_WINDOW_MS = 10L * 60L * 1000L
     }
 }
