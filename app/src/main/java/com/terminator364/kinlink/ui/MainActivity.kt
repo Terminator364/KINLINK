@@ -491,7 +491,7 @@ class MainActivity : Activity() {
                     PassiveLinkQualityPolicy.assess(latestTruth).quality
                 val baselineScore =
                     PassiveQualityScorePolicy.score(latestTruth).score
-                val baselineObservedAt = latestTruth.observedAtMillis
+                val baselineObservedAt = SystemClock.elapsedRealtime()
 
                 val refreshed = runCatching {
                     cm.requestBandwidthUpdate(requireNotNull(network))
