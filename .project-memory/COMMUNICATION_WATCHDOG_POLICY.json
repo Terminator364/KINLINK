@@ -1,0 +1,39 @@
+{
+  "schema": "kinlink.communication_watchdog_policy/1",
+  "project": "KINLINK",
+  "name": "KINLINK Comms Watchdog",
+  "cardinality": 1,
+  "timing_mode": "condition_watch",
+  "cadence": "HOURLY",
+  "purpose": "repair missed START/END closure and continuity gaps without creating duplicate communication",
+  "source_of_truth": [
+    ".project-memory/ACTIVE_TRANCHE.json",
+    ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl",
+    ".project-memory/COMMUNICATION_PROTOCOL.json",
+    ".project-memory/COMMUNICATION_STATE_MACHINE.json",
+    "project_state.json",
+    "NEXT_UNCOMMITTED_ACTION.md",
+    "Gmail thread/provider message IDs"
+  ],
+  "reconciliation_order": [
+    "READ_DURABLE_TRANCHE_STATE",
+    "READ_LEDGER",
+    "VERIFY_GMAIL_THREAD_BEFORE_SEND",
+    "IF_END_ALREADY_EXISTS_PERSIST_ACK_ONLY",
+    "IF_CHECKPOINTED_OR_CLOSE_INTENT_AND_END_MISSING_SEND_EXACTLY_ONE_END",
+    "VERIFY_PROVIDER_ACK",
+    "PERSIST_END_ACK_AND_CLOSED",
+    "IF_MISSION_CONTINUES_REQUIRE_NEW_TRANCHE_AND_NEW_START_BEFORE_SUBSTANTIVE_WORK"
+  ],
+  "invariants": [
+    "Intermediate PDF/report/artifact mail is neither START nor END unless explicitly typed.",
+    "Never reuse a CLOSED tranche.",
+    "Never send duplicate END after provider ACK already exists.",
+    "Never bypass platform/security controls.",
+    "Healthy state produces no notification.",
+    "Notify only after a real repair or unresolved fault requiring human action.",
+    "Watchdog repairs communication state; it does not silently invent product work progress."
+  ],
+  "idempotency": "Provider message_id/thread_id plus delivery_key are reconciliation keys.",
+  "limitation": "Hourly watchdog cannot guarantee sub-hour repair; primary in-turn protocol remains the first line of defense."
+}

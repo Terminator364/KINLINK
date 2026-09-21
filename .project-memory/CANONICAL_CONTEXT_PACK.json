@@ -39,7 +39,11 @@
   "communication": {
     "current_tranche": "KINLINK-2026-09-21-2049-K25-08",
     "state": "START_ACKNOWLEDGED_WORKING",
-    "gmail_start_message_id": "1a0c58438ce7c050"
+    "gmail_start_message_id": "1a0c58438ce7c050",
+    "watchdog": "KINLINK Comms Watchdog",
+    "watchdog_cardinality": 1,
+    "watchdog_cadence": "HOURLY",
+    "watchdog_policy": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json"
   },
   "next_action": "Wait for exact-head 0.8 CI after harness/eligibility fixes; inspect rendered proof; continue large integrated A+B+C blocks; no phone install."
 }

@@ -33,7 +33,9 @@
     ".project-memory/CANONICAL_CONTEXT_PACK.json",
     ".project-memory/SUPERSESSION_LEDGER.json",
     ".project-memory/B_EXPANSION_LEDGER.json",
-    "docs/B_EXPANSION_V2.md"
+    "docs/B_EXPANSION_V2.md",
+    "docs/B_EXPANSION_V3.md",
+    ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json"
   ],
   "takeover_algorithm": [
     "DO_NOT_ASK_USER_TO_RECONSTRUCT_PRIOR_CHAT",

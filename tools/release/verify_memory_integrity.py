@@ -44,6 +44,7 @@ for s in sup["entries"]:
 
 required_memory=[
     ".project-memory/MEMORY_POLICY_V2.json",
+    ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json",
     ".project-memory/PROJECT_CHRONICLE.jsonl",
     ".project-memory/CANONICAL_CONTEXT_PACK.json",
     ".project-memory/SUPERSESSION_LEDGER.json",
@@ -61,4 +62,10 @@ req("CONFLICT" in policy["admission_states"],"conflict/HOLD model missing")
 req("READBACK" in policy["write_protocol"],"readback missing")
 req("APPEND_CHRONICLE_EVENT" in policy["write_protocol"],"chronicle append missing")
 req("REFRESH_DERIVED_CONTEXT_PACK" in policy["write_protocol"],"context pack refresh missing")
+watch=load(".project-memory/COMMUNICATION_WATCHDOG_POLICY.json")
+req(watch.get("schema")=="kinlink.communication_watchdog_policy/1","watchdog policy schema")
+req(watch.get("cardinality")==1,"watchdog cardinality must remain exactly one")
+req(watch.get("name")=="KINLINK Comms Watchdog","watchdog name drift")
+req(watch.get("cadence")=="HOURLY","watchdog cadence drift")
+req(pack.get("communication",{}).get("watchdog_cardinality")==1,"context pack watchdog cardinality stale")
 print(f"memory-integrity: PASS | chronicle={len(chron)} | B-depth={len(ids)} | macros={score['result']['macro_capabilities']} | maturity={score['result']['overall_percent']}%")
