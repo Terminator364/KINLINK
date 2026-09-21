@@ -33,6 +33,9 @@ data class RecentReliabilityWindow(
     val lowQualityEpisodeCount: Int = 0,
     val lowQualityCumulativeMillis: Long = 0L,
     val lowQualityLongestMillis: Long = 0L,
+    val mobileLowQualityEpisodeCount: Int = 0,
+    val mobileLowQualityCumulativeMillis: Long = 0L,
+    val mobileLowQualityLongestMillis: Long = 0L,
     val qualityTrend: QualityTrend = QualityTrend.INSUFFICIENT
 )
 
@@ -313,6 +316,24 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             cursor.getLong(0) to cursor.getLong(1)
         }
 
+    fun mobileLowQualityDurationStatsSince(sinceWallMs: Long): Triple<Int, Long, Long> =
+        readableDatabase.rawQuery(
+            "SELECT COUNT(duration_ms), COALESCE(SUM(duration_ms), 0), COALESCE(MAX(duration_ms), 0) FROM action_receipts WHERE action LIKE 'MOBILE_LOW_QUALITY_EPISODE_%' AND duration_ms IS NOT NULL AND ts_wall_ms >= ?",
+            arrayOf(sinceWallMs.toString())
+        ).use { cursor ->
+            cursor.moveToFirst()
+            Triple(cursor.getInt(0), cursor.getLong(1), cursor.getLong(2))
+        }
+
+    fun mobileLowQualityDurationStats(): Pair<Long, Long> =
+        readableDatabase.rawQuery(
+            "SELECT COALESCE(SUM(duration_ms), 0), COALESCE(MAX(duration_ms), 0) FROM action_receipts WHERE action LIKE 'MOBILE_LOW_QUALITY_EPISODE_%' AND duration_ms IS NOT NULL",
+            null
+        ).use { cursor ->
+            cursor.moveToFirst()
+            cursor.getLong(0) to cursor.getLong(1)
+        }
+
     fun interruptionDurationStats(): Pair<Long, Long> =
         readableDatabase.rawQuery(
             "SELECT COALESCE(SUM(duration_ms), 0), COALESCE(MAX(duration_ms), 0) FROM action_receipts WHERE action LIKE 'INTERRUPTION_%' AND duration_ms IS NOT NULL",
@@ -345,6 +366,7 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         val since = nowMillis - windowMillis
         val interruptions = interruptionDurationStatsSince(since)
         val lowQuality = lowQualityDurationStatsSince(since)
+        val mobileLowQuality = mobileLowQualityDurationStatsSince(since)
         val causes = actionCountsByPrefixSince("PASSIVE_CAUSE_", since)
         val dominant = causes.maxByOrNull { it.value }?.key
         return RecentReliabilityWindow(
@@ -355,6 +377,9 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             lowQualityEpisodeCount = lowQuality.first,
             lowQualityCumulativeMillis = lowQuality.second,
             lowQualityLongestMillis = lowQuality.third,
+            mobileLowQualityEpisodeCount = mobileLowQuality.first,
+            mobileLowQualityCumulativeMillis = mobileLowQuality.second,
+            mobileLowQualityLongestMillis = mobileLowQuality.third,
             qualityTrend = recentQualityTrend(since)
         )
     }
@@ -502,9 +527,11 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
 
         val interruptionDurations = interruptionDurationStats()
         val lowQualityDurations = lowQualityDurationStats()
+        val mobileLowQualityDurations = mobileLowQualityDurationStats()
         val interruptions1h = interruptionDurationStatsSince(now - 60L * 60L * 1000L)
         val interruptions24h = interruptionDurationStatsSince(now - 24L * 60L * 60L * 1000L)
         val lowQuality24h = lowQualityDurationStatsSince(now - 24L * 60L * 60L * 1000L)
+        val mobileLowQuality24h = mobileLowQualityDurationStatsSince(now - 24L * 60L * 60L * 1000L)
         val causes24h = actionCountsByPrefixSince("PASSIVE_CAUSE_", now - 24L * 60L * 60L * 1000L)
         val recoveryDurations = actionDurationStats("AUTO_RECOVERY")
         val stability = stabilityWindow(now)
@@ -582,6 +609,9 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             lowQualityEpisodes = countActions("LOW_QUALITY_EPISODE_"),
             totalLowQualityMillis = lowQualityDurations.first,
             longestLowQualityMillis = lowQualityDurations.second,
+            mobileLowQualityEpisodes = countActions("MOBILE_LOW_QUALITY_EPISODE_"),
+            totalMobileLowQualityMillis = mobileLowQualityDurations.first,
+            longestMobileLowQualityMillis = mobileLowQualityDurations.second,
             passiveCauseCounts = actionCountsByPrefix("PASSIVE_CAUSE_"),
             coreSelfTestPasses = countSuccessfulActions("SELF_TEST_CORE"),
             observerSelfTestPasses = countSuccessfulActions("SELF_TEST_OBSERVER_CALLBACK"),
@@ -599,6 +629,9 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             recent24hLowQualityEpisodeCount = lowQuality24h.first,
             recent24hLowQualityMillis = lowQuality24h.second,
             recent24hLowQualityLongestMillis = lowQuality24h.third,
+            recent24hMobileLowQualityEpisodeCount = mobileLowQuality24h.first,
+            recent24hMobileLowQualityMillis = mobileLowQuality24h.second,
+            recent24hMobileLowQualityLongestMillis = mobileLowQuality24h.third,
             userIncidentMarkers = countActions("USER_INCIDENT_MARKER"),
             latestUserIncidentMarkerMillis = latestIncidentMarker,
             incidentWindowActions = incidentWindowActions,
