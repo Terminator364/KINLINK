@@ -8,10 +8,10 @@
 
 ## Full product scope
 - A+B+C macro capabilities: **80**
-- conservative maturity: **44.8%**
+- conservative maturity: **45.1%**
 - B-depth: **B31-B100** / 70 subrequirements
 - integrated program: **W0-W6**
-- W1 is substantially qualified; **W2 has started under B5 attribution/permission rules**
+- W1 is substantially qualified; **W2 is active under B5 attribution/permission rules**
 - no user-facing micro-beta chain
 
 ## Continuity state
@@ -57,3 +57,8 @@ New W2 executable core:
 - no paid probe and no Strong Stabilizer traffic enabled
 
 No signing, Drive staging or phone installation yet.
+
+## Macro maturity movement
+- K014 Mobile Vault hard economic envelopes: **IMPLEMENTED_UNQUALIFIED** after exact-head `3b12df65...` Android run `35659643216` PASS.
+- Global conservative A+B+C maturity: **45.1%**.
+- Active store head: `f2a6393abc77f38e695e1516191a6069d59fab77` (CI pending at this checkpoint).

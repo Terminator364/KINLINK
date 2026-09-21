@@ -1,6 +1,6 @@
 {
   "schema": "kinlink.canonical_context_pack/2",
-  "generated_at": "2026-09-21T22:58:00+01:00",
+  "generated_at": "2026-09-21T23:04:00+01:00",
   "project": "KINLINK",
   "immutable_A": {
     "preconception_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
@@ -24,7 +24,7 @@
   },
   "completion": {
     "macro_count": 80,
-    "maturity_percent": 44.8,
+    "maturity_percent": 45.1,
     "rule": "B depth subrequirements do not change denominator until macro dedup review."
   },
   "field": {
@@ -34,13 +34,13 @@
   "active_engineering": {
     "successor": "0.8.0-dev/versionCode12",
     "branch": "dev/0.8.0-integrated-truth-and-control",
-    "active_wave": "W2_CONTEXT_AND_MOBILE_VAULT_STARTED",
+    "active_wave": "W2_CONTEXT_AND_MOBILE_VAULT_CORE",
     "last_fully_audited_head": "b54020291f866042103ad0f63cae3645977638d1",
     "last_fully_audited_run": 35656916207,
-    "latest_head": "3b12df65ed64538159ca13eee752c3d8d762e3ad",
-    "latest_design_lint_run": 35659643320,
+    "latest_head": "f2a6393abc77f38e695e1516191a6069d59fab77",
+    "latest_design_lint_run": 35660447844,
     "latest_design_lint_status": "PASS",
-    "latest_android_run": 35659643216,
+    "latest_android_run": 35660447857,
     "latest_android_status": "IN_PROGRESS",
     "provenance_incident_head": "62a910a698286896af90d22551366f728ee0c4e7",
     "provenance_incident": "artifact manifest literal backreference values; fixed by deterministic Python parser",
@@ -63,7 +63,7 @@
     "watchdog_cadence": "HOURLY",
     "watchdog_policy": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json"
   },
-  "next_action": "Poll 3b12 Android run; continue W2 under B5 attribution/permission rules; no phone install.",
+  "next_action": "Poll f2a6393 Android run; if PASS continue W2 plan store/source reconciliation/UI; no phone install.",
   "memory": {
     "policy": ".project-memory/MEMORY_POLICY_V2.json",
     "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",

@@ -48,7 +48,7 @@
     "scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
     "ledger": ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
     "expected_macro_capabilities": 80,
-    "current_percent": 44.8,
+    "current_percent": 45.1,
     "superseded_metric": "56% recent-slice weighted metric",
     "rule": "Never quote completion from REQUIREMENTS_TRACEABILITY alone."
   },

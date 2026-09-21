@@ -23,7 +23,7 @@ Latest continuity simulation:
 - B5: **B31-B100**
 - C: append-only
 - 80 macro capabilities
-- 44.8% conservative maturity
+- 45.1% conservative maturity
 - B5 adds Usage Access/NetworkStats/per-SIM/restart/source-provenance rules without changing the denominator
 - program W0-W6
 - no micro-beta/user reinstall chain
@@ -36,11 +36,11 @@ Latest continuity simulation:
 
 ## Active exact head
 
-`3b12df65ed64538159ca13eee752c3d8d762e3ad`
+`f2a6393abc77f38e695e1516191a6069d59fab77`
 
 Runs:
-- design-lint `35659643320`: PASS
-- Android `35659643216`: IN PROGRESS at this checkpoint
+- design-lint `35660447844`: PASS
+- Android `35660447857`: IN PROGRESS at this checkpoint
 
 W2 first executable block:
 - `MobilePlanVaultPolicy.kt`
@@ -63,3 +63,7 @@ W2 first executable block:
 4. then continue toward W3/W4 without requesting a phone micro-update.
 
 Gmail START ACK before work; Gmail END ACK + durable CLOSED before app closeout.
+
+
+## Proven macro advancement
+K014 Mobile Vault economic envelopes advanced PARTIAL → IMPLEMENTED_UNQUALIFIED only after `3b12df65...` exact-head Android CI PASS. Global conservative maturity is now **45.1%**.

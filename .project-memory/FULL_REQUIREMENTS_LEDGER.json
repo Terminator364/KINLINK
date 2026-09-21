@@ -144,11 +144,11 @@
       "id": "K014",
       "title": "Mobile Vault hard economic envelopes",
       "provenance": "A+C",
-      "stage": "PARTIAL",
-      "points": 0.35,
+      "stage": "IMPLEMENTED_UNQUALIFIED",
+      "points": 0.6,
       "category": "data",
-      "evidence": "Budget states and one prudence threshold exist.",
-      "gap": "Original reserve/normal/rescue/critical envelopes are not implemented."
+      "evidence": "W2 MobilePlanVaultPolicy implements normal/protected-reserve/rescue/critical-interactive envelopes; exact-head 3b12 unit tests and Android CI PASS.",
+      "gap": "Policy core is implemented, but persisted plan setup, attributed cycle usage, UI and field evidence are still incomplete."
     },
     {
       "id": "K015",
