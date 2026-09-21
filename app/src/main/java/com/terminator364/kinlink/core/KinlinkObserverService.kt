@@ -209,7 +209,7 @@ class KinlinkObserverService : Service() {
                         "MOBILE_ASSIST_EVIDENCE_${evidence.result.name}",
                         evidence.result == MobileAssistEvidenceResult.METRICS_AVAILABLE ||
                             evidence.result == MobileAssistEvidenceResult.SUSTAINED_BETTER,
-                        "${evidence.summary} baseline=${evidence.baseline.name}; current=${evidence.current.name}; elapsedMs=${evidence.elapsedMillis}; transport=CELLULAR"
+                        "${evidence.summary} baseline=${evidence.baseline.name}/${evidence.baselineScore}; current=${evidence.current.name}/${evidence.currentScore}; elapsedMs=${evidence.elapsedMillis}; transport=CELLULAR"
                     )
                 }
                 interruptionTracker.observe(truth)?.let { interruption ->
