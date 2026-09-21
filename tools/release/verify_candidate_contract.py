@@ -128,3 +128,10 @@ require(
     and "callbackMatchesActive = network != null && network == activeNow" in OBSERVER,
     "candidate contract: stale non-default NetworkCallback events can reach truth/qualification logic",
 )
+
+require(
+    "WifiOptimizationContinuationPolicy.mayRefresh(" in OPT
+    and "sameActiveNetwork = activeAfterDiagnostics == network" in OPT
+    and "WifiOptimizationAction.HANDOFF_ABORTED" in OPT,
+    "candidate contract: manual Wi-Fi optimization can continue after active-network handoff",
+)
