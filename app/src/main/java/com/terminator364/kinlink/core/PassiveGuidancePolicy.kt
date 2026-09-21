@@ -70,10 +70,28 @@ object PassiveGuidancePolicy {
                 "Le réseau local est présent mais Android ne valide pas encore Internet. Les fonctions LAN restent préservées."
             )
 
+        PassiveProblemCause.MOBILE_NETWORK_SUSPENDED ->
+            PassiveGuidance(
+                "Réseau mobile suspendu",
+                "Android signale momentanément les données mobiles comme suspendues. KINLINK n’envoie aucun probe payant et attend la reprise."
+            )
+
+        PassiveProblemCause.MOBILE_CONGESTION_SUSPECT ->
+            PassiveGuidance(
+                "Congestion mobile possible",
+                "Internet mobile est validé mais la capacité passive est limitée. Mobile Assist peut rafraîchir les métriques Android sans speedtest ni trafic de test."
+            )
+
+        PassiveProblemCause.MOBILE_LOW_CAPACITY ->
+            PassiveGuidance(
+                "Données mobiles lentes",
+                "Internet mobile est disponible mais la capacité estimée est faible. Mobile Assist privilégie les actions zéro-probe et protège le forfait."
+            )
+
         PassiveProblemCause.MOBILE_UNVALIDATED ->
             PassiveGuidance(
                 "Données mobiles non confirmées",
-                "Android voit le transport mobile mais ne valide pas Internet. KINLINK observe seulement et ne relance pas les données mobiles."
+                "Android voit le transport mobile mais ne valide pas Internet. KINLINK peut proposer le panneau système de connectivité sans lancer de probe mobile."
             )
 
         PassiveProblemCause.UNKNOWN ->
