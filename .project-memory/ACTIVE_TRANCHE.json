@@ -7,8 +7,8 @@
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
   "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSE_INTENT_PERSISTED",
-  "status": "CLOSING",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "gmail_start_message_id": "1a0c5a147dbf6e83",
   "gmail_start_thread_id": "1a0c5a147dbf6e83",
   "gmail_label": "KINLINK",
@@ -77,5 +77,11 @@
       "observer_callback_race_hardening": "implemented and prior c8eb run passed",
       "install_requested": false
     }
-  }
+  },
+  "gmail_end_message_id": "1a0c5b473caaa367",
+  "gmail_end_thread_id": "1a0c5a147dbf6e83",
+  "end_mail_verified": true,
+  "closed_state": true,
+  "closed_at_provider_ts": "2026-09-21T20:42:12",
+  "closed_at_local": "2026-09-21T21:41:00+01:00"
 }
