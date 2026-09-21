@@ -200,3 +200,20 @@ Repair integrated:
 - pure regression tests cover accept/reject behavior;
 - candidate-contract CI requires the active-default fence.
 
+
+
+### CA-010 — manual Wi-Fi optimization could refresh a network that stopped being active
+
+The manual optimizer correctly pinned DNS/HTTP diagnostics to the captured Wi-Fi, but after those bounded diagnostics it called `requestBandwidthUpdate(network)` without one final active-default recheck.
+
+A handoff occurring between the final probe result and the refresh could therefore continue stale work on the old Wi-Fi object. This does not seize routing, but it violates the P0 rule that stale Wi-Fi work stops after Android changes active transport.
+
+**Verdict: blocking fail-open consistency defect for the consolidated successor.**
+
+Repair integrated:
+- manual optimization now rechecks that the originally captured network is still Android's active Wi-Fi before any post-diagnostic refresh;
+- metered-Wi-Fi refresh-only path performs the same guard;
+- handoff returns explicit `HANDOFF_ABORTED` with no remaining action;
+- pure continuation-policy tests cover all same-network/Wi-Fi combinations;
+- candidate-contract CI requires the post-diagnostic handoff fence.
+
