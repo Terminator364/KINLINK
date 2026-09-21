@@ -127,6 +127,21 @@ class MobileAssistPolicyTest {
     @Test fun manualAssistHasShortAntiSpamCooldown() {
         assertEquals(false, MobileAssistManualPolicy.allowed(29_999L))
         assertEquals(true, MobileAssistManualPolicy.allowed(30_000L))
+        assertEquals(
+            false,
+            MobileAssistManualPolicy.allowed(
+                30_000L,
+                recentActions = MobileAssistPolicy.MAX_ACTIONS_PER_HOUR
+            )
+        )
+        assertEquals(
+            false,
+            MobileAssistManualPolicy.allowed(
+                30_000L,
+                recentActions = 0,
+                resourceConstrained = true
+            )
+        )
     }
 
     @Test fun everyNonCellularTransportIsBlocked() {
