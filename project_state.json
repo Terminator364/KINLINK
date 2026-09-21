@@ -1,10 +1,10 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_2_INSTALLED_P0_UX_INVALID_0_7_3_DEV_ACTIVE",
-  "status": "ENGINEERING_ACTIVE_0_7_3_EXACT_HEAD_CI_PENDING",
+  "phase": "KINLINK_0_7_3_FIELD_CANDIDATE_READY_SINGLE_INSTALL_SURFACE",
+  "status": "FIELD_INSTALL_READY_AFTER_DELIVERY_SECURITY_REPAIR",
   "candidate": {
-    "version": "0.6.0-rc3",
-    "versionCode": 7
+    "version": "0.7.3-dev",
+    "versionCode": 11
   },
   "p0_mobile_handoff": {
     "status": "MACHINE_HARDENED",
@@ -23,8 +23,8 @@
     "versionCode 7",
     "durable boot/package-restart start receipts"
   ],
-  "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "new chat takeover via KINLINKGO; then final counter-audit exact 0.7.3 head 6ef270d83461628aa8a6a6356b0d56dece6f0ca1, responsive/emulator UI proof, freeze/sign/Drive readback one consolidated candidate; no reinstall request before gates",
+  "delivery": "SINGLE_HUMAN_INSTALL_SURFACE_READY",
+  "next_uncommitted_action": "install only KINLINK/INSTALLER/KINLINK_INSTALL_NOW.apk in place over 0.7.2; then verify v11 startup/UI/telemetry before canonical promotion",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -215,25 +215,22 @@
       ".project-memory/COMMUNICATION_PROTOCOL.json",
       ".project-memory/COMMUNICATION_STATE_MACHINE.json",
       ".project-memory/ACTIVE_TRANCHE.json",
-      ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl"
+      ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl",
+      ".project-memory/DELIVERY_SECURITY_POLICY.json"
     ],
     "repository": "Terminator364/KINLINK",
     "branch": "main",
-    "rule": "new conversation must reload durable state and communication protocol before substantive work; no chat reconstruction",
+    "rule": "reload durable work + communication + delivery-security state before substantive work; never reconstruct from chat; never bypass platform security controls",
     "takeover_bootstrap": ".project-memory/NEW_CONVERSATION_TAKEOVER.json",
     "takeover_doc": "docs/KINLINK_NEW_CONVERSATION_TAKEOVER.md"
   },
   "communication_protocol": {
-    "version": 3,
+    "version": 4,
     "tranche_style": "PRIMARY_NORMAL_CLOSE_25_MIN",
     "target_minutes": 25,
     "useful_work_minutes": 22,
     "normal_close_reserve_minutes": 3,
-    "normal_close_owner": "PRIMARY_ASSISTANT",
-    "backup_earliest_offset_minutes": 26,
-    "hard_guard_offset_minutes": 29,
-    "idempotency": "DELIVERY_KEY_GMAIL_SEARCH_PROVIDER_ACK",
-    "app_response": "ONLY_CHECK_GMAIL_PLUS_KINSHASA_DATE_TIME",
+    "final_reply_gate": "GMAIL_END_PROVIDER_ACK_AND_DURABLE_END_ACK",
     "gmail_label": "KINLINK",
     "apk_via_email": false
   },
@@ -246,7 +243,7 @@
       ],
       "result": "ONE_CONSOLIDATED_SIGNED_FIELD_CANDIDATE",
       "canonical_replacement": false,
-      "status": "PASS_FIELD_CANDIDATE_READY_0_7_2"
+      "status": "PASS_FIELD_CANDIDATE_READY_0_7_3"
     },
     "stage_b_canonical_promotion": {
       "required": [
@@ -257,7 +254,7 @@
         "RESOURCE_QUALIFICATION"
       ],
       "result": "CANONICAL_PROMOTION",
-      "status": "PENDING_TARGET_DEVICE_V10"
+      "status": "PENDING_TARGET_DEVICE_V11"
     }
   },
   "preliminary_signed_candidate": {
@@ -335,10 +332,12 @@
   },
   "drive_delivery": {
     "root_folder_id": "1hZSgKtpRZXRQxZyfnFMMXpueWWeLjr_n",
-    "installer_folder_id": "1YeKn5z_ZIP3MDVgw46KNUfLSafSvGhUM",
+    "installer_folder_id": "1HjnK_CtA_Bg5d19twTnYvGghCKY3AIc8",
     "field_candidate_folder_id": "1h_ptqB7kGycdfJHrN1MdK1vOqgbsyTWB",
     "signing_folder_id": "1V5ywV1P5WoM1mMcLyhtsT0SBf6sqnxCm",
-    "master_document_id": "1x8_wnTxvPEeNyYJTtQkdnC3Z8qulBYJNoDjMf2IHZBg"
+    "master_document_id": "1x8_wnTxvPEeNyYJTtQkdnC3Z8qulBYJNoDjMf2IHZBg",
+    "rollback_folder_id": "1YeKn5z_ZIP3MDVgw46KNUfLSafSvGhUM",
+    "human_install_filename": "KINLINK_INSTALL_NOW.apk"
   },
   "final_0_7_1_candidate": {
     "version": "0.7.1",
@@ -389,8 +388,8 @@
     "branch": "dev/0.7.3-final-like-ui-control",
     "version": "0.7.3-dev",
     "versionCode": 11,
-    "head": "6ef270d83461628aa8a6a6356b0d56dece6f0ca1",
-    "status": "EXACT_HEAD_CI_PENDING",
+    "head": "2aeac4cf801e60986c33347676e12310790d1d98",
+    "status": "FROZEN_SIGNED_DRIVE_READBACK_PASS",
     "design_lint_run": 35616879792,
     "android_ci_run": 35616879783,
     "integrated": [
@@ -403,7 +402,7 @@
       "exact battery/thermal/low-memory protection reason",
       "responsive UI static regression gate"
     ],
-    "install_requested": false,
+    "install_requested": true,
     "merge_to_main": false
   },
   "final_0_7_2_candidate": {
@@ -428,9 +427,41 @@
     "drive_readback_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
     "drive_readback_status": "PASS",
     "stage_a": "PASS",
-    "stage_b": "PENDING_TARGET_DEVICE_V10",
-    "installed": false,
+    "stage_b": "SUPERSEDED_BY_0_7_3_UI_HARDENING",
+    "installed": true,
     "canonical": false,
     "human_gate": "ONE_IN_PLACE_UPDATE_FROM_INSTALLED_0_7_1"
+  },
+  "final_0_7_3_candidate": {
+    "version": "0.7.3-dev",
+    "field_label": "0.7.3 final-like",
+    "versionCode": 11,
+    "source_commit": "2aeac4cf801e60986c33347676e12310790d1d98",
+    "design_lint_run": 35626585191,
+    "android_ci_run": 35626585156,
+    "rendered_ui_screenshots": 36,
+    "rendered_ui_gate": "PASS_ASSERTIONS_AND_MANUAL_VISUAL_REVIEW",
+    "signed_apk_sha256": "d268542a4e6d4a4a5869deddd71bf0aec32c46386d2193cf96da6b825e68877d",
+    "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
+    "field_candidate_drive_file_id": "1NvwAVPKHMXzK801X6xE9t2wDj1GIBtIB",
+    "installer_drive_file_id": "1dj2j2zhLmUPb63NVIaMx0jElpNdb04ky",
+    "drive_readback_sha256": "d268542a4e6d4a4a5869deddd71bf0aec32c46386d2193cf96da6b825e68877d",
+    "drive_readback_status": "PASS",
+    "update_compatibility": {
+      "installed_versionCode": 10,
+      "candidate_versionCode": 11,
+      "monotonic_version": "PASS",
+      "signer_continuity": "PASS",
+      "package_identity": "PASS"
+    },
+    "next_gate": "ONE_IN_PLACE_INSTALL_THEN_TARGET_DEVICE_FIELD_VERIFICATION"
+  },
+  "delivery_security": {
+    "policy": ".project-memory/DELIVERY_SECURITY_POLICY.json",
+    "human_surface": "KINLINK/INSTALLER/KINLINK_INSTALL_NOW.apk",
+    "rollback_surface": "KINLINK/ROLLBACK_CANONICAL_DO_NOT_INSTALL/KINLINK_LATEST.apk",
+    "last_incident": "old versionCode7 rollback was exposed as KINLINK_LATEST while versionCode10 was installed; Android rejected downgrade with generic invalid-package UI",
+    "remediation": "old installer folder renamed; new installer contains only exact v11 candidate; readback hash and signer verified",
+    "platform_security_controls": "never bypass; checkpoint and resume"
   }
 }
