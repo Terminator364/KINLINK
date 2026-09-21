@@ -2,12 +2,12 @@
   "project": "KINLINK",
   "cadence_minutes": 25,
   "start_sequence": [
-    "REPAIR_ANY_UNCLOSED_PRIOR_TRANCHE",
+    "RECONCILE_OR_CLOSE_ANY_PRIOR_TRANCHE",
     "SEND_GMAIL_START",
-    "VERIFY_START_PROVIDER_ACK_MESSAGE_ID",
+    "VERIFY_START_PROVIDER_ACK_MESSAGE_ID_AND_THREAD_ID",
     "APPLY_GMAIL_LABEL_KINLINK",
-    "PERSIST_ACTIVE_TRANCHE_WITH_START_MESSAGE_ID",
-    "ARM_CLOSEOUT_WATCHDOG_AND_HARD_END_GUARD",
+    "PERSIST_ACTIVE_TRANCHE_START_RECEIPT",
+    "ARM_POST_NOMINAL_BACKUP_GUARDS",
     "BEGIN_WORK"
   ],
   "feedback_during_tranche": "QUEUE_AND_INTEGRATE_WITHOUT_BREAKING_ACTIVE_TRANCHE",
@@ -32,19 +32,23 @@
   "end_mail_required_even_if_user_sends_intermediate_feedback": true,
   "violation_recovery": "IF_END_MAIL_MISSING_SEND_IT_BEFORE_ANY_OTHER_APP_REPLY",
   "evidence_required_each_tranche": [
+    "delivery_key",
     "gmail_start_message_id",
+    "gmail_start_thread_id",
     "durable_work_checkpoint",
-    "forced_closeout_entered",
+    "close_intent_persisted",
     "gmail_end_message_id",
-    "end_mail_verified"
+    "end_mail_verified",
+    "close_owner",
+    "closed_state"
   ],
   "closeout_reserve_minutes": 3,
   "primary_work_budget_minutes": 22,
   "max_mutation_groups_before_forced_closeout": 12,
   "closeout_reserve_rule": "AFTER_22_MIN_WORK_BUDGET_OR_MUTATION_BUDGET_EXHAUSTION_STOP_NEW_PRODUCT_MUTATIONS_AND_USE_FINAL_3_MINUTES_ONLY_FOR_CHECKPOINT_END_GMAIL_ACK_AND_CLOSE",
   "system_interruption_guard": {
-    "rule": "IF_PREVIOUS_ACTIVE_TRANCHE_LACKS_VERIFIED_END_MESSAGE_ID_REPAIR_IT_BEFORE_ANY_NEW_WORK_OR_APP_REPLY",
-    "required_first_action": "SEND_MISSING_GMAIL_END_REPORT",
+    "rule": "UNFINISHED_TRANCHE_IS_RECONCILED_FROM_GMAIL_AND_DURABLE_CHECKPOINT_BEFORE_NEW_WORK",
+    "required_first_action": "SEARCH_FOR_EXISTING_END_BEFORE_SENDING",
     "never_reply_in_app_with_unclosed_tranche": true
   },
   "bcp_imported_principles": [
@@ -67,10 +71,38 @@
     "CLOSED"
   ],
   "watchdog_policy": {
-    "closeout_watchdog": "ONE_SHOT_AT_WORK_BUDGET_BOUNDARY",
-    "hard_end_guard": "ONE_SHOT_AT_NOMINAL_TRANCHE_END",
-    "closeout_action": "IF_END_NOT_ACKED_STOP_NEW_MUTATIONS_AND_SEND_END_FROM_LATEST_DURABLE_STATE",
-    "hard_end_action": "IF_STILL_UNCLOSED_REPAIR_END_BEFORE_ANY_NEW_WORK_OR_APP_REPLY",
-    "normal_close": "DISABLE_PENDING_WATCHDOGS_AFTER_END_PROVIDER_ACK_AND_PERSISTED_CLOSED_STATE"
-  }
+    "normal_close": "PRIMARY_ASSISTANT_MINUTE_22_TO_25",
+    "shadow_backup": "ONE_SHOT_NOT_BEFORE_MINUTE_26",
+    "hard_guard": "ONE_SHOT_AT_OR_AFTER_MINUTE_29",
+    "backup_visible_semantics": "NORMAL_FIN_TRANCHE",
+    "duplicate_prevention": "SEARCH_THREAD_AND_DELIVERY_KEY_BEFORE_SEND",
+    "state_repair": "IF_MAIL_EXISTS_BUT_GITHUB_ACK_MISSING_RECONCILE_ONLY"
+  },
+  "schema": "kinlink.communication_protocol/2",
+  "normal_close_owner": "PRIMARY_ASSISTANT",
+  "backup_earliest_offset_minutes": 26,
+  "hard_guard_offset_minutes": 29,
+  "threading": "END_REPLY_TO_START_SAME_GMAIL_THREAD",
+  "idempotency": "DELIVERY_KEY_PLUS_START_THREAD_SEARCH_BEFORE_SEND",
+  "normal_end_sequence": [
+    "AT_MINUTE_22_ENTER_NORMAL_CLOSE_RESERVE",
+    "STOP_NEW_PRODUCT_MUTATIONS",
+    "PERSIST_CLOSE_INTENT_WITH_DELIVERY_KEY_AND_REPORT_CHECKPOINT",
+    "SEND_NORMAL_GMAIL_END_AS_REPLY_TO_START_THREAD",
+    "VERIFY_END_PROVIDER_ACK_MESSAGE_ID",
+    "APPLY_GMAIL_LABEL_KINLINK",
+    "PERSIST_END_ACK_AND_CLOSED",
+    "CANCEL_OR_RENDER_BACKUPS_NOOP",
+    "ONLY_THEN_REPLY_IN_CHAT_APP"
+  ],
+  "backup_sequence": [
+    "DO_NOT_RUN_BEFORE_NOMINAL_25_MIN_WINDOW",
+    "READ_ACTIVE_TRANCHE",
+    "SEARCH_GMAIL_THREAD_AND_DELIVERY_KEY_FOR_EXISTING_END",
+    "IF_EXISTING_END_FOUND_PERSIST_ACK_AND_CLOSE_WITHOUT_RESEND",
+    "ELSE_PERSIST_CLOSE_INTENT_IF_MISSING",
+    "SEND_SAME_NORMAL_FIN_TRANCHE_REPLY_TO_START",
+    "VERIFY_ACK_AND_CLOSE",
+    "NEVER_USE_USER_VISIBLE_RECOVERY_OR_RATTRAPAGE_SUBJECT"
+  ]
 }
