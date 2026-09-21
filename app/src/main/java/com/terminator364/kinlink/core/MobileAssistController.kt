@@ -63,10 +63,23 @@ class MobileAssistController(
         }
 
         val passiveQuality = PassiveLinkQualityPolicy.assess(truth).quality
+        val recentReliability = runCatching {
+            ledger.recentReliabilityWindow()
+        }.getOrNull()
+        val recentMobileDegradation =
+            (recentReliability?.mobileLowQualityEpisodeCount ?: 0) >= 3
+        val recentUserIssue = runCatching {
+            ledger.latestActionReceipt("USER_INCIDENT_MARKER")
+        }.getOrNull()?.let {
+            (nowWallMs - it.tsWallMs).coerceAtLeast(0L) <= 60L * 60L * 1000L
+        } ?: false
+        val recentExperienceDegraded =
+            recentMobileDegradation || recentUserIssue
         val healthyValidated =
             truth.internetState == InternetState.VALIDATED &&
                 truth.androidNotCongested &&
-                passiveQuality == PassiveLinkQuality.COMFORTABLE
+                passiveQuality == PassiveLinkQuality.COMFORTABLE &&
+                !recentExperienceDegraded
         if (healthyValidated) {
             return MobileAssistDecision(
                 MobileAssistAction.NONE,
@@ -99,7 +112,8 @@ class MobileAssistController(
             recentActions = recent,
             millisSinceLastAction = sinceLast,
             recentIneffectiveOutcomes = recentIneffective,
-            profile = profile
+            profile = profile,
+            recentExperienceDegraded = recentExperienceDegraded
         )
 
         if (decision.action != MobileAssistAction.REFRESH_LINK_METRICS) {

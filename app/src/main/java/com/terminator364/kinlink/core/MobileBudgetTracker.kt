@@ -18,6 +18,12 @@ data class MobileBudgetSnapshot(
 
     val dailyLimitMiB: Long?
         get() = dailyLimitBytes?.div(1024L * 1024L)
+
+    val usedTodayMB: Double
+        get() = usedTodayBytes.toDouble() / 1_000_000.0
+
+    val dailyLimitMB: Long?
+        get() = dailyLimitBytes?.div(1_000_000L)
 }
 
 object MobileBudgetSamplingPolicy {
@@ -81,6 +87,23 @@ class MobileBudgetTracker(context: Context) {
     fun configuredDailyLimitMiB(): Long? {
         val bytes = prefs.getLong(KEY_LIMIT_BYTES, 0L)
         return if (bytes > 0L) bytes / (1024L * 1024L) else null
+    }
+
+    fun setDailyLimitMB(limitMB: Int?) {
+        prefs.edit().apply {
+            if (limitMB == null || limitMB <= 0) remove(KEY_LIMIT_BYTES)
+            else putLong(KEY_LIMIT_BYTES, limitMB.toLong() * 1_000_000L)
+        }.apply()
+        synchronized(SAMPLE_LOCK) {
+            cachedSnapshot = null
+            cachedEpochDay = null
+            lastSampleElapsedMillis = null
+        }
+    }
+
+    fun configuredDailyLimitMB(): Long? {
+        val bytes = prefs.getLong(KEY_LIMIT_BYTES, 0L)
+        return if (bytes > 0L) bytes / 1_000_000L else null
     }
 
     fun sample(

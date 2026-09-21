@@ -38,7 +38,8 @@ object MobileAssistPolicy {
         recentActions: Int,
         millisSinceLastAction: Long,
         recentIneffectiveOutcomes: Int = 0,
-        profile: AutopilotProfile = AutopilotProfile.BALANCED
+        profile: AutopilotProfile = AutopilotProfile.BALANCED,
+        recentExperienceDegraded: Boolean = false
     ): MobileAssistDecision {
         val tuning = AutopilotProfileControlPolicy.tuning(profile)
         if (truth.transport != Transport.CELLULAR) {
@@ -100,6 +101,12 @@ object MobileAssistPolicy {
             )
         }
 
+        if (preferSystemPanel) {
+            return MobileAssistManualDecision(
+                MobileAssistManualAction.OPEN_SYSTEM_CONNECTIVITY_PANEL,
+                MobileAssistManualBlockReason.NONE
+            )
+        }
         if (recentActions >= tuning.mobileAssistMaxActionsPerHour) {
             return MobileAssistDecision(
                 MobileAssistAction.NONE,
@@ -129,7 +136,8 @@ object MobileAssistPolicy {
             quality == PassiveLinkQuality.CONSTRAINED ||
                 quality == PassiveLinkQuality.LIMITED ||
                 !truth.androidNotCongested ||
-                score < tuning.vigilanceFloor
+                score < tuning.vigilanceFloor ||
+                recentExperienceDegraded
 
         return if (degraded) {
             MobileAssistDecision(
@@ -181,7 +189,8 @@ object MobileAssistManualPolicy {
         resourceConstrained: Boolean,
         recentActions: Int,
         millisSinceLastAction: Long,
-        profile: AutopilotProfile = AutopilotProfile.BALANCED
+        profile: AutopilotProfile = AutopilotProfile.BALANCED,
+        preferSystemPanel: Boolean = false
     ): MobileAssistManualDecision {
         val tuning = AutopilotProfileControlPolicy.tuning(profile)
         if (!isCellular) {

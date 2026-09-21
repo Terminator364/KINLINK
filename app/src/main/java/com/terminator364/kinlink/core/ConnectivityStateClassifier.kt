@@ -41,7 +41,10 @@ object ConnectivityStateClassifier {
 
         truth.transport == Transport.WIFI &&
             truth.internetState == InternetState.VALIDATED &&
-            PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.CONSTRAINED ->
+            (
+                PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.CONSTRAINED ||
+                    PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.LIMITED
+            ) ->
             ConnectivityAssessment(
                 OperationalState.WIFI_DEGRADED,
                 "Wi-Fi connecté mais limité",
@@ -53,8 +56,8 @@ object ConnectivityStateClassifier {
         truth.transport == Transport.WIFI && truth.internetState == InternetState.VALIDATED ->
             ConnectivityAssessment(
                 OperationalState.WIFI_HEALTHY,
-                "Wi-Fi prêt",
-                "Internet est disponible par Wi-Fi. Les données mobiles restent préservées.",
+                "Wi-Fi connecté",
+                "Android valide l’accès Internet. La qualité ressentie n’est pas déduite de cette validation seule.",
                 preserveLan = true,
                 avoidAutomaticMobileUse = true
             )
@@ -104,8 +107,8 @@ object ConnectivityStateClassifier {
         truth.transport == Transport.CELLULAR && truth.internetState == InternetState.VALIDATED ->
             ConnectivityAssessment(
                 OperationalState.MOBILE_HEALTHY,
-                "Données mobiles disponibles",
-                "Internet mobile est validé. Mobile Assist surveille passivement et Android garde le routage.",
+                "Données mobiles connectées",
+                "Android valide l’accès mobile. La qualité ressentie reste à confirmer par l’historique et l’usage.",
                 false,
                 true
             )
