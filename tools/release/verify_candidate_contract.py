@@ -10,6 +10,7 @@ ACTIVE = (SRC / "com/terminator364/kinlink/core/ActiveRecoveryPolicy.kt").read_t
 AUTO = (SRC / "com/terminator364/kinlink/core/AutopilotRecoveryController.kt").read_text(encoding="utf-8")
 PROBE = (SRC / "com/terminator364/kinlink/core/WifiDoctorProbe.kt").read_text(encoding="utf-8")
 SERVICE = (SRC / "com/terminator364/kinlink/core/KinlinkObserverService.kt").read_text(encoding="utf-8")
+OBSERVER = (SRC / "com/terminator364/kinlink/core/NetworkObserver.kt").read_text(encoding="utf-8")
 OPT = (SRC / "com/terminator364/kinlink/core/WifiOptimizer.kt").read_text(encoding="utf-8")
 LEDGER = (SRC / "com/terminator364/kinlink/data/TelemetryLedger.kt").read_text(encoding="utf-8")
 
@@ -120,4 +121,10 @@ require(
         re.S,
     ) is None,
     "candidate contract: historical qualified receipt can still force a stale PASS verdict",
+)
+
+require(
+    "DefaultNetworkCallbackAcceptancePolicy" in OBSERVER
+    and "callbackMatchesActive = network != null && network == activeNow" in OBSERVER,
+    "candidate contract: stale non-default NetworkCallback events can reach truth/qualification logic",
 )
