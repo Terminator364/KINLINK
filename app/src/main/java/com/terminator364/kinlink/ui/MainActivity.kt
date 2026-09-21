@@ -501,7 +501,7 @@ class MainActivity : Activity() {
                 nowWall - MobileAssistPolicy.HOURLY_WINDOW_MS
             )
         }.getOrDefault(profileTuning.mobileAssistMaxActionsPerHour)
-        val resourceSnapshot = runCatching {
+        val resourceSnapshot = resourceSnapshotOverride ?: runCatching {
             DeviceResourceGuard(this).snapshot()
         }.getOrNull()
         val resourceConstrained = resourceSnapshot?.constrained ?: true
@@ -665,7 +665,8 @@ class MainActivity : Activity() {
     private fun render(
         truth: NetworkTruth,
         budget: MobileBudgetSnapshot = latestBudget,
-        stability: StabilityWindow? = latestStability
+        stability: StabilityWindow? = latestStability,
+        resourceSnapshotOverride: ResourceGuardSnapshot? = null
     ) {
         latestTruth = truth
         refreshFieldQualificationLabel()

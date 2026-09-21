@@ -2,7 +2,6 @@ package com.terminator364.kinlink.ui
 
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.os.ParcelFileDescriptor
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
@@ -17,10 +16,10 @@ import com.terminator364.kinlink.core.NetworkObserver
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
+import com.terminator364.kinlink.core.ResourceGuardSnapshot
 import com.terminator364.kinlink.core.Transport
 import com.terminator364.kinlink.data.StabilityWindow
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import org.junit.After
 import org.junit.Assert.assertFalse
@@ -39,13 +38,11 @@ class ResponsiveRenderMatrixTest {
     @Before
     fun resetMode() {
         RecoveryModeStore(targetContext).set(RecoveryMode.AUTOMATIC)
-        runShell("cmd power set-mode 0")
     }
 
     @After
     fun restoreMode() {
         RecoveryModeStore(targetContext).set(RecoveryMode.AUTOMATIC)
-        runShell("cmd power set-mode 0")
     }
 
     @Test
@@ -110,9 +107,17 @@ class ResponsiveRenderMatrixTest {
             }
 
             RecoveryModeStore(targetContext).set(RecoveryMode.AUTOMATIC)
-            runShell("cmd power set-mode 1")
-            instrumentation.waitForIdleSync()
-            renderAndCapture(scenario, "resource-constrained", cellularDegraded)
+            val constrainedResources = ResourceGuardSnapshot(
+                powerSaveMode = true,
+                thermalModerateOrWorse = false,
+                lowMemory = false
+            )
+            renderAndCapture(
+                scenario,
+                "resource-constrained",
+                cellularDegraded,
+                constrainedResources
+            )
             scenario.onActivity { activity ->
                 val evidence = activity.findViewById<TextView>(R.id.evidenceText)
                 assertTrue(
@@ -126,10 +131,11 @@ class ResponsiveRenderMatrixTest {
     private fun renderAndCapture(
         scenario: ActivityScenario<MainActivity>,
         stateName: String,
-        truth: NetworkTruth
+        truth: NetworkTruth,
+        resourceSnapshot: ResourceGuardSnapshot? = null
     ) {
         scenario.onActivity { activity ->
-            invokeRender(activity, truth)
+            invokeRender(activity, truth, resourceSnapshot)
             val root = activity.findViewById<ScrollView>(R.id.rootScroll)
             root.fullScroll(View.FOCUS_UP)
         }
@@ -152,7 +158,11 @@ class ResponsiveRenderMatrixTest {
         instrumentation.waitForIdleSync()
     }
 
-    private fun invokeRender(activity: MainActivity, truth: NetworkTruth) {
+    private fun invokeRender(
+        activity: MainActivity,
+        truth: NetworkTruth,
+        resourceSnapshot: ResourceGuardSnapshot? = null
+    ) {
         val budgetField = MainActivity::class.java.getDeclaredField("latestBudget").apply {
             isAccessible = true
         }
@@ -161,9 +171,10 @@ class ResponsiveRenderMatrixTest {
             "render",
             NetworkTruth::class.java,
             MobileBudgetSnapshot::class.java,
-            StabilityWindow::class.java
+            StabilityWindow::class.java,
+            ResourceGuardSnapshot::class.java
         ).apply { isAccessible = true }
-        method.invoke(activity, truth, budget, null)
+        method.invoke(activity, truth, budget, null, resourceSnapshot)
     }
 
     private fun stopLiveObserver(activity: MainActivity) {
@@ -280,13 +291,6 @@ class ResponsiveRenderMatrixTest {
         }
         bitmap.recycle()
         assertTrue("Screenshot missing: ${out.absolutePath}", out.isFile && out.length() > 0L)
-    }
-
-    private fun runShell(command: String) {
-        val descriptor: ParcelFileDescriptor =
-            instrumentation.uiAutomation.executeShellCommand(command)
-        FileInputStream(descriptor.fileDescriptor).use { it.readBytes() }
-        descriptor.close()
     }
 
     private fun dp(activity: MainActivity, value: Int): Int =
