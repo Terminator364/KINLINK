@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_1_MOBILE_ASSIST_FIELD_CANDIDATE_READY",
-  "status": "HUMAN_GATE_ONE_IN_PLACE_INSTALL_REQUIRED",
+  "phase": "KINLINK_0_7_1_INSTALLED_STAGE_B_PLUS_0_7_2_DEV",
+  "status": "FIELD_QUALIFICATION_AND_NEXT_LINE_ENGINEERING",
   "candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "user installs exact Drive field candidate 0.7.1 Mobile Assist in-place over installed 0.7.0; after install collect versionCode 9 self-test + handoff + >=30m resource evidence; do not replace canonical RC3 until Stage B PASS",
+  "next_uncommitted_action": "keep exact installed 0.7.1 frozen while collecting versionCode 9 Stage B self-test/handoff/resource evidence; continue UX + continuous-improvement engineering only on dev/0.7.2-continuous-improvement; do not canonically promote 0.7.1 until Stage B PASS and do not ask for 0.7.2 install until its exact-head CI/audit is fully green",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -68,14 +68,15 @@
     "hero classifier surfaces validated-but-constrained Wi-Fi as degraded"
   ],
   "installed_field_baseline": {
-    "version": "0.7.0",
-    "versionCode": 8,
-    "signed_apk_sha256": "cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc",
+    "version": "0.7.1",
+    "versionCode": 9,
+    "signed_apk_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
     "installed": true,
+    "install_confirmation": "USER_CONFIRMATION_PLUS_SCREENSHOT_VERSION_LABEL",
     "usable": true,
     "canonical": false,
-    "promotion_invalidated": true,
-    "superseded_by": "0.7.1_STAGE_A_PASS_NOT_YET_DRIVE_STAGED"
+    "stage_b": "IN_PROGRESS",
+    "field_candidate_frozen": true
   },
   "development_line": {
     "version": "0.7.1",
@@ -239,7 +240,7 @@
         "RESOURCE_QUALIFICATION"
       ],
       "result": "CANONICAL_PROMOTION",
-      "status": "PENDING_TARGET_DEVICE_HANDOFF_AND_RESOURCE_EVIDENCE"
+      "status": "IN_PROGRESS_TARGET_DEVICE"
     }
   },
   "preliminary_signed_candidate": {
@@ -340,10 +341,10 @@
     "drive_readback_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
     "drive_readback_status": "PASS",
     "stage_a": "PASS",
-    "stage_b": "PENDING_TARGET_DEVICE",
-    "installed": false,
+    "stage_b": "IN_PROGRESS_TARGET_DEVICE",
+    "installed": true,
     "canonical": false,
-    "human_gate": "ONE_IN_PLACE_UPDATE_FROM_0_7_0"
+    "human_gate": "COMPLETED_INSTALL_NOW_COLLECT_EVIDENCE"
   },
   "canonical_drive_baseline": {
     "version": "0.6.0-rc3",
@@ -366,5 +367,14 @@
       "mechanism": "optional VpnService/TUN data plane",
       "rule": "must prove measurable benefit plus RAM/battery/latency/DNS/watchdog/rollback before enablement"
     }
+  },
+  "development_next_line": {
+    "branch": "dev/0.7.2-continuous-improvement",
+    "version": "0.7.2-dev",
+    "versionCode": 10,
+    "purpose": "compact final-like cockpit + sustained evidence/relapse model + lower healthy-path overhead",
+    "install_requested": false,
+    "merge_to_main": false,
+    "reason": "preserve exact installed 0.7.1 field-candidate freeze during Stage B"
   }
 }
