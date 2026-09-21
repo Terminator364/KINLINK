@@ -22,6 +22,7 @@ class KinlinkObserverService : Service() {
     private lateinit var mobileBudget: MobileBudgetTracker
     private lateinit var recoveryModeStore: RecoveryModeStore
     private lateinit var profileStore: AutopilotProfileStore
+    private var platformDiagnostics: PlatformConnectivityDiagnosticsObserver? = null
     private var recovery: AutopilotRecoveryController? = null
     private var mobileAssist: MobileAssistController? = null
     private val handoffAudit = NetworkHandoffAudit()
@@ -86,6 +87,22 @@ class KinlinkObserverService : Service() {
         }
 
         ledger = TelemetryLedger(this)
+        platformDiagnostics = PlatformConnectivityDiagnosticsObserver(this) { event ->
+            runCatching {
+                ledger.appendAction(event.action, event.success, event.summary)
+            }
+        }
+        val platformDiagnosticsStarted = platformDiagnostics?.start() == true
+        runCatching {
+            ledger.appendAction(
+                "PLATFORM_DIAGNOSTICS_OBSERVER",
+                platformDiagnosticsStarted,
+                if (platformDiagnosticsStarted)
+                    "Android ConnectivityDiagnostics actif; observation native sans probe KINLINK."
+                else
+                    "ConnectivityDiagnostics indisponible; KINLINK continue en mode fail-open."
+            )
+        }
         mobileBudget = MobileBudgetTracker(this)
         recoveryModeStore = RecoveryModeStore(this)
         profileStore = AutopilotProfileStore(this)
@@ -655,6 +672,7 @@ class KinlinkObserverService : Service() {
             maybeRecordRuntimeBudgetCheckpoint()
         }
         if (::observer.isInitialized) observer.stop()
+        platformDiagnostics?.stop()
         recovery?.close()
         if (::ledger.isInitialized) {
             if (::runtimeBudgetSampler.isInitialized) {

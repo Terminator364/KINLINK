@@ -75,19 +75,21 @@ object UserExperienceTruthPolicy {
         }
 
         if (
+            (reliability?.platformDataStallCount ?: 0) >= 2 ||
             burden == RecentReliabilityBurden.SEVERE ||
             burden == RecentReliabilityBurden.UNSTABLE
         ) {
-            val label = if (burden == RecentReliabilityBurden.SEVERE) {
-                "très instable sur 24 h"
-            } else {
-                "instable sur 24 h"
+            val platformStalls = reliability?.platformDataStallCount ?: 0
+            val label = when {
+                platformStalls >= 2 -> "stalls Android détectés"
+                burden == RecentReliabilityBurden.SEVERE -> "très instable sur 24 h"
+                else -> "instable sur 24 h"
             }
             return UserExperienceAssessment(
                 UserExperienceState.UNSTABLE_HISTORY,
                 "Internet disponible · historique instable",
                 label,
-                "Android confirme l’accès maintenant, mais l’historique récent montre des coupures ou lenteurs répétées.",
+                "Android confirme l’accès maintenant, mais l’historique récent ou ses diagnostics natifs montrent des coupures, lenteurs ou stalls.",
                 true
             )
         }

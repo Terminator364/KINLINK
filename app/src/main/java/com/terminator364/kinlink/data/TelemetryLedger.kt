@@ -36,6 +36,7 @@ data class RecentReliabilityWindow(
     val mobileLowQualityEpisodeCount: Int = 0,
     val mobileLowQualityCumulativeMillis: Long = 0L,
     val mobileLowQualityLongestMillis: Long = 0L,
+    val platformDataStallCount: Int = 0,
     val qualityTrend: QualityTrend = QualityTrend.INSUFFICIENT
 )
 
@@ -391,6 +392,7 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         val lowQuality = lowQualityDurationStatsSince(since)
         val mobileLowQuality = mobileLowQualityDurationStatsSince(since)
         val causes = actionCountsByPrefixSince("PASSIVE_CAUSE_", since)
+        val platformDataStalls = countActionsSince("PLATFORM_DATA_STALL", since)
         val dominant = causes.maxByOrNull { it.value }?.key
         return RecentReliabilityWindow(
             interruptionCount = interruptions.first,
@@ -403,6 +405,7 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             mobileLowQualityEpisodeCount = mobileLowQuality.first,
             mobileLowQualityCumulativeMillis = mobileLowQuality.second,
             mobileLowQualityLongestMillis = mobileLowQuality.third,
+            platformDataStallCount = platformDataStalls,
             qualityTrend = recentQualityTrend(since)
         )
     }

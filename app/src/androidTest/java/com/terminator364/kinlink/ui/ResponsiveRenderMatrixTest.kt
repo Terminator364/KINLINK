@@ -120,6 +120,7 @@ class ResponsiveRenderMatrixTest {
                 cellularDegraded,
                 constrainedResources
             )
+            captureExpandedSurfaces(scenario, cellularDegraded)
             scenario.onActivity { activity ->
                 val evidence = activity.findViewById<TextView>(R.id.evidenceText)
                 assertTrue(
@@ -157,6 +158,34 @@ class ResponsiveRenderMatrixTest {
         capture("${stateName}-bottom")
 
         scenario.onActivity { activity ->
+            activity.findViewById<ScrollView>(R.id.rootScroll).fullScroll(View.FOCUS_UP)
+        }
+        instrumentation.waitForIdleSync()
+    }
+
+    private fun captureExpandedSurfaces(
+        scenario: ActivityScenario<MainActivity>,
+        truth: NetworkTruth
+    ) {
+        scenario.onActivity { activity ->
+            invokeRender(activity, truth, null)
+            activity.findViewById<View>(R.id.budgetButton).performClick()
+        }
+        instrumentation.waitForIdleSync()
+        capture("mobile-data-dialog")
+        runShell("input keyevent KEYCODE_BACK")
+        instrumentation.waitForIdleSync()
+
+        scenario.onActivity { activity ->
+            activity.findViewById<View>(R.id.technicalToggle).performClick()
+            val detail = activity.findViewById<View>(R.id.detailText)
+            assertTrue("technical details did not expand", detail.visibility == View.VISIBLE)
+            activity.findViewById<ScrollView>(R.id.rootScroll).fullScroll(View.FOCUS_DOWN)
+        }
+        instrumentation.waitForIdleSync()
+        capture("technical-details")
+        scenario.onActivity { activity ->
+            activity.findViewById<View>(R.id.technicalToggle).performClick()
             activity.findViewById<ScrollView>(R.id.rootScroll).fullScroll(View.FOCUS_UP)
         }
         instrumentation.waitForIdleSync()

@@ -408,24 +408,20 @@ class MainActivity : Activity() {
     private fun configureMobileBudget() {
         val input = EditText(this).apply {
             inputType = InputType.TYPE_CLASS_NUMBER
-            hint = "Ex. 500 MB"
+            hint = "500 MB (0 = sans limite)"
             mobileBudget.configuredDailyLimitMB()?.let { setText(it.toString()) }
         }
 
         AlertDialog.Builder(this)
-            .setTitle("Limite de données mobiles")
+            .setTitle("Limite data mobile")
             .setMessage(
-                "Entre une limite quotidienne en MB. À partir de 1000 MB, KINLINK affiche aussi les valeurs en GB. " +
-                    "C’est le trafic mobile global vu par Android, pas ton solde opérateur."
+                "Limite quotidienne en MB. 0 = sans limite. " +
+                    "Le compteur Android est global au téléphone, pas ton solde opérateur."
             )
             .setView(input)
             .setPositiveButton("Enregistrer") { _, _ ->
                 val value = input.text.toString().trim().toIntOrNull()
-                mobileBudget.setDailyLimitMB(value)
-                refreshBudgetUi()
-            }
-            .setNeutralButton("Sans limite") { _, _ ->
-                mobileBudget.setDailyLimitMB(null)
+                mobileBudget.setDailyLimitMB(value?.takeIf { it > 0 })
                 refreshBudgetUi()
             }
             .setNegativeButton("Annuler", null)
@@ -991,6 +987,7 @@ class MainActivity : Activity() {
         }
         return "Historique 24 h · $burdenLabel · " +
             "${reliability.interruptionCount} coupure(s) · " +
+            "${reliability.platformDataStallCount} stall(s) Android · " +
             "${reliability.lowQualityEpisodeCount} épisode(s) Wi‑Fi lent · " +
             "${reliability.mobileLowQualityEpisodeCount} épisode(s) mobile lent"
     }

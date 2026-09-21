@@ -38,6 +38,19 @@ class UserExperienceTruthPolicyTest {
         assertTrue(result.degraded)
     }
 
+    @Test fun repeatedAndroidPlatformStallsOverrideOptimisticFrameworkEstimate() {
+        val reliability = RecentReliabilityWindow(
+            interruptionCount = 0,
+            cumulativeMillis = 0,
+            longestMillis = 0,
+            dominantCause = null,
+            platformDataStallCount = 2
+        )
+        val result = UserExperienceTruthPolicy.assess(mobile(), reliability, false)
+        assertEquals(UserExperienceState.UNSTABLE_HISTORY, result.state)
+        assertTrue(result.degraded)
+    }
+
     @Test fun explicitUserProblemReportOverridesFrameworkEstimate() {
         val result = UserExperienceTruthPolicy.assess(mobile(), null, true)
         assertEquals(UserExperienceState.USER_REPORTED_BAD, result.state)

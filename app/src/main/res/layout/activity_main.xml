@@ -81,7 +81,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:maxLines="3"
                 android:text="Connexion en cours d’analyse."
                 android:textColor="#DCE9FF"
                 android:textSize="14sp" />
