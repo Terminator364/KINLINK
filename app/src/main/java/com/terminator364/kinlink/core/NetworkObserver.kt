@@ -19,6 +19,9 @@ object DefaultNetworkCallbackAcceptancePolicy {
     ): Boolean =
         !callbackNetworkPresent ||
             (callbackMatchedBeforeReduction && callbackMatchedAfterReduction)
+
+    fun shouldCancelPendingLoss(callbackMatchesActive: Boolean): Boolean =
+        callbackMatchesActive
 }
 
 /** Observer only: any internal failure leaves Android networking untouched. */
@@ -34,11 +37,21 @@ class NetworkObserver(
 
     private val callback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            lossGeneration += 1L
+            if (DefaultNetworkCallbackAcceptancePolicy.shouldCancelPendingLoss(
+                    network == cm.activeNetwork
+                )
+            ) {
+                lossGeneration += 1L
+            }
             safePublish(network)
         }
         override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
-            lossGeneration += 1L
+            if (DefaultNetworkCallbackAcceptancePolicy.shouldCancelPendingLoss(
+                    network == cm.activeNetwork
+                )
+            ) {
+                lossGeneration += 1L
+            }
             safePublish(network, caps)
         }
         override fun onLinkPropertiesChanged(network: Network, lp: LinkProperties) =
