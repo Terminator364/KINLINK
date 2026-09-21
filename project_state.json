@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_FULL_A_B_C_RECONVERGENCE_0_8_ACTIVE",
-  "status": "FULL_PRECONCEPTION_RECOVERED_AND_CANONICALIZED",
+  "phase": "KINLINK_FULL_A_B_C_DEEP_B_MEMORY_V2_0_8_ACTIVE",
+  "status": "DEEP_B_AND_MEMORY_V2_CANONICAL_0_8_REQUALIFYING",
   "candidate": {
     "version": "0.7.3-dev",
     "versionCode": 11
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "SINGLE_HUMAN_INSTALL_SURFACE_READY",
-  "next_uncommitted_action": "fix only the 0.8 responsive harness ordering at run 35641697122; rerun exact-head CI; if PASS fetch and manually inspect all 42 captures; continue A+B+C integrated work; no field install",
+  "next_uncommitted_action": "poll Android run 35649559817 for exact head 37055626084349e0829325d4c28492c3617d5ea4; if PASS fetch and manually inspect all 45 screenshots including technical-details-start/bottom; then continue integrated A+B+C blocks; no phone install yet",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -466,19 +466,24 @@
     "version": "0.8.0-dev",
     "versionCode": 12,
     "branch": "dev/0.8.0-integrated-truth-and-control",
-    "exact_head": "1571f268eb914a8847b3f61c3ea15f6b7f40a64a",
+    "exact_head": "37055626084349e0829325d4c28492c3617d5ea4",
     "ci_run": 35634654534,
     "ci_status": "PASS_MACHINE_RENDERED_MATRIX",
     "manual_visual_audit": "PENDING_AND_REQUIRED",
     "scope_policy": "expand toward full A+B+C; no micro-beta chain",
-    "design_lint_run": 35641697131,
+    "design_lint_run": 35649559871,
     "design_lint_status": "PASS",
-    "android_ci_run": 35641697122,
-    "android_ci_status": "FAIL_RENDER_MATRIX_HARNESS_ORDERING",
+    "android_ci_run": 35649559817,
+    "android_ci_status": "PENDING_AT_CLOSE_INTENT",
     "machine_gates_before_render": "PASS",
     "failure_classification": "HARNESS_ORDERING_NOT_PRODUCT_UI",
     "failure_detail": "resource-constrained assertion executed after captureExpandedSurfaces re-rendered a non-constrained state; assertion no longer observed resource protection copy",
-    "next_fix": "move resource-constrained assertion before captureExpandedSurfaces or re-render constrained state before assertion; rerun exact-head CI; then inspect 42 screenshots"
+    "next_fix": "move resource-constrained assertion before captureExpandedSurfaces or re-render constrained state before assertion; rerun exact-head CI; then inspect 42 screenshots",
+    "prior_exact_head_f331_run": 35647686642,
+    "prior_exact_head_f331_status": "PASS_WITH_42_SCREENSHOTS",
+    "current_visual_gate": "45_SCREENSHOT_EXPANDED_TECHNICAL_DETAIL_REQUALIFICATION_PENDING",
+    "connectivity_diagnostics_truth": "Lite Observer explicitly ineligible; adapter dormant until KINLINK is an eligible connectivity provider",
+    "install_requested": false
   },
   "product_completion_scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
   "visual_counter_audit_policy": ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json",
@@ -494,6 +499,23 @@
     "drive_master_updated": true,
     "continuity_context_manifest": ".project-memory/CONTINUITY_CONTEXT_MANIFEST.json",
     "continuity_context_design_lint_run": 35642199255,
-    "continuity_context_design_lint_status": "PASS"
+    "continuity_context_design_lint_status": "PASS",
+    "b_depth_version": "B2",
+    "b_depth_range": "B31-B60",
+    "b_depth_count": 30,
+    "b_depth_ledger": ".project-memory/B_EXPANSION_LEDGER.json",
+    "memory_policy": ".project-memory/MEMORY_POLICY_V2.json",
+    "project_chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",
+    "context_pack": ".project-memory/CANONICAL_CONTEXT_PACK.json",
+    "supersession_ledger": ".project-memory/SUPERSESSION_LEDGER.json",
+    "memory_integrity_verifier": "tools/release/verify_memory_integrity.py",
+    "denominator_rule": "B depth subrequirements do not alter the 80-macro denominator unless explicit deduplication proves an independent macro capability"
+  },
+  "communication": {
+    "protocol": "v5",
+    "state_machine": "v5",
+    "active_tranche_schema": "v6",
+    "interruption_rule": "reconcile prior active tranche; if mission continues after forced close open a NEW tranche and send a NEW START before more substantive work",
+    "intermediate_deliverable_rule": "PDF/report/artifact email is neither START nor END unless explicitly typed as that transition"
   }
 }
