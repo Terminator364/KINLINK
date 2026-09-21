@@ -212,3 +212,28 @@ require(
     "MOBILE_ASSIST_EVIDENCE_" in SERVICE,
     "candidate contract: service does not persist Mobile Assist evidence",
 )
+
+QUALITY_SCORE = (SRC / "com/terminator364/kinlink/core/PassiveQualityScorePolicy.kt").read_text(encoding="utf-8")
+COCKPIT_ACTION = (SRC / "com/terminator364/kinlink/core/CockpitPrimaryActionPolicy.kt").read_text(encoding="utf-8")
+MAIN_ACTIVITY = (SRC / "com/terminator364/kinlink/ui/MainActivity.kt").read_text(encoding="utf-8")
+require(
+    "MIN_SCORE_DELTA = 12" in EVIDENCE_TRACKER
+    and "baselineScore" in EVIDENCE_TRACKER
+    and "currentScore" in EVIDENCE_TRACKER,
+    "candidate contract: Mobile Assist evidence does not require a meaningful passive score delta",
+)
+require(
+    "InternetState.STALLED" in QUALITY_SCORE
+    and "coerceIn(0, 100)" in QUALITY_SCORE,
+    "candidate contract: passive quality score is incomplete or unbounded",
+)
+require(
+    "RecoveryMode.OBSERVATION_ONLY" in COCKPIT_ACTION
+    and "Transport.WIFI" in COCKPIT_ACTION
+    and "Transport.CELLULAR" in COCKPIT_ACTION,
+    "candidate contract: contextual cockpit action policy missing",
+)
+require(
+    "Cela améliore l’observation, pas directement le débit" in MAIN_ACTIVITY,
+    "candidate contract: UI overclaims Mobile Assist throughput improvement",
+)
