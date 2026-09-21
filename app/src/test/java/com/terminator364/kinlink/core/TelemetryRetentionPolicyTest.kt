@@ -21,4 +21,17 @@ class TelemetryRetentionPolicyTest {
             TelemetryRetentionPolicy.actionCutoff(now)
         )
     }
+
+    @Test fun irreplaceableQualificationReceiptsArePinned() {
+        assertTrue(TelemetryRetentionPolicy.qualificationReceiptPinned("SELF_TEST_CORE_V9"))
+        assertTrue(TelemetryRetentionPolicy.qualificationReceiptPinned("SELF_TEST_OBSERVER_CALLBACK_V9"))
+        assertTrue(TelemetryRetentionPolicy.qualificationReceiptPinned("FIELD_CANDIDATE_QUALIFIED_V9"))
+    }
+
+    @Test fun noisyOperationalReceiptsRemainPrunable() {
+        assertFalse(TelemetryRetentionPolicy.qualificationReceiptPinned("PASSIVE_CAUSE_FLAPPING"))
+        assertFalse(TelemetryRetentionPolicy.qualificationReceiptPinned("HANDOFF_CELLULAR_TO_WIFI_V9"))
+        assertFalse(TelemetryRetentionPolicy.qualificationReceiptPinned("RUNTIME_RESOURCE_GATE_PASS_V9"))
+    }
+
 }
