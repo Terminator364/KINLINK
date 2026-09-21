@@ -353,3 +353,13 @@ require(
     ) is not None,
     "candidate contract: a stale relapse callback can survive into a newer proof window",
 )
+
+require(
+    "baselineObservedAt = SystemClock.elapsedRealtime()" in MAIN_ACTIVITY,
+    "candidate contract: manual proof baseline can use a stale callback timestamp",
+)
+require(
+    "Mobile Assist · améliorer maintenant" not in LAYOUT
+    and 'android:maxLines="5"' not in LAYOUT,
+    "candidate contract: compact cockpit can overclaim or clip continuous-care evidence",
+)
