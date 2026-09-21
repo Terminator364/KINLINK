@@ -6,11 +6,13 @@
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
-  "work_state": "WORKING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "ACTIVE",
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "gmail_start_message_id": "1a0c61541332ee94",
   "gmail_start_thread_id": "1a0c61541332ee94",
+  "gmail_end_message_id": "1a0c62785f6cf87c",
+  "gmail_end_thread_id": "1a0c61541332ee94",
   "gmail_label": "KINLINK",
   "communication_guard": {
     "final_app_reply_requires_end_ack_persisted": true,
@@ -40,5 +42,13 @@
     "current_head": "f2a6393abc77f38e695e1516191a6069d59fab77",
     "android_run": 35660447857
   },
-  "next_atomic_action": "recalibrate watchdog/policy around 25-minute close deadline, then poll run 35660447857 and continue W2 if PASS"
+  "next_atomic_action": "recalibrate watchdog/policy around 25-minute close deadline, then poll run 35660447857 and continue W2 if PASS",
+  "close_owner": "KINLINK_COMMS_WATCHDOG",
+  "close_mode": "INTERRUPTION_RECOVERY",
+  "interruption_recovery": true,
+  "end_mail_verified": true,
+  "closed_state": true,
+  "foreground_resume_requires_fresh_start": true,
+  "no_more_product_mutations": true,
+  "closed_at_local": "2026-09-21T23:47:32+01:00"
 }
