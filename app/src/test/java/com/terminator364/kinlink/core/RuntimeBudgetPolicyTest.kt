@@ -18,7 +18,7 @@ class RuntimeBudgetPolicyTest {
 
     @Test fun shortSessionDoesNotPretendBatteryRate() {
         val e = RuntimeBudgetPolicy.evidence(
-            RuntimeBudgetSnapshot(0L, 12, 80),
+            RuntimeBudgetSnapshot(0L, 12, 80, false),
             RuntimeBudgetSnapshot(60_000L, 13, 79, false)
         )
         assertNull(e.batteryPercentPerHour)
