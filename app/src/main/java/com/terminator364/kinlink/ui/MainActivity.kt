@@ -603,7 +603,7 @@ class MainActivity : Activity() {
         heroDetailText.text = if (observationOnly) {
             "${transportLabel(truth)} · surveillance passive · Android garde le contrôle"
         } else {
-            "${transportLabel(truth)} · indice passif ${passiveScore.score}/100 · $qualityLabel"
+            "${transportLabel(truth)} · qualité passive $qualityLabel · sans speedtest"
         }
 
         transportText.text = "Réseau · ${transportLabel(truth)}"
@@ -618,7 +618,7 @@ class MainActivity : Activity() {
                 else -> "Mobile · protégé · aucune prise de contrôle"
             }
         }
-        qualityScoreText.text = "Qualité passive · ${passiveScore.score}/100"
+        qualityScoreText.text = "Qualité passive · $qualityLabel"
         qualityProgress.progress = passiveScore.score
         mobileBudgetText.text = mobileBudgetLabel(budget)
 
