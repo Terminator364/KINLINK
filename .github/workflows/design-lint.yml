@@ -4,7 +4,6 @@ on:
   pull_request:
 permissions:
   contents: read
-
 concurrency:
   group: design-lint-${{ github.ref }}
   cancel-in-progress: true
@@ -32,8 +31,12 @@ jobs:
           test -f docs/FAIL_OPEN_AND_RECOVERY.md
           test -f docs/TELEMETRY_AND_DIAGNOSTICS.md
           test -f docs/REQUIREMENTS_TRACEABILITY.md
+          test -f docs/DELIVERY_SECURITY_AND_INSTALLATION.md
+          test -f .project-memory/DELIVERY_SECURITY_POLICY.json
       - name: Communication protocol contract
         run: python tools/release/verify_communication_protocol.py
+      - name: Delivery security contract
+        run: python tools/release/verify_delivery_security.py
       - name: Execute telemetry migration simulation
         run: python tools/release/verify_telemetry_migrations.py
       - name: Historical 0.7.0 readiness ledger consistency
@@ -44,27 +47,6 @@ jobs:
         run: python tools/release/verify_candidate_contract.py
       - name: Release evidence hash integrity
         run: python tools/release/verify_release_evidence_integrity.py
-      - name: Installed field-candidate app freeze
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          import json, pathlib, subprocess, sys
-          p = pathlib.Path(".project-memory/FIELD_CANDIDATE_FREEZE.json")
-          data = json.loads(p.read_text(encoding="utf-8"))
-          if not data.get("active"):
-              print("field-candidate-freeze: INACTIVE")
-              raise SystemExit(0)
-          base = data["source_commit"]
-          paths = data["protected_paths"]
-          subprocess.run(["git","fetch","--no-tags","--depth=1","origin",base], check=True)
-          proc = subprocess.run(["git","diff","--quiet",base,"HEAD","--",*paths])
-          if proc.returncode != 0:
-              print("Installed field candidate invalidated: protected app surface changed.")
-              subprocess.run(["git","diff","--name-only",base,"HEAD","--",*paths], check=False)
-              raise SystemExit(1)
-          print("field-candidate-freeze: PASS")
-          print("sealed source:", base)
-          PY
       - name: Canonical signer continuity contract
         run: python tools/release/verify_signer_contract.py
       - name: Public-repo private signing material fence

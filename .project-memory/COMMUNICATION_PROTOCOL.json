@@ -1,122 +1,69 @@
 {
+  "schema": "kinlink.communication_protocol/4",
   "project": "KINLINK",
   "cadence_minutes": 25,
+  "primary_work_budget_minutes": 22,
+  "closeout_reserve_minutes": 3,
+  "normal_close_owner": "PRIMARY_ASSISTANT",
+  "backup_earliest_offset_minutes": 26,
+  "hard_guard_offset_minutes": 29,
+  "gmail_label": "KINLINK",
+  "rule_priority": "P0_COMMUNICATION_CONTINUITY_THEN_DELIVERY_SECURITY_THEN_PRODUCT",
   "start_sequence": [
     "RECONCILE_OR_CLOSE_ANY_PRIOR_TRANCHE",
+    "LOAD_DELIVERY_SECURITY_POLICY",
     "SEND_GMAIL_START",
     "VERIFY_START_PROVIDER_ACK_MESSAGE_ID_AND_THREAD_ID",
     "APPLY_GMAIL_LABEL_KINLINK",
     "PERSIST_ACTIVE_TRANCHE_START_RECEIPT",
-    "ARM_POST_NOMINAL_BACKUP_GUARDS",
     "BEGIN_WORK"
   ],
   "feedback_during_tranche": "QUEUE_AND_INTEGRATE_WITHOUT_BREAKING_ACTIVE_TRANCHE",
   "only_early_stop": "TRUE_HUMAN_GATE_OBJECTIVELY_REQUIRED_TO_CONTINUE",
   "end_sequence": [
-    "ENTER_FORCED_CLOSEOUT_RESERVE",
-    "STOP_NEW_TECHNICAL_MUTATIONS",
-    "PERSIST_FINAL_TECHNICAL_CHECKPOINT_AND_NEXT_ATOMIC_ACTION",
+    "STOP_NEW_PRODUCT_MUTATIONS",
+    "PERSIST_FINAL_TECHNICAL_CHECKPOINT_AND_CLOSE_INTENT",
     "SEND_COMPLETE_GMAIL_END_REPORT",
+    "VERIFY_END_PROVIDER_ACK_MESSAGE_ID",
     "APPLY_GMAIL_LABEL_KINLINK",
-    "VERIFY_SEND_RETURNED_MESSAGE_ID",
-    "PERSIST_TRANCHE_CLOSED_WITH_END_MESSAGE_ID",
-    "DISABLE_PENDING_WATCHDOGS",
+    "PERSIST_END_ACKNOWLEDGED_AND_CLOSED",
     "ONLY_THEN_REPLY_IN_CHAT_APP"
   ],
   "chat_app_reply": "VA_SUR_GMAIL_PLUS_KINSHASA_DATE_TIME_ONLY",
-  "apk_delivery": "DRIVE_KINLINK_ONLY_NEVER_GMAIL_ATTACHMENT",
-  "gmail_label": "KINLINK",
-  "rule_priority": "MANDATORY_CONTINUITY_PROTOCOL",
+  "final_reply_gate": {
+    "required_delivery_state": "END_ACKNOWLEDGED_OR_CLOSED",
+    "rule": "NO_FINAL_CHAT_APP_RESPONSE_BEFORE_GMAIL_END_PROVIDER_ACK_AND_DURABLE_LEDGER_RECEIPT"
+  },
+  "apk_delivery": "DRIVE_KINLINK_INSTALLER_SINGLE_EXACT_APK_ONLY_NEVER_GMAIL_ATTACHMENT",
+  "delivery_security_policy_file": ".project-memory/DELIVERY_SECURITY_POLICY.json",
+  "human_install_surface": {
+    "folder": "KINLINK/INSTALLER",
+    "folder_id": "1HjnK_CtA_Bg5d19twTnYvGghCKY3AIc8",
+    "authorized_filename": "KINLINK_INSTALL_NOW.apk",
+    "max_apk_cardinality": 1,
+    "rule": "USER_NEVER_CHOOSES_BETWEEN_SIMILAR_APKS"
+  },
+  "security_continuity": {
+    "platform_security_checks": "OBEY_AND_NEVER_BYPASS",
+    "on_platform_hold": "PERSIST_CHECKPOINT_STOP_BLOCKED_OR_RISKY_MUTATIONS_RESUME_FROM_DURABLE_STATE_WHEN_ALLOWED",
+    "signing_material": "PRIVATE_DRIVE_SIGNING_ONLY_NEVER_PUBLIC_GITHUB_NEVER_GMAIL",
+    "install_contract": "PACKAGE_VERSION_SIGNER_HASH_DRIVE_READBACK_SINGLE_PATH_ALL_REQUIRED",
+    "fail_mode": "FAIL_CLOSED"
+  },
+  "idempotency": "DELIVERY_KEY_PLUS_GMAIL_SEARCH_PLUS_PROVIDER_MESSAGE_ID",
+  "threading": "PREFER_END_REPLY_TO_START_THREAD_WITH_VERIFIED_STANDALONE_FALLBACK",
   "network_interruption_policy": "PERSIST_CHECKPOINT_AND_RESUME_SAME_TRANCHE_NEVER_SILENTLY_ABANDON",
   "no_app_reply_before_end_mail": true,
   "end_mail_required_even_if_user_sends_intermediate_feedback": true,
-  "violation_recovery": "IF_END_MAIL_MISSING_SEND_IT_BEFORE_ANY_OTHER_APP_REPLY",
-  "evidence_required_each_tranche": [
-    "delivery_key",
-    "gmail_start_message_id",
-    "gmail_start_thread_id",
-    "durable_work_checkpoint",
-    "close_intent_persisted",
-    "gmail_end_message_id",
-    "end_mail_verified",
-    "close_owner",
-    "closed_state"
-  ],
-  "closeout_reserve_minutes": 3,
-  "primary_work_budget_minutes": 22,
-  "max_mutation_groups_before_forced_closeout": 12,
-  "closeout_reserve_rule": "AFTER_22_MIN_WORK_BUDGET_OR_MUTATION_BUDGET_EXHAUSTION_STOP_NEW_PRODUCT_MUTATIONS_AND_USE_FINAL_3_MINUTES_ONLY_FOR_CHECKPOINT_END_GMAIL_ACK_AND_CLOSE",
-  "system_interruption_guard": {
-    "rule": "UNFINISHED_TRANCHE_IS_RECONCILED_FROM_GMAIL_AND_DURABLE_CHECKPOINT_BEFORE_NEW_WORK",
-    "required_first_action": "SEARCH_FOR_EXISTING_END_BEFORE_SENDING",
-    "never_reply_in_app_with_unclosed_tranche": true
-  },
-  "bcp_imported_principles": [
-    "GMAIL_START_PROVIDER_ACK_BEFORE_SUBSTANTIVE_WORK",
-    "ONE_SHOT_END_WATCHDOG_ARMED_AT_TRANCHE_START",
-    "HARD_END_RECOVERY_GUARD_AFTER_NOMINAL_WINDOW",
-    "WORK_COMPLETION_SEPARATE_FROM_MESSAGE_DELIVERY",
-    "NO_CHATGPT_POINTER_BEFORE_PROVIDER_ACK_END",
-    "DURABLE_NEXT_ATOMIC_ACTION_ON_INTERRUPTION",
-    "NO_USER_RELAUNCH_REQUIRED_TO_CLOSE_TRANCHE"
-  ],
-  "delivery_state_machine": [
-    "START_REQUIRED",
-    "START_PROVIDER_ACKED",
-    "WORKING",
-    "CLOSEOUT_ARMED",
-    "CHECKPOINT_DURABLE",
-    "END_GENERATED",
-    "END_PROVIDER_ACKED",
-    "CLOSED"
-  ],
-  "watchdog_policy": {
-    "normal_close": "PRIMARY_ASSISTANT_MINUTE_22_TO_25",
-    "shadow_backup": "ONE_SHOT_NOT_BEFORE_MINUTE_26",
-    "hard_guard": "ONE_SHOT_AT_OR_AFTER_MINUTE_29",
-    "backup_visible_semantics": "NORMAL_FIN_TRANCHE",
-    "duplicate_prevention": "SEARCH_THREAD_AND_DELIVERY_KEY_BEFORE_SEND",
-    "state_repair": "IF_END_EXISTS_BUT_RECEIPT_MISSING_RECONCILE_ONLY",
-    "primary_precedence": "BACKUP_NOOP_IF_PRIMARY_CLOSE_INTENT_OR_END_ACK_EXISTS"
-  },
-  "schema": "kinlink.communication_protocol/3",
-  "normal_close_owner": "PRIMARY_ASSISTANT",
-  "backup_earliest_offset_minutes": 26,
-  "hard_guard_offset_minutes": 29,
-  "threading": "PREFER_END_REPLY_TO_START_THREAD_WITH_VERIFIED_STANDALONE_FALLBACK",
-  "idempotency": "DELIVERY_KEY_PLUS_GMAIL_SEARCH_PLUS_PROVIDER_MESSAGE_ID",
+  "violation_recovery": "IF_END_MAIL_MISSING_SEND_IT_BEFORE_ANY_OTHER_FINAL_APP_REPLY",
+  "platform_hold_rule": "SECURITY_HOLD_IS_NOT_MISSION_COMPLETION; CHECKPOINT_AND_RESUME_WITHOUT_BYPASS",
   "normal_end_sequence": [
-    "AT_MINUTE_22_ENTER_NORMAL_CLOSE_RESERVE",
+    "ENTER_NORMAL_CLOSE_RESERVE",
     "STOP_NEW_PRODUCT_MUTATIONS",
-    "PERSIST_CLOSE_INTENT_WITH_DELIVERY_KEY_AND_REPORT_CHECKPOINT",
-    "SEND_NORMAL_GMAIL_END_AS_REPLY_TO_START_THREAD",
-    "VERIFY_END_PROVIDER_ACK_MESSAGE_ID",
-    "APPLY_GMAIL_LABEL_KINLINK",
+    "PERSIST_CLOSE_INTENT",
+    "SEND_GMAIL_END",
+    "VERIFY_PROVIDER_ACK",
     "PERSIST_END_ACK_AND_CLOSED",
-    "CANCEL_OR_RENDER_BACKUPS_NOOP",
-    "ONLY_THEN_REPLY_IN_CHAT_APP"
-  ],
-  "backup_sequence": [
-    "DO_NOT_RUN_BEFORE_NOMINAL_25_MIN_WINDOW",
-    "READ_ACTIVE_TRANCHE",
-    "SEARCH_GMAIL_THREAD_AND_DELIVERY_KEY_FOR_EXISTING_END",
-    "IF_EXISTING_END_FOUND_PERSIST_ACK_AND_CLOSE_WITHOUT_RESEND",
-    "ELSE_PERSIST_CLOSE_INTENT_IF_MISSING",
-    "SEND_SAME_NORMAL_FIN_TRANCHE_REPLY_TO_START",
-    "VERIFY_ACK_AND_CLOSE",
-    "NEVER_USE_USER_VISIBLE_RECOVERY_OR_RATTRAPAGE_SUBJECT"
-  ],
-  "thread_reply_fallback": {
-    "allowed": true,
-    "prerequisites": [
-      "CLOSE_INTENT_PERSISTED",
-      "THREAD_REPLY_SEND_FAILED_WITH_NO_PROVIDER_MESSAGE_ID",
-      "SEARCH_GMAIL_CONFIRMS_NO_END_FOR_DELIVERY_KEY",
-      "STANDALONE_SUBJECT_RETAINS_SAME_DELIVERY_KEY",
-      "STANDALONE_END_USES_NORMAL_FIN_SEMANTICS"
-    ],
-    "rule": "THREADING_CAPABILITY_MUST_NOT_BE_SINGLE_POINT_OF_FAILURE_FOR_END_DELIVERY"
-  },
-  "normal_close_rule": "PRIMARY closes normally during minute 22-25; backup exists only after nominal window",
-  "recovery_visibility": "NEVER_EXPOSE_RATTRAPAGE_OR_RECOVERY_WORDING_WHEN_NORMAL_FIN_CAN_BE_SENT"
+    "ONLY_THEN_FINAL_APP_REPLY"
+  ]
 }

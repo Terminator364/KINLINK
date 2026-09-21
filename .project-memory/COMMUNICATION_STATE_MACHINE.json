@@ -1,5 +1,5 @@
 {
-  "schema": "kinlink.communication_state_machine/3",
+  "schema": "kinlink.communication_state_machine/4",
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
@@ -28,7 +28,8 @@
   "normal_path": [
     "NONE->START_SEND_PENDING",
     "START_SEND_PENDING->START_ACKNOWLEDGED",
-    "START_ACKNOWLEDGED->CLOSE_INTENT_PERSISTED",
+    "START_ACKNOWLEDGED->WORKING",
+    "WORKING->CLOSE_INTENT_PERSISTED",
     "CLOSE_INTENT_PERSISTED->END_SEND_PENDING",
     "END_SEND_PENDING->END_ACKNOWLEDGED",
     "END_ACKNOWLEDGED->CLOSED"
@@ -36,7 +37,7 @@
   "crash_windows": [
     {
       "window": "after START ack before close intent",
-      "recovery": "read latest durable work checkpoint; prepare normal END only after nominal window or next turn"
+      "recovery": "resume from durable work checkpoint; never final-reply without END"
     },
     {
       "window": "after CLOSE_INTENT before Gmail send",
@@ -44,18 +45,15 @@
     },
     {
       "window": "after Gmail END send before GitHub receipt",
-      "recovery": "search same Gmail thread/delivery key; if found persist ACK; do not resend"
+      "recovery": "search same Gmail thread/delivery key; persist ACK; do not resend"
     }
   ],
-  "invariants": [
-    "PRIMARY_ASSISTANT owns normal close during the 3-minute reserve",
-    "backup cannot run before minute 26 and must noop if normal close exists",
-    "hard guard cannot run before minute 29",
-    "delivery key plus Gmail search prevents duplicate END across crash windows",
-    "thread reply is preferred but verified standalone FIN fallback prevents thread API failure from blocking delivery",
-    "work completion and delivery completion are independent",
-    "recovery terminology remains internal; user sees normal FIN semantics",
-    "an unclosed prior tranche is reconciled before new substantive work"
+  "security_invariants": [
+    "final ChatGPT closeout is blocked until Gmail END provider ACK is durable",
+    "new work cannot reuse a CLOSED tranche",
+    "platform/security controls are never bypassed; interruption becomes a durable checkpoint",
+    "human APK delivery exposes one authorized install file only",
+    "rollback APKs are not present in the normal human install surface"
   ],
   "backup_earliest_offset_minutes": 26,
   "hard_guard_offset_minutes": 29
