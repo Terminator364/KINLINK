@@ -5,6 +5,10 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
+import java.util.concurrent.atomic.AtomicReference
 
 object WifiProbeHttpPolicy {
     fun confirmsInternet(code: Int): Boolean = code == 204
@@ -14,8 +18,9 @@ object WifiProbeDeadlinePolicy {
     const val MAX_ENDPOINTS = 2
     const val CONNECT_TIMEOUT_MS = 900
     const val READ_TIMEOUT_MS = 900
+    const val ATTEMPT_HARD_TIMEOUT_MS = 1_500
     const val WORST_CASE_HTTP_WAIT_MS =
-        MAX_ENDPOINTS * (CONNECT_TIMEOUT_MS + READ_TIMEOUT_MS)
+        MAX_ENDPOINTS * ATTEMPT_HARD_TIMEOUT_MS
 
     fun fitsWithin(hardDeadlineMillis: Long): Boolean =
         WORST_CASE_HTTP_WAIT_MS < hardDeadlineMillis
@@ -33,12 +38,18 @@ data class WifiProbeResult(
 /**
  * Explicit and bounded Wi-Fi-only micro-diagnostic.
  *
- * The probe is never run on cellular and never runs automatically in the background.
- * A fallback endpoint exists so one blocked/unreachable test server cannot become a
- * false diagnosis of a broken Internet connection.
+ * The probe is never run on cellular. Each endpoint attempt has both socket-level
+ * timeouts and an outer wall-clock deadline. On timeout KINLINK disconnects the
+ * active HttpURLConnection before cancelling the worker so DNS/socket stalls
+ * cannot hold the recovery control path past its configured envelope.
  */
 class WifiDoctorProbe(private val context: Context) {
     private data class Endpoint(val label: String, val url: String)
+    private data class EndpointAttempt(
+        val code: Int?,
+        val elapsedMillis: Long,
+        val failure: String?
+    )
 
     private val endpoints = listOf(
         Endpoint("primary", "https://connectivitycheck.gstatic.com/generate_204"),
@@ -75,7 +86,8 @@ class WifiDoctorProbe(private val context: Context) {
         for (endpoint in endpoints) {
             val stillActive = cm.activeNetwork == network
             val currentCaps = cm.getNetworkCapabilities(network)
-            val stillWifi = currentCaps?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
+            val stillWifi =
+                currentCaps?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
             if (!WifiProbeContinuationPolicy.mayContinue(stillActive, stillWifi)) {
                 return WifiProbeResult(
                     false,
@@ -88,41 +100,28 @@ class WifiDoctorProbe(private val context: Context) {
             }
 
             attempts += 1
-            val started = System.nanoTime()
-            val attempt = runCatching {
-                val connection = network.openConnection(URL(endpoint.url)) as HttpURLConnection
-                connection.connectTimeout = WifiProbeDeadlinePolicy.CONNECT_TIMEOUT_MS
-                connection.readTimeout = WifiProbeDeadlinePolicy.READ_TIMEOUT_MS
-                connection.instanceFollowRedirects = false
-                connection.requestMethod = "GET"
-                connection.useCaches = false
-                val code = connection.responseCode
-                connection.disconnect()
-                val elapsed = (System.nanoTime() - started) / 1_000_000
-                lastLatency = elapsed
+            val attempt = runEndpointAttempt(network, endpoint)
+            lastLatency = attempt.elapsedMillis
 
-                if (WifiProbeHttpPolicy.confirmsInternet(code)) {
-                    WifiProbeResult(
-                        true,
-                        "Accès Internet confirmé par un micro-test borné en $elapsed ms",
-                        elapsed,
-                        attempts = attempts,
-                        successes = 1,
-                        failures = failures
-                    )
-                } else {
-                    failures += 1
-                    lastFailure = if (code in 200..399) "réponse HTTP $code (portail/proxy possible)" else "réponse HTTP $code"
-                    null
-                }
-            }.getOrElse {
-                failures += 1
-                lastLatency = (System.nanoTime() - started) / 1_000_000
-                lastFailure = it.javaClass.simpleName
-                null
+            val code = attempt.code
+            if (code != null && WifiProbeHttpPolicy.confirmsInternet(code)) {
+                return WifiProbeResult(
+                    true,
+                    "Accès Internet confirmé par un micro-test borné en ${attempt.elapsedMillis} ms",
+                    attempt.elapsedMillis,
+                    attempts = attempts,
+                    successes = 1,
+                    failures = failures
+                )
             }
 
-            if (attempt != null) return attempt
+            failures += 1
+            lastFailure = when {
+                code != null && code in 200..399 ->
+                    "réponse HTTP $code (portail/proxy possible)"
+                code != null -> "réponse HTTP $code"
+                else -> attempt.failure ?: "non confirmé"
+            }
         }
 
         return WifiProbeResult(
@@ -134,4 +133,69 @@ class WifiDoctorProbe(private val context: Context) {
             failures = failures
         )
     }
+
+    private fun runEndpointAttempt(
+        network: android.net.Network,
+        endpoint: Endpoint
+    ): EndpointAttempt {
+        val executor = Executors.newSingleThreadExecutor()
+        val connectionRef = AtomicReference<HttpURLConnection?>(null)
+        val started = System.nanoTime()
+        val future = executor.submit<EndpointAttempt> {
+            var connection: HttpURLConnection? = null
+            try {
+                connection =
+                    network.openConnection(URL(endpoint.url)) as HttpURLConnection
+                connectionRef.set(connection)
+                connection.connectTimeout = WifiProbeDeadlinePolicy.CONNECT_TIMEOUT_MS
+                connection.readTimeout = WifiProbeDeadlinePolicy.READ_TIMEOUT_MS
+                connection.instanceFollowRedirects = false
+                connection.requestMethod = "GET"
+                connection.useCaches = false
+                val code = connection.responseCode
+                EndpointAttempt(
+                    code = code,
+                    elapsedMillis = elapsedMillisSince(started),
+                    failure = null
+                )
+            } catch (t: Throwable) {
+                EndpointAttempt(
+                    code = null,
+                    elapsedMillis = elapsedMillisSince(started),
+                    failure = t.javaClass.simpleName
+                )
+            } finally {
+                connectionRef.compareAndSet(connection, null)
+                runCatching { connection?.disconnect() }
+            }
+        }
+
+        return try {
+            future.get(
+                WifiProbeDeadlinePolicy.ATTEMPT_HARD_TIMEOUT_MS.toLong(),
+                TimeUnit.MILLISECONDS
+            )
+        } catch (_: TimeoutException) {
+            runCatching { connectionRef.getAndSet(null)?.disconnect() }
+            future.cancel(true)
+            EndpointAttempt(
+                code = null,
+                elapsedMillis = elapsedMillisSince(started),
+                failure = "hard-timeout"
+            )
+        } catch (t: Throwable) {
+            runCatching { connectionRef.getAndSet(null)?.disconnect() }
+            future.cancel(true)
+            EndpointAttempt(
+                code = null,
+                elapsedMillis = elapsedMillisSince(started),
+                failure = t.javaClass.simpleName
+            )
+        } finally {
+            executor.shutdownNow()
+        }
+    }
+
+    private fun elapsedMillisSince(startedNanos: Long): Long =
+        ((System.nanoTime() - startedNanos) / 1_000_000L).coerceAtLeast(0L)
 }
