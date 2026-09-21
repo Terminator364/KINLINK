@@ -26,4 +26,15 @@ class PassiveGuidancePolicyTest {
         )
         assertNull(t.observe(PassiveProblemCause.LOW_CAPACITY))
     }
+    @Test fun mobileLowCapacityGuidanceNamesMobileAssist() {
+        val g = PassiveGuidancePolicy.guidance(
+            PassiveProblemAssessment(
+                PassiveProblemCause.MOBILE_LOW_CAPACITY,
+                "test",
+                75
+            )
+        )
+        assertEquals("Données mobiles lentes", g.title)
+    }
+
 }
