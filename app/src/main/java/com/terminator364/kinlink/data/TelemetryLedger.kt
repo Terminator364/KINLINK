@@ -164,6 +164,15 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             cursor.getInt(0)
         }
 
+    fun countSuccessfulActions(actionPrefix: String): Int =
+        readableDatabase.rawQuery(
+            "SELECT COUNT(*) FROM action_receipts WHERE action LIKE ? AND success = 1",
+            arrayOf("$actionPrefix%")
+        ).use { cursor ->
+            cursor.moveToFirst()
+            cursor.getInt(0)
+        }
+
     fun actionCountsByPrefixSince(actionPrefix: String, sinceWallMs: Long): Map<String, Int> {
         val result = linkedMapOf<String, Int>()
         readableDatabase.rawQuery(
@@ -476,8 +485,8 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             totalLowQualityMillis = lowQualityDurations.first,
             longestLowQualityMillis = lowQualityDurations.second,
             passiveCauseCounts = actionCountsByPrefix("PASSIVE_CAUSE_"),
-            coreSelfTestPasses = countActions("SELF_TEST_CORE"),
-            observerSelfTestPasses = countActions("SELF_TEST_OBSERVER_CALLBACK"),
+            coreSelfTestPasses = countSuccessfulActions("SELF_TEST_CORE"),
+            observerSelfTestPasses = countSuccessfulActions("SELF_TEST_OBSERVER_CALLBACK"),
             runtimeBudgetSessions = countActions("RUNTIME_BUDGET_SESSION"),
             recoveryActionDurationTotalMillis = recoveryDurations.first,
             recoveryActionDurationMaxMillis = recoveryDurations.second,
