@@ -37,6 +37,7 @@ import com.terminator364.kinlink.core.KinlinkObserverService
 import com.terminator364.kinlink.core.MobileBudgetSnapshot
 import com.terminator364.kinlink.core.MobileBudgetTracker
 import com.terminator364.kinlink.core.MobileAssistController
+import com.terminator364.kinlink.core.MobileAssistEvidenceSummaryPolicy
 import com.terminator364.kinlink.core.MobileAssistManualPolicy
 import com.terminator364.kinlink.core.MobileAssistManualAction
 import com.terminator364.kinlink.core.MobileAssistManualBlockReason
@@ -569,24 +570,8 @@ class MainActivity : Activity() {
             )
         }.getOrDefault(emptyMap())
 
-        val sustained = counts["SUSTAINED_BETTER"] ?: 0
-        val relapsed = counts["RELAPSED"] ?: 0
-        val lateRelapse = counts["RELAPSED_AFTER_SUSTAINED"] ?: 0
-        val noBetter = counts["NO_BETTER"] ?: 0
-        val metrics = counts["METRICS_AVAILABLE"] ?: 0
-        val inconclusive = counts["INCONCLUSIVE"] ?: 0
-        val total = sustained + relapsed + lateRelapse + noBetter + metrics + inconclusive
-
-        cachedAssistEvidenceLabel = if (total == 0) {
-            "Preuve 24 h · aucune action Mobile Assist évaluée"
-        } else {
-            buildString {
-                append("Preuve 24 h · mieux durable corrélé=$sustained")
-                append(" · rechute=${relapsed + lateRelapse}")
-                append(" · sans mieux=$noBetter")
-                if (metrics > 0) append(" · métriques=$metrics")
-            }
-        }
+        cachedAssistEvidenceLabel =
+            MobileAssistEvidenceSummaryPolicy.summarize(counts).label
         return cachedAssistEvidenceLabel
     }
 
