@@ -1,5 +1,34 @@
 # KINLINK build status
 
+## CURRENT — installed 0.7.0 + consolidated 0.7.1 successor hardening
+
+Phone state:
+- KINLINK 0.7.0 / versionCode 8 is installed and usable.
+- Its canonical promotion proof is invalidated by post-install counter-audit.
+- No new user install is requested while 0.7.1 engineering remains active.
+
+Drive state:
+- canonical INSTALLER remains 0.6.0-rc3 as rollback/stable artifact;
+- noncanonical successor delivery uses KINLINK/FIELD_CANDIDATE;
+- Gmail is reports only, never APK delivery.
+
+0.7.1 / versionCode 9 closes one consolidated repair batch:
+- CA-001..CA-005 previously repaired;
+- CA-006 exact version-scoped receipt equality;
+- CA-007 live qualification PASS is revocable by newer blocking evidence;
+- CA-008 outer HTTP wall-clock timeout/disconnect below 5 s recovery deadline;
+- CA-009 stale non-default callback rejection;
+- cross-policy critical scenario matrix;
+- candidate-contract static counter-audit;
+- honest requirements traceability matrix.
+
+Last fully green exact head before the newest additions:
+- `a8e4b1a6510ee3bf06d1143253b08437e745cab4`
+- Android run `35575247146` PASS
+- design-lint run `35575247175` PASS
+
+Newest head is still required to obtain a fresh full green pair before artifact sealing/signing.
+
 ## Installed field baseline
 - 0.6.0-rc3
 - bidirectional Wi-Fi → cellular → Wi-Fi field gate: PASS
