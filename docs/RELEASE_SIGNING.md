@@ -32,3 +32,16 @@ Before replacing the sole file in `KINLINK/INSTALLER`, verify:
 5. CI tests pass and one field update test succeeds.
 
 The currently installed temporary-key M0 app requires one exceptional uninstall/reinstall to migrate to the durable production certificate. Once migrated, normal updates install over the app with the same signing key and preserve its data.
+
+
+## Mandatory install-compatibility preflight
+
+After signing and before any Drive delivery, run `tools/signing/Verify-KinlinkInstallCompatibility.ps1` against the exact signed APK.
+
+The preflight must prove:
+- package = `com.terminator364.kinlink`;
+- candidate versionCode is strictly greater than the known installed versionCode;
+- signer certificate equals the canonical production fingerprint;
+- optional expected APK SHA-256 matches exactly.
+
+A cryptographically valid lower-version rollback is **not** a valid in-place update. This gate exists specifically to prevent the 2026-09-21 regression where a versionCode 7 rollback was exposed to a phone already running versionCode 10.
