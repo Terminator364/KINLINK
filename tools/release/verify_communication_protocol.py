@@ -4,6 +4,8 @@ from pathlib import Path
 
 PROTOCOL = Path(".project-memory/COMMUNICATION_PROTOCOL.json")
 ACTIVE = Path(".project-memory/ACTIVE_TRANCHE.json")
+STATE_MACHINE = Path(".project-memory/COMMUNICATION_STATE_MACHINE.json")
+DELIVERY_LEDGER = Path(".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl")
 
 def require(condition: bool, message: str) -> None:
     if not condition:
@@ -12,6 +14,11 @@ def require(condition: bool, message: str) -> None:
 def main() -> int:
     data = json.loads(PROTOCOL.read_text(encoding="utf-8"))
     active = json.loads(ACTIVE.read_text(encoding="utf-8"))
+    machine = json.loads(STATE_MACHINE.read_text(encoding="utf-8"))
+    ledger_lines = [
+        line for line in DELIVERY_LEDGER.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
 
     require(data.get("project") == "KINLINK", "communication protocol: project mismatch")
     require(data.get("cadence_minutes") == 25, "communication protocol: cadence must be 25 minutes")
@@ -59,6 +66,33 @@ def main() -> int:
     require("NEVER_GMAIL_ATTACHMENT" in data.get("apk_delivery", ""),
             "communication protocol: APK email ban missing")
 
+    require(machine.get("cadence_minutes") == 25,
+            "communication protocol: state-machine cadence mismatch")
+    require(machine.get("useful_work_minutes") == 22,
+            "communication protocol: state-machine useful-work budget mismatch")
+    require(machine.get("closeout_reserve_minutes") == 3,
+            "communication protocol: state-machine closeout reserve mismatch")
+    require(
+        machine.get("watchdogs", {}).get("closeout", {}).get("trigger_offset_minutes") == 22
+        and machine.get("watchdogs", {}).get("hard_end_guard", {}).get("trigger_offset_minutes") == 25,
+        "communication protocol: state-machine watchdog offsets missing",
+    )
+    require(len(ledger_lines) >= 1,
+            "communication protocol: delivery ledger is empty")
+    require(active.get("work_state") in machine.get("work_states", []),
+            "communication protocol: active work state is invalid")
+    require(active.get("delivery_state") in machine.get("delivery_states", []),
+            "communication protocol: active delivery state is invalid")
+    require(active.get("start_provider_ack") is True,
+            "communication protocol: provider START acknowledgement missing")
+    watchdogs = active.get("watchdogs", {})
+    require(
+        watchdogs.get("closeout_watchdog_armed") is True
+        and watchdogs.get("hard_end_guard_armed") is True
+        and watchdogs.get("closeout_trigger_minutes") == 22
+        and watchdogs.get("hard_end_trigger_minutes") == 25,
+        "communication protocol: active watchdog pair is not armed",
+    )
     require(active.get("cadence_minutes") == 25,
             "communication protocol: active tranche cadence mismatch")
     require(bool(active.get("gmail_start_message_id")),
