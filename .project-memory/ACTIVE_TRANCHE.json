@@ -6,18 +6,18 @@
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
-  "work_state": "WORKING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "ACTIVE",
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSE_INTENT_PERSISTED",
+  "status": "CLOSING",
   "gmail_start_message_id": "1a0c5461a0d6ad3e",
   "gmail_start_thread_id": "1a0c5461a0d6ad3e",
   "gmail_end_message_id": null,
   "gmail_end_thread_id": null,
   "end_mail_verified": false,
   "gmail_label": "KINLINK",
-  "close_intent_persisted": false,
-  "close_owner": null,
-  "no_more_product_mutations": false,
+  "close_intent_persisted": true,
+  "close_owner": "PRIMARY_ASSISTANT",
+  "no_more_product_mutations": true,
   "communication_guard": {
     "final_app_reply_requires_end_ack_persisted": true,
     "closed_tranche_reuse_forbidden": true,
@@ -39,5 +39,44 @@
     "prior_scorecard_warning": "56% broad weighted metric was based on current traceability, not full preconception",
     "canonical_promotion": "BLOCKED"
   },
-  "next_atomic_action": "recover preconception and historical requirements from durable sources, construct A+B+C spec and dependency map, then align active 0.8+ work to the full spec"
+  "next_atomic_action": "fix CI test ordering only: resource protection assertion must run before captureExpandedSurfaces changes rendered state; rerun 0.8 exact-head; inspect 42 screenshots; no install",
+  "last_durable_checkpoint": {
+    "full_spec_reconstruction": {
+      "preconception_recovered": true,
+      "git_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
+      "macro_capabilities": 80,
+      "maturity_percent": 44.8,
+      "previous_56_percent": "SUPERSEDED",
+      "canonical_doc": "docs/FULL_PRODUCT_SPEC_A_B_C.md",
+      "ledger": ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
+      "scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json"
+    },
+    "continuity_hardening": {
+      "manifest": ".project-memory/CONTINUITY_CONTEXT_MANIFEST.json",
+      "verifier": "tools/release/verify_continuity_context.py",
+      "main_design_lint_run": 35642199255,
+      "result": "PASS",
+      "drive_master_updated": true
+    },
+    "active_0_8": {
+      "head": "1571f268eb914a8847b3f61c3ea15f6b7f40a64a",
+      "design_lint_run": 35641697131,
+      "design_lint": "PASS",
+      "android_run": 35641697122,
+      "pre_render_gates": "PASS",
+      "rendered_matrix": "FAIL",
+      "failure_class": "HARNESS_ORDERING",
+      "finding": "captureExpandedSurfaces re-rendered non-constrained state before resource-constrained assertion, so expected Protection prefix was no longer present",
+      "product_regression_proven": false,
+      "next_action": "reorder assertion/capture, rerun; target proof should be 42 screenshots including dialog and technical details"
+    },
+    "new_0_8_value": [
+      "Android ConnectivityDiagnosticsManager observer added",
+      "native Android data stall evidence added without KINLINK traffic",
+      "platform stalls feed user-experience truth",
+      "mobile data dialog compacted",
+      "hero maxLines removed",
+      "render matrix expanded toward data dialog and technical details"
+    ]
+  }
 }
