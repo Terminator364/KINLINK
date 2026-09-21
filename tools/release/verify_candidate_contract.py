@@ -280,3 +280,16 @@ require(
     and "Qualité passive" in MAIN_ACTIVITY,
     "candidate contract: compact quality meter is missing or detached from passive score",
 )
+
+RELAPSE_GUARD = (SRC / "com/terminator364/kinlink/core/MobileAssistRelapseGuardPolicy.kt").read_text(encoding="utf-8")
+require(
+    "RECHECK_DELAY_MS = 5L * 60L * 1000L" in RELAPSE_GUARD
+    and "MAX_RECHECKS_PER_SUSTAINED_EVENT = 1" in RELAPSE_GUARD,
+    "candidate contract: bounded sustained-benefit relapse recheck missing",
+)
+require(
+    "MOBILE_ASSIST_CONTINUOUS_REEVALUATION" in SERVICE
+    and "scheduleMobileAssistRelapseRecheck()" in SERVICE
+    and "mobileAssistRelapseGeneration" in SERVICE,
+    "candidate contract: continuous Mobile Assist relapse re-evaluation path missing",
+)
