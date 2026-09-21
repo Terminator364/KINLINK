@@ -13,7 +13,7 @@ class ResourceGuardPolicyTest {
         assertTrue(ResourceGuardPolicy.constrained(true, false, false))
     }
 
-    @Test fun severeThermalStateConstrainsRecovery() {
+    @Test fun moderateOrWorseThermalStateConstrainsRecovery() {
         assertTrue(ResourceGuardPolicy.constrained(false, true, false))
     }
 
