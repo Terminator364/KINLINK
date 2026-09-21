@@ -7,11 +7,11 @@
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
   "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSE_INTENT_PERSISTED",
-  "status": "CLOSING",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "gmail_start_message_id": "1a0c61541332ee94",
   "gmail_start_thread_id": "1a0c61541332ee94",
-  "gmail_end_message_id": "1a0c62785f6cf87c",
+  "gmail_end_message_id": "1a0c62cf5f2cde54",
   "gmail_end_thread_id": "1a0c61541332ee94",
   "gmail_label": "KINLINK",
   "communication_guard": {
@@ -50,7 +50,7 @@
   "closed_state": true,
   "foreground_resume_requires_fresh_start": true,
   "no_more_product_mutations": true,
-  "closed_at_local": "2026-09-21T23:47:32+01:00",
+  "closed_at_local": "2026-09-21T23:52:00+01:00",
   "close_intent_persisted": true,
   "last_durable_checkpoint": {
     "communication": {
@@ -80,5 +80,6 @@
       "android": "IN_PROGRESS_AT_CLOSE_INTENT"
     },
     "install_requested": false
-  }
+  },
+  "closed_at_provider_ts": "2026-09-21T22:53:50"
 }
