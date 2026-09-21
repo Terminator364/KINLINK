@@ -6,15 +6,20 @@
     "APPLY_GMAIL_LABEL_KINLINK",
     "BEGIN_WORK"
   ],
-  "feedback_during_tranche": "CONTINUE_CURRENT_TRANCHE_REGARDLESS_OF_INTERMEDIATE_FEEDBACK",
+  "feedback_during_tranche": "QUEUE_AND_INTEGRATE_WITHOUT_BREAKING_ACTIVE_TRANCHE",
   "only_early_stop": "TRUE_HUMAN_GATE_OBJECTIVELY_REQUIRED_TO_CONTINUE",
   "end_sequence": [
     "SEND_COMPLETE_GMAIL_END_REPORT",
     "APPLY_GMAIL_LABEL_KINLINK",
+    "VERIFY_SEND_RETURNED_MESSAGE_ID",
     "ONLY_THEN_REPLY_IN_CHAT_APP"
   ],
   "chat_app_reply": "VA_SUR_GMAIL_PLUS_KINSHASA_DATE_TIME_ONLY",
   "apk_delivery": "DRIVE_KINLINK_ONLY_NEVER_GMAIL_ATTACHMENT",
   "gmail_label": "KINLINK",
-  "rule_priority": "MANDATORY_CONTINUITY_PROTOCOL"
+  "rule_priority": "MANDATORY_CONTINUITY_PROTOCOL",
+  "network_interruption_policy": "CHECKPOINT_DURABLE_STATE_AND_RESUME_SAME_TRANCHE_WHEN_TOOLING_RETURNS",
+  "no_app_reply_before_end_mail": true,
+  "end_mail_required_even_if_user_sends_intermediate_feedback": true,
+  "violation_recovery": "SEND_MISSING_END_MAIL_IMMEDIATELY_BEFORE_ANY_OTHER_APP_REPLY"
 }
