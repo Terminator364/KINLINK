@@ -50,6 +50,7 @@ object SessionHealthPolicy {
                 SessionHealthAssessment(SessionHealth.WATCH, "Connexion utilisable ou locale, mais un signal passif mérite surveillance.")
 
             PassiveProblemCause.MOBILE_NETWORK_SUSPENDED,
+            PassiveProblemCause.MOBILE_WEAK_SIGNAL,
             PassiveProblemCause.MOBILE_CONGESTION_SUSPECT,
             PassiveProblemCause.MOBILE_LOW_CAPACITY,
             PassiveProblemCause.MOBILE_UNVALIDATED ->
