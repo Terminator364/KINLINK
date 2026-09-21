@@ -128,9 +128,12 @@ jobs:
             app/build/outputs/apk/candidate/KINLINK-build-manifest.json
           retention-days: 7
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: KINLINK-0.7.3-responsive-ui-proof
           path: |
             build/ui-proof
             app/build/reports/androidTests
+            app/build/outputs/androidTest-results
+          if-no-files-found: warn
           retention-days: 7

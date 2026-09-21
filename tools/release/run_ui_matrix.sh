@@ -4,6 +4,30 @@ set -euo pipefail
 mkdir -p build/ui-proof
 APP_PROOF="/sdcard/Android/data/com.terminator364.kinlink/files/ui-proof"
 
+archive_test_evidence() {
+  local name="$1"
+  local dest="build/ui-proof/$name"
+  mkdir -p "$dest"
+
+  adb pull "$APP_PROOF/$name/." "$dest/" >/dev/null 2>&1 || true
+
+  if [ -d app/build/reports/androidTests/connected/debug ]; then
+    rm -rf "$dest/test-report"
+    cp -R app/build/reports/androidTests/connected/debug "$dest/test-report"
+  fi
+
+  if [ -d app/build/outputs/androidTest-results/connected/debug ]; then
+    rm -rf "$dest/test-results"
+    cp -R app/build/outputs/androidTest-results/connected/debug "$dest/test-results"
+  fi
+}
+
+print_failure_evidence() {
+  echo "=== INSTRUMENTATION FAILURE EVIDENCE ==="
+  grep -R -n -E 'AssertionError|NoSuch(Field|Method)|Exception|failure|failed|clipped|ellipsized|overlap|tap target|collapsed|Protection'     app/build/outputs/androidTest-results     app/build/reports/androidTests 2>/dev/null | tail -200 || true
+  echo "=== END FAILURE EVIDENCE ==="
+}
+
 run_matrix() {
   local name="$1"
   local size="$2"
@@ -15,12 +39,17 @@ run_matrix() {
   adb shell settings put system font_scale "$font"
   adb shell am force-stop com.terminator364.kinlink || true
 
-  gradle :app:connectedDebugAndroidTest \
-    -Pandroid.testInstrumentationRunnerArguments.matrixId="$name" \
-    --stacktrace
+  set +e
+  gradle :app:connectedDebugAndroidTest     -Pandroid.testInstrumentationRunnerArguments.matrixId="$name"     --stacktrace --info
+  local rc=$?
+  set -e
 
-  mkdir -p "build/ui-proof/$name"
-  adb pull "$APP_PROOF/$name/." "build/ui-proof/$name/"
+  archive_test_evidence "$name"
+
+  if [ "$rc" -ne 0 ]; then
+    print_failure_evidence
+    return "$rc"
+  fi
 }
 
 run_matrix narrow-normal 840x1680 1.0
