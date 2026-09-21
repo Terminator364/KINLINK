@@ -340,15 +340,15 @@ require(
     "candidate contract: ConnectivityDiagnostics capability gate missing",
 )
 for raw in [
-    'assessment.state.name',
-    'truth.budgetState.name',
-    'adaptiveDecision.intent.name',
-    'sessionHealth.health.name',
-    'WHAT : ${vaultDecision.what.name}',
+    'append("État technique KINLINK : ${assessment.state.name}',
+    'append("Budget mobile : ${truth.budgetState.name}',
+    'append("Autopilot : ${adaptiveDecision.intent.name}',
+    'append("Santé de session : ${sessionHealth.health.name}',
+    'append("WHAT : ${vaultDecision.what.name}',
 ]:
     require(
         raw not in MAIN_ACTIVITY,
-        f"candidate contract: raw internal enum leaked into technical UI: {raw}",
+        f"candidate contract: raw internal enum leaked directly into technical UI: {raw}",
     )
 require(
     "operationalStateLabel(" in MAIN_ACTIVITY
