@@ -75,10 +75,11 @@ class MobileAssistController(
             )
         }
 
+        val tuning = AutopilotProfileControlPolicy.tuning(profile)
         val since = nowWallMs - MobileAssistPolicy.HOURLY_WINDOW_MS
         val recent = runCatching {
             ledger.countActionsSince(ACTION_PREFIX, since)
-        }.getOrDefault(MobileAssistPolicy.MAX_ACTIONS_PER_HOUR)
+        }.getOrDefault(tuning.mobileAssistMaxActionsPerHour)
         val last = runCatching {
             ledger.latestActionTimestamp(ACTION_PREFIX)
         }.getOrNull()
