@@ -1,0 +1,91 @@
+{
+  "schema": "kinlink.new_conversation_takeover/1",
+  "trigger_code": "KINLINKGO",
+  "aliases": [
+    "KINLINKGO"
+  ],
+  "purpose": "resume KINLINK in a fresh ChatGPT conversation with zero loss of work protocol, communication behavior, durable state, and current engineering priorities",
+  "repository": "Terminator364/KINLINK",
+  "control_branch": "main",
+  "mandatory_first_reads": [
+    "project_state.json",
+    "NEXT_UNCOMMITTED_ACTION.md",
+    "BUILD_STATUS.md",
+    "docs/CANONICAL_SPEC.md",
+    "docs/KINLINK_CONTINUITY.md",
+    ".project-memory/NEW_CONVERSATION_TAKEOVER.json",
+    ".project-memory/COMMUNICATION_PROTOCOL.json",
+    ".project-memory/COMMUNICATION_STATE_MACHINE.json",
+    ".project-memory/ACTIVE_TRANCHE.json",
+    ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl",
+    ".project-memory/FIELD_CANDIDATE_FREEZE.json"
+  ],
+  "takeover_algorithm": [
+    "DO_NOT_ASK_USER_TO_RECONSTRUCT_PRIOR_CHAT",
+    "READ_DURABLE_STATE_BEFORE_EXPLAINING_ANYTHING",
+    "RECONCILE_ANY_UNCLOSED_TRANCHE_BEFORE_NEW_WORK",
+    "IF_PRIOR_END_MISSING_SEARCH_GMAIL_BY_DELIVERY_KEY_BEFORE_SENDING",
+    "SEND_GMAIL_START_AND_REQUIRE_PROVIDER_ACK_BEFORE_SUBSTANTIVE_WORK",
+    "PERSIST_START_RECEIPT",
+    "WORK_FROM_NEXT_UNCOMMITTED_ACTION",
+    "USE_22_MIN_WORK_PLUS_3_MIN_PRIMARY_NORMAL_CLOSE",
+    "STOP_NEW_PRODUCT_MUTATIONS_AT_CLOSE_RESERVE",
+    "SEND_COMPLETE_GMAIL_END_AND_REQUIRE_PROVIDER_ACK",
+    "PERSIST_CLOSED_STATE",
+    "ONLY_THEN_REPLY_BRIEFLY_IN_APP"
+  ],
+  "communication_contract": {
+    "cadence_minutes": 25,
+    "useful_work_minutes": 22,
+    "normal_close_reserve_minutes": 3,
+    "normal_close_owner": "PRIMARY_ASSISTANT",
+    "app_reply_after_end_mail": "ONLY short Gmail pointer + Kinshasa date/time unless user explicitly asks for a direct answer",
+    "gmail_label": "KINLINK",
+    "end_delivery": "provider acknowledged and persisted",
+    "watchdog_role": "post-nominal backup only; never replace normal close",
+    "duplicate_prevention": "delivery_key + Gmail search + provider message ID",
+    "apk_delivery": "Drive KINLINK only; never Gmail attachment"
+  },
+  "work_style": {
+    "coherent_batches": true,
+    "no_micro_beta_chain": true,
+    "no_restart_from_zero": true,
+    "no_long_chat_reports_when_gmail_succeeds": true,
+    "no_claim_without_exact_head_evidence": true,
+    "no_install_request_before_release_gate": true,
+    "user_actions": "minimum necessary only"
+  },
+  "ui_release_gate": {
+    "status": "MANDATORY",
+    "rules": [
+      "No user install for a new candidate until responsive UI gate passes",
+      "Emulator/device-matrix screenshots must be reviewed before field delivery",
+      "Test normal and large font scales",
+      "Test portrait layout and header wrapping",
+      "Test each visible button for relevance, spacing, tap target and text wrap",
+      "Test Wi-Fi, cellular, safe-mode, resource-constrained and degraded states",
+      "Reject any clipped, single-character-column, overflow, overlapping or absurd whitespace layout",
+      "Home screen must prioritize status, current control action, quality/evidence, then secondary controls",
+      "Technical details collapsed by default"
+    ],
+    "recent_blocking_defect": "0.7.2 target-phone screenshots proved catastrophic responsive header compression; treat as P0 regression"
+  },
+  "product_truth": {
+    "installed_field_build": "0.7.2/versionCode10 installed; functional but invalid as near-final due P0 responsive header/UI regression",
+    "canonical_rollback": "0.6.0-rc3/versionCode7 remains canonical Drive installer",
+    "active_dev_branch": "dev/0.7.3-final-like-ui-control",
+    "active_dev_head": "6ef270d83461628aa8a6a6356b0d56dece6f0ca1",
+    "exact_head_ci": {
+      "design_lint_run": 35616879792,
+      "design_lint": "PASS",
+      "android_run": 35616879783,
+      "android": "PASS"
+    },
+    "next_action": "final counter-audit 0.7.3, responsive/emulator UI proof, then freeze/sign/Drive readback one consolidated candidate; do not ask user to reinstall before those gates"
+  },
+  "mobile_control_truth": {
+    "level_1": "continuous passive control/evidence with bounded actions; requestBandwidthUpdate is metric refresh, not a throughput accelerator",
+    "required_behavior": "if connection degrades later, detect and re-evaluate under cooldown/resource/data safeguards",
+    "strong_stabilizer": "VpnService/TUN remains gated until causal benefit, fail-open, RAM, battery, thermal, DNS, latency and rollback evidence pass"
+  }
+}
