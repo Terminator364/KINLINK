@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_0_7_0_DEV_MIGRATION_RESOURCE_QUALIFICATION",
+  "phase": "POST_FIELD_0_7_0_DEV_RELEASE_READINESS_HARDENING",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "qualify code head 1b404fa59aba02746f68291f21f8b8a5e533544f; design-lint PASS, Android CI in progress; after PASS consolidate longitudinal diagnostics + migration/resource evidence, then continue release-readiness gate without replacing RC3",
+  "next_uncommitted_action": "qualify code head c8999e902e92af51e34c95349073135df4de6ecc; migration fix + release-readiness gate added; Android CI in progress; after PASS promote full-machine checkpoint and continue target-device resource evidence without replacing RC3",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -76,7 +76,7 @@
     "version": "0.7.0-dev",
     "versionCode": 8,
     "promotion": "FORBIDDEN_UNTIL_CONSOLIDATED_RC_GATE",
-    "head": "1b404fa59aba02746f68291f21f8b8a5e533544f",
+    "head": "c8999e902e92af51e34c95349073135df4de6ecc",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -131,16 +131,21 @@
       "explicit contiguous telemetry migration plan v1->v5",
       "runtime resource qualification verdict PASS/INCONCLUSIVE/BLOCKED",
       "30-minute callback-churn resource evidence",
-      "longitudinal radio evidence in diagnostic export"
+      "longitudinal radio evidence in diagnostic export",
+      "historically exact telemetry migration schemas",
+      "migration execution errors no longer silently swallowed",
+      "central signed-candidate release readiness gate",
+      "all five readiness gates individually mandatory by regression tests"
     ],
-    "last_full_pass": "00e4df0d3869daaab777d2b159a1c8228d9b2c7c"
+    "last_full_pass": "1b404fa59aba02746f68291f21f8b8a5e533544f"
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "1b404fa59aba02746f68291f21f8b8a5e533544f",
-    "design_lint": "PASS",
+    "code_head": "c8999e902e92af51e34c95349073135df4de6ecc",
+    "design_lint": "QUEUED",
     "android_ci": "IN_PROGRESS",
-    "full_machine_verdict": "PENDING"
+    "full_machine_verdict": "PENDING",
+    "latest_full_pass": "1b404fa59aba02746f68291f21f8b8a5e533544f"
   },
   "continuity": {
     "command": "KINLINKGO",
