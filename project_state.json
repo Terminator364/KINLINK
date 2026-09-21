@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_0_FIELD_QUALIFICATION_AUTOMATION_CI",
+  "phase": "KINLINK_0_7_0_FINAL_FIELD_CANDIDATE_CI",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "qualify head f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3; previous signed artifact aed0643... was never delivered/installed and is superseded; after PASS build/download/sign one final consolidated field candidate, then collect automatic field qualification receipt",
+  "next_uncommitted_action": "qualify final app head 50df92a0fb1131e1b9b136fd7fc25ad6739f406b; after PASS download exact unsigned candidate, verify artifact, sign once with canonical signer, deliver only that candidate; resource baseline auto-resets on power disconnect and old RC3 evidence cannot qualify v8",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -76,7 +76,7 @@
     "version": "0.7.0",
     "versionCode": 8,
     "promotion": "FIELD_CANDIDATE_ONLY_AFTER_STAGE_A_PASS",
-    "head": "f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3",
+    "head": "50df92a0fb1131e1b9b136fd7fc25ad6739f406b",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -156,15 +156,19 @@
       "self-test diagnostics count only successful receipts",
       "automatic field candidate qualification policy",
       "service auto-seals FIELD_CANDIDATE_QUALIFIED or BLOCKED receipt",
-      "diagnostic export exposes automatic field qualification state"
+      "diagnostic export exposes automatic field qualification state",
+      "charging status sampled explicitly for battery qualification",
+      "flat battery while charging cannot masquerade as zero drain",
+      "power disconnect automatically resets resource qualification baseline",
+      "resource qualification restarts a clean 30-minute window after unplug"
     ],
     "last_full_pass": "a00ed98ab269a851f38fb33cfda8bb77a624e502"
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3",
-    "design_lint": "QUEUED",
-    "android_ci": "QUEUED",
+    "code_head": "50df92a0fb1131e1b9b136fd7fc25ad6739f406b",
+    "design_lint": "IN_PROGRESS",
+    "android_ci": "PENDING",
     "full_machine_verdict": "PENDING",
     "latest_full_pass": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab"
   },
