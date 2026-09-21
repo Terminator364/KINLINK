@@ -1,7 +1,7 @@
 {
   "schema": "kinlink.resume_capsule/1",
   "project": "KINLINK",
-  "generated_at": "2026-09-21T23:04:00+01:00",
+  "generated_at": "2026-09-21T23:05:00+01:00",
   "purpose": "cold-start a new conversation from durable truth and detect stale/partially synchronized memory before product work",
   "immutable_history": {
     "repo_initial_commit": "e066f17a7d804acad538aa58b5cb35cda06b6014",
@@ -51,7 +51,7 @@
     },
     {
       "path": ".project-memory/INTEGRATED_PROGRAM_PLAN.json",
-      "git_blob_sha1": "2bd66a488b5509e926d4a2f9bc2f1f8fe988935e"
+      "git_blob_sha1": "9d30ba6c44f1b6f6d7272fe97aa0e488c8dd6295"
     },
     {
       "path": ".project-memory/MEMORY_POLICY_V2.json",
