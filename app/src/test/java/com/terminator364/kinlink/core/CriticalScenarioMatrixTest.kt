@@ -105,13 +105,21 @@ class CriticalScenarioMatrixTest {
         }
     }
 
-    @Test fun cellularIsObservationOnlyAcrossCentralAndAutopilotGates() {
+    @Test fun wifiRecoveryEngineNeverOperatesOnCellular() {
         val truth = NetworkTruth(
             transport = Transport.CELLULAR,
             internetState = InternetState.VALIDATED
         )
         assertFalse(ActiveRecoveryPolicy.allowed(RecoveryMode.AUTOMATIC, Transport.CELLULAR))
         assertEquals(AutomaticRecoveryAction.NONE, decide(truth).action)
+        val mobile = MobileAssistPolicy.decide(
+            truth = truth.copy(downstreamKbps = 600, upstreamKbps = 200),
+            recoveryMode = RecoveryMode.AUTOMATIC,
+            resourceConstrained = false,
+            recentActions = 0,
+            millisSinceLastAction = Long.MAX_VALUE
+        )
+        assertEquals(MobileAssistAction.REFRESH_LINK_METRICS, mobile.action)
     }
 
     @Test fun observationOnlyBlocksEvenHealthyWifiRecoverySurface() {
