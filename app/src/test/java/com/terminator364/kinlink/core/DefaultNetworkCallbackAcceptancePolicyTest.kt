@@ -5,6 +5,33 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class DefaultNetworkCallbackAcceptancePolicyTest {
+    @Test fun snapshotRequiresCapabilitiesAndLinkPropertiesOnSameActiveNetwork() {
+        assertFalse(
+            DefaultNetworkCallbackAcceptancePolicy.snapshotReady(
+                hasCapabilities = true,
+                hasLinkProperties = false,
+                callbackMatchedBeforeReduction = true,
+                callbackMatchedAfterReduction = true
+            )
+        )
+        assertFalse(
+            DefaultNetworkCallbackAcceptancePolicy.snapshotReady(
+                hasCapabilities = true,
+                hasLinkProperties = true,
+                callbackMatchedBeforeReduction = true,
+                callbackMatchedAfterReduction = false
+            )
+        )
+        assertTrue(
+            DefaultNetworkCallbackAcceptancePolicy.snapshotReady(
+                hasCapabilities = true,
+                hasLinkProperties = true,
+                callbackMatchedBeforeReduction = true,
+                callbackMatchedAfterReduction = true
+            )
+        )
+    }
+
     @Test fun explicitCallbackMustStillBeActiveDefault() {
         assertTrue(DefaultNetworkCallbackAcceptancePolicy.accept(true, true))
         assertFalse(DefaultNetworkCallbackAcceptancePolicy.accept(true, false))
