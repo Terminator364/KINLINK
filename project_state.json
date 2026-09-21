@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_0_UNSIGNED_CANDIDATE_CI",
+  "phase": "KINLINK_0_7_0_UNSIGNED_CANDIDATE_IDENTITY_HARDENING",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "read android-0.7-candidate + design-lint for head a00ed98ab269a851f38fb33cfda8bb77a624e502; if PASS download unsigned release-like artifact, verify hash/manifest, mark Stage A eligible, then stable-sign exactly that artifact with canonical signer without replacing RC3",
+  "next_uncommitted_action": "read android-0.7-candidate result for current head 9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab; design-lint PASS, Android CI in progress; latest full machine PASS is a00ed98ab269a851f38fb33cfda8bb77a624e502; after current head PASS, download exact unsigned 0.7.0 candidate, verify identity/hash, then stable-sign one field candidate without replacing RC3",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -76,7 +76,7 @@
     "version": "0.7.0",
     "versionCode": 8,
     "promotion": "FIELD_CANDIDATE_ONLY_AFTER_STAGE_A_PASS",
-    "head": "a00ed98ab269a851f38fb33cfda8bb77a624e502",
+    "head": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -148,17 +148,21 @@
       "manual release-readiness workflow is stage-aware and never signs/promotes itself",
       "background repeating-wakeup scheduler CI fence",
       "unsigned release-like candidate Gradle variant",
-      "candidate CI artifact is no longer debug-signed"
+      "candidate CI artifact is no longer debug-signed",
+      "public repo fence rejects private signing material/credential files",
+      "candidate CI verifies package name/versionCode/versionName",
+      "candidate CI proves artifact is unsigned before upload",
+      "offline signing helper is input-hash pinned and signer-fingerprint pinned"
     ],
-    "last_full_pass": "71111619ada624bdf717e869323ac309bd07c7de"
+    "last_full_pass": "a00ed98ab269a851f38fb33cfda8bb77a624e502"
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "a00ed98ab269a851f38fb33cfda8bb77a624e502",
-    "design_lint": "IN_PROGRESS",
+    "code_head": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
+    "design_lint": "PASS",
     "android_ci": "IN_PROGRESS",
     "full_machine_verdict": "PENDING",
-    "latest_full_pass": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d"
+    "latest_full_pass": "a00ed98ab269a851f38fb33cfda8bb77a624e502"
   },
   "continuity": {
     "command": "KINLINKGO",
