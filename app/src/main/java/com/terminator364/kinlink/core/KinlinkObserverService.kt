@@ -95,14 +95,14 @@ class KinlinkObserverService : Service() {
                 schemaIntegrity = runCatching { ledger.schemaIntegrityOk() }.getOrDefault(false)
             )
             coreRuntimeReady = coreSelfTest.pass
-            runCatching {
+            val coreReceiptWritten = runCatching {
                 ledger.appendAction(
                     QualificationReceiptNames.coreSelfTest(runningVersionCode),
                     coreSelfTest.pass,
                     coreSelfTest.summary
                 )
-            }
-            if (coreSelfTest.pass) {
+            }.isSuccess
+            if (coreSelfTest.pass && coreReceiptWritten) {
                 postUpdateSelfTestStore.markCoreTested(runningVersionCode)
             }
         }
@@ -153,12 +153,14 @@ class KinlinkObserverService : Service() {
             runCatching {
                 if (postUpdateSelfTestStore.needsObserverTest(runningVersionCode)) {
                     val observerSelfTest = RuntimeSelfTestPolicy.observerCallback(true)
-                    ledger.appendAction(
-                        QualificationReceiptNames.observerSelfTest(runningVersionCode),
-                        observerSelfTest.pass,
-                        observerSelfTest.summary
-                    )
-                    if (observerSelfTest.pass) {
+                    val observerReceiptWritten = runCatching {
+                        ledger.appendAction(
+                            QualificationReceiptNames.observerSelfTest(runningVersionCode),
+                            observerSelfTest.pass,
+                            observerSelfTest.summary
+                        )
+                    }.isSuccess
+                    if (observerSelfTest.pass && observerReceiptWritten) {
                         postUpdateSelfTestStore.markObserverTested(runningVersionCode)
                     }
                 }
@@ -234,6 +236,13 @@ class KinlinkObserverService : Service() {
             RuntimeBudgetCheckpointPolicy.MIN_CHECKPOINT_AGE_MS + 1_000L
         )
     }
+    private fun scheduleRuntimeBudgetCheckpointRetry() {
+        runtimeBudgetHandler.removeCallbacks(runtimeBudgetCheckpointRunnable)
+        runtimeBudgetHandler.postDelayed(
+            runtimeBudgetCheckpointRunnable,
+            5L * 60L * 1000L
+        )
+    }
 
     private fun resetRuntimeBudgetBaseline(reason: String) {
         if (!::runtimeBudgetSampler.isInitialized) return
@@ -274,7 +283,7 @@ class KinlinkObserverService : Service() {
             )
         )
 
-        runCatching {
+        val checkpointPersisted = runCatching {
             ledger.appendAction(
                 "RUNTIME_BUDGET_CHECKPOINT",
                 true,
@@ -285,9 +294,13 @@ class KinlinkObserverService : Service() {
                 resourceAssessment.verdict == RuntimeResourceVerdict.PASS,
                 "reasons=${resourceAssessment.reasons.sorted().joinToString(",")}; callbackEvents=$runtimeCallbackEvents"
             )
+        }.isSuccess
+        runtimeBudgetCheckpointWritten = checkpointPersisted
+        if (checkpointPersisted) {
+            maybeRecordFieldCandidateQualification()
+        } else {
+            scheduleRuntimeBudgetCheckpointRetry()
         }
-        runtimeBudgetCheckpointWritten = true
-        maybeRecordFieldCandidateQualification()
     }
 
     private fun maybeRecordFieldCandidateQualification() {
@@ -320,23 +333,31 @@ class KinlinkObserverService : Service() {
 
         when (assessment.verdict) {
             FieldCandidateQualificationVerdict.PASS -> {
-                ledger.appendAction(
-                    QualificationReceiptNames.fieldQualified(runningVersionCode),
-                    true,
-                    "0.7 field evidence complete: self-tests, validated mobile handoff, Wi-Fi return and runtime resource PASS."
-                )
-                fieldQualificationReceiptWritten = true
-                updateNotificationFor(latestTruth)
+                val recorded = runCatching {
+                    ledger.appendAction(
+                        QualificationReceiptNames.fieldQualified(runningVersionCode),
+                        true,
+                        "0.7 field evidence complete: self-tests, validated mobile handoff, Wi-Fi return and runtime resource PASS."
+                    )
+                }.isSuccess
+                if (recorded) {
+                    fieldQualificationReceiptWritten = true
+                    updateNotificationFor(latestTruth)
+                }
             }
             FieldCandidateQualificationVerdict.BLOCKED -> {
                 if (!fieldQualificationBlockedWritten) {
-                    ledger.appendAction(
-                        QualificationReceiptNames.fieldBlocked(runningVersionCode),
-                        false,
-                        "0.7 field qualification blocked: ${assessment.missing.sorted().joinToString(",")}."
-                    )
-                    fieldQualificationBlockedWritten = true
-                    updateNotificationFor(latestTruth)
+                    val recorded = runCatching {
+                        ledger.appendAction(
+                            QualificationReceiptNames.fieldBlocked(runningVersionCode),
+                            false,
+                            "0.7 field qualification blocked: ${assessment.missing.sorted().joinToString(",")}."
+                        )
+                    }.isSuccess
+                    if (recorded) {
+                        fieldQualificationBlockedWritten = true
+                        updateNotificationFor(latestTruth)
+                    }
                 }
             }
             FieldCandidateQualificationVerdict.PENDING -> Unit
