@@ -2,63 +2,51 @@
 
 ## Field baseline installed
 - KINLINK **0.7.3-dev / versionCode 11**
-- installed and usable as the current field baseline
-- not near-final after target-device counter-audit
-- keep installed while the integrated successor advances internally
+- installed/usable baseline only; not near-final
+- no new phone install requested
 
-## Full product scope
-- A+B+C macro capabilities: **80**
+## Full A+B+C scope
+- macro capabilities: **80**
 - conservative maturity: **45.1%**
-- B-depth: **B31-B100** / 70 subrequirements
-- integrated program: **W0-W6**
-- W1 is substantially qualified; **W2 is active under B5 attribution/permission rules**
+- B-depth: **B31-B100**
+- program: W0-W6
+- **W2 Context + Mobile Vault active**
 - no user-facing micro-beta chain
 
-## Continuity state
-- resume capsule: `.project-memory/RESUME_CAPSULE.json`
-- pinned canonical inputs: 17 Git blobs
-- cold takeover verifier: `tools/release/verify_cold_takeover.py`
-- main continuity design-lint `35659344414`: **PASS**
-- communication protocol v5
+## Communication / continuity
+- resume capsule + cold-takeover verifier active
 - one watchdog only: **KINLINK Comms Watchdog**
+- CLOSE_INTENT without END ACK = P0
+- watchdog stale-WORKING threshold: **28 min**
+- foreground protocol remains 22 min work + 3 min close reserve
 
-## 0.8 proof already closed
-### b540 visual/truth proof
-- head `b54020291f866042103ad0f63cae3645977638d1`
-- Android `35656916207`: PASS
-- **45/45 screenshots manually inspected**
-- UI/truth PASS
+## 0.8 proven foundations
+- b540 rendered UI/truth: 45/45 manually audited PASS
+- e633 release provenance: 0.8.0-dev / v12 exact readback PASS
+- f2a6393 W2 plan store: design-lint + Android CI PASS
+- 6f043ab W2 usage reconciliation/UI: design-lint + Android CI PASS
 
-### e633 release provenance repair
-- head `e633db6f6441f563256deb04890bbc28267d08b8`
-- design-lint `35658883138`: PASS
-- Android `35658883177`: PASS
-- independent artifact readback:
-  - version `0.8.0-dev`
-  - versionCode `12`
-  - commit `e633db6f6441f563256deb04890bbc28267d08b8`
-  - unsigned APK SHA-256 `8b81f3ec51e6f558ebe5c1a41904b47fe65aef2c0cd1ee4e0d21d372837fa1ff`
-- stale `\\1` manifest defect is repaired
+## W2 usage reconciliation
+Implemented:
+- per-plan exact vs device-mobile-aggregate attribution
+- conflicts HOLD instead of averaging
+- reboot/counter reset preserves proven cycle usage
+- local usage evidence store
+- plan store schema v2 with optional cycle start
+- no privileged SIM identifiers
+- no Usage Access dependency for core correctness
 
-## Active exact successor — W2 begins
+## Visual counter-audit finding
+Manual review of all **45** renders from 6f043ab found one blocking XL-font defect:
+- Mobile Vault dialog pushed **EFFACER** below the viewport.
+
+No maturity score increase was granted from that head.
+
+## Active exact successor
 - branch: `dev/0.8.0-integrated-truth-and-control`
-- head: `3b12df65ed64538159ca13eee752c3d8d762e3ad`
-- design-lint `35659643320`: **PASS**
-- Android `35659643216`: **IN PROGRESS**
+- head: `7d589ddd6038adcb7c318f2b00dc1cf03faaa355`
+- fix: compact Mobile Vault dialog + scrollable in-form clear action
+- design-lint `35664821268`: **PASS**
+- Android `35664821258`: **IN PROGRESS at close intent**
 
-New W2 executable core:
-- total-plan model
-- normal allowance
-- protected reserve
-- rescue allowance
-- critical-interactive allowance
-- expired/exhausted/unknown fail-safe
-- no autonomous spending when configuration/usage evidence is unknown or invalid
-- no paid probe and no Strong Stabilizer traffic enabled
-
-No signing, Drive staging or phone installation yet.
-
-## Macro maturity movement
-- K014 Mobile Vault hard economic envelopes: **IMPLEMENTED_UNQUALIFIED** after exact-head `3b12df65...` Android run `35659643216` PASS.
-- Global conservative A+B+C maturity: **45.1%**.
-- Active store head: `f2a6393abc77f38e695e1516191a6069d59fab77` (CI pending at this checkpoint).
+Next: inspect fresh 45-shot proof if CI passes. No signing/Drive staging/phone install yet.
