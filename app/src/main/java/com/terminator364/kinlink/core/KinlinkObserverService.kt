@@ -3,11 +3,15 @@ package com.terminator364.kinlink.core
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.terminator364.kinlink.data.TelemetryLedger
 
 class KinlinkObserverService : Service() {
@@ -35,6 +39,14 @@ class KinlinkObserverService : Service() {
     private var fieldQualificationBlockedWritten = false
     private val runtimeBudgetHandler by lazy { android.os.Handler(android.os.Looper.getMainLooper()) }
     private val runtimeBudgetCheckpointRunnable = Runnable { maybeRecordRuntimeBudgetCheckpoint() }
+    private var powerReceiverRegistered = false
+    private val powerStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == Intent.ACTION_POWER_DISCONNECTED) {
+                resetRuntimeBudgetBaseline("POWER_DISCONNECTED")
+            }
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -59,10 +71,6 @@ class KinlinkObserverService : Service() {
         postUpdateSelfTestStore = PostUpdateSelfTestStore(this)
         runtimeBudgetSampler = RuntimeBudgetSampler(this)
         runtimeBudgetStart = runtimeBudgetSampler.sample()
-        runtimeBudgetHandler.postDelayed(
-            runtimeBudgetCheckpointRunnable,
-            RuntimeBudgetCheckpointPolicy.MIN_CHECKPOINT_AGE_MS + 1_000L
-        )
         runningVersionCode = runCatching {
             packageManager.getPackageInfo(packageName, 0).longVersionCode
         }.getOrDefault(-1L)
@@ -70,6 +78,14 @@ class KinlinkObserverService : Service() {
             ledger.countActions(QualificationReceiptNames.fieldQualified(runningVersionCode)) > 0
         fieldQualificationBlockedWritten =
             ledger.countActions(QualificationReceiptNames.fieldBlocked(runningVersionCode)) > 0
+        scheduleRuntimeBudgetCheckpoint()
+        ContextCompat.registerReceiver(
+            this,
+            powerStateReceiver,
+            IntentFilter(Intent.ACTION_POWER_DISCONNECTED),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+        powerReceiverRegistered = true
 
         if (postUpdateSelfTestStore.needsCoreTest(runningVersionCode)) {
             val modeReadable = runCatching { recoveryModeStore.current() }.isSuccess
@@ -211,6 +227,30 @@ class KinlinkObserverService : Service() {
         observer.start()
     }
 
+    private fun scheduleRuntimeBudgetCheckpoint() {
+        runtimeBudgetHandler.removeCallbacks(runtimeBudgetCheckpointRunnable)
+        runtimeBudgetHandler.postDelayed(
+            runtimeBudgetCheckpointRunnable,
+            RuntimeBudgetCheckpointPolicy.MIN_CHECKPOINT_AGE_MS + 1_000L
+        )
+    }
+
+    private fun resetRuntimeBudgetBaseline(reason: String) {
+        if (!::runtimeBudgetSampler.isInitialized) return
+        runtimeBudgetStart = runtimeBudgetSampler.sample()
+        runtimeCallbackEvents = 0
+        runtimeBudgetCheckpointWritten = false
+        scheduleRuntimeBudgetCheckpoint()
+        if (::ledger.isInitialized) {
+            runCatching {
+                ledger.appendAction(
+                    "RUNTIME_BUDGET_BASELINE_RESET_V$runningVersionCode",
+                    true,
+                    "reason=$reason; new 30-minute resource window started"
+                )
+            }
+        }
+    }
     private fun maybeRecordRuntimeBudgetCheckpoint() {
         if (!::runtimeBudgetSampler.isInitialized) return
         val start = runtimeBudgetStart ?: return
@@ -307,6 +347,10 @@ class KinlinkObserverService : Service() {
 
     override fun onDestroy() {
         runtimeBudgetHandler.removeCallbacks(runtimeBudgetCheckpointRunnable)
+        if (powerReceiverRegistered) {
+            runCatching { unregisterReceiver(powerStateReceiver) }
+            powerReceiverRegistered = false
+        }
         if (::ledger.isInitialized) {
             maybeRecordRuntimeBudgetCheckpoint()
         }
