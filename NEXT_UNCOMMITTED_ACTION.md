@@ -1,40 +1,45 @@
 # NEXT_UNCOMMITTED_ACTION
 
 ## Stable field baseline
-0.6.0-rc3 / versionCode 7 remains installed and Drive-canonical. Do not replace it yet.
+0.6.0-rc3 / versionCode 7 remains installed and Drive-canonical.
 
 ## Frozen candidate line
 0.7.0 / versionCode 8.
 
-## Latest full machine PASS
-`a00ed98ab269a851f38fb33cfda8bb77a624e502`.
+## Current final app head for this tranche
+`6b5c31d7c16d916c0d5768fd0284823165d3c210`.
 
-That head proved the release-like unsigned candidate variant builds successfully.
+No more app-code changes should be made until this exact head finishes candidate CI.
 
-## Current head under qualification
+## Latest earlier full machine PASS
 `9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab`.
 
-- design-lint: PASS
-- Android candidate CI: IN_PROGRESS at checkpoint time
+A signed artifact from that earlier head was produced and verified but was **never delivered or installed**. It is superseded before field delivery because additional qualification hardening was added.
 
-## Hardening added in this tranche
-1. diagnostic summary now carries previously omitted 24h slow-link, incident and manual-diagnosis evidence;
-2. runtime resource verdicts are exported;
-3. churn limit is normalized by session duration;
-4. one-shot >=30-minute resource checkpoint is independent from network callbacks, with shutdown fallback;
-5. background repeating-wakeup APIs are fenced in CI;
-6. release readiness is two-stage: Stage A field-candidate, Stage B canonical promotion;
-7. canonical signer contract is pinned and CI-verified;
-8. candidate build is release-like and unsigned in public CI;
-9. private signing material is statically forbidden from the public repository;
-10. candidate identity is verified as package com.terminator364.kinlink, versionCode 8, versionName 0.7.0, and unsigned;
-11. offline signer is pinned to the exact CI input hash and canonical signer fingerprint.
+## Hardening added after that preliminary signing
+1. executable SQLite migration simulation v1 -> v5 with sentinel-data preservation;
+2. successful self-test receipts are counted separately from failures;
+3. field-candidate qualification is automatically evaluated and sealed locally;
+4. every qualification receipt is scoped to the running versionCode;
+5. RC3 handoff/self-test history therefore cannot qualify 0.7.0;
+6. resource PASS/BLOCKED evidence is version-scoped;
+7. foreground notification surfaces QUALIFIED/BLOCKED state;
+8. main UI shows 0.7.0 field qualification state;
+9. diagnostic export computes the field verdict from current-version evidence only;
+10. intermediate CI runs are automatically cancelled so only the newest branch head matters.
+
+## Current machine gate
+- head: `6b5c31d7c16d916c0d5768fd0284823165d3c210`
+- design-lint: pending/running at checkpoint time
+- Android candidate CI: pending at checkpoint time
+- canonical RC3 untouched
 
 ## Next durable action
-1. read Android CI for `9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab`;
-2. if PASS, download the exact `KINLINK-0.7.0-ci-build` artifact and verify its hash/manifest;
-3. stable-sign exactly that candidate with the canonical signer in the private signing path;
-4. do not replace RC3 yet;
-5. install at most one consolidated signed 0.7.0 field candidate;
-6. collect FIELD_HANDOFF + >=30-minute RESOURCE_QUALIFICATION;
-7. canonically promote only after all five gates PASS.
+1. read both CI results for `6b5c31d7c16d916c0d5768fd0284823165d3c210`;
+2. if both PASS, download that exact unsigned release-like artifact;
+3. verify ZIP digest + APK hash + manifest identity;
+4. stable-sign exactly that artifact with the canonical KINLINK signer;
+5. verify signed hash, v3 signature and certificate fingerprint;
+6. deliver/install only that one consolidated field candidate;
+7. collect automatically version-scoped handoff + >=30 min resource evidence;
+8. canonical promotion remains forbidden until Stage B PASS.
