@@ -30,7 +30,8 @@
       "NEXT_UNCOMMITTED_ACTION.md",
       "BUILD_STATUS.md",
       ".project-memory/ACTIVE_TRANCHE.json",
-      ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl"
+      ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl",
+      ".project-memory/INTEGRATED_PROGRAM_PLAN.json"
     ],
     "memory_core": [
       ".project-memory/MEMORY_POLICY_V2.json",
@@ -73,6 +74,7 @@
     "Canonical context pack is derived and must match scorecard/anchors; it never replaces chronicle/history.",
     "Exactly one KINLINK communication watchdog policy is canonical; automation is a safety net, not a substitute for primary START/END protocol.",
     "Android 17 LAN permission is feature-scoped: never add a blanket startup permission prompt merely because targetSdk is 37.",
-    "B-depth growth must update the integrity verifier and context pack without changing the 80-macro denominator automatically."
+    "B-depth growth must update the integrity verifier and context pack without changing the 80-macro denominator automatically.",
+    "Progress is organized by integrated waves; internal CI iterations must never be confused with user-facing micro-beta delivery."
   ]
 }

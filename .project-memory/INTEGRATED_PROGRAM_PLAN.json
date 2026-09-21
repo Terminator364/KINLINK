@@ -1,0 +1,206 @@
+{
+  "schema": "kinlink.integrated_program_plan/1",
+  "project": "KINLINK",
+  "doctrine": "ONE_COHERENT_FIELD_DELIVERY_AFTER_LARGE_INTERNAL_WAVES",
+  "macro_denominator": 80,
+  "current_maturity_percent": 44.8,
+  "rules": [
+    "Internal commits/CI iterations are allowed; user-facing micro-beta installation chain is forbidden.",
+    "Each wave must improve multiple related capabilities and close evidence gates before the next wave depends on it.",
+    "No field update merely to demonstrate progress.",
+    "Strong Stabilizer stays SHADOW/per-app canary until benefit, safety, resource and rollback gates pass.",
+    "Macro maturity changes only when evidence supports a stage transition."
+  ],
+  "waves": [
+    {
+      "id": "W0",
+      "name": "Truth + proof foundation",
+      "status": "MOSTLY_COMPLETE",
+      "macro_ids": [
+        "K003",
+        "K013",
+        "K025",
+        "K043",
+        "K047",
+        "K048",
+        "K049",
+        "K050",
+        "K052",
+        "K053",
+        "K054",
+        "K071",
+        "K074"
+      ],
+      "deliverables": [
+        "truthful user-experience model",
+        "no fake 100/100",
+        "single secure installer path",
+        "communication watchdog and memory continuity",
+        "rendered target-like matrices",
+        "dead-end registry"
+      ],
+      "exit_gate": "fresh exact-head 45-shot proof + manual semantic audit"
+    },
+    {
+      "id": "W1",
+      "name": "Platform diagnostics + capability discovery",
+      "status": "IN_PROGRESS",
+      "macro_ids": [
+        "K003",
+        "K006",
+        "K008",
+        "K009",
+        "K031",
+        "K041",
+        "K058",
+        "K063",
+        "K064"
+      ],
+      "deliverables": [
+        "race-safe default-network generation model",
+        "capability inventory",
+        "Data Saver / Usage Access / Android 17 LAN permission awareness",
+        "diagnostic confidence and abstention",
+        "native advanced-diagnostics eligibility gate",
+        "no unsupported platform claim"
+      ],
+      "exit_gate": "unit/instrumentation tests + no extra permission prompt + technical diagnostics proof"
+    },
+    {
+      "id": "W2",
+      "name": "Context + Mobile Vault core",
+      "status": "PLANNED",
+      "macro_ids": [
+        "K004",
+        "K005",
+        "K014",
+        "K015",
+        "K016",
+        "K017",
+        "K060",
+        "K061",
+        "K067",
+        "K068"
+      ],
+      "deliverables": [
+        "trusted/home Wi-Fi memory with privacy-preserving identity",
+        "plan size/expiry/reserve model",
+        "reserve/normal/rescue/critical envelopes",
+        "optional richer NetworkStats lane",
+        "multi-SIM-safe data accounting",
+        "cost-aware policy inputs"
+      ],
+      "exit_gate": "local-only persistence + migration + privacy + zero-paid-probe gates"
+    },
+    {
+      "id": "W3",
+      "name": "Complete product surfaces + diagnostics",
+      "status": "PLANNED",
+      "macro_ids": [
+        "K033",
+        "K034",
+        "K035",
+        "K036",
+        "K037",
+        "K038",
+        "K039",
+        "K040",
+        "K041",
+        "K075",
+        "K076",
+        "K077"
+      ],
+      "deliverables": [
+        "Diagnostic path screen",
+        "This week report",
+        "Mobile Vault screen",
+        "Settings",
+        "Emergency disable",
+        "full structured diagnostic ZIP",
+        "energy/crash/failure-cluster summaries"
+      ],
+      "exit_gate": "large-font/target-device visual matrix + export privacy allowlist + offline usability"
+    },
+    {
+      "id": "W4",
+      "name": "Strong Stabilizer SHADOW / per-app canary",
+      "status": "PLANNED_GATED",
+      "macro_ids": [
+        "K019",
+        "K020",
+        "K021",
+        "K022",
+        "K023",
+        "K024",
+        "K025",
+        "K056",
+        "K079",
+        "K080"
+      ],
+      "deliverables": [
+        "separate VpnService/TUN data-plane process",
+        "LAN preservation",
+        "DNS resilience",
+        "per-app allowlist canary",
+        "loop prevention",
+        "MTU safety",
+        "meteredness inheritance",
+        "always-on explicitly disabled until qualified",
+        "instant native-network escape"
+      ],
+      "exit_gate": "fuzzing + IPv4/IPv6/QUIC + handoff + battery/RAM + rollback + no-harm evidence"
+    },
+    {
+      "id": "W5",
+      "name": "Network Twin replay + SHADOW learner",
+      "status": "PLANNED",
+      "macro_ids": [
+        "K028",
+        "K029",
+        "K030",
+        "K031",
+        "K036",
+        "K055",
+        "K057",
+        "K078"
+      ],
+      "deliverables": [
+        "deterministic event replay",
+        "champion/challenger policy evaluation",
+        "incident fingerprint clustering",
+        "benefit/cost scoring",
+        "negative controls",
+        "automatic harm rollback"
+      ],
+      "exit_gate": "replay determinism + stale-evidence invalidation + no automatic promotion without proof"
+    },
+    {
+      "id": "W6",
+      "name": "One coherent field candidate",
+      "status": "BLOCKED_BY_W1_W5",
+      "macro_ids": [
+        "K001",
+        "K002",
+        "K027",
+        "K035",
+        "K044",
+        "K045",
+        "K046",
+        "K047",
+        "K048",
+        "K053",
+        "K054",
+        "K058"
+      ],
+      "deliverables": [
+        "single signed update over installed baseline",
+        "Drive readback",
+        "target-device field qualification",
+        "resource qualification",
+        "recovery/rollback receipts",
+        "no repeated human reinstall loop"
+      ],
+      "exit_gate": "field evidence complete; only then canonical promotion"
+    }
+  ]
+}
