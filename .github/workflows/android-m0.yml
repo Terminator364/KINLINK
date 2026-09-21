@@ -1,8 +1,8 @@
-name: android-0.7.1-candidate
+name: android-0.7.2-dev
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [dev/0.7.2-continuous-improvement]
 permissions:
   contents: read
 
@@ -75,8 +75,8 @@ jobs:
           BADGING="$("$BUILD_TOOLS/aapt" dump badging "$APK" | head -n 1)"
           echo "$BADGING"
           echo "$BADGING" | grep -F "package: name='com.terminator364.kinlink'"
-          echo "$BADGING" | grep -F "versionCode='9'"
-          echo "$BADGING" | grep -F "versionName='0.7.1'"
+          echo "$BADGING" | grep -F "versionCode='10'"
+          echo "$BADGING" | grep -F "versionName='0.7.2-dev'"
 
           set +e
           VERIFY_OUTPUT="$("$BUILD_TOOLS/apksigner" verify --verbose "$APK" 2>&1)"
@@ -98,7 +98,7 @@ jobs:
           cat > app/build/outputs/apk/candidate/KINLINK-build-manifest.json <<EOF
           {
             "product": "KINLINK",
-            "version": "0.7.1",
+            "version": "0.7.2-dev",
             "variant": "candidate-unsigned",
             "commit": "${GITHUB_SHA}",
             "built_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
@@ -107,7 +107,7 @@ jobs:
           EOF
       - uses: actions/upload-artifact@v4
         with:
-          name: KINLINK-0.7.1-ci-build
+          name: KINLINK-0.7.2-dev-ci-build
           path: |
             app/build/outputs/apk/candidate/app-candidate-unsigned.apk
             app/build/outputs/apk/candidate/KINLINK-candidate-unsigned.apk.sha256
