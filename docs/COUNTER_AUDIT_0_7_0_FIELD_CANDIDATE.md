@@ -183,3 +183,20 @@ Repair integrated:
 - regression tests prove both envelopes;
 - candidate-contract CI requires the outer timeout/disconnect mechanism.
 
+
+
+### CA-009 — stale callback from the previous default network could contaminate handoff evidence
+
+`NetworkObserver` is registered with Android's default-network callback, but callback delivery can race during handoff. The observer previously reduced the callback-supplied network directly without first proving it was still `ConnectivityManager.activeNetwork`.
+
+A late Wi-Fi capability/link-properties callback after Android had already moved to cellular could therefore transiently publish stale Wi-Fi truth. Because handoff qualification is receipt-carrying, stale truth must not be allowed to create false transition evidence.
+
+**Verdict: blocking evidence-integrity defect for the consolidated successor.**
+
+Repair integrated:
+- callback-supplied networks are accepted only when they still equal Android's active default network;
+- stale old-network callbacks are ignored;
+- explicit current-default refreshes without a callback network remain allowed;
+- pure regression tests cover accept/reject behavior;
+- candidate-contract CI requires the active-default fence.
+
