@@ -49,6 +49,20 @@ class MobileAssistEvidenceTrackerTest {
         assertEquals(MobileAssistEvidenceResult.NO_BETTER, e?.result)
     }
 
+    @Test fun sustainedBetterThenLaterDegradationIsVisibleAndCanBeReevaluated() {
+        val t = MobileAssistEvidenceTracker()
+        t.start(mobile(1_000L, 600, 200))
+        assertNull(t.observe(mobile(10_000L, 6_000, 1_500)))
+        val sustained = t.observe(mobile(31_000L, 8_000, 2_000))
+        assertEquals(MobileAssistEvidenceResult.SUSTAINED_BETTER, sustained?.result)
+
+        val relapse = t.observe(mobile(91_000L, 650, 210))
+        assertEquals(
+            MobileAssistEvidenceResult.RELAPSED_AFTER_SUSTAINED,
+            relapse?.result
+        )
+    }
+
     @Test fun transportOrValidationChangeIsInconclusive() {
         val t = MobileAssistEvidenceTracker()
         t.start(mobile(1_000L, 600, 200))
