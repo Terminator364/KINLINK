@@ -8,15 +8,15 @@
   "normal_close_reserve_minutes": 3,
   "normal_close_owner": "PRIMARY_ASSISTANT",
   "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSE_INTENT_PERSISTED",
-  "status": "CLOSING",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "close_intent_persisted": true,
   "close_owner": "PRIMARY_ASSISTANT",
   "gmail_start_message_id": "1a0c4989f24d2ccf",
   "gmail_start_thread_id": "1a0c4989f24d2ccf",
-  "gmail_end_message_id": null,
-  "gmail_end_thread_id": null,
-  "end_mail_verified": false,
+  "gmail_end_message_id": "1a0c4ac6cdbe052e",
+  "gmail_end_thread_id": "1a0c4989f24d2ccf",
+  "end_mail_verified": true,
   "gmail_label": "KINLINK",
   "forced_closeout_entered": false,
   "no_more_product_mutations": true,
@@ -36,5 +36,6 @@
       "versioned bash harness now called as one command"
     ]
   },
-  "closed_state": false
+  "closed_state": true,
+  "closed_at_local": "2026-09-21T16:53:54+01:00"
 }
