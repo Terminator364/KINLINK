@@ -84,8 +84,8 @@ class MobileAssistController(
         val sinceLast = last?.let { (nowWallMs - it).coerceAtLeast(0L) } ?: Long.MAX_VALUE
         val recentIneffective =
             runCatching {
-                ledger.countActionsSince(EVIDENCE_NO_BETTER, since) +
-                    ledger.countActionsSince(EVIDENCE_RELAPSED, since)
+                ledger.countExactActionSince(EVIDENCE_NO_BETTER, since) +
+                    ledger.countExactActionSince(EVIDENCE_RELAPSED, since)
             }.getOrDefault(2)
 
         val decision = MobileAssistPolicy.decide(
