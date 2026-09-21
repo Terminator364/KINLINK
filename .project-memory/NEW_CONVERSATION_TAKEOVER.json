@@ -26,7 +26,8 @@
     ".project-memory/PRECONCEPTION_BASELINE_A.json",
     ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
     ".project-memory/PRODUCT_EVOLUTION_C.json",
-    "docs/FULL_PRODUCT_SPEC_A_B_C.md"
+    "docs/FULL_PRODUCT_SPEC_A_B_C.md",
+    "docs/RESEARCH_NETWORK_QUALITY_TRUTH_0_8.md"
   ],
   "takeover_algorithm": [
     "DO_NOT_ASK_USER_TO_RECONSTRUCT_PRIOR_CHAT",
