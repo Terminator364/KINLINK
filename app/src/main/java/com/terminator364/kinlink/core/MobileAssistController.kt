@@ -28,8 +28,8 @@ class MobileAssistController(
         val sinceLast = last?.let { (nowWallMs - it).coerceAtLeast(0L) } ?: Long.MAX_VALUE
         val recentIneffective =
             runCatching {
-                ledger.countActionsSince(OUTCOME_UNCHANGED, since) +
-                    ledger.countActionsSince(OUTCOME_DEGRADED, since)
+                ledger.countActionsSince(EVIDENCE_NO_BETTER, since) +
+                    ledger.countActionsSince(EVIDENCE_RELAPSED, since)
             }.getOrDefault(2)
 
         val decision = MobileAssistPolicy.decide(
@@ -103,7 +103,7 @@ class MobileAssistController(
 
     companion object {
         const val ACTION_PREFIX = "MOBILE_ASSIST_ACTION_"
-        const val OUTCOME_UNCHANGED = "MOBILE_ASSIST_OUTCOME_UNCHANGED"
-        const val OUTCOME_DEGRADED = "MOBILE_ASSIST_OUTCOME_DEGRADED"
+        const val EVIDENCE_NO_BETTER = "MOBILE_ASSIST_EVIDENCE_NO_BETTER"
+        const val EVIDENCE_RELAPSED = "MOBILE_ASSIST_EVIDENCE_RELAPSED"
     }
 }
