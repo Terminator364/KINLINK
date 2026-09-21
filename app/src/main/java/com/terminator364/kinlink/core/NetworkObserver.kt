@@ -11,6 +11,14 @@ import android.os.Looper
 object DefaultNetworkCallbackAcceptancePolicy {
     fun accept(callbackNetworkPresent: Boolean, callbackMatchesActive: Boolean): Boolean =
         !callbackNetworkPresent || callbackMatchesActive
+
+    fun acceptStable(
+        callbackNetworkPresent: Boolean,
+        callbackMatchedBeforeReduction: Boolean,
+        callbackMatchedAfterReduction: Boolean
+    ): Boolean =
+        !callbackNetworkPresent ||
+            (callbackMatchedBeforeReduction && callbackMatchedAfterReduction)
 }
 
 /** Observer only: any internal failure leaves Android networking untouched. */
@@ -83,6 +91,14 @@ class NetworkObserver(
             val caps = providedCaps ?: active?.let(cm::getNetworkCapabilities)
             val lp = providedLp ?: active?.let(cm::getLinkProperties)
             val truth = ConnectivityTruthEngine.reduce(caps, lp)
+            if (!DefaultNetworkCallbackAcceptancePolicy.acceptStable(
+                    callbackNetworkPresent = network != null,
+                    callbackMatchedBeforeReduction = network == activeNow,
+                    callbackMatchedAfterReduction = network != null && network == cm.activeNetwork
+                )
+            ) {
+                return
+            }
             val fingerprint = truth.telemetryFingerprint()
             if (fingerprint == lastFingerprint) return
             lastFingerprint = fingerprint
