@@ -16,7 +16,7 @@
     },
     "SIGNER_CONTINUITY": {
       "status": "PASS",
-      "evidence": "final unsigned CI input SHA-256 3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb signed with canonical certificate SHA-256 2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3; apksigner v3 verification PASS"
+      "evidence": "final unsigned CI input SHA-256 3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb8 signed with canonical certificate SHA-256 2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3; apksigner v3 verification PASS"
     },
     "FIELD_HANDOFF": {
       "status": "PENDING",
@@ -60,7 +60,7 @@
     "artifact_id": 10618495983,
     "artifact_name": "KINLINK-0.7.0-ci-build",
     "artifact_zip_sha256": "0deb11a13ba4ee2b8f15d96865741af3be42483d707e2814dabe5bef22717c09",
-    "unsigned_apk_sha256": "3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb",
+    "unsigned_apk_sha256": "3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb8",
     "unsigned_apk_size_bytes": 308944,
     "manifest_commit": "4153720cde8c6bd0004b8e69baeadf5254735abe",
     "manifest_version": "0.7.0",
@@ -72,7 +72,7 @@
     "source_commit": "4153720cde8c6bd0004b8e69baeadf5254735abe",
     "ci_run": 35550539216,
     "artifact_id": 10618495983,
-    "unsigned_apk_sha256": "3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb",
+    "unsigned_apk_sha256": "3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb8",
     "signed_apk_sha256": "cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc",
     "size_bytes": 320260,
     "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
