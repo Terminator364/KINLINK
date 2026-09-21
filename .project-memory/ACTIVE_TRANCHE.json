@@ -1,75 +1,38 @@
 {
+  "schema": "kinlink.active_tranche/2",
   "project": "KINLINK",
-  "tranche_id": "KINLINK-2026-09-21-25M-CONTINUITY-AND-FINAL-LIKE",
+  "tranche_id": "KINLINK-2026-09-21-1516-K25-01",
+  "delivery_key": "K25-20260921-1516-01",
   "cadence_minutes": 25,
-  "primary_work_budget_minutes": 22,
-  "closeout_reserve_minutes": 3,
-  "max_mutation_groups_before_forced_closeout": 12,
-  "mutation_groups_used": 9,
-  "status": "CLOSED_RECOVERY",
-  "forced_closeout_entered": true,
-  "gmail_start_message_id": "1a0c442003db93d7",
-  "gmail_end_message_id": "1a0c44df623a4f24",
-  "end_mail_verified": true,
+  "useful_work_minutes": 22,
+  "normal_close_reserve_minutes": 3,
+  "normal_close_owner": "PRIMARY_ASSISTANT",
+  "backup_earliest_offset_minutes": 26,
+  "hard_guard_offset_minutes": 29,
+  "work_state": "WORKING",
+  "delivery_state": "START_ACKNOWLEDGED",
+  "status": "RUNNING",
+  "close_intent_persisted": false,
+  "close_owner": null,
+  "close_mode": null,
+  "gmail_start_message_id": "1a0c45639cea9e87",
+  "gmail_start_thread_id": "1a0c45639cea9e87",
+  "gmail_end_message_id": null,
+  "end_mail_verified": false,
+  "end_mail_reply_to_start": true,
+  "end_subject_key": "K25-20260921-1516-01",
   "gmail_label": "KINLINK",
-  "end_mail_required_before_app_reply": true,
-  "system_interruption_guard": true,
-  "goal": "harden BCP-inspired communication/continuity and advance exact-head-passing 0.7.2 toward a final-like field candidate",
+  "next_atomic_action": "qualify exact 0.7.2 branch head and continue final-like counter-audit",
   "technical_branch": "dev/0.7.2-continuous-improvement",
   "installed_field_build": "0.7.1/versionCode9 installed and frozen",
-  "delivery_state": "END_ACKNOWLEDGED",
-  "next_atomic_action": "read Android candidate run 35610708876 for frozen head cc48c1d...; if PASS, next tranche may supersede installed 0.7.1 through explicit state transition, reconcile main, requalify, sign, Drive-readback, then request at most one 0.7.2 install",
-  "notes": [
-    "22 min useful work + 3 min forced closeout",
-    "No APK by Gmail",
-    "No app reply before verified Gmail END",
-    "If interrupted, watchdog must close from latest durable checkpoint"
-  ],
-  "work_state": "WORKING",
-  "start_provider_ack": true,
-  "watchdogs": {
-    "closeout_watchdog_armed": true,
-    "hard_end_guard_armed": true,
-    "closeout_trigger_minutes": 22,
-    "hard_end_trigger_minutes": 25
-  },
-  "last_durable_checkpoint": {
-    "dev_branch": "dev/0.7.2-continuous-improvement",
-    "dev_head": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
-    "version": "0.7.2",
-    "versionCode": 10,
-    "candidate_identity_frozen": true,
-    "push_design_lint": {
-      "run": 35610708971,
-      "status": "PASS"
-    },
-    "android_candidate": {
-      "run": 35610708876,
-      "status": "PENDING"
-    },
-    "previous_full_machine_pass": {
-      "head": "d1b8c021f4ccd73829d716d9bbb8fc866817f69f",
-      "design_lint": "PASS",
-      "android_ci": "PASS"
-    },
-    "important_audit_fixes": [
-      "manual proof uses current active-network pre-action baseline",
-      "manual proof timestamp uses action-time elapsed clock",
-      "stale five-minute relapse callbacks canceled on new assist",
-      "late relapse supersedes its earlier sustained-success event in proof summary",
-      "large-font cockpit preserves full continuous-care evidence"
-    ],
-    "communication": [
-      "BCP-style work_state and delivery_state separated",
-      "communication state machine persisted",
-      "delivery ledger persisted",
-      "closeout watchdog armed at 22 minutes",
-      "hard end guard armed at 25 minutes"
-    ]
-  },
-  "close_owner": "BACKUP_SENTINEL",
-  "close_mode": "RECOVERY",
-  "recovery_reason": "primary normal-close path did not persist END before backup sentinel fired",
-  "no_more_technical_mutations": true,
-  "closed_at_local": "2026-09-21T15:10:39+01:00"
+  "invariants": [
+    "PRIMARY_ASSISTANT owns normal close during minute 22-25 reserve",
+    "backup must not run before nominal tranche end",
+    "backup must search Gmail thread/delivery key before any END send",
+    "backup uses normal FIN TRANCHE subject/body, never user-visible RECOVERY wording",
+    "END is sent as a reply to the START message/thread",
+    "CLOSE_INTENT is persisted before END send",
+    "if END exists but receipt persistence was interrupted, reconcile receipt without duplicate send",
+    "no app reply before END provider acknowledgement is persisted"
+  ]
 }
