@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_0_7_0_DEV_TWO_STAGE_RELEASE_READINESS",
+  "phase": "KINLINK_0_7_0_VERSION_FROZEN_CANDIDATE_CI",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "qualify functional head e1e2e7169d6a13f5fce8b808574cc63ed9fe915d; after PASS close Stage A with signer continuity, then produce one consolidated signed field candidate without replacing RC3; collect handoff + >=30m resource evidence on that candidate before canonical promotion",
+  "next_uncommitted_action": "read android-0.7-candidate and design-lint results for frozen head 5cc9e4a52d67447fceba1831eb999aa31ca1c3ce; if PASS download exact KINLINK-0.7.0-ci-build artifact, verify hash/manifest, mark Stage A eligible, then stable-sign one field candidate without replacing RC3",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -73,10 +73,10 @@
     "immutable": true
   },
   "development_line": {
-    "version": "0.7.0-dev",
+    "version": "0.7.0",
     "versionCode": 8,
-    "promotion": "FORBIDDEN_UNTIL_CONSOLIDATED_RC_GATE",
-    "head": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
+    "promotion": "FIELD_CANDIDATE_ONLY_AFTER_STAGE_A_PASS",
+    "head": "5cc9e4a52d67447fceba1831eb999aa31ca1c3ce",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -152,11 +152,11 @@
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
-    "design_lint": "PASS",
+    "code_head": "5cc9e4a52d67447fceba1831eb999aa31ca1c3ce",
+    "design_lint": "IN_PROGRESS",
     "android_ci": "IN_PROGRESS",
     "full_machine_verdict": "PENDING",
-    "latest_full_pass": "71111619ada624bdf717e869323ac309bd07c7de"
+    "latest_full_pass": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d"
   },
   "continuity": {
     "command": "KINLINKGO",
@@ -186,7 +186,8 @@
         "SIGNER_CONTINUITY"
       ],
       "result": "ONE_CONSOLIDATED_SIGNED_FIELD_CANDIDATE",
-      "canonical_replacement": false
+      "canonical_replacement": false,
+      "status": "PENDING_FROZEN_0_7_0_CI"
     },
     "stage_b_canonical_promotion": {
       "required": [
