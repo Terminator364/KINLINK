@@ -13,7 +13,8 @@ data class MobilePlanConfig(
     val expiryAtEpochMillis: Long?,
     val protectedReserveBytes: Long,
     val rescueAllowanceBytes: Long,
-    val criticalInteractiveAllowanceBytes: Long
+    val criticalInteractiveAllowanceBytes: Long,
+    val cycleStartAtEpochMillis: Long? = null
 )
 
 data class MobilePlanUsage(
@@ -155,6 +156,11 @@ object MobilePlanVaultPolicy {
             config.rescueAllowanceBytes < 0L ||
             config.criticalInteractiveAllowanceBytes < 0L
         ) return false
+        val start = config.cycleStartAtEpochMillis
+        val expiry = config.expiryAtEpochMillis
+        if (start != null && start <= 0L) return false
+        if (expiry != null && expiry <= 0L) return false
+        if (start != null && expiry != null && start >= expiry) return false
         val protected = safeAdd(
             config.protectedReserveBytes,
             safeAdd(
