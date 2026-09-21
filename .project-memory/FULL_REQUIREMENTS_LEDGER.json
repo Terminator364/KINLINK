@@ -1,6 +1,6 @@
 {
   "schema": "kinlink.full_requirements_ledger/1",
-  "generated_at": "2026-09-21",
+  "generated_at": "2026-09-22",
   "stage_points": {
     "FIELD_PROVEN": 1,
     "MACHINE_PROVEN": 0.8,
@@ -147,8 +147,8 @@
       "stage": "IMPLEMENTED_UNQUALIFIED",
       "points": 0.6,
       "category": "data",
-      "evidence": "W2 MobilePlanVaultPolicy implements normal/protected-reserve/rescue/critical-interactive envelopes; exact-head 3b12 unit tests and Android CI PASS.",
-      "gap": "Policy core is implemented, but persisted plan setup, attributed cycle usage, UI and field evidence are still incomplete."
+      "evidence": "W2 MobilePlanVaultPolicy implements normal/protected-reserve/rescue/critical-interactive envelopes; exact-head policy tests and Android CI PASS.",
+      "gap": "Policy core is implemented and persisted plan setup now exists; operator balance discovery, per-SIM attribution and field evidence remain incomplete."
     },
     {
       "id": "K015",
@@ -174,11 +174,11 @@
       "id": "K017",
       "title": "Device-wide mobile data accounting",
       "provenance": "A+C",
-      "stage": "PARTIAL",
-      "points": 0.35,
+      "stage": "IMPLEMENTED_UNQUALIFIED",
+      "points": 0.6,
       "category": "data",
-      "evidence": "TrafficStats-based observed usage exists.",
-      "gap": "Not operator balance; finer historical/accounting model incomplete."
+      "evidence": "TrafficStats device-wide observation now has durable aggregate-counter generations, reset/reboot protection and explicit non-attribution semantics; 7d589ddd Android CI PASS.",
+      "gap": "Device-wide accounting is implemented but is not operator balance or per-SIM truth; optional richer NetworkStats/per-subscription evidence remains future W2 work."
     },
     {
       "id": "K018",
@@ -684,11 +684,11 @@
       "id": "K068",
       "title": "Plan size/expiry manual input + confidence/source model",
       "provenance": "A",
-      "stage": "DESIGN_ONLY",
-      "points": 0.15,
+      "stage": "IMPLEMENTED_UNQUALIFIED",
+      "points": 0.6,
       "category": "data",
-      "evidence": "Original Carrier Wallet model specifies this.",
-      "gap": "Current UI only has a daily prudence limit."
+      "evidence": "W2 provides durable plan total/expiry/reserve configuration, human MB/GB form parsing, optional cycle start and explicit usage source/confidence reconciliation; 7d589ddd CI PASS and 45-shot visual audit PASS including XL Mobile Vault dialog.",
+      "gap": "Automatic carrier balance/adapters and per-SIM authoritative attribution remain unbuilt."
     },
     {
       "id": "K069",

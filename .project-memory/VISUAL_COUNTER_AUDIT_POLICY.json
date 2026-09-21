@@ -40,14 +40,21 @@
     "successor_required": "0.8.0 integrated truth + control"
   },
   "latest_ci_audit": {
-    "source": "GitHub Actions run 35656916207",
-    "exact_head": "b54020291f866042103ad0f63cae3645977638d1",
+    "source": "GitHub Actions run 35664821258",
+    "exact_head": "7d589ddd6038adcb7c318f2b00dc1cf03faaa355",
     "screenshot_count": 45,
     "inspected_count": 45,
-    "verdict": "PASS_UI_AND_TRUTH_RELEASE_METADATA_FIX_REQUIRED",
+    "artifact_id": 10669160578,
+    "artifact_digest": "sha256:0c1208f0c0d702343eee7ecef74628adc14d7b3628e15d9d541220966d49e67f",
+    "verdict": "PASS_W2_XL_DIALOG_AND_RESPONSIVE_TRUTH",
     "findings": [
-      "visual/semantic findings from c6fb are resolved",
-      "CI build-manifest JSON still labels candidate version 0.7.3-dev instead of 0.8.0-dev"
+      "previous XL Mobile Vault clear-action clipping is resolved",
+      "Mobile Vault form remains readable across narrow/medium/XL",
+      "technical detail remains dense but readable behind progressive disclosure"
+    ],
+    "maturity_effect": [
+      "K017->IMPLEMENTED_UNQUALIFIED",
+      "K068->IMPLEMENTED_UNQUALIFIED"
     ],
     "field_release_authorized": false
   }

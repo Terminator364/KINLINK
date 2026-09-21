@@ -1,6 +1,6 @@
 {
   "schema": "kinlink.canonical_context_pack/2",
-  "generated_at": "2026-09-21T23:52:00+01:00",
+  "generated_at": "2026-09-22T00:45:00+01:00",
   "project": "KINLINK",
   "immutable_A": {
     "preconception_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
@@ -24,7 +24,7 @@
   },
   "completion": {
     "macro_count": 80,
-    "maturity_percent": 45.1,
+    "maturity_percent": 46,
     "rule": "B depth subrequirements do not change denominator until macro dedup review."
   },
   "field": {
@@ -53,7 +53,7 @@
       "versionCode": 12,
       "unsigned_apk_sha256": "8b81f3ec51e6f558ebe5c1a41904b47fe65aef2c0cd1ee4e0d21d372837fa1ff"
     },
-    "current_focus": "W2 Mobile Vault usage reconciliation + plan/reserve UI; requalify XL dialog fix before any maturity promotion."
+    "current_focus": "W2 Mobile Vault UI/reconciliation proof closed at 7d589ddd; continue optional NetworkStats/per-SIM-safe evidence and complete Mobile Vault product surface."
   },
   "communication": {
     "current_tranche": "KINLINK-2026-09-21-2327-K25-12",
@@ -64,7 +64,7 @@
     "watchdog_cadence": "HOURLY",
     "watchdog_policy": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json"
   },
-  "next_action": "Poll 7d589 Android 35664821258; if PASS inspect 45 renders, especially XL Mobile Vault dialog; update macro evidence only after visual PASS; no install.",
+  "next_action": "Continue W2 large block after 7d589ddd 45-shot PASS; no phone install.",
   "memory": {
     "policy": ".project-memory/MEMORY_POLICY_V2.json",
     "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",
