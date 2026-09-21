@@ -31,6 +31,8 @@ class KinlinkObserverService : Service() {
     private var coreRuntimeReady = true
     private var runtimeBudgetCheckpointWritten = false
     private var runtimeCallbackEvents = 0
+    private val runtimeBudgetHandler by lazy { android.os.Handler(android.os.Looper.getMainLooper()) }
+    private val runtimeBudgetCheckpointRunnable = Runnable { maybeRecordRuntimeBudgetCheckpoint() }
 
     override fun onCreate() {
         super.onCreate()
@@ -55,6 +57,10 @@ class KinlinkObserverService : Service() {
         postUpdateSelfTestStore = PostUpdateSelfTestStore(this)
         runtimeBudgetSampler = RuntimeBudgetSampler(this)
         runtimeBudgetStart = runtimeBudgetSampler.sample()
+        runtimeBudgetHandler.postDelayed(
+            runtimeBudgetCheckpointRunnable,
+            RuntimeBudgetCheckpointPolicy.MIN_CHECKPOINT_AGE_MS + 1_000L
+        )
         runningVersionCode = runCatching {
             packageManager.getPackageInfo(packageName, 0).longVersionCode
         }.getOrDefault(-1L)
@@ -247,6 +253,7 @@ class KinlinkObserverService : Service() {
     }
 
     override fun onDestroy() {
+        runtimeBudgetHandler.removeCallbacks(runtimeBudgetCheckpointRunnable)
         if (::observer.isInitialized) observer.stop()
         recovery?.close()
         if (::ledger.isInitialized) {
