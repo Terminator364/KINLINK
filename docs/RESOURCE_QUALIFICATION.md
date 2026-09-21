@@ -56,6 +56,20 @@ The current design reduces churn by:
 - caching device-wide mobile TrafficStats samples for 15 seconds;
 - using no polling loop for connectivity or mobile counters.
 
+Runtime callback churn is evaluated as a rate normalized to the actual session duration rather than as a raw lifetime count. The current gate is 120 callback events per 30 minutes, scaled linearly with session duration.
+
+## Automatic qualification checkpoint
+
+0.7.0-dev schedules one one-shot resource checkpoint at approximately 30 minutes after observer-service start. It does not run a repeating network timer and does not send traffic.
+
+The checkpoint:
+- samples process PSS and device battery percentage;
+- evaluates callback churn accumulated during the same session;
+- records RUNTIME_BUDGET_CHECKPOINT;
+- records one of RUNTIME_RESOURCE_GATE_PASS, RUNTIME_RESOURCE_GATE_INCONCLUSIVE or RUNTIME_RESOURCE_GATE_BLOCKED.
+
+If the service is shutting down after a qualifying session and the one-shot checkpoint did not run, shutdown performs the same bounded evaluation before closing the ledger. This prevents a quiet network with no callbacks from silently missing resource evidence.
+
 ## Release gate
 
 Before the next consolidated signed candidate:
