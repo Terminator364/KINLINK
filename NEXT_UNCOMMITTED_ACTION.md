@@ -48,3 +48,11 @@ Maturity updates:
 5. add per-subscription attribution only where platform permission/identity is explicit; otherwise HOLD/UNKNOWN;
 6. continue toward the full Mobile Vault product surface;
 7. no signing/staging/install yet.
+
+
+## Communication invariant
+
+- **Gmail START before substantive work**, with provider ACK persisted.
+- **Gmail END before normal app closeout**, with provider ACK + durable CLOSED state.
+- At the 20-minute forced-stop point, stop new product mutations and enter the 5-minute hard-close reserve.
+- The hourly watchdog is failover only; it does not replace foreground closure.
