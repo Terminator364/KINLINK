@@ -28,6 +28,7 @@ import com.terminator364.kinlink.core.ActiveRecoveryPolicy
 import com.terminator364.kinlink.core.AdaptivePolicyEngine
 import com.terminator364.kinlink.core.AutopilotProfile
 import com.terminator364.kinlink.core.AutopilotProfileStore
+import com.terminator364.kinlink.core.AutopilotProfileControlPolicy
 import com.terminator364.kinlink.core.BudgetState
 import com.terminator364.kinlink.core.ConnectivityStateClassifier
 import com.terminator364.kinlink.core.ConnectivityTruthEngine
@@ -447,12 +448,14 @@ class MainActivity : Activity() {
         }.getOrNull()
         val sinceLast =
             lastAction?.let { (nowWall - it).coerceAtLeast(0L) } ?: Long.MAX_VALUE
+        val profileTuning =
+            AutopilotProfileControlPolicy.tuning(currentProfile)
         val recentActions = runCatching {
             ledger.countActionsSince(
                 MobileAssistController.ACTION_PREFIX,
                 nowWall - MobileAssistPolicy.HOURLY_WINDOW_MS
             )
-        }.getOrDefault(MobileAssistPolicy.MAX_ACTIONS_PER_HOUR)
+        }.getOrDefault(profileTuning.mobileAssistMaxActionsPerHour)
         val resourceConstrained = runCatching {
             DeviceResourceGuard(this).snapshot().constrained
         }.getOrDefault(true)
@@ -470,7 +473,8 @@ class MainActivity : Activity() {
             budgetProtected = budgetProtected,
             resourceConstrained = resourceConstrained,
             recentActions = recentActions,
-            millisSinceLastAction = sinceLast
+            millisSinceLastAction = sinceLast,
+            profile = currentProfile
         )
 
         when (decision.action) {
