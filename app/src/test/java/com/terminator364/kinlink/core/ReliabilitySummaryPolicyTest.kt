@@ -23,4 +23,16 @@ class ReliabilitySummaryPolicyTest {
         assertTrue(label.contains("1 min 5 s"))
         assertTrue(label.contains("LOW_CAPACITY"))
     }
+    @Test fun mobileSlowEpisodesAppearSeparately() {
+        val label = ReliabilitySummaryPolicy.label(
+            interruptionCount = 0,
+            cumulativeMillis = 0L,
+            longestMillis = 0L,
+            lowQualityEpisodeCount = 0,
+            dominantCause = "MOBILE_LOW_CAPACITY",
+            mobileLowQualityEpisodeCount = 3
+        )
+        assertTrue(label.contains("Mobile lent=3"))
+    }
+
 }
