@@ -59,6 +59,39 @@ class AdaptivePolicyEngineTest {
         assertFalse(decision.allowMobileAssist)
     }
 
+    @Test fun degradedValidatedCellularEnablesOnlyZeroProbeMobileAssist() {
+        val decision = AdaptivePolicyEngine.evaluate(
+            NetworkTruth(
+                transport = Transport.CELLULAR,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 700,
+                upstreamKbps = 200,
+                androidNotCongested = true,
+                budgetState = BudgetState.BALANCE_UNKNOWN
+            ),
+            instabilityScore = 5
+        )
+        assertEquals(AutopilotIntent.MOBILE_ASSIST, decision.intent)
+        assertFalse(decision.allowAutomaticProbe)
+        assertEquals(true, decision.allowMobileAssist)
+    }
+
+    @Test fun healthyValidatedCellularIsLeftSteady() {
+        val decision = AdaptivePolicyEngine.evaluate(
+            NetworkTruth(
+                transport = Transport.CELLULAR,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 20_000,
+                upstreamKbps = 5_000,
+                budgetState = BudgetState.BALANCE_UNKNOWN
+            ),
+            instabilityScore = 5
+        )
+        assertEquals(AutopilotIntent.HOLD_STEADY, decision.intent)
+        assertFalse(decision.allowAutomaticProbe)
+        assertFalse(decision.allowMobileAssist)
+    }
+
     @Test fun captivePortalRequiresUserAction() {
         val decision = AdaptivePolicyEngine.evaluate(
             NetworkTruth(
