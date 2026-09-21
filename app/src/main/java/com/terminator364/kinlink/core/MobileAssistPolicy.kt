@@ -37,8 +37,10 @@ object MobileAssistPolicy {
         resourceConstrained: Boolean,
         recentActions: Int,
         millisSinceLastAction: Long,
-        recentIneffectiveOutcomes: Int = 0
+        recentIneffectiveOutcomes: Int = 0,
+        profile: AutopilotProfile = AutopilotProfile.BALANCED
     ): MobileAssistDecision {
+        val tuning = AutopilotProfileControlPolicy.tuning(profile)
         if (truth.transport != Transport.CELLULAR) {
             return MobileAssistDecision(
                 MobileAssistAction.NONE,
@@ -98,14 +100,14 @@ object MobileAssistPolicy {
             )
         }
 
-        if (recentActions >= MAX_ACTIONS_PER_HOUR) {
+        if (recentActions >= tuning.mobileAssistMaxActionsPerHour) {
             return MobileAssistDecision(
                 MobileAssistAction.NONE,
                 MobileAssistBlockReason.HOURLY_CAP,
                 "Plafond Mobile Assist atteint pour cette heure."
             )
         }
-        if (millisSinceLastAction < COOLDOWN_MS) {
+        if (millisSinceLastAction < tuning.mobileAssistCooldownMs) {
             return MobileAssistDecision(
                 MobileAssistAction.NONE,
                 MobileAssistBlockReason.COOLDOWN,
@@ -122,10 +124,12 @@ object MobileAssistPolicy {
         }
 
         val quality = PassiveLinkQualityPolicy.assess(truth).quality
+        val score = PassiveQualityScorePolicy.score(truth).score
         val degraded =
             quality == PassiveLinkQuality.CONSTRAINED ||
                 quality == PassiveLinkQuality.LIMITED ||
-                !truth.androidNotCongested
+                !truth.androidNotCongested ||
+                score < tuning.vigilanceFloor
 
         return if (degraded) {
             MobileAssistDecision(
@@ -176,15 +180,17 @@ object MobileAssistManualPolicy {
         budgetProtected: Boolean,
         resourceConstrained: Boolean,
         recentActions: Int,
-        millisSinceLastAction: Long
+        millisSinceLastAction: Long,
+        profile: AutopilotProfile = AutopilotProfile.BALANCED
     ): MobileAssistManualDecision {
+        val tuning = AutopilotProfileControlPolicy.tuning(profile)
         if (!isCellular) {
             return MobileAssistManualDecision(
                 MobileAssistManualAction.NONE,
                 MobileAssistManualBlockReason.NOT_CELLULAR
             )
         }
-        if (recentActions >= MobileAssistPolicy.MAX_ACTIONS_PER_HOUR) {
+        if (recentActions >= tuning.mobileAssistMaxActionsPerHour) {
             return MobileAssistManualDecision(
                 MobileAssistManualAction.NONE,
                 MobileAssistManualBlockReason.HOURLY_CAP
