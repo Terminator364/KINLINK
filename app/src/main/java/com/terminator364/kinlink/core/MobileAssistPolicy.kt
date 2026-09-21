@@ -130,3 +130,11 @@ object MobileAssistPolicy {
         }
     }
 }
+
+
+object MobileAssistManualPolicy {
+    const val COOLDOWN_MS = 30_000L
+
+    fun allowed(millisSinceLastAction: Long): Boolean =
+        millisSinceLastAction >= COOLDOWN_MS
+}
