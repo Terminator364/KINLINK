@@ -208,7 +208,7 @@
     "rule": "resume_from_latest_durable_main_without_restart"
   },
   "communication_protocol": {
-    "tranche_style": "LONG_25_MIN_COHERENT",
+    "tranche_style": "WATCHDOG_PROTECTED_25_MIN",
     "target_minutes": 25,
     "feedback_policy": "QUEUE_AND_INTEGRATE_WITHOUT_BREAKING_ACTIVE_TRANCHE",
     "start": "SEND_GMAIL_FIRST_BEFORE_WORK",
@@ -218,7 +218,13 @@
     "human_gate_exception": "ONLY_WHEN_OBJECTIVELY_REQUIRED_TO_CONTINUE",
     "network_interruption": "CHECKPOINT_DURABLE_STATE_AND_RESUME",
     "gmail_label": "KINLINK",
-    "apk_via_email": false
+    "apk_via_email": false,
+    "primary_work_budget_minutes": 20,
+    "closeout_reserve_minutes": 5,
+    "max_mutation_groups_before_forced_closeout": 12,
+    "unclosed_tranche_first_action": "SEND_MISSING_GMAIL_END_REPORT",
+    "no_new_mutations_in_closeout_reserve": true,
+    "no_app_reply_before_verified_end_message_id": true
   },
   "release_flow": {
     "stage_a_field_candidate": {
