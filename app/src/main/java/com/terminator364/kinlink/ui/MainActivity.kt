@@ -341,7 +341,11 @@ class MainActivity : Activity() {
     private fun exportDiagnostic() {
         runCatching {
             DiagnosticExporter(this).share(
-                ledger.diagnosticSummary(latestTruth, recoveryModeStore.current().name)
+                ledger.diagnosticSummary(
+                    latestTruth,
+                    recoveryModeStore.current().name,
+                    installedVersionCode
+                )
             )
         }.onFailure {
             Toast.makeText(this, "Impossible de préparer le diagnostic", Toast.LENGTH_SHORT).show()
