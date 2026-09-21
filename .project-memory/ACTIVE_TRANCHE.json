@@ -6,9 +6,9 @@
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
-  "work_state": "WORKING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "ACTIVE",
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "gmail_start_message_id": "1a0c62d897216980",
   "gmail_start_thread_id": "1a0c62d897216980",
   "gmail_label": "KINLINK",
@@ -37,5 +37,21 @@
     "design_lint_run": 35664821268,
     "android_run": 35664821258
   },
-  "next_atomic_action": "poll Android 35664821258; if PASS inspect all 45 renders with XL Mobile Vault focus"
+  "next_atomic_action": "open fresh tranche with Gmail START, then inspect Android run 35664821258 proof artifact 45/45 and continue W2; no install",
+  "close_intent_persisted": true,
+  "close_owner": "PRIMARY_ASSISTANT_RECOVERY",
+  "no_more_product_mutations": true,
+  "gmail_end_message_id": "1a0c6552900d06e6",
+  "gmail_end_thread_id": "1a0c6552900d06e6",
+  "end_mail_verified": true,
+  "closed_state": true,
+  "closed_at_provider_ts": "2026-09-21T23:37:44",
+  "closed_at_local": "2026-09-22T00:35:00+01:00",
+  "communication_fault": {
+    "class": "P0_MISSED_FOREGROUND_END",
+    "watchdog_enabled": true,
+    "watchdog_last_run_local": "2026-09-21T23:57:44+01:00",
+    "watchdog_next_expected_local": "2026-09-22T00:57:44+01:00",
+    "root_cause": "hourly failover checked 3 minutes after START, then foreground failed to close before the 25-minute target; hourly platform limit created a blind interval before next failover check"
+  }
 }
