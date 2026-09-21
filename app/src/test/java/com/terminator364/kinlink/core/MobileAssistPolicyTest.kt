@@ -124,24 +124,66 @@ class MobileAssistPolicyTest {
         )
     }
 
-    @Test fun manualAssistHasShortAntiSpamCooldown() {
-        assertEquals(false, MobileAssistManualPolicy.allowed(29_999L))
-        assertEquals(true, MobileAssistManualPolicy.allowed(30_000L))
+    @Test fun manualAssistHasShortAntiSpamCooldownAndHourlyBound() {
+        fun decision(
+            validated: Boolean = true,
+            notSuspended: Boolean = true,
+            observationOnly: Boolean = false,
+            budgetProtected: Boolean = false,
+            resourceConstrained: Boolean = false,
+            recentActions: Int = 0,
+            sinceLast: Long = Long.MAX_VALUE
+        ) = MobileAssistManualPolicy.decide(
+            isCellular = true,
+            validated = validated,
+            notSuspended = notSuspended,
+            observationOnly = observationOnly,
+            budgetProtected = budgetProtected,
+            resourceConstrained = resourceConstrained,
+            recentActions = recentActions,
+            millisSinceLastAction = sinceLast
+        )
+
         assertEquals(
-            false,
-            MobileAssistManualPolicy.allowed(
-                30_000L,
-                recentActions = MobileAssistPolicy.MAX_ACTIONS_PER_HOUR
-            )
+            MobileAssistManualBlockReason.COOLDOWN,
+            decision(sinceLast = 29_999L).blockReason
         )
         assertEquals(
-            false,
-            MobileAssistManualPolicy.allowed(
-                30_000L,
-                recentActions = 0,
-                resourceConstrained = true
-            )
+            MobileAssistManualAction.REFRESH_LINK_METRICS,
+            decision(sinceLast = 30_000L).action
         )
+        assertEquals(
+            MobileAssistManualBlockReason.HOURLY_CAP,
+            decision(
+                recentActions = MobileAssistPolicy.MAX_ACTIONS_PER_HOUR,
+                sinceLast = 30_000L
+            ).blockReason
+        )
+        assertEquals(
+            MobileAssistManualBlockReason.RESOURCE_CONSTRAINED,
+            decision(
+                resourceConstrained = true,
+                sinceLast = 30_000L
+            ).blockReason
+        )
+    }
+
+    @Test fun explicitPanelNavigationRemainsAvailableWithoutHiddenProbe() {
+        val d = MobileAssistManualPolicy.decide(
+            isCellular = true,
+            validated = false,
+            notSuspended = true,
+            observationOnly = true,
+            budgetProtected = true,
+            resourceConstrained = true,
+            recentActions = 0,
+            millisSinceLastAction = Long.MAX_VALUE
+        )
+        assertEquals(
+            MobileAssistManualAction.OPEN_SYSTEM_CONNECTIVITY_PANEL,
+            d.action
+        )
+        assertEquals(MobileAssistManualBlockReason.NONE, d.blockReason)
     }
 
     @Test fun everyNonCellularTransportIsBlocked() {
