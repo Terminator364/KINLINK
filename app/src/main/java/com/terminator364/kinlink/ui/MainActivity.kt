@@ -826,28 +826,28 @@ class MainActivity : Activity() {
         }
 
         detailText.text = buildString {
-            append("État technique KINLINK : ${assessment.state.name}\n")
+            append("État KINLINK : ${operationalStateLabel(assessment.state.name)}\n")
             append("Expérience utilisateur : ${userExperience.statusLabel}\n")
             append("Profil Autopilot : ${profileLabel(currentProfile)}\n")
-            append("Mode récupération : ${recoveryModeStore.current().name}\n")
+            append("Mode de récupération : ${recoveryModeLabel(recoveryModeStore.current().name)}\n")
             append("Réseau local : ${lanLabel(truth)}\n")
             append("Contexte : ${contextLabel(truth)}\n")
             append("Diagnostic : ${failureLabel(truth)}\n")
-            append("Confiance Android : ${(truth.confidence * 100).toInt()} %\n")
-            append("Budget mobile : ${truth.budgetState.name}\n")
-            append("Autopilot : ${adaptiveDecision.intent.name}\n")
+            append("Confiance technique de l’observation Android : ${(truth.confidence * 100).toInt()} %\n")
+            append("Protection data : ${budgetStateLabel(truth.budgetState.name)}\n")
+            append("Intention Autopilot : ${autopilotIntentLabel(adaptiveDecision.intent.name)}\n")
             append("Estimation Android : ↓${truth.downstreamKbps} kbps / ↑${truth.upstreamKbps} kbps · indication, pas débit réel\n")
-            append("Classe technique interne : ${passiveQuality.quality.name} · ne prouve pas la qualité ressentie\n")
-            append("Indice technique interne : ${passiveScore.score}/100 · non présenté comme score de qualité utilisateur\n")
-            append("Cause passive : ${passiveProblem.cause.name} · confiance ${passiveProblem.confidence}%\n")
+            append("Classe interne : ${passiveQualityLabel(passiveQuality.quality.name)} · ne prouve pas la qualité ressentie\n")
+            append("Indice interne non-QoE : ${passiveScore.score}/100 · diagnostic seulement\n")
+            append("Cause passive : ${passiveCauseLabel(passiveProblem.cause.name)} · confiance ${passiveProblem.confidence}%\n")
             append("Cause passive détail : ${passiveProblem.summary}\n")
-            append("Santé de session : ${sessionHealth.health.name} · ${sessionHealth.summary}\n")
+            append("Santé de session : ${sessionHealthLabel(sessionHealth.health.name)} · ${sessionHealth.summary}\n")
             append("DNS Android : ${truth.dnsServerCount} serveur(s) · DNS privé ${if (truth.privateDnsActive) "actif" else "non signalé"}\n")
             append("Pile IP : IPv4=${truth.hasIpv4Address} / IPv6=${truth.hasIpv6Address} · route4=${truth.hasIpv4DefaultRoute} / route6=${truth.hasIpv6DefaultRoute}\n")
             stability?.let {
                 append("Instabilité 15 min : ${it.assessment.score}/100")
                 append(" · ${it.transitions} transition(s)")
-                if (it.assessment.flapping) append(" · FLAPPING")
+                if (it.assessment.flapping) append(" · oscillations répétées")
                 append("\n")
             }
             reliability?.let {
@@ -859,16 +859,16 @@ class MainActivity : Activity() {
                 append("Mobile lent 24 h : ${it.mobileLowQualityEpisodeCount} épisode(s)")
                 append(" · cumul ${it.mobileLowQualityCumulativeMillis} ms\n")
                 it.dominantCause?.let { cause ->
-                    append("Cause dominante 24 h : $cause\n")
+                    append("Cause dominante 24 h : ${passiveCauseLabel(cause.removePrefix("PASSIVE_CAUSE_"))}\n")
                 }
             }
             append("Preuve Mobile Assist : ${mobileAssistEvidenceLabel()}\n")
             if (budget.counterResetDetected) {
                 append("Compteur mobile : baseline réinitialisée après reset/reboot\n")
             }
-            append("\nWHY : ${vaultDecision.why}\n")
-            append("WHAT : ${vaultDecision.what.name}\n")
-            append("RESULT : ${vaultDecision.result}\n\n")
+            append("\nPourquoi : ${vaultDecision.why}\n")
+            append("Action data : ${vaultActionLabel(vaultDecision.what.name)}\n")
+            append("Résultat : ${vaultDecision.result}\n\n")
             append(
                 "Règle de preuve : requestBandwidthUpdate actualise des métriques Android; " +
                     "une hausse observée ensuite reste corrélative, pas une preuve de débit causé par KINLINK."
@@ -991,6 +991,94 @@ class MainActivity : Activity() {
             "${reliability.lowQualityEpisodeCount} épisode(s) Wi‑Fi lent · " +
             "${reliability.mobileLowQualityEpisodeCount} épisode(s) mobile lent"
     }
+    private fun operationalStateLabel(code: String): String = when (code) {
+        "WIFI_HEALTHY" -> "Wi‑Fi validé"
+        "WIFI_DEGRADED" -> "Wi‑Fi dégradé"
+        "WIFI_BROWNOUT" -> "Wi‑Fi à reconnecter"
+        "MOBILE_HEALTHY" -> "Mobile validé"
+        "MOBILE_DEGRADED" -> "Mobile dégradé"
+        "DATA_LOW" -> "Data proche de la limite"
+        "DATA_EXHAUSTED" -> "Limite data atteinte"
+        "DATA_EXPIRED" -> "Forfait signalé expiré"
+        "BALANCE_UNKNOWN" -> "Budget data inconnu"
+        "LAN_OK_WAN_DOWN" -> "LAN disponible, Internet non confirmé"
+        "OFFLINE" -> "Hors ligne"
+        "RECOVERING" -> "Vérification en cours"
+        else -> "État non classé"
+    }
+
+    private fun recoveryModeLabel(code: String): String = when (code) {
+        "AUTOMATIC" -> "Automatique"
+        "OBSERVATION_ONLY" -> "Observation uniquement"
+        else -> "Non identifié"
+    }
+
+    private fun budgetStateLabel(code: String): String = when (code) {
+        "BUNDLE_OK" -> "dans la limite"
+        "BUNDLE_LOW" -> "proche de la limite"
+        "BUNDLE_EXHAUSTED" -> "limite atteinte"
+        "BUNDLE_EXPIRED" -> "forfait signalé expiré"
+        "BALANCE_UNKNOWN" -> "solde/forfait non connu"
+        else -> "non identifié"
+    }
+
+    private fun autopilotIntentLabel(code: String): String = when (code) {
+        "HOLD_STEADY" -> "Maintenir l’état"
+        "PROTECT_MOBILE" -> "Protéger les données mobiles"
+        "OBSERVE_WIFI" -> "Surveiller le Wi‑Fi"
+        "MOBILE_ASSIST" -> "Assistance mobile bornée"
+        "CAPTIVE_PORTAL_ACTION" -> "Connexion au portail requise"
+        "RECOVERY_CANDIDATE" -> "Récupération potentielle"
+        "WAIT_FOR_EVIDENCE" -> "Attendre davantage de preuve"
+        else -> "Intention non classée"
+    }
+
+    private fun passiveQualityLabel(code: String): String = when (code) {
+        "COMFORTABLE" -> "indicateurs Android favorables"
+        "LIMITED" -> "indicateurs Android limités"
+        "CONSTRAINED" -> "indicateurs Android très limités"
+        "UNKNOWN" -> "indéterminée"
+        else -> "indéterminée"
+    }
+
+    private fun passiveCauseLabel(code: String): String = when (code) {
+        "NONE" -> "aucune panne passive certaine"
+        "NO_LINK" -> "aucun lien réseau"
+        "CAPTIVE_PORTAL" -> "portail captif"
+        "ADDRESSING_SUSPECT" -> "adressage IP à vérifier"
+        "ROUTE_CONFIGURATION_SUSPECT" -> "route réseau à vérifier"
+        "DNS_CONFIGURATION_SUSPECT" -> "configuration DNS à vérifier"
+        "NETWORK_SUSPENDED" -> "réseau Wi‑Fi suspendu"
+        "WEAK_WIFI_SIGNAL" -> "signal Wi‑Fi faible"
+        "CONGESTION_SUSPECT" -> "congestion Wi‑Fi possible"
+        "LOW_CAPACITY" -> "capacité Wi‑Fi limitée"
+        "MOBILE_NETWORK_SUSPENDED" -> "réseau mobile suspendu"
+        "MOBILE_WEAK_SIGNAL" -> "signal mobile faible"
+        "MOBILE_CONGESTION_SUSPECT" -> "congestion mobile possible"
+        "MOBILE_LOW_CAPACITY" -> "capacité mobile limitée"
+        "FLAPPING" -> "oscillations réseau"
+        "WAN_UNVALIDATED" -> "Internet non validé"
+        "MOBILE_UNVALIDATED" -> "Internet mobile non validé"
+        "UNKNOWN" -> "cause indéterminée"
+        else -> code.lowercase().replace('_', ' ')
+    }
+
+    private fun sessionHealthLabel(code: String): String = when (code) {
+        "HEALTHY" -> "stable"
+        "WATCH" -> "à surveiller"
+        "DEGRADED" -> "dégradée"
+        "CRITICAL" -> "critique"
+        else -> "indéterminée"
+    }
+
+    private fun vaultActionLabel(code: String): String = when (code) {
+        "NO_ACTION" -> "Aucune action"
+        "HOLD_MOBILE_RECOVERY" -> "Suspendre les actions mobiles KINLINK"
+        "KEEP_WIFI_PREFERRED" -> "Préserver le Wi‑Fi"
+        "PRESERVE_LAN" -> "Préserver le réseau local"
+        else -> code.lowercase().replace('_', ' ')
+    }
+
     private fun installSystemBarInsets() {
         val root = findViewById<ScrollView>(R.id.rootScroll)
         root.setOnApplyWindowInsetsListener { view, insets ->
