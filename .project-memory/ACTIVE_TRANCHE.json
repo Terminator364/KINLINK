@@ -6,9 +6,9 @@
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
-  "work_state": "WORKING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "ACTIVE",
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSE_INTENT_PERSISTED",
+  "status": "CLOSING",
   "gmail_start_message_id": "1a0c5d33a336882e",
   "gmail_start_thread_id": "1a0c5d33a336882e",
   "gmail_label": "KINLINK",
@@ -39,5 +39,48 @@
     "current_head": "c6fb86ec8ef075f7e0cbdfd9cf0f04b8954088f1",
     "android_run": 35652449928
   },
-  "next_atomic_action": "poll Android run 35652449928; if PASS fetch and inspect 45-shot proof before any product mutation"
+  "next_atomic_action": "poll exact 62a910 runs 35657955571/35657955186; verify release manifest exact version if PASS; continue integrated W1; no install",
+  "close_intent_persisted": true,
+  "close_owner": "PRIMARY_ASSISTANT",
+  "no_more_product_mutations": true,
+  "last_durable_checkpoint": {
+    "full_spec": {
+      "macro_capabilities": 80,
+      "maturity_percent": 44.8,
+      "b_depth": "B31-B90",
+      "b_depth_count": 60,
+      "active_program_wave": "W1",
+      "no_micro_beta": true
+    },
+    "b4": {
+      "main_commit": "1d7ad96d3dc3452e9aa15086fcfcae849724d895",
+      "new_depth": "B81-B90",
+      "highlights": [
+        "Android 17 local-network permission is just-in-time, not startup blanket permission",
+        "LAN-vs-public operation classification",
+        "VPN LAN preservation/MTU/always-on/FGS safety",
+        "Data Saver/Usage Access capability evidence",
+        "runtime PlatformCapabilityDiscovery"
+      ]
+    },
+    "visual_proof": {
+      "audited_head": "b54020291f866042103ad0f63cae3645977638d1",
+      "android_run": 35656916207,
+      "screenshots_inspected": 45,
+      "verdict": "PASS_UI_AND_TRUTH_RELEASE_METADATA_FIX_REQUIRED",
+      "audit_doc": "docs/RENDERED_UI_COUNTER_AUDIT_0_8_B540.md"
+    },
+    "provenance_fix": {
+      "new_head": "62a910a698286896af90d22551366f728ee0c4e7",
+      "defect": "CI build manifest hard-coded 0.7.3-dev while APK identity was 0.8.0-dev/v12",
+      "remediation": "derive version and versionCode from app/build.gradle.kts and assert manifest fields",
+      "design_lint_run": 35657955571,
+      "android_run": 35657955186,
+      "status": "IN_PROGRESS_AT_CLOSE_INTENT"
+    },
+    "communication": {
+      "watchdog": "KINLINK Comms Watchdog single hourly condition-watch",
+      "start_message_id": "1a0c5d33a336882e"
+    }
+  }
 }
