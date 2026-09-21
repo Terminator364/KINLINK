@@ -4,6 +4,9 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.provider.Settings
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
@@ -78,6 +81,7 @@ class MainActivity : Activity() {
     private lateinit var technicalToggle: TextView
     private lateinit var diagnosticExport: TextView
     private lateinit var wifiDoctorButton: TextView
+    private lateinit var mobileAssistButton: TextView
     private lateinit var budgetButton: TextView
     private lateinit var profileButton: TextView
     private lateinit var safeModeButton: TextView
@@ -118,6 +122,7 @@ class MainActivity : Activity() {
         technicalToggle = findViewById(R.id.technicalToggle)
         diagnosticExport = findViewById(R.id.diagnosticExport)
         wifiDoctorButton = findViewById(R.id.wifiDoctorButton)
+        mobileAssistButton = findViewById(R.id.mobileAssistButton)
         budgetButton = findViewById(R.id.budgetButton)
         profileButton = findViewById(R.id.profileButton)
         safeModeButton = findViewById(R.id.safeModeButton)
@@ -142,6 +147,7 @@ class MainActivity : Activity() {
         technicalToggle.setOnClickListener { toggleTechnicalDetails() }
         diagnosticExport.setOnClickListener { exportDiagnostic() }
         wifiDoctorButton.setOnClickListener { optimizeWifi() }
+        mobileAssistButton.setOnClickListener { optimizeMobile() }
         budgetButton.setOnClickListener { configureMobileBudget() }
         profileButton.setOnClickListener {
             currentProfile = profileStore.cycle()
@@ -364,6 +370,93 @@ class MainActivity : Activity() {
         }.start()
     }
 
+    private fun optimizeMobile() {
+        if (recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY) {
+            adviceTitleText.text = "Mode sûr actif"
+            adviceText.text = "Mobile Assist reste passif tant que le mode sûr est actif."
+            return
+        }
+        if (latestTruth.transport != com.terminator364.kinlink.core.Transport.CELLULAR) {
+            adviceTitleText.text = "Données mobiles non actives"
+            adviceText.text = "Mobile Assist s’active lorsque le transport courant est cellulaire."
+            return
+        }
+        if (
+            latestTruth.budgetState == BudgetState.BUNDLE_LOW ||
+            latestTruth.budgetState == BudgetState.BUNDLE_EXHAUSTED ||
+            latestTruth.budgetState == BudgetState.BUNDLE_EXPIRED
+        ) {
+            adviceTitleText.text = "Protection du forfait active"
+            adviceText.text = "KINLINK bloque l’assistance mobile active lorsque le budget est faible, épuisé ou expiré."
+            return
+        }
+
+        val cm = getSystemService(ConnectivityManager::class.java)
+        val network = cm.activeNetwork
+        val caps = network?.let(cm::getNetworkCapabilities)
+        val activeCellular =
+            network != null &&
+                caps?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
+
+        if (!activeCellular) {
+            adviceTitleText.text = "État mobile changé"
+            adviceText.text = "Android a changé de réseau avant l’action. KINLINK n’a rien forcé."
+            return
+        }
+
+        val validated =
+            caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
+        val notSuspended =
+            caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED) == true
+
+        if (!validated || !notSuspended) {
+            val opened = runCatching {
+                startActivity(Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY))
+            }.recoverCatching {
+                startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
+            }.isSuccess
+
+            runCatching {
+                ledger.appendAction(
+                    "MOBILE_ASSIST_MANUAL_SYSTEM_PANEL",
+                    opened,
+                    if (opened)
+                        "Panneau Android ouvert par action utilisateur; aucun probe mobile lancé."
+                    else
+                        "Impossible d’ouvrir le panneau Android; aucune autre action appliquée."
+                )
+            }
+            adviceTitleText.text = "Mobile Assist · contrôle Android"
+            adviceText.text = if (opened)
+                "Internet mobile n’est pas validé. KINLINK a ouvert le contrôle Android, sans speedtest ni bascule forcée."
+            else
+                "Internet mobile n’est pas validé. KINLINK n’a lancé aucun trafic de test."
+            return
+        }
+
+        val refreshed = runCatching {
+            cm.requestBandwidthUpdate(requireNotNull(network))
+        }.getOrDefault(false)
+
+        runCatching {
+            ledger.appendAction(
+                "MOBILE_ASSIST_MANUAL_REFRESH_METRICS",
+                refreshed,
+                if (refreshed)
+                    "Rafraîchissement métrique Android demandé manuellement; aucun probe/speedtest mobile."
+                else
+                    "Android n’a pas accepté le rafraîchissement; aucune action supplémentaire."
+            )
+        }
+
+        val quality = PassiveLinkQualityPolicy.assess(latestTruth)
+        adviceTitleText.text = "Mobile Assist · données mobiles"
+        adviceText.text = if (refreshed)
+            "Métriques Android rafraîchies sans speedtest. Qualité passive : ${quality.quality.name}. Android garde le routage."
+        else
+            "Aucune action forcée. Qualité passive : ${quality.quality.name}. Android garde le routage."
+    }
+
     private fun exportDiagnostic() {
         runCatching {
             DiagnosticExporter(this).share(
@@ -419,7 +512,7 @@ class MainActivity : Activity() {
             BudgetState.BUNDLE_EXHAUSTED -> "Données mobiles · seuil de prudence KINLINK atteint"
             BudgetState.BUNDLE_LOW -> "Données mobiles · seuil de prudence bientôt atteint"
             else -> when (truth.transport.name) {
-                "CELLULAR" -> "Données mobiles · Android contrôle · KINLINK observe seulement"
+                "CELLULAR" -> "Données mobiles · Mobile Assist actif · Android garde le routage"
                 else -> if (assessment.avoidAutomaticMobileUse) {
                     "Données mobiles · protégées"
                 } else {
