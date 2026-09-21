@@ -1,167 +1,83 @@
 # KINLINK build status
 
-## CURRENT — installed 0.7.0 + consolidated 0.7.1 successor hardening
+## Current verdict
 
-Phone state:
-- KINLINK 0.7.0 / versionCode 8 is installed and usable.
-- Its canonical promotion proof is invalidated by post-install counter-audit.
-- No new user install is requested while 0.7.1 engineering remains active.
-
-Drive state:
-- canonical INSTALLER remains 0.6.0-rc3 as rollback/stable artifact;
-- noncanonical successor delivery uses KINLINK/FIELD_CANDIDATE;
-- Gmail is reports only, never APK delivery.
-
-0.7.1 / versionCode 9 closes one consolidated repair batch:
-- CA-001..CA-005 previously repaired;
-- CA-006 exact version-scoped receipt equality;
-- CA-007 live qualification PASS is revocable by newer blocking evidence;
-- CA-008 outer HTTP wall-clock timeout/disconnect below 5 s recovery deadline;
-- CA-009 stale non-default callback rejection;
-- cross-policy critical scenario matrix;
-- candidate-contract static counter-audit;
-- honest requirements traceability matrix.
-
-Last fully green exact head before the newest additions:
-- `a8e4b1a6510ee3bf06d1143253b08437e745cab4`
-- Android run `35575247146` PASS
-- design-lint run `35575247175` PASS
-
-Newest head is still required to obtain a fresh full green pair before artifact sealing/signing.
-
-## Installed field baseline
-- 0.6.0-rc3
-- bidirectional Wi-Fi → cellular → Wi-Fi field gate: PASS
-- original mobile-block symptom: NOT REPRODUCED
-- canonical Drive artifact remains the installed RC3 baseline
-
-## Post-field development batch
-Integrated after the field gate:
-- suppress transient OFFLINE flash for 1.5 s during default-network handoff;
-- correct mobile-counter wording (Android device-wide TrafficStats observed by KINLINK, not KINLINK app usage);
-- capture Android passive down/up bandwidth estimates;
-- classify passive link quality independently from Android VALIDATED;
-- Autopilot no longer calls a constrained VALIDATED Wi-Fi simply steady;
-- explicit manual Wi-Fi micro-probe now reports bounded responsiveness (responsive/slow/very slow) with no extra requests;
-- diagnostic report includes passive capacity/quality;
-- telemetry fingerprints use quality tier instead of raw kbps to avoid churn;
-- hero state can show "Wi-Fi connecté mais limité" when Android validates Internet but reports very constrained capacity.
-
-## Safety invariants unchanged
-- no mobile routing ownership
-- no automatic mobile probe
-- no speedtest
-- no framework connectivity reporting
-- active recovery remains AUTOMATIC + Wi-Fi only
-
-
-## 0.7.0-dev tranche — quality-aware efficiency
-
-Field baseline remains immutable:
+### Canonical rollback
 - 0.6.0-rc3 / versionCode 7
-- bidirectional handoff field gate PASS
-- canonical Drive installer unchanged
+- Drive INSTALLER remains unchanged
+- canonical until Stage B promotion proof
 
-Development line:
-- 0.7.0-dev / versionCode 8
-- passive-quality hysteresis: 3 consecutive low-quality Wi-Fi observations before metrics refresh
-- remaining Wi-Fi probe endpoints abort immediately if Android handoff starts
-- telemetry schema v3 persists low-noise quality tiers, with in-place v2 migration
-- manual optimization on metered Wi-Fi performs metrics-only refresh and zero HTTP micro-probes
-- all mobile-routing and hidden-probe safety invariants remain unchanged
+### Installed phone
+- 0.7.0 / versionCode 8
+- usable
+- canonical promotion invalidated by post-install counter-audit
+- keep installed until the single 0.7.1 update gate
 
+### 0.7.1 Mobile Assist field candidate
 
-## Evidence-driven recovery loop
-KINLINK 0.7.0-dev now evaluates whether automatic metric refreshes appear to improve passive Wi-Fi quality after two subsequent validated observations.
-Results are retained as IMPROVED / UNCHANGED / DEGRADED / INCONCLUSIVE.
-Two recent UNCHANGED/DEGRADED outcomes within the bounded window suppress further automatic recovery attempts.
-This prevents repeated no-benefit actions.
+Exact functional source:
+`a15a784ab51ae048e37ae31c998092ad2cd3f03c`
 
+Machine proof:
+- design-lint run `35594766801`: PASS
+- Android candidate run `35594766821`: PASS
+- unit tests: PASS
+- Android lint: PASS
+- fail-open API fence: PASS
+- manifest safety fence: PASS
+- background wakeup fence: PASS
+- candidate package/version identity: PASS
+- unsigned candidate proof: PASS
 
-## 0.7.0-dev diagnostic-depth tranche
-
-Integrated:
-- passive likely-cause classification with confidence;
-- Android DNS server-count/private-DNS observation, no DNS override;
-- passive outage duration evidence (MICRO / SHORT / LONG);
-- cause-aware non-invasive guidance;
-- cause-aware foreground notification;
-- bounded cause-transition history;
-- qualitative session health (HEALTHY / WATCH / DEGRADED / CRITICAL);
-- once-per-version zero-network runtime self-test for DB schema, RecoveryMode readability and first NetworkCallback evidence.
-
-Proven CI PASS already covers passive-cause diagnosis, guidance/notification and session-health commits.
-Post-update runtime self-test is the current CI gate.
-
-
-## 0.7.0-dev resource + longitudinal diagnostics tranche
-
-Added:
-- lightweight service-session PSS/battery qualification receipts;
-- charging sessions treated as battery-INCONCLUSIVE;
-- resource qualification protocol and release thresholds;
-- unchanged foreground notification updates deduplicated;
-- device-wide mobile TrafficStats sampling cached for 15 seconds;
-- telemetry retention bounded by age and row count;
-- telemetry schema v4 structured interruption duration;
-- cumulative and longest interruption duration in diagnostics.
-
-Machine status:
-- full PASS through `e8280bb1c32a019f0e8f32d2f8bd44073261ed02`;
-- schema-v4 head `5cce76cade7361e821a8eee36be8f0f1e5528412`: design-lint PASS + full Android CI PASS.
-
-The installed RC3 baseline remains unchanged.
-
-
-## 0.7.0-dev deep-diagnostics + fail-safe tranche
-
-Full machine PASS at `3467ffdcf5da78cfd17e0e13f9b73b6b9cf0f317`.
-
-Added since the previous checkpoint:
-- rolling reliability and slow-but-validated Wi-Fi burden;
-- one-tap passive incident marker plus focused context timeline;
-- recovery control-path timing and evidence-driven circuit breaker;
-- privacy-safe IP topology (IPv4/IPv6 address/default-route booleans);
-- separate passive causes for addressing vs route vs DNS/WAN;
-- telemetry schema v5; new rows no longer persist raw interface/gateway values;
-- bounded manual Wi-Fi DNS-vs-HTTP diagnosis on the exact captured Wi-Fi network;
-- remaining HTTP probe endpoints abort when that original Wi-Fi is no longer active;
-- post-update self-test failure suspends active recovery while observation remains;
-- one passive >=30-minute runtime resource checkpoint per service session;
-- runtime verification of required telemetry schema columns.
-
-Stable target-phone baseline remains 0.6.0-rc3 and is not overwritten.
-
-
-## 0.7.0-dev radio + reliability tranche
-
-Integrated after the previous deep-diagnostics checkpoint:
-- passive Wi-Fi radio-quality model (UNKNOWN / WEAK / FAIR / GOOD);
-- Android NOT_CONGESTED and NOT_SUSPENDED capability observation;
-- distinct passive causes for weak radio, possible congestion and suspended network;
-- Autopilot suppresses pointless metric refreshes for weak-radio/congestion/suspended cases;
-- readable 24 h reliability summary in the main cockpit;
-- passive quality trend (IMPROVING / STABLE / DEGRADING / INSUFFICIENT);
-- Autopilot profile recommendation from recent reliability burden;
-- slow-link episode burden now contributes to reliability severity even without outright outages.
-
-Canonical 0.6.0-rc3 remains untouched.
-Current code head: `00e4df0d3869daaab777d2b159a1c8228d9b2c7c`; CI is running at tranche checkpoint time.
-
-
-## 0.7.0 final consolidated field candidate
-
-Stage A is PASS.
-
-- source commit: `4153720cde8c6bd0004b8e69baeadf5254735abe`
-- Android candidate CI: run `35550539216` PASS
-- design-lint: run `35550539365` PASS
-- final signed APK SHA-256: `cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc`
-- signer certificate SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
-- v3 signature: PASS
+Artifact:
+- artifact ID `10636385308`
+- artifact ZIP SHA-256 `07b3e0c5110bc866b0fce53b9ab1abb3784b72b8db2dda068d000ffe50921175`
+- unsigned APK SHA-256 `f4b3f3c42d2f8d90a4ecfddac4ff580fb7afdce8e8bfb7ef9f39d373f5a68507`
+- signed APK SHA-256 `0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae`
+- signed size 357323 bytes
+- APK Signature Scheme v3: PASS
 - signers: 1
-- version-scoped field evidence: enabled
-- charging-safe resource qualification: enabled
-- automatic field QUALIFIED/BLOCKED receipts: enabled
+- signer cert SHA-256 `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
 
-Canonical 0.6.0-rc3 remains unchanged. Stage B requires target-phone FIELD_HANDOFF + RESOURCE_QUALIFICATION on this exact 0.7.0 artifact.
+Drive:
+- FIELD_CANDIDATE file ID `1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1`
+- Drive readback SHA-256 exactly matches signed local APK
+- Drive readback: PASS
+
+## Major consolidated capability
+
+0.7.1 includes:
+- Wi-Fi fail-open recovery hardening;
+- exact version-scoped qualification receipts;
+- runtime resource qualification;
+- bounded probe workers/deadlines;
+- stale callback/handoff race fences;
+- structured privacy-safe diagnostic ZIP;
+- Mobile Assist Level 1:
+  - passive cellular low-capacity/congestion/suspension/weak-radio diagnosis;
+  - zero automatic cellular HTTP/DNS/speedtest;
+  - bounded Android metric refresh on validated degraded cellular;
+  - 5-minute cooldown + 6/hour cap;
+  - resource / budget / safe-mode / weak-radio gates;
+  - anti-repeat after ineffective outcomes;
+  - explicit Android connectivity-panel fallback;
+  - passive mobile slow-link history and diagnostics.
+
+## Release gates
+
+Stage A:
+- MACHINE: PASS
+- MIGRATION: PASS
+- SIGNER_CONTINUITY: PASS
+- Drive field-candidate readback: PASS
+
+Stage B:
+- FIELD_HANDOFF: PENDING target phone
+- RESOURCE_QUALIFICATION: PENDING target phone
+
+## Next gate
+
+One in-place update to exact 0.7.1 field candidate.
+No uninstall first.
+No canonical Drive promotion yet.
+No micro-beta chain.
