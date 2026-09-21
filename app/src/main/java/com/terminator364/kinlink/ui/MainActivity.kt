@@ -29,6 +29,8 @@ import com.terminator364.kinlink.core.ConnectivityStateClassifier
 import com.terminator364.kinlink.core.KinlinkObserverService
 import com.terminator364.kinlink.core.MobileBudgetSnapshot
 import com.terminator364.kinlink.core.MobileBudgetTracker
+import com.terminator364.kinlink.core.MobileAssistController
+import com.terminator364.kinlink.core.MobileAssistManualPolicy
 import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.NetworkObserver
 import com.terminator364.kinlink.core.PassiveLinkQuality
@@ -388,6 +390,18 @@ class MainActivity : Activity() {
         ) {
             adviceTitleText.text = "Protection du forfait active"
             adviceText.text = "KINLINK bloque l’assistance mobile active lorsque le budget est faible, épuisé ou expiré."
+            return
+        }
+
+        val nowWall = System.currentTimeMillis()
+        val lastAction = runCatching {
+            ledger.latestActionTimestamp(MobileAssistController.ACTION_PREFIX)
+        }.getOrNull()
+        val sinceLast =
+            lastAction?.let { (nowWall - it).coerceAtLeast(0L) } ?: Long.MAX_VALUE
+        if (!MobileAssistManualPolicy.allowed(sinceLast)) {
+            adviceTitleText.text = "Mobile Assist · pause courte"
+            adviceText.text = "Une action mobile vient déjà d’être lancée. KINLINK évite les répétitions inutiles pendant 30 secondes."
             return
         }
 
