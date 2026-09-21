@@ -788,14 +788,15 @@ class MainActivity : Activity() {
     }
 
     private fun mobileBudgetLabel(snapshot: MobileBudgetSnapshot): String {
-        if (!snapshot.supported) return "Compteur mobile Android · indisponible sur cet appareil"
-
+        if (!snapshot.supported) {
+            return "Data mobile · compteur Android indisponible"
+        }
         val used = String.format(Locale.US, "%.1f", snapshot.usedTodayMiB)
         val limit = snapshot.dailyLimitMiB
         return if (limit == null) {
-            "Compteur mobile Android observé · $used MiB depuis la baseline KINLINK aujourd’hui · seuil non configuré"
+            "Data mobile · $used MiB observés · seuil OFF"
         } else {
-            "Compteur mobile Android observé · $used / $limit MiB depuis la baseline KINLINK aujourd’hui"
+            "Data mobile · $used / $limit MiB observés"
         }
     }
 
