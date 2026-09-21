@@ -31,6 +31,7 @@ import com.terminator364.kinlink.core.AutopilotProfileStore
 import com.terminator364.kinlink.core.BudgetState
 import com.terminator364.kinlink.core.ConnectivityStateClassifier
 import com.terminator364.kinlink.core.ConnectivityTruthEngine
+import com.terminator364.kinlink.core.ContinuousControlPanelPolicy
 import com.terminator364.kinlink.core.CockpitPrimaryAction
 import com.terminator364.kinlink.core.CockpitPrimaryActionPolicy
 import com.terminator364.kinlink.core.DeviceResourceGuard
@@ -94,6 +95,11 @@ class MainActivity : Activity() {
     private lateinit var heroDetailText: TextView
     private lateinit var adviceTitleText: TextView
     private lateinit var adviceText: TextView
+    private lateinit var beforeScoreText: TextView
+    private lateinit var nowScoreText: TextView
+    private lateinit var deltaScoreText: TextView
+    private lateinit var maintainedText: TextView
+    private lateinit var evidenceText: TextView
     private lateinit var incidentMarkerButton: TextView
     private lateinit var technicalToggle: TextView
     private lateinit var diagnosticExport: TextView
@@ -153,6 +159,11 @@ class MainActivity : Activity() {
         heroDetailText = findViewById(R.id.heroDetailText)
         adviceTitleText = findViewById(R.id.adviceTitleText)
         adviceText = findViewById(R.id.adviceText)
+        beforeScoreText = findViewById(R.id.beforeScoreText)
+        nowScoreText = findViewById(R.id.nowScoreText)
+        deltaScoreText = findViewById(R.id.deltaScoreText)
+        maintainedText = findViewById(R.id.maintainedText)
+        evidenceText = findViewById(R.id.evidenceText)
         incidentMarkerButton = findViewById(R.id.incidentMarkerButton)
         technicalToggle = findViewById(R.id.technicalToggle)
         diagnosticExport = findViewById(R.id.diagnosticExport)
@@ -270,7 +281,7 @@ class MainActivity : Activity() {
     }
 
     private fun refreshProfileButton() {
-        profileButton.text = "Profil · ${profileLabel(currentProfile)}"
+        profileButton.text = "Mode · ${profileLabel(currentProfile)}"
     }
 
     private fun refreshSafeModeButton() {
@@ -658,9 +669,35 @@ class MainActivity : Activity() {
                 else -> "Mobile · protégé · aucune prise de contrôle"
             }
         }
-        qualityScoreText.text = "Qualité passive · $qualityLabel"
+        qualityScoreText.text =
+            "Qualité · " + passiveScore.score + "/100 · " + qualityLabel
         qualityProgress.progress = passiveScore.score
         mobileBudgetText.text = mobileBudgetLabel(budget)
+
+        val latestEvidence = runCatching {
+            ledger.latestActionReceipt("MOBILE_ASSIST_EVIDENCE_")
+        }.getOrNull()
+        val evidenceAge = latestEvidence?.let {
+            (System.currentTimeMillis() - it.tsWallMs).coerceAtLeast(0L)
+        }
+        val resourceConstrained = runCatching {
+            DeviceResourceGuard(this).snapshot().constrained
+        }.getOrDefault(true)
+        val controlPanel = ContinuousControlPanelPolicy.build(
+            currentScore = passiveScore.score,
+            observationOnly = observationOnly,
+            resourceConstrained = resourceConstrained,
+            latestEvidenceAction = latestEvidence?.action,
+            latestEvidenceSummary = latestEvidence?.summary,
+            latestEvidenceAgeMillis = evidenceAge
+        )
+        beforeScoreText.text = controlPanel.beforeScore?.toString() ?: "—"
+        nowScoreText.text = controlPanel.nowScore.toString()
+        deltaScoreText.text = controlPanel.delta?.let {
+            if (it > 0) "+" + it else it.toString()
+        } ?: "—"
+        maintainedText.text = controlPanel.maintenance
+        evidenceText.text = controlPanel.evidence
 
         val reliability = latestReliability
         reliabilityText.text = if (reliability == null) {
