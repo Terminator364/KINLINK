@@ -73,4 +73,17 @@ class MobileAssistEvidenceTrackerTest {
         )
         assertEquals(MobileAssistEvidenceResult.INCONCLUSIVE, e?.result)
     }
+    @Test fun explicitManualBaselineCannotBeReplacedByPostActionState() {
+        val t = MobileAssistEvidenceTracker()
+        t.startBaseline(
+            quality = PassiveLinkQuality.CONSTRAINED,
+            score = 30,
+            observedAtMillis = 1_000L
+        )
+        assertNull(t.observe(mobile(10_000L, 6_000, 1_500)))
+        val e = t.observe(mobile(31_000L, 8_000, 2_000))
+        assertEquals(MobileAssistEvidenceResult.SUSTAINED_BETTER, e?.result)
+        assertEquals(30, e?.baselineScore)
+    }
+
 }
