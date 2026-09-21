@@ -13,20 +13,23 @@ data class MobileAssistEvidence(
     val result: MobileAssistEvidenceResult,
     val baseline: PassiveLinkQuality,
     val current: PassiveLinkQuality,
+    val baselineScore: Int,
+    val currentScore: Int,
     val elapsedMillis: Long,
     val summary: String
 )
 
 /**
- * Zero-wakeup evidence tracker for Mobile Assist.
+ * Zero-wakeup follow-up for Mobile Assist.
  *
- * It observes only NetworkCallback-driven passive Android bandwidth estimates.
- * A better estimate after requestBandwidthUpdate is correlation, never claimed
- * as proof that KINLINK changed radio throughput.
+ * It observes only NetworkCallback-driven passive Android state. Better quality
+ * after a bandwidth-metric refresh is correlation, never claimed as proof that
+ * KINLINK changed radio throughput.
  */
 class MobileAssistEvidenceTracker {
     private data class Active(
         val baseline: PassiveLinkQuality,
+        val baselineScore: Int,
         val startedAt: Long,
         val baselineWasUnknown: Boolean,
         var firstBetterAt: Long? = null
@@ -34,7 +37,9 @@ class MobileAssistEvidenceTracker {
 
     private data class SustainedWatch(
         val originalBaseline: PassiveLinkQuality,
+        val originalBaselineScore: Int,
         val confirmedQuality: PassiveLinkQuality,
+        val confirmedScore: Int,
         val confirmedAt: Long
     )
 
@@ -43,15 +48,19 @@ class MobileAssistEvidenceTracker {
 
     fun start(truth: NetworkTruth) {
         sustainedWatch = null
+        val quality = PassiveLinkQualityPolicy.assess(truth).quality
         active = Active(
-            baseline = PassiveLinkQualityPolicy.assess(truth).quality,
+            baseline = quality,
+            baselineScore = PassiveQualityScorePolicy.score(truth).score,
             startedAt = truth.observedAtMillis,
-            baselineWasUnknown =
-                PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.UNKNOWN
+            baselineWasUnknown = quality == PassiveLinkQuality.UNKNOWN
         )
     }
 
     fun observe(truth: NetworkTruth): MobileAssistEvidence? {
+        val currentQuality = PassiveLinkQualityPolicy.assess(truth).quality
+        val currentScore = PassiveQualityScorePolicy.score(truth).score
+
         sustainedWatch?.let { watch ->
             val age = truth.observedAtMillis - watch.confirmedAt
             if (age < 0L || age > RELAPSE_MONITOR_WINDOW_MS) {
@@ -59,24 +68,23 @@ class MobileAssistEvidenceTracker {
             } else if (
                 truth.transport == Transport.CELLULAR &&
                 truth.internetState == InternetState.VALIDATED &&
-                rank(PassiveLinkQualityPolicy.assess(truth).quality) <=
-                    rank(watch.originalBaseline)
+                currentScore <= watch.originalBaselineScore + RELAPSE_TOLERANCE_POINTS
             ) {
-                val current = PassiveLinkQualityPolicy.assess(truth).quality
                 sustainedWatch = null
                 return MobileAssistEvidence(
                     MobileAssistEvidenceResult.RELAPSED_AFTER_SUSTAINED,
                     watch.originalBaseline,
-                    current,
+                    currentQuality,
+                    watch.originalBaselineScore,
+                    currentScore,
                     age,
-                    "La qualité était restée meilleure puis est retombée au niveau de départ; KINLINK peut réévaluer après cooldown."
+                    "La qualité était restée meilleure puis est retombée près du niveau de départ; KINLINK peut réévaluer après cooldown."
                 )
             }
         }
 
         val state = active ?: return null
         val elapsed = truth.observedAtMillis - state.startedAt
-        val current = PassiveLinkQualityPolicy.assess(truth).quality
 
         if (
             elapsed < 0L ||
@@ -88,24 +96,28 @@ class MobileAssistEvidenceTracker {
             return MobileAssistEvidence(
                 MobileAssistEvidenceResult.INCONCLUSIVE,
                 state.baseline,
-                current,
+                currentQuality,
+                state.baselineScore,
+                currentScore,
                 elapsed.coerceAtLeast(0L),
                 "Preuve Mobile Assist inconclusive : fenêtre dépassée ou contexte mobile changé."
             )
         }
 
-        if (state.baselineWasUnknown && current != PassiveLinkQuality.UNKNOWN) {
+        if (state.baselineWasUnknown && currentQuality != PassiveLinkQuality.UNKNOWN) {
             active = null
             return MobileAssistEvidence(
                 MobileAssistEvidenceResult.METRICS_AVAILABLE,
                 state.baseline,
-                current,
+                currentQuality,
+                state.baselineScore,
+                currentScore,
                 elapsed,
                 "Android expose maintenant une estimation de capacité. Cela prouve un rafraîchissement de métriques, pas une accélération du réseau."
             )
         }
 
-        val better = rank(current) > rank(state.baseline)
+        val better = currentScore >= state.baselineScore + MIN_SCORE_DELTA
         if (better) {
             val firstBetter = state.firstBetterAt
             if (firstBetter == null) {
@@ -116,15 +128,19 @@ class MobileAssistEvidenceTracker {
                 active = null
                 sustainedWatch = SustainedWatch(
                     originalBaseline = state.baseline,
-                    confirmedQuality = current,
+                    originalBaselineScore = state.baselineScore,
+                    confirmedQuality = currentQuality,
+                    confirmedScore = currentScore,
                     confirmedAt = truth.observedAtMillis
                 )
                 return MobileAssistEvidence(
                     MobileAssistEvidenceResult.SUSTAINED_BETTER,
                     state.baseline,
-                    current,
+                    currentQuality,
+                    state.baselineScore,
+                    currentScore,
                     elapsed,
-                    "Qualité passive restée meilleure pendant la fenêtre de confirmation; corrélation observée, causalité non affirmée."
+                    "Indice passif resté meilleur pendant la fenêtre de confirmation; corrélation observée, causalité non affirmée."
                 )
             }
             return null
@@ -135,7 +151,9 @@ class MobileAssistEvidenceTracker {
             return MobileAssistEvidence(
                 MobileAssistEvidenceResult.RELAPSED,
                 state.baseline,
-                current,
+                currentQuality,
+                state.baselineScore,
+                currentScore,
                 elapsed,
                 "Amélioration passive transitoire puis rechute avant confirmation."
             )
@@ -146,23 +164,20 @@ class MobileAssistEvidenceTracker {
             return MobileAssistEvidence(
                 MobileAssistEvidenceResult.NO_BETTER,
                 state.baseline,
-                current,
+                currentQuality,
+                state.baselineScore,
+                currentScore,
                 elapsed,
-                "Aucune amélioration passive observée dans la fenêtre de preuve."
+                "Aucune amélioration passive significative observée dans la fenêtre de preuve."
             )
         }
 
         return null
     }
 
-    private fun rank(q: PassiveLinkQuality): Int = when (q) {
-        PassiveLinkQuality.UNKNOWN -> 0
-        PassiveLinkQuality.CONSTRAINED -> 1
-        PassiveLinkQuality.LIMITED -> 2
-        PassiveLinkQuality.COMFORTABLE -> 3
-    }
-
     companion object {
+        const val MIN_SCORE_DELTA = 12
+        const val RELAPSE_TOLERANCE_POINTS = 4
         const val MIN_SUSTAINED_BETTER_MS = 20_000L
         const val NO_BENEFIT_AFTER_MS = 60_000L
         const val MAX_EVIDENCE_WINDOW_MS = 180_000L
