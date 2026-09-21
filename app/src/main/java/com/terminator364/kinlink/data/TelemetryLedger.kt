@@ -179,6 +179,32 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             cursor.getInt(0)
         }
 
+    fun countExactAction(action: String): Int =
+        readableDatabase.rawQuery(
+            "SELECT COUNT(*) FROM action_receipts WHERE action = ?",
+            arrayOf(action)
+        ).use { cursor ->
+            cursor.moveToFirst()
+            cursor.getInt(0)
+        }
+
+    fun countSuccessfulExactAction(action: String): Int =
+        readableDatabase.rawQuery(
+            "SELECT COUNT(*) FROM action_receipts WHERE action = ? AND success = 1",
+            arrayOf(action)
+        ).use { cursor ->
+            cursor.moveToFirst()
+            cursor.getInt(0)
+        }
+
+    fun latestExactActionTimestamp(action: String): Long? =
+        readableDatabase.rawQuery(
+            "SELECT ts_wall_ms FROM action_receipts WHERE action = ? ORDER BY ts_wall_ms DESC LIMIT 1",
+            arrayOf(action)
+        ).use { cursor ->
+            if (cursor.moveToFirst()) cursor.getLong(0) else null
+        }
+
     fun actionCountsByPrefixSince(actionPrefix: String, sinceWallMs: Long): Map<String, Int> {
         val result = linkedMapOf<String, Int>()
         readableDatabase.rawQuery(
@@ -486,47 +512,41 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             FieldCandidateQualificationPolicy.evaluate(
                 FieldCandidateQualificationEvidence(
                     coreSelfTestPasses =
-                        countSuccessfulActions(QualificationReceiptNames.coreSelfTest(version)),
+                        countSuccessfulExactAction(QualificationReceiptNames.coreSelfTest(version)),
                     observerSelfTestPasses =
-                        countSuccessfulActions(QualificationReceiptNames.observerSelfTest(version)),
+                        countSuccessfulExactAction(QualificationReceiptNames.observerSelfTest(version)),
                     mobileValidatedHandoffs =
-                        countSuccessfulActions(
-                            QualificationReceiptNames.handoffOutcome(
+                        countSuccessfulExactAction(QualificationReceiptNames.handoffOutcome(
                                 HandoffOutcome.MOBILE_VALIDATED,
                                 version
                             )
                         ),
                     cellularToWifiReturns =
-                        countSuccessfulActions(
-                            QualificationReceiptNames.handoff(
+                        countSuccessfulExactAction(QualificationReceiptNames.handoff(
                                 HandoffKind.CELLULAR_TO_WIFI,
                                 version
                             )
                         ),
                     runtimeResourcePasses =
-                        countSuccessfulActions(
-                            QualificationReceiptNames.resourceGate(
+                        countSuccessfulExactAction(QualificationReceiptNames.resourceGate(
                                 RuntimeResourceVerdict.PASS,
                                 version
                             )
                         ),
                     runtimeResourceBlocks =
-                        countActions(
-                            QualificationReceiptNames.resourceGate(
+                        countExactAction(QualificationReceiptNames.resourceGate(
                                 RuntimeResourceVerdict.BLOCKED,
                                 version
                             )
                         ),
                     latestRuntimeResourcePassMillis =
-                        latestActionTimestamp(
-                            QualificationReceiptNames.resourceGate(
+                        latestExactActionTimestamp(QualificationReceiptNames.resourceGate(
                                 RuntimeResourceVerdict.PASS,
                                 version
                             )
                         ),
                     latestRuntimeResourceBlockMillis =
-                        latestActionTimestamp(
-                            QualificationReceiptNames.resourceGate(
+                        latestExactActionTimestamp(QualificationReceiptNames.resourceGate(
                                 RuntimeResourceVerdict.BLOCKED,
                                 version
                             )
@@ -587,14 +607,13 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             runtimeResourceInconclusive = countActions("RUNTIME_RESOURCE_GATE_INCONCLUSIVE"),
             runtimeResourceBlocked = countActions("RUNTIME_RESOURCE_GATE_BLOCKED"),
             fieldCandidateQualifiedReceipts = runningVersionCode?.let {
-                countSuccessfulActions(QualificationReceiptNames.fieldQualified(it))
+                countSuccessfulExactAction(QualificationReceiptNames.fieldQualified(it))
             } ?: 0,
             fieldCandidateBlockedReceipts = runningVersionCode?.let {
-                countActions(QualificationReceiptNames.fieldBlocked(it))
+                countExactAction(QualificationReceiptNames.fieldBlocked(it))
             } ?: 0,
             cellularToWifiReturns = runningVersionCode?.let {
-                countSuccessfulActions(
-                    QualificationReceiptNames.handoff(HandoffKind.CELLULAR_TO_WIFI, it)
+                countSuccessfulExactAction(QualificationReceiptNames.handoff(HandoffKind.CELLULAR_TO_WIFI, it)
                 )
             } ?: 0,
             currentFieldQualificationVerdict = fieldAssessment?.verdict?.name ?: "NOT_APPLICABLE",
