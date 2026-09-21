@@ -9,12 +9,12 @@
   "normal_close_owner": "PRIMARY_ASSISTANT",
   "backup_earliest_offset_minutes": 26,
   "hard_guard_offset_minutes": 29,
-  "work_state": "WORKING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "RUNNING",
-  "close_intent_persisted": false,
-  "close_owner": null,
-  "close_mode": null,
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSE_INTENT_PERSISTED",
+  "status": "CLOSING",
+  "close_intent_persisted": true,
+  "close_owner": "PRIMARY_ASSISTANT",
+  "close_mode": "NORMAL",
   "gmail_start_message_id": "1a0c45639cea9e87",
   "gmail_start_thread_id": "1a0c45639cea9e87",
   "gmail_end_message_id": null,
@@ -22,7 +22,7 @@
   "end_mail_reply_to_start": true,
   "end_subject_key": "K25-20260921-1516-01",
   "gmail_label": "KINLINK",
-  "next_atomic_action": "normal close at minute-22 reserve; then user may install exact 0.7.2 in-place; after install collect v10 Stage B field evidence",
+  "next_atomic_action": "send normal Gmail FIN in START thread, persist provider ACK/CLOSED, then ask user only via Gmail to install exact 0.7.2 in-place",
   "technical_branch": "dev/0.7.2-continuous-improvement",
   "installed_field_build": "0.7.1/versionCode9 installed and frozen",
   "invariants": [
@@ -55,5 +55,30 @@
     "field_gate": "ONE_IN_PLACE_0_7_2_INSTALL",
     "strong_stabilizer_experiment_branch": "experiment/strong-mobile-stabilizer-s0",
     "unit_test_files": 80
+  },
+  "no_more_product_mutations": true,
+  "final_technical_checkpoint": {
+    "communication_protocol": "v2 primary-owned normal close; END same Gmail thread; delivery-key idempotency; post-nominal backup search-before-send",
+    "communication_state_machine_test": "PASS",
+    "frozen_candidate_branch": "release/0.7.2-field-candidate",
+    "source_commit": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
+    "design_lint_runs": [
+      35610708971,
+      35610716886
+    ],
+    "android_candidate_run": 35610708876,
+    "machine": "PASS",
+    "artifact_id": 10643704115,
+    "artifact_zip_sha256": "ad2fee91b3d51fa5c2528767dbe004d92366ee8ae46bb9450a35f11a86f7f18b",
+    "signed_apk_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
+    "drive_file_id": "1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU",
+    "drive_readback": "PASS",
+    "field_candidate": "0.7.2 / versionCode 10",
+    "next_human_gate": "one in-place install over 0.7.1; no uninstall",
+    "strong_stabilizer_shadow_head": "eef6756f33c4f02ecb9ee044645675374ec59b31",
+    "strong_stabilizer_design_lint_run": 35613125040,
+    "strong_stabilizer_android_run": 35613125066,
+    "strong_stabilizer_shadow_machine": "PASS",
+    "strong_stabilizer_status": "experiment/shadow only; not included in frozen 0.7.2 candidate"
   }
 }
