@@ -99,3 +99,32 @@ The same counter-audit re-confirmed:
 No micro-beta chain is allowed.
 
 The next install, if required, must be one consolidated successor that closes CA-001 through CA-004, receives a new versionCode so old v8 qualification receipts cannot qualify it, passes full CI, and is signed with the same canonical certificate.
+
+
+### CA-005 — retention could erase irreplaceable qualification evidence
+
+The bounded action ledger originally pruned every receipt uniformly by age and row count.
+
+That is unsafe for one-time version-scoped self-test receipts because PostUpdateSelfTestStore intentionally avoids rewriting a self-test after it has been durably completed. If qualification were delayed long enough or the action ledger became noisy enough, the receipt could disappear while the SharedPreferences completion marker remained, leaving the candidate unable to reconstruct that proof.
+
+**Verdict: BLOCKING liveness defect for long-running field qualification.**
+
+Repair integrated in the consolidated successor:
+- version-scoped core self-test receipts are pinned;
+- version-scoped observer self-test receipts are pinned;
+- terminal FIELD_CANDIDATE_QUALIFIED receipts are pinned;
+- noisy operational receipts remain bounded/prunable;
+- handoff/resource receipts remain time-bounded so stale operational evidence is not preserved forever.
+
+## Consolidated successor repair status
+
+The replacement line is now 0.7.1 / versionCode 9. No successor APK is to be installed until the whole repair batch passes exact-head CI and a second counter-audit.
+
+Implemented:
+- CA-001: automatic HTTP probe timeout envelope reduced to 3.6 s worst-case from configured connect/read timeouts, below the 5 s recovery deadline, with regression proof;
+- CA-002: one battery percentage point of quantization is tolerated and device-wide battery concern is INCONCLUSIVE rather than falsely attributed as an app fault;
+- CA-003: at most one additional clean 30-minute resource window is automatically attempted for recoverable/inconclusive battery evidence; hard PSS/churn failures do not auto-retry;
+- CA-004: cockpit and foreground notification derive status from the current authoritative qualification assessment, not historical BLOCKED receipt existence;
+- CA-005: irreplaceable version self-test and terminal qualification receipts survive normal ledger pruning.
+
+The installed 0.7.0 remains usable while 0.7.1 is engineered. It is not canonically promoted.
