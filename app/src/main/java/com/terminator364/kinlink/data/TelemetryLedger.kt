@@ -191,6 +191,15 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             cursor.getInt(0)
         }
 
+    fun countExactActionSince(action: String, sinceWallMs: Long): Int =
+        readableDatabase.rawQuery(
+            "SELECT COUNT(*) FROM action_receipts WHERE action = ? AND ts_wall_ms >= ?",
+            arrayOf(action, sinceWallMs.toString())
+        ).use { cursor ->
+            cursor.moveToFirst()
+            cursor.getInt(0)
+        }
+
     fun countSuccessfulExactAction(action: String): Int =
         readableDatabase.rawQuery(
             "SELECT COUNT(*) FROM action_receipts WHERE action = ? AND success = 1",
