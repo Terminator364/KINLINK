@@ -387,6 +387,7 @@ class KinlinkObserverService : Service() {
             return
         }
 
+        val previousVerdict = currentFieldQualificationVerdict
         val assessment = evaluateFieldCandidateQualification()
         currentFieldQualificationVerdict = assessment.verdict
 
@@ -401,7 +402,9 @@ class KinlinkObserverService : Service() {
                 }.isSuccess
                 if (recorded) {
                     fieldQualificationReceiptWritten = true
-                    updateNotificationFor(latestTruth)
+                } else {
+                    currentFieldQualificationVerdict =
+                        FieldCandidateQualificationVerdict.PENDING
                 }
             }
             FieldCandidateQualificationVerdict.BLOCKED -> {
@@ -415,11 +418,13 @@ class KinlinkObserverService : Service() {
                     }.isSuccess
                     if (recorded) {
                         fieldQualificationBlockedWritten = true
-                        updateNotificationFor(latestTruth)
                     }
                 }
             }
             FieldCandidateQualificationVerdict.PENDING -> Unit
+        }
+        if (previousVerdict != currentFieldQualificationVerdict) {
+            updateNotificationFor(latestTruth)
         }
     }
 
@@ -474,11 +479,11 @@ class KinlinkObserverService : Service() {
         val text = if (
             currentFieldQualificationVerdict == FieldCandidateQualificationVerdict.PASS
         ) {
-            "KINLINK $runningVersionCode · qualification terrain complète"
+            "KINLINK · qualification terrain complète"
         } else if (
             currentFieldQualificationVerdict == FieldCandidateQualificationVerdict.BLOCKED
         ) {
-            "KINLINK $runningVersionCode · qualification bloquée · voir diagnostic"
+            "KINLINK · qualification bloquée · voir diagnostic"
         } else if (observationOnly) {
             "Mode sûr · observation uniquement · Android garde le contrôle"
         } else when (truth.transport) {
