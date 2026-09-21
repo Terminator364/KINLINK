@@ -2,30 +2,30 @@
   "project": "KINLINK",
   "line": "0.7.1",
   "versionCode": 9,
-  "code_head": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
-  "latest_full_machine_pass": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
+  "code_head": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
+  "latest_full_machine_pass": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
   "field_candidate_allowed": true,
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
       "status": "PASS",
-      "evidence": "android-0.7.1-candidate run 35590793691 PASS + design-lint run 35590793645 PASS on exact head 9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5"
+      "evidence": "design-lint 35594766801 PASS + android-0.7.1-candidate 35594766821 PASS on exact functional head a15a784ab51ae048e37ae31c998092ad2cd3f03c"
     },
     "MIGRATION": {
       "status": "PASS",
-      "evidence": "design-lint run 35590793645 executed telemetry migration simulation successfully on exact head 9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5"
+      "evidence": "design-lint exact head includes telemetry migration simulation and candidate-contract verification"
     },
     "SIGNER_CONTINUITY": {
       "status": "PASS",
-      "evidence": "exact CI unsigned APK 25ff61529a7bc009543fe39edad05bd356b4ec4664be9da591af45721c34feff stable-signed privately; signed APK db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329 verifies APK Signature Scheme v3 with one signer and canonical cert 2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
+      "evidence": "exact unsigned APK f4b3f3... signed privately; signed APK 0c2210... verifies v3 with one canonical signer cert 2a2280..."
     },
     "FIELD_HANDOFF": {
       "status": "PENDING",
-      "evidence": "must be collected on exact signed 0.7.1 / versionCode 9 after Drive staging and one in-place field install"
+      "evidence": "requires one in-place target-phone install of exact Drive candidate then Wi-Fi↔cellular v9 evidence"
     },
     "RESOURCE_QUALIFICATION": {
       "status": "PENDING",
-      "evidence": "must be collected on exact signed 0.7.1 / versionCode 9 after Drive staging and one in-place field install"
+      "evidence": "requires >=30 min clean versionCode 9 target-phone resource evidence"
     }
   },
   "counter_audit_repairs": {
@@ -65,27 +65,33 @@
     "manual Wi-Fi post-handoff abort",
     "bounded shared diagnostic helper executor",
     "structured privacy-safe diagnostic ZIP core bundle",
-    "exhaustive P0 transport/resource scenario sweep"
+    "exhaustive P0 transport/resource scenario sweep",
+    "Mobile Assist L1 zero-probe cellular support",
+    "weak-radio suppression",
+    "mobile slow-link history",
+    "mobile effectiveness anti-repeat"
   ],
   "machine_artifact": {
-    "source_commit": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
-    "android_ci_run": 35590793691,
-    "design_lint_run": 35590793645,
-    "artifact_id": 10634896108,
-    "artifact_zip_sha256": "96b903ba823196ef119bb77975b8bc6ad307b96206492960a7bd1c344c93d315",
-    "unsigned_apk_sha256": "25ff61529a7bc009543fe39edad05bd356b4ec4664be9da591af45721c34feff",
-    "unsigned_size_bytes": 318300
+    "source_commit": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
+    "android_ci_run": 35594766821,
+    "design_lint_run": 35594766801,
+    "artifact_id": 10636385308,
+    "artifact_zip_sha256": "07b3e0c5110bc866b0fce53b9ab1abb3784b72b8db2dda068d000ffe50921175",
+    "unsigned_apk_sha256": "f4b3f3c42d2f8d90a4ecfddac4ff580fb7afdce8e8bfb7ef9f39d373f5a68507",
+    "unsigned_size_bytes": 338044
   },
   "signed_field_candidate": {
     "version": "0.7.1",
     "versionCode": 9,
-    "source_commit": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
-    "signed_apk_sha256": "db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329",
-    "signed_size_bytes": 336843,
+    "source_commit": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
+    "signed_apk_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
+    "signed_size_bytes": 357323,
     "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
     "signature_scheme": "V3_PASS",
     "signers": 1,
-    "delivery": "DRIVE_STAGE_PENDING_INTERNAL_FILE_BRIDGE",
+    "drive_file_id": "1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1",
+    "drive_readback_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
+    "drive_readback": "PASS",
     "canonical": false
   }
 }
