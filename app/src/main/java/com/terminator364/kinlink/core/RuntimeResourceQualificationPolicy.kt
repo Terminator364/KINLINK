@@ -42,7 +42,13 @@ object RuntimeResourceQualificationPolicy {
         if (battery != null && battery > limits.maxBatteryPercentPerHour) {
             reasons += "BATTERY_RATE_OVER_LIMIT"
         }
-        if (evidence.backgroundChurnEvents > limits.maxBackgroundChurnEventsPer30Min) {
+        val churnWindowMillis = 30L * 60L * 1000L
+        val allowedChurnEvents = kotlin.math.ceil(
+            limits.maxBackgroundChurnEventsPer30Min.toDouble() *
+                evidence.durationMillis.coerceAtLeast(1L).toDouble() /
+                churnWindowMillis.toDouble()
+        ).toInt().coerceAtLeast(1)
+        if (evidence.backgroundChurnEvents > allowedChurnEvents) {
             reasons += "BACKGROUND_CHURN_OVER_LIMIT"
         }
 
