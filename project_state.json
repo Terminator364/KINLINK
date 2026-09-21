@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_1_CONSOLIDATED_COUNTER_AUDIT_HARDENING",
-  "status": "ENGINEERING_ACTIVE_NO_HUMAN_GATE",
+  "phase": "KINLINK_0_7_1_STAGE_A_PASS_DRIVE_STAGING_PENDING",
+  "status": "ENGINEERING_ACTIVE_NO_HUMAN_GATE_YET",
   "candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "qualify exact main head 18b18df13ed8af5d298e56cad860e805ba851424; close all counter-audit findings CA-001..CA-009 with full Android CI + design-lint; then seal/download/readback exact 0.7.1 unsigned artifact, stable-sign with canonical certificate, second counter-audit, Drive FIELD_CANDIDATE delivery; only then ask for one human install",
+  "next_uncommitted_action": "stage exact signed 0.7.1 APK SHA-256 db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329 into Drive KINLINK/FIELD_CANDIDATE, perform Drive readback hash verification and clean obsolete candidate artifact; only then open one human in-place install gate",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -73,7 +73,7 @@
     "immutable": true
   },
   "development_line": {
-    "version": "0.7.1-dev",
+    "version": "0.7.1",
     "versionCode": 9,
     "promotion": "NO_INSTALL_UNTIL_CONSOLIDATED_SUCCESSOR_FULLY_PROVEN",
     "base": "4153720cde8c6bd0004b8e69baeadf5254735abe",
@@ -169,18 +169,18 @@
       "cross-policy critical scenario matrix",
       "requirements traceability matrix distinguishes current proof from gated future architecture"
     ],
-    "last_full_pass": "4153720cde8c6bd0004b8e69baeadf5254735abe",
+    "last_full_pass": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
     "head": "18b18df13ed8af5d298e56cad860e805ba851424"
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "18b18df13ed8af5d298e56cad860e805ba851424",
-    "design_lint": "PENDING",
-    "android_ci": "PENDING",
-    "full_machine_verdict": "PENDING",
-    "last_known_full_pass": "a8e4b1a6510ee3bf06d1143253b08437e745cab4",
-    "last_known_full_pass_android_run": 35575247146,
-    "last_known_full_pass_design_run": 35575247175
+    "code_head": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
+    "design_lint": "PASS",
+    "design_lint_run": 35590793645,
+    "android_ci": "PASS",
+    "android_ci_run": 35590793691,
+    "full_machine_verdict": "PASS",
+    "latest_full_pass": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5"
   },
   "continuity": {
     "command": "KINLINKGO",
@@ -198,14 +198,15 @@
   "communication_protocol": {
     "tranche_style": "LONG_25_MIN_COHERENT",
     "target_minutes": 25,
-    "feedback_policy": "CONTINUE_ACTIVE_TRANCHE_REGARDLESS_OF_INTERMEDIATE_FEEDBACK",
-    "start": "SEND_GMAIL_AND_APPLY_KINLINK_LABEL_BEFORE_WORK",
-    "end": "SEND_COMPLETE_GMAIL_END_AND_APPLY_KINLINK_LABEL_BEFORE_ANY_APP_MESSAGE",
+    "feedback_policy": "QUEUE_AND_INTEGRATE_WITHOUT_BREAKING_ACTIVE_TRANCHE",
+    "start": "SEND_GMAIL_FIRST_BEFORE_WORK",
+    "end": "SEND_COMPLETE_GMAIL_REPORT_BEFORE_ANY_APP_MESSAGE",
+    "end_send_verification": "REQUIRE_GMAIL_MESSAGE_ID",
     "app_response": "ONLY_CHECK_GMAIL_PLUS_KINSHASA_DATE_TIME",
-    "human_gate_exception": "ONLY_TRUE_OBJECTIVE_GATE_REQUIRED_TO_CONTINUE",
-    "apk_via_email": false,
-    "apk_delivery": "GOOGLE_DRIVE_KINLINK",
-    "canonical_protocol_file": ".project-memory/COMMUNICATION_PROTOCOL.json"
+    "human_gate_exception": "ONLY_WHEN_OBJECTIVELY_REQUIRED_TO_CONTINUE",
+    "network_interruption": "CHECKPOINT_DURABLE_STATE_AND_RESUME",
+    "gmail_label": "KINLINK",
+    "apk_via_email": false
   },
   "release_flow": {
     "stage_a_field_candidate": {
@@ -299,5 +300,20 @@
     "field_candidate_folder_id": "1h_ptqB7kGycdfJHrN1MdK1vOqgbsyTWB",
     "signing_folder_id": "1V5ywV1P5WoM1mMcLyhtsT0SBf6sqnxCm",
     "master_document_id": "1x8_wnTxvPEeNyYJTtQkdnC3Z8qulBYJNoDjMf2IHZBg"
+  },
+  "final_0_7_1_candidate": {
+    "version": "0.7.1",
+    "versionCode": 9,
+    "source_commit": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
+    "artifact_id": 10634896108,
+    "artifact_zip_sha256": "96b903ba823196ef119bb77975b8bc6ad307b96206492960a7bd1c344c93d315",
+    "unsigned_apk_sha256": "25ff61529a7bc009543fe39edad05bd356b4ec4664be9da591af45721c34feff",
+    "signed_apk_sha256": "db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329",
+    "signed_size_bytes": 336843,
+    "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
+    "stage_a": "PASS",
+    "drive_staging": "PENDING_INTERNAL_FILE_BRIDGE",
+    "installed": false,
+    "canonical": false
   }
 }
