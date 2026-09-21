@@ -12,6 +12,7 @@ enum class PassiveProblemCause {
     CONGESTION_SUSPECT,
     LOW_CAPACITY,
     MOBILE_NETWORK_SUSPENDED,
+    MOBILE_WEAK_SIGNAL,
     MOBILE_CONGESTION_SUSPECT,
     MOBILE_LOW_CAPACITY,
     FLAPPING,
@@ -81,6 +82,14 @@ object PassiveProblemClassifier {
                 PassiveProblemCause.MOBILE_NETWORK_SUSPENDED,
                 "Android signale le réseau mobile comme suspendu ou momentanément indisponible.",
                 88
+            )
+
+        truth.transport == Transport.CELLULAR &&
+            MobileRadioQualityPolicy.assess(truth).quality == MobileRadioQuality.WEAK ->
+            PassiveProblemAssessment(
+                PassiveProblemCause.MOBILE_WEAK_SIGNAL,
+                "Le signal radio mobile passif exposé par Android est faible; une action logicielle ne peut pas renforcer la couverture.",
+                82
             )
 
         truth.transport == Transport.CELLULAR &&
