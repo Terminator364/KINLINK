@@ -1,67 +1,80 @@
 # KINLINK build status
 
-## Current verdict
+## Canonical rollback
 
-### Canonical rollback
-- 0.6.0-rc3 / versionCode 7
-- Drive INSTALLER remains unchanged
-- canonical until Stage B promotion proof
+- KINLINK 0.6.0-rc3 / versionCode 7
+- Drive INSTALLER remains unchanged.
+- It remains canonical until a newer Stage B field gate passes.
 
-### Installed phone
-- 0.7.0 / versionCode 8
-- usable
-- canonical promotion invalidated by post-install counter-audit
-- keep installed until the single 0.7.1 update gate
+## Installed phone
 
-### 0.7.1 Mobile Assist field candidate
+- KINLINK 0.7.1 / versionCode 9
+- installed and usable
+- superseded before canonical promotion by the consolidated 0.7.2 field candidate
 
-Exact functional source:
-`a15a784ab51ae048e37ae31c998092ad2cd3f03c`
+## KINLINK 0.7.2 final-like field candidate
 
-Machine proof:
-- design-lint run `35594766801`: PASS
-- Android candidate run `35594766821`: PASS
+Exact source:
+`cc48c1dea1a151af25edc1942bb4efa983c5ff13`
+
+Branch:
+`dev/0.7.2-continuous-improvement`
+
+CI:
+- design-lint `35610708971`: PASS
+- design-lint `35610716886`: PASS
+- Android candidate `35610708876`: PASS
 - unit tests: PASS
 - Android lint: PASS
-- fail-open API fence: PASS
+- API fail-open fence: PASS
 - manifest safety fence: PASS
 - background wakeup fence: PASS
-- candidate package/version identity: PASS
-- unsigned candidate proof: PASS
+- candidate identity/unsigned proof: PASS
 
 Artifact:
-- artifact ID `10636385308`
-- artifact ZIP SHA-256 `07b3e0c5110bc866b0fce53b9ab1abb3784b72b8db2dda068d000ffe50921175`
-- unsigned APK SHA-256 `f4b3f3c42d2f8d90a4ecfddac4ff580fb7afdce8e8bfb7ef9f39d373f5a68507`
-- signed APK SHA-256 `0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae`
-- signed size 357323 bytes
-- APK Signature Scheme v3: PASS
-- signers: 1
-- signer cert SHA-256 `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+- ID `10643704115`
+- ZIP SHA-256 `ad2fee91b3d51fa5c2528767dbe004d92366ee8ae46bb9450a35f11a86f7f18b`
+- unsigned APK SHA-256 `d961ea42c09a6509a228f4bfe9b55b197598efaea2f942ef649e8c8983925779`
+
+Signed:
+- SHA-256 `a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b`
+- size 369611 bytes
+- APK Signature Scheme v3 PASS
+- 1 signer
+- canonical cert SHA-256 `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
 
 Drive:
-- FIELD_CANDIDATE file ID `1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1`
-- Drive readback SHA-256 exactly matches signed local APK
-- Drive readback: PASS
+- file ID `1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU`
+- readback SHA-256 exact match
+- readback PASS
 
-## Major consolidated capability
+## Major final-like delta
 
-0.7.1 includes:
-- Wi-Fi fail-open recovery hardening;
-- exact version-scoped qualification receipts;
-- runtime resource qualification;
-- bounded probe workers/deadlines;
-- stale callback/handoff race fences;
-- structured privacy-safe diagnostic ZIP;
-- Mobile Assist Level 1:
-  - passive cellular low-capacity/congestion/suspension/weak-radio diagnosis;
-  - zero automatic cellular HTTP/DNS/speedtest;
-  - bounded Android metric refresh on validated degraded cellular;
-  - 5-minute cooldown + 6/hour cap;
-  - resource / budget / safe-mode / weak-radio gates;
-  - anti-repeat after ineffective outcomes;
-  - explicit Android connectivity-panel fallback;
-  - passive mobile slow-link history and diagnostics.
+### Cockpit
+- compact status/action/proof structure;
+- only relevant transport action visible;
+- secondary controls compressed;
+- technical content progressively disclosed;
+- large-font layout hardened.
+
+### Continuous care
+- no instant “success” claim;
+- meaningful passive-score delta required;
+- sustained confirmation window;
+- transient relapse detected;
+- later relapse detected;
+- bounded re-evaluation after normal safeguards;
+- no repeating speedtest/polling storm.
+
+### Resources
+- healthy mobile callbacks avoid unnecessary SQLite/resource work;
+- active work suppressed under budget/safe-mode/weak-radio/resource gates;
+- thermal protection begins at Android moderate thermal pressure;
+- evidence sampling is bounded.
+
+### Truthfulness
+- Android metric refresh is not called throughput acceleration;
+- strong causal stabilizer remains gated.
 
 ## Release gates
 
@@ -69,15 +82,15 @@ Stage A:
 - MACHINE: PASS
 - MIGRATION: PASS
 - SIGNER_CONTINUITY: PASS
-- Drive field-candidate readback: PASS
+- DRIVE_READBACK: PASS
 
 Stage B:
-- FIELD_HANDOFF: PENDING target phone
-- RESOURCE_QUALIFICATION: PENDING target phone
+- FIELD_HANDOFF v10: PENDING
+- RESOURCE_QUALIFICATION v10: PENDING
+- CONTINUOUS_EVIDENCE_FIELD: PENDING
 
-## Next gate
+## Current gate
 
-One in-place update to exact 0.7.1 field candidate.
-No uninstall first.
-No canonical Drive promotion yet.
-No micro-beta chain.
+One in-place 0.7.2 target-phone update is the next required field step.
+Do not uninstall 0.7.1 first.
+Do not replace canonical INSTALLER yet.
