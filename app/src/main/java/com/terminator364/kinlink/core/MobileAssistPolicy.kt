@@ -135,6 +135,12 @@ object MobileAssistPolicy {
 object MobileAssistManualPolicy {
     const val COOLDOWN_MS = 30_000L
 
-    fun allowed(millisSinceLastAction: Long): Boolean =
-        millisSinceLastAction >= COOLDOWN_MS
+    fun allowed(
+        millisSinceLastAction: Long,
+        recentActions: Int = 0,
+        resourceConstrained: Boolean = false
+    ): Boolean =
+        millisSinceLastAction >= COOLDOWN_MS &&
+            recentActions < MobileAssistPolicy.MAX_ACTIONS_PER_HOUR &&
+            !resourceConstrained
 }
