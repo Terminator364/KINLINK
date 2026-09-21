@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "SINGLE_HUMAN_INSTALL_SURFACE_READY",
-  "next_uncommitted_action": "poll Android run 35660447857 for f2a6393; if PASS continue W2 plan-store/source reconciliation/UI; no phone install",
+  "next_uncommitted_action": "poll Android run 35660447857 exact head f2a6393abc77f38e695e1516191a6069d59fab77; if PASS continue W2 source reconciliation/UI under B5 B31-B100; no phone install",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -229,7 +229,9 @@
       "BUILD_STATUS.md"
     ],
     "latest_cold_takeover_design_lint_run": 35659344414,
-    "latest_cold_takeover_design_lint_status": "PASS"
+    "latest_cold_takeover_design_lint_status": "PASS",
+    "latest_main_design_lint_run": 35660826359,
+    "latest_main_design_lint_status": "PASS"
   },
   "communication_protocol": {
     "version": 5,
@@ -514,7 +516,7 @@
     "provenance_incident_ci_status": "PASS_BUT_ARTIFACT_READBACK_FAILED",
     "provenance_incident": "KINLINK-build-manifest.json contained literal \\\\1 for version/versionCode because shell sed backreference escaping was wrong; CI had compared the same bad extracted value and therefore did not detect it",
     "latest_design_lint_status": "PASS",
-    "latest_android_status": "IN_PROGRESS",
+    "latest_android_status": "IN_PROGRESS_AT_CLOSE_INTENT",
     "active_wave": "W2_CONTEXT_AND_MOBILE_VAULT_CORE",
     "provenance_fix_head": "e633db6f6441f563256deb04890bbc28267d08b8",
     "provenance_fix_android_run": 35658883177,
