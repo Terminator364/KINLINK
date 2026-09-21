@@ -345,7 +345,11 @@ require(
 )
 
 require(
-    "new Mobile Assist action invalidates any older five-minute relapse" in SERVICE
-    and "mobileAssistRelapseGeneration.incrementAndGet()" in SERVICE,
+    re.search(
+        r"private fun startMobileAssistEvidenceWindow\([\s\S]*?"
+        r"mobileAssistRelapseGeneration\.incrementAndGet\(\)[\s\S]*?"
+        r"mobileAssistEvidenceGeneration\.incrementAndGet\(\)",
+        SERVICE,
+    ) is not None,
     "candidate contract: a stale relapse callback can survive into a newer proof window",
 )
