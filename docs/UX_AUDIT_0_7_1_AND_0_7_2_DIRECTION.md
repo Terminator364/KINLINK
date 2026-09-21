@@ -101,3 +101,35 @@ Android documents this API as requesting updated bandwidth information from Conn
 - it is not proof that KINLINK increased radio throughput.
 
 Strong causal improvement requires a separately qualified data-plane/system action.
+
+
+## 2026 pattern cross-check
+
+Fresh reference review reinforces the same direction:
+
+- Speedify's current dashboard puts connection state, real-time graphs, individual connection controls, completed interventions and longer-term statistics into distinct surfaces rather than one wall of prose:
+  https://support.speedify.com/article/235-speedify-interface
+  https://support.speedify.com/article/241-graphs-stats
+
+- Fing's mobile Timeline surfaces only a small recent-event preview on the home page and moves filtering/search into the dedicated timeline:
+  https://www.fing.com/news/timeline-page-fing-app-web-app/
+
+- GlassWire keeps the live graph/data-plan concepts visually distinct and lets the user filter Mobile versus Wi-Fi usage:
+  https://www.glasswire.com/android-help/
+  https://www.glasswire.com/glasswire-for-android/
+
+### KINLINK-specific decision
+
+KINLINK deliberately does **not** copy a continuously animated traffic graph onto the main screen in 0.7.2.
+
+Reason:
+- a graph of device traffic is not proof that KINLINK improved the connection;
+- continuous chart refresh adds UI work on a battery/RAM-sensitive product;
+- the user's main question is actionability, not raw byte visualization.
+
+Instead the home screen uses:
+- one passive-quality meter;
+- one 24 h reliability line;
+- one proof summary that explicitly exposes sustained benefit, relapse, or no confirmed benefit.
+
+A future dedicated History screen may add a low-refresh timeline if field evidence shows the extra UI cost is worthwhile.
