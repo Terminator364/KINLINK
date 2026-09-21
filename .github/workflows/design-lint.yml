@@ -35,6 +35,8 @@ jobs:
         run: python tools/release/verify_telemetry_migrations.py
       - name: Release-readiness ledger consistency
         run: python tools/release/verify_release_readiness.py --audit
+      - name: Release evidence hash integrity
+        run: python tools/release/verify_release_evidence_integrity.py
       - name: Canonical signer continuity contract
         run: python tools/release/verify_signer_contract.py
       - name: Public-repo private signing material fence
