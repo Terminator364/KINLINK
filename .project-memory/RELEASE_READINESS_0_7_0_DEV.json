@@ -2,13 +2,13 @@
   "project": "KINLINK",
   "line": "0.7.0",
   "versionCode": 8,
-  "code_head": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
+  "code_head": "f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3",
   "latest_full_machine_pass": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
-      "status": "PASS",
-      "evidence": "android-0.7-candidate run 35549053623 PASS + design-lint run 35549053626 PASS on 9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab; candidate identity and unsigned-state fences PASS"
+      "status": "PENDING",
+      "evidence": "post-sign field-qualification hardening landed through f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3; fresh candidate CI required before delivery"
     },
     "MIGRATION": {
       "status": "PASS",
@@ -36,7 +36,7 @@
     "no routing/network ownership APIs",
     "VPN/TUN remains disabled"
   ],
-  "field_candidate_allowed": true,
+  "field_candidate_allowed": false,
   "previous_machine_artifact": {
     "workflow_run": 35548684588,
     "artifact_id": 10617836246,
@@ -77,6 +77,10 @@
     "next_required": [
       "FIELD_HANDOFF",
       "RESOURCE_QUALIFICATION"
-    ]
+    ],
+    "status": "SUPERSEDED_BEFORE_DELIVERY",
+    "delivered": false,
+    "installed": false,
+    "superseded_by_head": "f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3"
   }
 }
