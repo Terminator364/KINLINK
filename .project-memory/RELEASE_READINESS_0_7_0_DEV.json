@@ -2,21 +2,21 @@
   "project": "KINLINK",
   "line": "0.7.0",
   "versionCode": 8,
-  "code_head": "a00ed98ab269a851f38fb33cfda8bb77a624e502",
-  "latest_full_machine_pass": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
+  "code_head": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
+  "latest_full_machine_pass": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
-      "status": "PENDING",
-      "evidence": "unsigned release-like candidate variant added; fresh android-0.7-candidate CI required at a00ed98ab269a851f38fb33cfda8bb77a624e502"
+      "status": "PASS",
+      "evidence": "android-0.7-candidate run 35549053623 PASS + design-lint run 35549053626 PASS on 9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab; candidate identity and unsigned-state fences PASS"
     },
     "MIGRATION": {
       "status": "PASS",
-      "evidence": "contiguous v1-v5 plan + historical schema boundary tests + SQL failures not swallowed; machine-PASS at c8999e9"
+      "evidence": "contiguous v1-v5 migration plan, exact historical schema boundaries, SQL migration failures not swallowed, regression tests PASS in candidate CI"
     },
     "SIGNER_CONTINUITY": {
       "status": "PASS",
-      "evidence": "canonical signer certificate SHA-256 pinned consistently in project_state, RC3 promotion receipt and stable signing pipeline; CI verifier enforces identity contract; final signed candidate must still verify this fingerprint before install"
+      "evidence": "CI input hash pinned; private key certificate and signed APK both verify canonical signer SHA-256 2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
     },
     "FIELD_HANDOFF": {
       "status": "PENDING",
@@ -36,7 +36,7 @@
     "no routing/network ownership APIs",
     "VPN/TUN remains disabled"
   ],
-  "field_candidate_allowed": false,
+  "field_candidate_allowed": true,
   "previous_machine_artifact": {
     "workflow_run": 35548684588,
     "artifact_id": 10617836246,
@@ -53,5 +53,30 @@
     "must_be_unsigned": true,
     "stable_signing": "OFFLINE_PRIVATE_STATION_ONLY",
     "canonical_signer_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
+  },
+  "machine_artifact": {
+    "workflow_run": 35549053623,
+    "artifact_id": 10617413284,
+    "artifact_name": "KINLINK-0.7.0-ci-build",
+    "artifact_zip_sha256": "350492836325bb9b2644e90737f26bb63288e0b3aaecf24823e039570ce12209",
+    "input_unsigned_apk_sha256": "987fd96554b577cc8d03b0ac2b0715c25e755c2b8afe7be17a23e3177f2cc588",
+    "manifest_commit": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
+    "manifest_version": "0.7.0",
+    "manifest_variant": "candidate-unsigned"
+  },
+  "signed_field_candidate": {
+    "version": "0.7.0",
+    "versionCode": 8,
+    "source_commit": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
+    "signing_tool_commit": "fcc13cf5de055ba62f20cfc92944d63573a72175",
+    "signed_apk_sha256": "aed0643ea4d03e46f9befdc99866bcbbb4a599c9fddbb552ea7397e285ea8b79",
+    "size_bytes": 316363,
+    "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
+    "apksigner_verified": true,
+    "canonical_promotion": false,
+    "next_required": [
+      "FIELD_HANDOFF",
+      "RESOURCE_QUALIFICATION"
+    ]
   }
 }
