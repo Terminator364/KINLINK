@@ -4,6 +4,10 @@ on:
   pull_request:
 permissions:
   contents: read
+
+concurrency:
+  group: design-lint-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   validate-design:
     runs-on: ubuntu-latest
