@@ -55,6 +55,7 @@ import com.terminator364.kinlink.core.PassiveGuidancePolicy
 import com.terminator364.kinlink.core.RecoveryBlockReason
 import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
+import com.terminator364.kinlink.core.ResourceGuardSnapshot
 import com.terminator364.kinlink.core.ReliabilitySummaryPolicy
 import com.terminator364.kinlink.core.RecentReliabilityPolicy
 import com.terminator364.kinlink.core.ProfileRecommendationPolicy
@@ -500,9 +501,10 @@ class MainActivity : Activity() {
                 nowWall - MobileAssistPolicy.HOURLY_WINDOW_MS
             )
         }.getOrDefault(profileTuning.mobileAssistMaxActionsPerHour)
-        val resourceConstrained = runCatching {
-            DeviceResourceGuard(this).snapshot().constrained
-        }.getOrDefault(true)
+        val resourceSnapshot = runCatching {
+            DeviceResourceGuard(this).snapshot()
+        }.getOrNull()
+        val resourceConstrained = resourceSnapshot?.constrained ?: true
         val budgetProtected =
             latestTruth.budgetState == BudgetState.BUNDLE_LOW ||
                 latestTruth.budgetState == BudgetState.BUNDLE_EXHAUSTED ||
@@ -616,7 +618,7 @@ class MainActivity : Activity() {
                     MobileAssistManualBlockReason.OBSERVATION_ONLY ->
                         "Mode sûr actif : aucun rafraîchissement mobile n’est exécuté."
                     MobileAssistManualBlockReason.RESOURCE_CONSTRAINED ->
-                        "Batterie, mémoire ou température : KINLINK reste passif pour protéger le téléphone."
+                        "Protection téléphone : " + resourceGuardReason(resourceSnapshot)
                     MobileAssistManualBlockReason.BUDGET_PROTECTED ->
                         "Protection du forfait active : KINLINK ne demande pas de travail radio supplémentaire."
                     MobileAssistManualBlockReason.NONE ->
@@ -728,9 +730,10 @@ class MainActivity : Activity() {
         val evidenceAge = latestEvidence?.let {
             (System.currentTimeMillis() - it.tsWallMs).coerceAtLeast(0L)
         }
-        val resourceConstrained = runCatching {
-            DeviceResourceGuard(this).snapshot().constrained
-        }.getOrDefault(true)
+        val resourceSnapshot = runCatching {
+            DeviceResourceGuard(this).snapshot()
+        }.getOrNull()
+        val resourceConstrained = resourceSnapshot?.constrained ?: true
         val controlPanel = ContinuousControlPanelPolicy.build(
             currentScore = passiveScore.score,
             observationOnly = observationOnly,
@@ -927,6 +930,19 @@ class MainActivity : Activity() {
             FieldCandidateQualificationVerdict.PENDING -> "qualification terrain en cours"
         }
         versionText.text = "KINLINK $installedVersionName · $state"
+    }
+
+    private fun resourceGuardReason(snapshot: ResourceGuardSnapshot?): String {
+        if (snapshot == null) return "état ressources non lisible; KINLINK reste passif."
+        val reasons = mutableListOf<String>()
+        if (snapshot.powerSaveMode) reasons += "économie batterie"
+        if (snapshot.thermalModerateOrWorse) reasons += "température"
+        if (snapshot.lowMemory) reasons += "mémoire basse"
+        return if (reasons.isEmpty()) {
+            "garde-fou actif."
+        } else {
+            reasons.joinToString(" + ") + "; action active suspendue."
+        }
     }
 
     private fun mobileBudgetLabel(snapshot: MobileBudgetSnapshot): String {
