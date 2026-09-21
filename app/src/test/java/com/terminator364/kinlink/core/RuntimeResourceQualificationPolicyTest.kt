@@ -81,7 +81,7 @@ class RuntimeResourceQualificationPolicyTest {
         assertEquals(RuntimeResourceVerdict.PASS, a.verdict)
     }
 
-    @Test fun twoPointDropAtThirtyMinutesStillBlocks() {
+    @Test fun twoPointDropAtThirtyMinutesIsInconclusiveNotAppFault() {
         val a = RuntimeResourceQualificationPolicy.evaluate(
             RuntimeResourceEvidence(
                 durationMillis = 30L * 60L * 1000L,
@@ -91,7 +91,7 @@ class RuntimeResourceQualificationPolicyTest {
                 batteryDeltaPercent = 2
             )
         )
-        assertEquals(RuntimeResourceVerdict.BLOCKED, a.verdict)
+        assertEquals(RuntimeResourceVerdict.INCONCLUSIVE, a.verdict)
         assertTrue(a.reasons.contains("BATTERY_RATE_OVER_LIMIT"))
     }
 
