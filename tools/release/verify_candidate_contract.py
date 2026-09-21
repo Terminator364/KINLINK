@@ -103,6 +103,17 @@ require(
     and "connectionRef.getAndSet(null)?.disconnect()" in PROBE,
     "candidate contract: outer probe timeout/disconnect enforcement missing",
 )
+require(
+    "Executors.newSingleThreadExecutor" not in PROBE,
+    "candidate contract: HTTP probe reintroduced per-attempt unbounded helper thread allocation",
+)
+BOUNDED_EXECUTOR = (SRC / "com/terminator364/kinlink/core/BoundedProbeExecutor.kt").read_text(encoding="utf-8")
+require(
+    "MAX_CONCURRENT_ATTEMPTS = 2" in BOUNDED_EXECUTOR
+    and "SynchronousQueue" in BOUNDED_EXECUTOR
+    and "AbortPolicy" in BOUNDED_EXECUTOR,
+    "candidate contract: bounded shared diagnostic executor missing",
+)
 
 tests = list((ROOT / "app/src/test").rglob("*Test.kt"))
 require(len(tests) >= 64, f"candidate contract: regression suite unexpectedly shrank to {len(tests)} tests")
