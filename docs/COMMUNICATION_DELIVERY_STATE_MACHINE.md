@@ -1,116 +1,95 @@
 # KINLINK communication delivery state machine
 
-Status: CANONICAL COMMUNICATION SAFETY CONTRACT
-Cadence: 25 minutes = 22 minutes useful work + 3 minutes mandatory closeout reserve
+Status: CANONICAL COMMUNICATION SAFETY CONTRACT v2
+Cadence: 25 minutes = 22 minutes useful work + 3 minutes normal close reserve
 
-## Why this exists
+## Core correction
 
-A technically successful KINLINK tranche is not complete if the END report is not actually delivered.
+The backup sentinel must **not** become the normal closer.
 
-KINLINK therefore separates:
-- **work state** — what engineering was committed/tested;
-- **delivery state** — whether START/END communication was provider-acknowledged.
+Normal path ownership:
+`PRIMARY_ASSISTANT -> CLOSE_INTENT -> Gmail END -> provider ACK -> CLOSED`
 
-This follows the stronger BCP pattern: durable progress must survive an interrupted ChatGPT turn without requiring the user to send “continue”, “eh oh”, or another recovery ping just to obtain the missing report.
+Backup path:
+`only after nominal window -> search for existing END -> reconcile or send the same normal END`
 
-## State machine
+This removes the confusing pattern where the user receives a visible "recovery/rattrapage" email instead of the expected ordinary FIN TRANCHE.
 
-`START_REQUIRED -> START_PROVIDER_ACKED -> WORKING -> CLOSEOUT_ARMED -> CHECKPOINT_DURABLE -> END_GENERATED -> END_PROVIDER_ACKED -> CLOSED`
+## Separate facts
 
-A tranche is not CLOSED merely because engineering work stopped.
+BCP-inspired model:
 
-## START handshake
+- **work_state**: engineering progress;
+- **delivery_state**: START/END transport proof;
+- **close_owner**: PRIMARY_ASSISTANT / SHADOW_BACKUP / HARD_GUARD.
 
-Before substantive work:
-1. repair any previously unclosed tranche first;
-2. send Gmail START;
-3. require returned provider message ID;
-4. apply Gmail label KINLINK;
-5. persist tranche id + START message ID;
-6. arm two one-shot guards;
-7. only then begin engineering.
+Technical PASS does not imply communication CLOSED.
 
-If Gmail START has no provider acknowledgement, substantive work does not begin.
+## Idempotency key
 
-## Two independent one-shot guards
+Every tranche gets a stable `delivery_key` and START Gmail thread.
 
-### Closeout watchdog
+Before END:
+1. persist `CLOSE_INTENT_PERSISTED`;
+2. bind the END report to the delivery key;
+3. send END as a reply to START;
+4. persist the returned Gmail message ID.
 
-Armed at tranche start for the 22-minute useful-work boundary.
+If the process dies after Gmail accepted END but before GitHub persisted its ID, the next closer:
+- searches the START thread and delivery key first;
+- reuses the existing END receipt;
+- never sends a duplicate.
 
-If the tranche is already CLOSED with verified END message ID: no-op.
+## Normal close
 
-Otherwise it:
-- stops new technical mutations;
-- reads latest durable GitHub/CI state;
-- persists a closeout checkpoint;
-- sends complete Gmail END;
-- requires provider message ID;
-- closes the tranche;
-- only then allows the short app pointer.
+Minute 22 starts the three-minute reserve.
 
-### Hard END guard
+The primary assistant:
+1. stops new product mutations;
+2. reads exact branch/head/CI truth;
+3. persists next atomic action;
+4. persists CLOSE_INTENT;
+5. sends ordinary `KINLINK — FIN TRANCHE 25 MIN ... [delivery_key]`;
+6. requires provider message ID;
+7. applies KINLINK label;
+8. persists END_ACKNOWLEDGED/CLOSED;
+9. only then emits the app pointer.
 
-Armed for the nominal 25-minute boundary.
+## Backup semantics
 
-It is a recovery path, not ordinary execution.
+Backup is post-nominal only:
+- shadow backup: after minute 25;
+- hard guard: later still.
 
-If END is already provider-acknowledged: no-op.
+Both first search Gmail for an already-delivered END.
 
-If not:
-- no product mutation is allowed;
-- missing END is repaired from latest durable state;
-- provider message ID is required;
-- CLOSED state is persisted before any app pointer.
+If they must send:
+- same normal FIN subject/body semantics;
+- same START thread;
+- same delivery key;
+- no user-visible "RECOVERY", "RATTRAPAGE", "WATCHDOG" wording.
 
-## 22 + 3 rule
+Recovery classification remains internal to the ledger.
 
-Minutes 0–22:
-- engineering;
-- audit/counter-audit;
-- CI;
-- durable micro-checkpoints.
+## Crash windows
 
-Final 3 minutes:
-- **no new product mutation**;
-- capture exact branch/head/CI truth;
-- persist next atomic action;
-- send END;
-- verify provider acknowledgement;
-- persist CLOSED;
-- disable pending watchdogs.
+### Before CLOSE_INTENT
+Latest durable work checkpoint is authoritative.
 
-If mutation/tool budget is exhausted earlier, closeout begins early rather than risking another missing END.
+### After CLOSE_INTENT but before Gmail ACK
+The next closer sends one END for the delivery key.
 
-## Interruption behavior
+### After Gmail ACK but before GitHub receipt
+The next closer searches Gmail and persists the existing message ID without resending.
 
-If the main assistant turn is stopped, rate-limited, tool-interrupted, or otherwise cut:
-- committed work remains authoritative;
-- the one-shot guards can still close communication from durable state;
-- the next assistant turn MUST first inspect delivery state;
-- an unclosed prior tranche is repaired before any new engineering or user-facing technical answer.
+## BCP principles imported
 
-No platform safeguard is bypassed. The design only makes interruption non-destructive.
-
-## Delivery evidence
-
-Each tranche requires:
-- `gmail_start_message_id`;
-- `start_provider_ack=true`;
-- durable work checkpoint;
-- closeout marker;
-- `gmail_end_message_id`;
-- `end_mail_verified=true`;
-- CLOSED state.
-
-## Relation to BCP
-
-Imported BCP concepts:
-- Gmail START/END provider-ack handshake;
-- one-shot END watchdog;
-- durable progress journal;
-- separate completion vs delivery state;
-- next atomic action on interruption;
-- single-writer/exact-head evidence discipline.
-
-KINLINK keeps this narrower than BCP: it does not need the full Telegram mission cockpit merely to guarantee tranche closure.
+- append-only delivery ledger;
+- work state != delivery state;
+- idempotency keys;
+- durable next atomic action;
+- exact evidence anchor;
+- single-writer ownership;
+- retry without duplicate downstream effect;
+- no fake progress;
+- user does not need to ping merely to obtain closure.
