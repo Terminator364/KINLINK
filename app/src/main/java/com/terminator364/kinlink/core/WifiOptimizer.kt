@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 
 enum class WifiOptimizationAction {
     BLOCKED_NON_WIFI,
+    HANDOFF_ABORTED,
     CAPTIVE_PORTAL_REQUIRED,
     METERED_WIFI_REFRESH_ONLY,
     KEEP_VALIDATED_AND_REFRESH,
@@ -27,6 +28,11 @@ data class WifiOptimizationResult(
     val dnsLatencyMillis: Long? = null,
     val manualDiagnosisCause: ManualWifiDiagnosisCause = ManualWifiDiagnosisCause.INCONCLUSIVE
 )
+
+object WifiOptimizationContinuationPolicy {
+    fun mayRefresh(sameActiveNetwork: Boolean, activeIsWifi: Boolean): Boolean =
+        sameActiveNetwork && activeIsWifi
+}
 
 object WifiOptimizerPolicy {
     fun action(
@@ -73,6 +79,21 @@ class WifiOptimizer(private val context: Context) {
         }
 
         if (meteredWifi) {
+            val activeAfter = cm.activeNetwork
+            val activeCaps = activeAfter?.let(cm::getNetworkCapabilities)
+            val mayRefresh = WifiOptimizationContinuationPolicy.mayRefresh(
+                sameActiveNetwork = activeAfter == network,
+                activeIsWifi = activeCaps?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
+            )
+            if (!mayRefresh) {
+                return WifiOptimizationResult(
+                    success = false,
+                    action = WifiOptimizationAction.HANDOFF_ABORTED,
+                    summary = "Handoff détecté : le Wi-Fi initial n’est plus actif; aucune action restante.",
+                    androidValidated = androidValidated,
+                    probeAttempts = 0
+                )
+            }
             val refreshed = runCatching { cm.requestBandwidthUpdate(network) }.getOrDefault(false)
             return WifiOptimizationResult(
                 success = androidValidated,
@@ -93,10 +114,38 @@ class WifiOptimizer(private val context: Context) {
             dnsSucceeded = dnsProbe.success,
             httpSucceeded = probe.success
         )
-        // P0 handoff invariant: never influence Android's network validation state.
-        // requestBandwidthUpdate only refreshes metrics for the currently observed Wi-Fi.
+        // P0 handoff invariant: stale Wi-Fi work must stop after Android changes
+        // the active default network. requestBandwidthUpdate is only allowed for the
+        // originally captured Wi-Fi while it is still active.
+        val activeAfterDiagnostics = cm.activeNetwork
+        val activeCapsAfterDiagnostics =
+            activeAfterDiagnostics?.let(cm::getNetworkCapabilities)
+        val mayRefresh = WifiOptimizationContinuationPolicy.mayRefresh(
+            sameActiveNetwork = activeAfterDiagnostics == network,
+            activeIsWifi =
+                activeCapsAfterDiagnostics?.hasTransport(
+                    NetworkCapabilities.TRANSPORT_WIFI
+                ) == true
+        )
+        if (!mayRefresh) {
+            return WifiOptimizationResult(
+                success = false,
+                action = WifiOptimizationAction.HANDOFF_ABORTED,
+                summary = "Handoff détecté après diagnostic : aucune action appliquée au Wi-Fi devenu inactif.",
+                latencyMillis = probe.latencyMillis,
+                frameworkHintSent = false,
+                bandwidthRefreshRequested = false,
+                androidValidated = androidValidated,
+                probeAttempts = probe.attempts,
+                dnsProbeSucceeded = dnsProbe.success,
+                dnsLatencyMillis = dnsProbe.latencyMillis,
+                manualDiagnosisCause = diagnosisCause
+            )
+        }
+
         val hintSent = false
-        val bandwidthRefresh = runCatching { cm.requestBandwidthUpdate(network) }.getOrDefault(false)
+        val bandwidthRefresh =
+            runCatching { cm.requestBandwidthUpdate(network) }.getOrDefault(false)
 
         val responsiveness = WifiProbeLatencyPolicy.classify(probe.latencyMillis)
         val responsivenessLabel = WifiProbeLatencyPolicy.label(responsiveness)
@@ -114,6 +163,7 @@ class WifiOptimizer(private val context: Context) {
             WifiOptimizationAction.CAPTIVE_PORTAL_REQUIRED -> "Portail Wi-Fi détecté : connexion utilisateur requise."
             WifiOptimizationAction.METERED_WIFI_REFRESH_ONLY -> "Wi-Fi mesuré : métriques seulement, sans micro-test."
             WifiOptimizationAction.BLOCKED_NON_WIFI -> "Action bloquée hors Wi-Fi."
+            WifiOptimizationAction.HANDOFF_ABORTED -> "Handoff détecté : aucune action restante sur le Wi-Fi devenu inactif."
             WifiOptimizationAction.INCONCLUSIVE_REFRESH -> "État encore incertain : KINLINK rafraîchit les métriques sans déclarer de panne."
         }
 
