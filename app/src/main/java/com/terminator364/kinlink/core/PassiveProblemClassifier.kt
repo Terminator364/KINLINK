@@ -166,7 +166,7 @@ object PassiveProblemClassifier {
             truth.internetState != InternetState.VALIDATED ->
             PassiveProblemAssessment(
                 PassiveProblemCause.MOBILE_UNVALIDATED,
-                "Transport mobile présent mais Internet non validé; KINLINK n’agit pas dessus.",
+                "Transport mobile présent mais Internet non validé; KINLINK n’envoie aucun probe payant et peut proposer le contrôle Android sur action utilisateur.",
                 70
             )
 
