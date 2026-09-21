@@ -1,15 +1,14 @@
 {
-  "active": false,
-  "version": "0.7.0",
-  "versionCode": 8,
-  "source_commit": "4153720cde8c6bd0004b8e69baeadf5254735abe",
-  "signed_apk_sha256": "cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc",
+  "active": true,
+  "version": "0.7.1",
+  "versionCode": 9,
+  "source_commit": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
+  "signed_apk_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
+  "drive_file_id": "1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1",
+  "drive_readback_status": "PASS",
   "protected_paths": [
     "app/src",
     "app/build.gradle.kts"
   ],
-  "rule": "While Stage B is pending for the installed 0.7.0 candidate, do not mutate production app sources/build identity on main. Engineering support work may continue in docs/tools/workflows. If an app-code fix becomes mandatory, explicitly invalidate the field candidate before changing protected paths.",
-  "invalidated_at_phase": "POST_INSTALL_COUNTER_AUDIT",
-  "invalidation_reason": "CA-001 hard recovery deadline not actually hard; CA-002 battery quantization false-block risk; CA-003 no bounded retry after persisted non-PASS; CA-004 historical BLOCKED UI truthfulness",
-  "replacement_policy": "No micro-beta chain. Produce one consolidated successor with new versionCode after all counter-audit repairs and full CI."
+  "rule": "While 0.7.1 Stage B is pending, app source/build identity is frozen. Any app-code change invalidates this field candidate before mutation."
 }
