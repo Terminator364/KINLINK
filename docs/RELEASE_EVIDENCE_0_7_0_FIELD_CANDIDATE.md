@@ -1,17 +1,28 @@
-# KINLINK 0.7.0 — Signed Field Candidate Evidence
+# KINLINK 0.7.0 — Final Signed Field Candidate Evidence
 
 ## Purpose
 
-This is the **single consolidated field candidate** used to collect the two remaining field gates. It is **not** a canonical promotion and must not replace the RC3 Drive installer until all promotion gates pass.
+This document seals the **single consolidated 0.7.0 field candidate** used to collect the two remaining target-phone gates. It is **not** a canonical promotion. The installed/canonical 0.6.0-rc3 Drive installer remains unchanged until Stage B passes.
 
-## Source and CI
+## Final source and machine qualification
 
-- Source commit: `9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab`
-- Android candidate CI run: `35549053623` — PASS
-- design-lint run: `35549053626` — PASS
-- CI artifact id: `10617413284`
+- Source commit: `4153720cde8c6bd0004b8e69baeadf5254735abe`
+- Android candidate CI run: `35550539216` — PASS
+- design-lint run: `35550539365` — PASS
+- CI artifact id: `10618495983`
 - CI artifact name: `KINLINK-0.7.0-ci-build`
-- Artifact ZIP SHA-256: `350492836325bb9b2644e90737f26bb63288e0b3aaecf24823e039570ce12209`
+- Artifact ZIP SHA-256: `0deb11a13ba4ee2b8f15d96865741af3be42483d707e2814dabe5bef22717c09`
+
+Machine PASS includes:
+- fail-open API fence;
+- manifest safety fence;
+- background repeating-wakeup fence;
+- unit/regression tests;
+- Android lint;
+- unsigned release-like candidate build;
+- package/version identity proof;
+- unsigned-state proof;
+- telemetry migration simulation and durable-ledger/signer-contract checks.
 
 ## Unsigned CI candidate
 
@@ -19,24 +30,45 @@ This is the **single consolidated field candidate** used to collect the two rema
 - versionCode: `8`
 - versionName: `0.7.0`
 - Variant: `candidate-unsigned`
-- Unsigned APK SHA-256: `987fd96554b577cc8d03b0ac2b0715c25e755c2b8afe7be17a23e3177f2cc588`
-- Public CI unsigned-state fence: PASS
+- Unsigned APK SHA-256: `3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb`
+- Unsigned APK size: `308944` bytes
+- Build-manifest commit: `4153720cde8c6bd0004b8e69baeadf5254735abe`
+- Public-CI unsigned-state fence: PASS
 
-## Stable-signed field candidate
+## Final stable-signed field candidate
 
-- File name: `KINLINK-0.7.0-field-candidate-signed.apk`
-- Signed APK SHA-256: `aed0643ea4d03e46f9befdc99866bcbbb4a599c9fddbb552ea7397e285ea8b79`
-- Size: `316363` bytes
-- Signer certificate SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+- File: `KINLINK-0.7.0-FINAL-FIELD-CANDIDATE.apk`
+- Signed APK SHA-256: `cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc`
+- Size: `320260` bytes
 - APK Signature Scheme v3: verified
-- Signers: 1
-- Signing tool fix commit: `fcc13cf5de055ba62f20cfc92944d63573a72175`
+- Signers: `1`
+- Signer certificate SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+- Canonical signer continuity: PASS
 
-The first signing attempt was intentionally rejected by the local verification wrapper because the parser expected an older `apksigner` label. The APK certificate itself was already the canonical certificate. The parser was corrected, the rejected output was deleted, and the same hash-pinned unsigned CI APK was signed again and verified successfully.
+All 71 original APK ZIP entries retain identical CRC and uncompressed size after signing. The v3 signature is carried by the APK signing block; application payload entries were not changed.
 
-## Binary-content comparison
+## Field-qualification hardening in this final candidate
 
-All 71 original APK ZIP entries have identical CRC and uncompressed size before and after signing. The signed APK adds only the expected `META-INF` signature entries plus the APK signing block managed by `apksigner`.
+VersionCode 8 evidence is explicitly scoped so retained RC3 history cannot qualify 0.7.0.
+
+Required positive receipts:
+- `SELF_TEST_CORE_V8`
+- `SELF_TEST_OBSERVER_CALLBACK_V8`
+- `HANDOFF_OUTCOME_MOBILE_VALIDATED_V8`
+- `HANDOFF_CELLULAR_TO_WIFI_V8`
+- latest authoritative resource verdict = `RUNTIME_RESOURCE_GATE_PASS_V8`
+
+Automatic terminal receipts:
+- `FIELD_CANDIDATE_QUALIFIED_V8`
+- `FIELD_CANDIDATE_BLOCKED_V8` when the latest resource verdict is blocking
+
+A newer clean resource PASS can supersede an older BLOCKED receipt; the older evidence is retained rather than deleted.
+
+Battery qualification explicitly treats charging sessions as INCONCLUSIVE. Power disconnect automatically starts a fresh bounded 30-minute resource window.
+
+## Historical preliminary artifact
+
+An earlier signed 0.7.0 artifact from commit `9a4a0c5...` was produced during pipeline validation but was marked `SUPERSEDED_BEFORE_DELIVERY`. It was never delivered or installed and is not eligible for field use.
 
 ## Stage A verdict
 
@@ -44,13 +76,12 @@ All 71 original APK ZIP entries have identical CRC and uncompressed size before 
 - MIGRATION: PASS
 - SIGNER_CONTINUITY: PASS
 
-**Stage A: PASS — eligible as one signed field candidate.**
+**Stage A: PASS — final candidate READY_FOR_FIELD.**
 
-## Canonical promotion is still forbidden
+## Stage B remains pending
 
-The following gates remain required on this exact field candidate:
+Canonical promotion remains forbidden until this exact signed candidate proves:
+- FIELD_HANDOFF = PASS
+- RESOURCE_QUALIFICATION = PASS
 
-- FIELD_HANDOFF
-- RESOURCE_QUALIFICATION (>=30 minute target-device evidence)
-
-The canonical RC3 installer remains unchanged until all five gates PASS.
+Until then, RC3 remains the canonical installer and rollback baseline.
