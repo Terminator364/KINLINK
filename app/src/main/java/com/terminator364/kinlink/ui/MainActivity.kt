@@ -68,6 +68,10 @@ import com.terminator364.kinlink.core.HandoffOutcome
 import com.terminator364.kinlink.core.RuntimeResourceVerdict
 import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.UserExperienceTruthPolicy
+import com.terminator364.kinlink.core.UserExperiencePresentationPolicy
+import com.terminator364.kinlink.core.PlatformCapabilityDiscovery
+import com.terminator364.kinlink.core.LocalNetworkAccessState
+import com.terminator364.kinlink.core.DataSaverState
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.NotificationPermissionPolicy
 import com.terminator364.kinlink.core.WifiDoctor
@@ -812,7 +816,11 @@ class MainActivity : Activity() {
             adviceText.text =
                 "Observation uniquement. La boucle reste visible mais toute action active est suspendue."
         } else {
-            adviceTitleText.text = controlPanel.title
+            adviceTitleText.text =
+                UserExperiencePresentationPolicy.controlTitle(
+                    userExperience.state,
+                    controlPanel.title
+                )
 
             val handling = when {
                 recentUserIssue ->
@@ -830,6 +838,41 @@ class MainActivity : Activity() {
             append("Expérience utilisateur : ${userExperience.statusLabel}\n")
             append("Profil Autopilot : ${profileLabel(currentProfile)}\n")
             append("Mode de récupération : ${recoveryModeLabel(recoveryModeStore.current().name)}\n")
+            val capabilities = PlatformCapabilityDiscovery(this@MainActivity).snapshot()
+            append(
+                "Capacités appareil : API ${capabilities.apiLevel} · Wi‑Fi=" +
+                    if (capabilities.wifiFeature) "oui" else "non"
+            )
+            append(" · téléphonie=" + if (capabilities.telephonyFeature) "oui" else "non")
+            append("\n")
+            append(
+                "Accès LAN KINLINK : " + when (capabilities.localNetworkAccess) {
+                    LocalNetworkAccessState.NOT_REQUIRED_PRE_API_37 -> "permission dédiée non requise sur cet Android"
+                    LocalNetworkAccessState.GRANTED -> "autorisé"
+                    LocalNetworkAccessState.NOT_GRANTED -> "non autorisé · aucune fonction LAN directe ne doit démarrer"
+                } + "\n"
+            )
+            append(
+                "Data Saver Android : " + when (capabilities.dataSaver) {
+                    DataSaverState.DISABLED -> "désactivé"
+                    DataSaverState.WHITELISTED -> "actif · KINLINK autorisé"
+                    DataSaverState.ENABLED -> "actif · KINLINK restreint en arrière-plan"
+                    DataSaverState.UNKNOWN -> "état inconnu"
+                } + "\n"
+            )
+            append(
+                "Options futures : Usage Access=" +
+                    if (capabilities.networkUsageAccess) "accordé" else "non accordé"
+            )
+            append(
+                " · exclusion de routes VPN=" +
+                    if (capabilities.vpnExcludeRouteSupported) "supportée" else "non supportée"
+            )
+            append(
+                " · diagnostics Android avancés en Lite=" +
+                    if (capabilities.connectivityDiagnosticsEligibleInLite) "éligibles" else "non éligibles"
+            )
+            append("\n")
             append("Réseau local : ${lanLabel(truth)}\n")
             append("Contexte : ${contextLabel(truth)}\n")
             append("Diagnostic : ${failureLabel(truth)}\n")
@@ -987,7 +1030,9 @@ class MainActivity : Activity() {
         }
         return "Historique 24 h · $burdenLabel · " +
             "${reliability.interruptionCount} coupure(s) · " +
-            "${reliability.platformDataStallCount} stall(s) Android · " +
+            UserExperiencePresentationPolicy.platformStallLabel(
+                reliability.platformDataStallCount
+            ) + " · " +
             "${reliability.lowQualityEpisodeCount} épisode(s) Wi‑Fi lent · " +
             "${reliability.mobileLowQualityEpisodeCount} épisode(s) mobile lent"
     }
