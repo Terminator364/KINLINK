@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "SINGLE_HUMAN_INSTALL_SURFACE_READY",
-  "next_uncommitted_action": "finish 0.8 integrated exact-head CI and rendered visual proof; quantify requirement coverage honestly; no new phone install until integrated gates close",
+  "next_uncommitted_action": "poll Android run 35634654534 for exact 0.8 head 6a8564409ced58d319e666f9068ed9093562ea9c; if PASS fetch/inspect all rendered screenshots manually before any sign/Drive/install; if FAIL inspect exact logs and fix evidence-based only",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -472,7 +472,24 @@
       "human MB/GB data presentation",
       "compact responsive controls/dialogs",
       "fresh field visual counter-audit before delivery"
-    ]
+    ],
+    "exact_head": "6a8564409ced58d319e666f9068ed9093562ea9c",
+    "design_lint_run": 35634654511,
+    "design_lint_status": "PASS",
+    "android_ci_run": 35634654534,
+    "android_ci_status": "IN_PROGRESS_AT_CLOSE_INTENT",
+    "android_completed_gates": [
+      "fail-open API fence PASS",
+      "manifest safety fence PASS",
+      "background wakeup fence PASS",
+      "unit tests PASS",
+      "Android lint PASS",
+      "unsigned candidate build PASS",
+      "candidate package/version identity PASS",
+      "unsigned fence PASS",
+      "KVM enable PASS"
+    ],
+    "android_pending_gate": "rendered responsive UI matrix"
   },
   "product_completion_scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
   "visual_counter_audit_policy": ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json"
