@@ -311,3 +311,17 @@ require(
     and 'Indice passif : ${passiveScore.score}/100' in MAIN_ACTIVITY,
     "candidate contract: passive numeric score is not kept behind technical detail",
 )
+
+EVIDENCE_SUMMARY = (SRC / "com/terminator364/kinlink/core/MobileAssistEvidenceSummaryPolicy.kt").read_text(encoding="utf-8")
+require(
+    "SUSTAINED_BETTER" in EVIDENCE_SUMMARY
+    and "RELAPSING" in EVIDENCE_SUMMARY
+    and "NO_CONFIRMED_BENEFIT" in EVIDENCE_SUMMARY
+    and "corrélé" in EVIDENCE_SUMMARY
+    and "rechute" in EVIDENCE_SUMMARY,
+    "candidate contract: proof summary can hide relapse or overclaim causality",
+)
+require(
+    "MobileAssistEvidenceSummaryPolicy.summarize(counts).label" in MAIN_ACTIVITY,
+    "candidate contract: cockpit does not use tested proof summary",
+)
