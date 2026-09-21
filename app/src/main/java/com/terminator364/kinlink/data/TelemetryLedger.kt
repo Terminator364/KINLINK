@@ -443,6 +443,7 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         val lowQualityDurations = lowQualityDurationStats()
         val interruptions1h = interruptionDurationStatsSince(now - 60L * 60L * 1000L)
         val interruptions24h = interruptionDurationStatsSince(now - 24L * 60L * 60L * 1000L)
+        val lowQuality24h = lowQualityDurationStatsSince(now - 24L * 60L * 60L * 1000L)
         val causes24h = actionCountsByPrefixSince("PASSIVE_CAUSE_", now - 24L * 60L * 60L * 1000L)
         val recoveryDurations = actionDurationStats("AUTO_RECOVERY")
         val stability = stabilityWindow(now)
@@ -487,7 +488,17 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             recent24hInterruptionCount = interruptions24h.first,
             recent24hInterruptionMillis = interruptions24h.second,
             recent24hLongestInterruptionMillis = interruptions24h.third,
-            recent24hCauseCounts = causes24h
+            recent24hCauseCounts = causes24h,
+            recent24hLowQualityEpisodeCount = lowQuality24h.first,
+            recent24hLowQualityMillis = lowQuality24h.second,
+            recent24hLowQualityLongestMillis = lowQuality24h.third,
+            userIncidentMarkers = countActions("USER_INCIDENT_MARKER"),
+            latestUserIncidentMarkerMillis = latestIncidentMarker,
+            incidentWindowActions = incidentWindowActions,
+            manualWifiDiagnosisCounts = actionCountsByPrefix("MANUAL_WIFI_DIAG_"),
+            runtimeResourcePasses = countActions("RUNTIME_RESOURCE_GATE_PASS"),
+            runtimeResourceInconclusive = countActions("RUNTIME_RESOURCE_GATE_INCONCLUSIVE"),
+            runtimeResourceBlocked = countActions("RUNTIME_RESOURCE_GATE_BLOCKED")
         )
     }
 }
