@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -26,6 +27,10 @@ class KinlinkObserverService : Service() {
     private val recoveryEffectivenessTracker = RecoveryEffectivenessTracker()
     private val mobileAssistEvidenceTracker =
         MobileAssistEvidenceTracker()
+    private val mobileAssistEvidenceHandler by lazy {
+        android.os.Handler(android.os.Looper.getMainLooper())
+    }
+    private var mobileAssistEvidenceGeneration = 0L
     private val interruptionTracker = ConnectivityInterruptionTracker()
     private val degradedQualityEpisodeTracker = DegradedQualityEpisodeTracker()
     private val mobileDegradedQualityEpisodeTracker =
@@ -139,7 +144,7 @@ class KinlinkObserverService : Service() {
                 recoveryEffectivenessTracker.start(baseline)
             }
             mobileAssist = MobileAssistController(this, ledger) { baseline ->
-                mobileAssistEvidenceTracker.start(baseline)
+                startMobileAssistEvidenceWindow(baseline)
             }
         } else if (!coreRuntimeReady) {
             runCatching {
@@ -204,14 +209,7 @@ class KinlinkObserverService : Service() {
                         "${evidence.summary} baseline=${evidence.baseline.name}; current=${evidence.current.name}"
                     )
                 }
-                mobileAssistEvidenceTracker.observe(truth)?.let { evidence ->
-                    ledger.appendAction(
-                        "MOBILE_ASSIST_EVIDENCE_${evidence.result.name}",
-                        evidence.result == MobileAssistEvidenceResult.METRICS_AVAILABLE ||
-                            evidence.result == MobileAssistEvidenceResult.SUSTAINED_BETTER,
-                        "${evidence.summary} baseline=${evidence.baseline.name}/${evidence.baselineScore}; current=${evidence.current.name}/${evidence.currentScore}; elapsedMs=${evidence.elapsedMillis}; transport=CELLULAR"
-                    )
-                }
+                recordMobileAssistEvidence(truth)
                 interruptionTracker.observe(truth)?.let { interruption ->
                     ledger.appendAction(
                         "INTERRUPTION_${interruption.severity.name}",
@@ -261,6 +259,43 @@ class KinlinkObserverService : Service() {
             }
         }
         observer.start()
+    }
+
+    private fun startMobileAssistEvidenceWindow(baseline: NetworkTruth) {
+        mobileAssistEvidenceGeneration += 1L
+        val generation = mobileAssistEvidenceGeneration
+        mobileAssistEvidenceTracker.start(baseline)
+
+        for (delayMs in MOBILE_EVIDENCE_SAMPLE_DELAYS_MS) {
+            mobileAssistEvidenceHandler.postDelayed({
+                if (generation != mobileAssistEvidenceGeneration) return@postDelayed
+                val cm = getSystemService(ConnectivityManager::class.java)
+                val network = cm.activeNetwork ?: return@postDelayed
+                val truth = ConnectivityTruthEngine.reduce(
+                    cm.getNetworkCapabilities(network),
+                    cm.getLinkProperties(network)
+                ).copy(
+                    budgetState = runCatching { mobileBudget.sample().state }
+                        .getOrDefault(BudgetState.BALANCE_UNKNOWN)
+                )
+                if (recordMobileAssistEvidence(truth)) {
+                    mobileAssistEvidenceGeneration += 1L
+                }
+            }, delayMs)
+        }
+    }
+
+    private fun recordMobileAssistEvidence(truth: NetworkTruth): Boolean {
+        val evidence = mobileAssistEvidenceTracker.observe(truth) ?: return false
+        runCatching {
+            ledger.appendAction(
+                "MOBILE_ASSIST_EVIDENCE_${evidence.result.name}",
+                evidence.result == MobileAssistEvidenceResult.METRICS_AVAILABLE ||
+                    evidence.result == MobileAssistEvidenceResult.SUSTAINED_BETTER,
+                "${evidence.summary} baseline=${evidence.baseline.name}/${evidence.baselineScore}; current=${evidence.current.name}/${evidence.currentScore}; elapsedMs=${evidence.elapsedMillis}; transport=CELLULAR"
+            )
+        }
+        return evidence.result != MobileAssistEvidenceResult.INCONCLUSIVE
     }
 
     private fun scheduleRuntimeBudgetCheckpoint() {
@@ -458,6 +493,8 @@ class KinlinkObserverService : Service() {
 
     override fun onDestroy() {
         runtimeBudgetHandler.removeCallbacks(runtimeBudgetCheckpointRunnable)
+        mobileAssistEvidenceGeneration += 1L
+        mobileAssistEvidenceHandler.removeCallbacksAndMessages(null)
         if (powerReceiverRegistered) {
             runCatching { unregisterReceiver(powerStateReceiver) }
             powerReceiverRegistered = false
@@ -553,5 +590,7 @@ class KinlinkObserverService : Service() {
         private const val CHANNEL_ID = "kinlink_observer"
         private const val NOTIFICATION_ID = 114
         const val ACTION_REFRESH_MODE = "com.terminator364.kinlink.REFRESH_RECOVERY_MODE"
+        val MOBILE_EVIDENCE_SAMPLE_DELAYS_MS =
+            longArrayOf(21_000L, 42_000L, 65_000L)
     }
 }
