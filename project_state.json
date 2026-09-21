@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "SINGLE_HUMAN_INSTALL_SURFACE_READY",
-  "next_uncommitted_action": "continue W2 after 7d589ddd 45-shot PASS: implement optional NetworkStats/per-SIM-safe evidence as capability-gated, then continue full Mobile Vault product surface; no install",
+  "next_uncommitted_action": "continue W2 after 7d589ddd 45-shot PASS: optional capability-gated NetworkStats/per-subscription-safe evidence, then full Mobile Vault product surface; communication v6 20+5 deadline enforced; no install",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -590,14 +590,17 @@
     "b_depth_doc": "docs/B_EXPANSION_V5.md"
   },
   "communication": {
-    "protocol": "v5",
-    "state_machine": "v5",
-    "active_tranche_schema": "v6",
-    "watchdog": "KINLINK Comms Watchdog",
+    "protocol": "v6",
+    "state_machine": "v6",
+    "active_tranche_schema": "v7",
+    "watchdog": "KINLINK Continuity & Comms",
     "watchdog_cardinality": 1,
-    "watchdog_stale_work_threshold_minutes": 28,
-    "watchdog_auto_reopen": false,
-    "interruption_rule": "CLOSE_INTENT without END ACK is immediate P0; WORKING without END reaches watchdog breach at 28 min; foreground resume requires fresh START",
+    "watchdog_stale_work_threshold_minutes": 25,
+    "watchdog_auto_reopen": true,
+    "watchdog_role": "HOURLY_FAILOVER_ONLY_NOT_25_MIN_GUARANTEE",
+    "foreground_deadline": "20 min work + 5 min hard close reserve; deadline persisted at START",
+    "time_check_rule": "before every major mutation batch and after at most 3 tool batches",
+    "interruption_rule": "deadline/CLOSE_INTENT without END ACK is immediate P0; reconcile Gmail before retry; fresh START required before substantive continuation",
     "intermediate_deliverable_rule": "PDF/report/artifact email is neither START nor END unless explicitly typed as that transition"
   },
   "state_authority": {
