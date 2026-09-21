@@ -7,13 +7,13 @@
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
   "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSE_INTENT_PERSISTED",
-  "status": "CLOSING",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "gmail_start_message_id": "1a0c50a4fb1f8814",
   "gmail_start_thread_id": "1a0c50a4fb1f8814",
-  "gmail_end_message_id": null,
-  "gmail_end_thread_id": null,
-  "end_mail_verified": false,
+  "gmail_end_message_id": "1a0c51e5bb9f563e",
+  "gmail_end_thread_id": "1a0c50a4fb1f8814",
+  "end_mail_verified": true,
   "gmail_label": "KINLINK",
   "close_intent_persisted": true,
   "close_owner": "PRIMARY_ASSISTANT",
@@ -100,5 +100,8 @@
       "main_design_lint_run": 35635007303,
       "main_design_lint_status": "PASS"
     }
-  }
+  },
+  "closed_state": true,
+  "closed_at_provider_ts": "2026-09-21T17:58:16",
+  "closed_at_local": "2026-09-21T18:58:16+01:00"
 }
