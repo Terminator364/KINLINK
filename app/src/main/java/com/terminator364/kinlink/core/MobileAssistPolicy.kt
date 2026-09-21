@@ -132,15 +132,91 @@ object MobileAssistPolicy {
 }
 
 
+enum class MobileAssistManualAction {
+    NONE,
+    REFRESH_LINK_METRICS,
+    OPEN_SYSTEM_CONNECTIVITY_PANEL
+}
+
+enum class MobileAssistManualBlockReason {
+    NONE,
+    NOT_CELLULAR,
+    COOLDOWN,
+    HOURLY_CAP,
+    OBSERVATION_ONLY,
+    RESOURCE_CONSTRAINED,
+    BUDGET_PROTECTED
+}
+
+data class MobileAssistManualDecision(
+    val action: MobileAssistManualAction,
+    val blockReason: MobileAssistManualBlockReason
+)
+
 object MobileAssistManualPolicy {
     const val COOLDOWN_MS = 30_000L
 
-    fun allowed(
-        millisSinceLastAction: Long,
-        recentActions: Int = 0,
-        resourceConstrained: Boolean = false
-    ): Boolean =
-        millisSinceLastAction >= COOLDOWN_MS &&
-            recentActions < MobileAssistPolicy.MAX_ACTIONS_PER_HOUR &&
-            !resourceConstrained
+    fun decide(
+        isCellular: Boolean,
+        validated: Boolean,
+        notSuspended: Boolean,
+        observationOnly: Boolean,
+        budgetProtected: Boolean,
+        resourceConstrained: Boolean,
+        recentActions: Int,
+        millisSinceLastAction: Long
+    ): MobileAssistManualDecision {
+        if (!isCellular) {
+            return MobileAssistManualDecision(
+                MobileAssistManualAction.NONE,
+                MobileAssistManualBlockReason.NOT_CELLULAR
+            )
+        }
+        if (recentActions >= MobileAssistPolicy.MAX_ACTIONS_PER_HOUR) {
+            return MobileAssistManualDecision(
+                MobileAssistManualAction.NONE,
+                MobileAssistManualBlockReason.HOURLY_CAP
+            )
+        }
+        if (millisSinceLastAction < COOLDOWN_MS) {
+            return MobileAssistManualDecision(
+                MobileAssistManualAction.NONE,
+                MobileAssistManualBlockReason.COOLDOWN
+            )
+        }
+
+        // Opening Android's own connectivity panel is navigation, not a KINLINK
+        // network mutation or data probe. Keep this useful even when Mobile Vault
+        // or safe mode forbids active metric refresh.
+        if (!validated || !notSuspended) {
+            return MobileAssistManualDecision(
+                MobileAssistManualAction.OPEN_SYSTEM_CONNECTIVITY_PANEL,
+                MobileAssistManualBlockReason.NONE
+            )
+        }
+
+        if (observationOnly) {
+            return MobileAssistManualDecision(
+                MobileAssistManualAction.NONE,
+                MobileAssistManualBlockReason.OBSERVATION_ONLY
+            )
+        }
+        if (resourceConstrained) {
+            return MobileAssistManualDecision(
+                MobileAssistManualAction.NONE,
+                MobileAssistManualBlockReason.RESOURCE_CONSTRAINED
+            )
+        }
+        if (budgetProtected) {
+            return MobileAssistManualDecision(
+                MobileAssistManualAction.NONE,
+                MobileAssistManualBlockReason.BUDGET_PROTECTED
+            )
+        }
+
+        return MobileAssistManualDecision(
+            MobileAssistManualAction.REFRESH_LINK_METRICS,
+            MobileAssistManualBlockReason.NONE
+        )
+    }
 }
