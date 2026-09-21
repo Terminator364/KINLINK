@@ -542,7 +542,8 @@ class MainActivity : Activity() {
                 longestMillis = reliability.longestMillis,
                 lowQualityEpisodeCount = reliability.lowQualityEpisodeCount,
                 dominantCause = reliability.dominantCause,
-                qualityTrend = reliability.qualityTrend
+                qualityTrend = reliability.qualityTrend,
+                mobileLowQualityEpisodeCount = reliability.mobileLowQualityEpisodeCount
             )
         } ?: "24 h · historique en préparation"
 
@@ -560,9 +561,14 @@ class MainActivity : Activity() {
                     reliability.interruptionCount,
                     reliability.cumulativeMillis,
                     reliability.longestMillis,
-                    reliability.lowQualityEpisodeCount,
-                    reliability.lowQualityCumulativeMillis,
-                    reliability.lowQualityLongestMillis
+                    reliability.lowQualityEpisodeCount +
+                        reliability.mobileLowQualityEpisodeCount,
+                    reliability.lowQualityCumulativeMillis +
+                        reliability.mobileLowQualityCumulativeMillis,
+                    maxOf(
+                        reliability.lowQualityLongestMillis,
+                        reliability.mobileLowQualityLongestMillis
+                    )
                 )
                 ProfileRecommendationPolicy.recommend(burden)
             }
@@ -605,15 +611,25 @@ class MainActivity : Activity() {
                     reliability.interruptionCount,
                     reliability.cumulativeMillis,
                     reliability.longestMillis,
-                    reliability.lowQualityEpisodeCount,
-                    reliability.lowQualityCumulativeMillis,
-                    reliability.lowQualityLongestMillis
+                    reliability.lowQualityEpisodeCount +
+                        reliability.mobileLowQualityEpisodeCount,
+                    reliability.lowQualityCumulativeMillis +
+                        reliability.mobileLowQualityCumulativeMillis,
+                    maxOf(
+                        reliability.lowQualityLongestMillis,
+                        reliability.mobileLowQualityLongestMillis
+                    )
                 )
                 append("Interruptions 24 h : ${reliability.interruptionCount}")
                 append(" · cumul ${reliability.cumulativeMillis} ms")
                 append(" · max ${reliability.longestMillis} ms")
                 append(" · ${burden.name}\n")
                 append("Wi-Fi lent validé 24 h : ${reliability.lowQualityEpisodeCount} épisode(s)")
+                append(" · cumul ${reliability.lowQualityCumulativeMillis} ms")
+                append(" · max ${reliability.lowQualityLongestMillis} ms\n")
+                append("Mobile lent validé 24 h : ${reliability.mobileLowQualityEpisodeCount} épisode(s)")
+                append(" · cumul ${reliability.mobileLowQualityCumulativeMillis} ms")
+                append(" · max ${reliability.mobileLowQualityLongestMillis} ms\n")
                 append(" · cumul ${reliability.lowQualityCumulativeMillis} ms")
                 append(" · max ${reliability.lowQualityLongestMillis} ms\n")
                 reliability.dominantCause?.let { cause ->
