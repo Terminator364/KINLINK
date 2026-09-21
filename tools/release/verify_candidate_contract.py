@@ -325,3 +325,10 @@ require(
     "MobileAssistEvidenceSummaryPolicy.summarize(counts).label" in MAIN_ACTIVITY,
     "candidate contract: cockpit does not use tested proof summary",
 )
+
+require(
+    "countExactActionSince(EVIDENCE_NO_BETTER, since)" in MOBILE_ASSIST
+    and "countExactActionSince(EVIDENCE_RELAPSED, since)" in MOBILE_ASSIST
+    and "countActionsSince(EVIDENCE_RELAPSED, since)" not in MOBILE_ASSIST,
+    "candidate contract: late RELAPSED_AFTER_SUSTAINED may be miscounted as an ineffective early relapse",
+)
