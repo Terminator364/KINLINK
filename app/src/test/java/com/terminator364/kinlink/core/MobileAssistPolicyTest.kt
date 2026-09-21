@@ -124,6 +124,11 @@ class MobileAssistPolicyTest {
         )
     }
 
+    @Test fun manualAssistHasShortAntiSpamCooldown() {
+        assertEquals(false, MobileAssistManualPolicy.allowed(29_999L))
+        assertEquals(true, MobileAssistManualPolicy.allowed(30_000L))
+    }
+
     @Test fun everyNonCellularTransportIsBlocked() {
         for (transport in Transport.values().filter { it != Transport.CELLULAR }) {
             val truth = cellular(down = 600).copy(transport = transport)
