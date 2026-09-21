@@ -501,7 +501,7 @@ class MainActivity : Activity() {
                 nowWall - MobileAssistPolicy.HOURLY_WINDOW_MS
             )
         }.getOrDefault(profileTuning.mobileAssistMaxActionsPerHour)
-        val resourceSnapshot = resourceSnapshotOverride ?: runCatching {
+        val resourceSnapshot = runCatching {
             DeviceResourceGuard(this).snapshot()
         }.getOrNull()
         val resourceConstrained = resourceSnapshot?.constrained ?: true
@@ -731,7 +731,7 @@ class MainActivity : Activity() {
         val evidenceAge = latestEvidence?.let {
             (System.currentTimeMillis() - it.tsWallMs).coerceAtLeast(0L)
         }
-        val resourceSnapshot = runCatching {
+        val resourceSnapshot = resourceSnapshotOverride ?: runCatching {
             DeviceResourceGuard(this).snapshot()
         }.getOrNull()
         val resourceConstrained = resourceSnapshot?.constrained ?: true
