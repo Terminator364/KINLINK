@@ -12,15 +12,15 @@ class DiagnosticExporter(private val context: Context) {
      */
     fun share(summary: DiagnosticSummary) {
         val directory = File(context.cacheDir, "diagnostics").apply { mkdirs() }
-        val reportFile = File(directory, "KINLINK_DIAGNOSTIC.txt")
-        reportFile.writeText(DiagnosticReportBuilder.build(summary))
+        val bundleFile = File(directory, "KINLINK_DIAGNOSTIC.zip")
+        DiagnosticBundleBuilder.write(bundleFile, summary)
         val uri = FileProvider.getUriForFile(
             context,
             "${context.packageName}.diagnostics",
-            reportFile
+            bundleFile
         )
         val send = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
+            type = "application/zip"
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
