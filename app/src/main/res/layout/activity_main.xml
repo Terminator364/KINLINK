@@ -16,49 +16,38 @@
         android:paddingEnd="16dp"
         android:paddingBottom="28dp">
 
-        <LinearLayout
+        <!-- Responsive header: deliberately vertical so version text can never
+             steal width from the product name on narrow phones. -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:text="KINLINK"
+            android:textColor="#0B57D0"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:text="Pilotage continu · preuve locale"
+            android:textColor="#667085"
+            android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="KINLINK"
-                    android:textColor="#0B57D0"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:text="Pilotage continu · preuve locale"
-                    android:textColor="#667085"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/versionText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="KINLINK"
-                android:textColor="#98A2B3"
-                android:textSize="10sp" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/versionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:maxLines="2"
+            android:text="KINLINK"
+            android:textColor="#98A2B3"
+            android:textSize="10sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/card_primary"
             android:orientation="vertical"
             android:padding="18dp">
@@ -84,7 +73,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Vérification de la connexion"
                 android:textColor="#FFFFFF"
-                android:textSize="24sp"
+                android:textSize="25sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -93,15 +82,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:maxLines="3"
-                android:text="KINLINK observe sans consommer de données de test."
+                android:text="Connexion en cours d’analyse."
                 android:textColor="#DCE9FF"
                 android:textSize="14sp" />
         </LinearLayout>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="17dp"
             android:text="ÉTAT ACTUEL"
             android:textColor="#667085"
             android:textSize="11sp"
@@ -118,35 +107,35 @@
             <TextView
                 android:id="@+id/transportText"
                 style="@style/KinlinkSummaryText"
-                android:text="Connexion" />
+                android:text="Réseau" />
 
             <TextView
                 android:id="@+id/internetText"
                 style="@style/KinlinkSummaryText"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="6dp"
                 android:text="Internet" />
 
             <TextView
                 android:id="@+id/mobileText"
                 style="@style/KinlinkSummaryText"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="6dp"
                 android:text="Protection mobile" />
 
             <TextView
                 android:id="@+id/qualityScoreText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="12dp"
                 android:text="Qualité passive · --/100"
                 android:textColor="#123B78"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textStyle="bold" />
 
             <ProgressBar
                 android:id="@+id/qualityProgress"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
-                android:layout_height="6dp"
+                android:layout_height="7dp"
                 android:layout_marginTop="5dp"
                 android:max="100"
                 android:progress="0" />
@@ -155,9 +144,9 @@
                 android:id="@+id/mobileBudgetText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="9dp"
                 android:maxLines="2"
-                android:text="Suivi mobile · initialisation"
+                android:text="Data mobile · initialisation"
                 android:textColor="#667085"
                 android:textSize="11sp" />
 
@@ -173,10 +162,19 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:text="BOUCLE DE CONTRÔLE"
+            android:textColor="#667085"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="7dp"
             android:background="@drawable/card_soft_blue"
             android:orientation="vertical"
             android:padding="15dp">
@@ -185,9 +183,9 @@
                 android:id="@+id/adviceTitleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pilotage continu"
+                android:text="Surveillance"
                 android:textColor="#123B78"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -195,9 +193,113 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Surveillance active. KINLINK agit seulement si le bénéfice peut être vérifié."
+                android:text="KINLINK observe et agit seulement sous ses garde-fous."
                 android:textColor="#365B91"
                 android:textSize="13sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="AVANT"
+                        android:textColor="#667085"
+                        android:textSize="9sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/beforeScoreText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="—"
+                        android:textColor="#123B78"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MAINTENANT"
+                        android:textColor="#667085"
+                        android:textSize="9sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/nowScoreText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="—"
+                        android:textColor="#123B78"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ÉCART"
+                        android:textColor="#667085"
+                        android:textSize="9sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/deltaScoreText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="—"
+                        android:textColor="#123B78"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/maintainedText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Maintien · en attente de preuve"
+                android:textColor="#365B91"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/evidenceText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Historique de bénéfice · en collecte"
+                android:textColor="#475467"
+                android:textSize="11sp" />
         </LinearLayout>
 
         <TextView
@@ -207,6 +309,7 @@
             android:layout_marginTop="14dp"
             android:background="@drawable/button_outline"
             android:gravity="center"
+            android:minHeight="54dp"
             android:padding="12dp"
             android:text="Assistance Wi‑Fi"
             android:textColor="#0B57D0"
@@ -221,8 +324,9 @@
             android:layout_marginTop="14dp"
             android:background="@drawable/button_outline"
             android:gravity="center"
+            android:minHeight="54dp"
             android:padding="12dp"
-            android:text="Assistant mobile"
+            android:text="Réévaluer maintenant"
             android:textColor="#0B57D0"
             android:textSize="15sp"
             android:textStyle="bold"
@@ -242,11 +346,11 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_outline"
                 android:gravity="center"
-                android:minHeight="54dp"
-                android:padding="9dp"
+                android:minHeight="52dp"
+                android:padding="8dp"
                 android:text="Profil · Équilibré"
                 android:textColor="#0B57D0"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -257,11 +361,11 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_outline"
                 android:gravity="center"
-                android:minHeight="54dp"
-                android:padding="9dp"
+                android:minHeight="52dp"
+                android:padding="8dp"
                 android:text="Mode sûr · OFF"
                 android:textColor="#0B57D0"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -279,11 +383,11 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_outline"
                 android:gravity="center"
-                android:minHeight="54dp"
-                android:padding="9dp"
+                android:minHeight="52dp"
+                android:padding="8dp"
                 android:text="Protection data"
                 android:textColor="#0B57D0"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -294,11 +398,11 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_outline"
                 android:gravity="center"
-                android:minHeight="54dp"
-                android:padding="9dp"
-                android:text="Marquer un problème"
+                android:minHeight="52dp"
+                android:padding="8dp"
+                android:text="Signaler un problème"
                 android:textColor="#0B57D0"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -306,7 +410,7 @@
             android:id="@+id/technicalToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="13dp"
             android:background="@drawable/button_outline"
             android:paddingStart="12dp"
             android:paddingTop="9dp"
@@ -326,7 +430,8 @@
             android:lineSpacingExtra="3dp"
             android:padding="14dp"
             android:textColor="#344054"
-            android:textSize="12sp"
+            android:textIsSelectable="true"
+            android:textSize="11sp"
             android:visibility="gone" />
 
         <TextView
