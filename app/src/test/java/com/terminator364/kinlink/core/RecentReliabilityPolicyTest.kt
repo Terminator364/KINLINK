@@ -25,6 +25,34 @@ class RecentReliabilityPolicyTest {
         )
     }
 
+    @Test fun repeatedSlowValidatedEpisodesBecomeUnstable() {
+        assertEquals(
+            RecentReliabilityBurden.UNSTABLE,
+            RecentReliabilityPolicy.classify(
+                interruptionCount = 0,
+                cumulativeMillis = 0L,
+                longestMillis = 0L,
+                lowQualityEpisodeCount = 4,
+                lowQualityCumulativeMillis = 8L * 60L * 1000L,
+                lowQualityLongestMillis = 3L * 60L * 1000L
+            )
+        )
+    }
+
+    @Test fun prolongedSlowValidatedBurdenCanBeSevereWithoutOutage() {
+        assertEquals(
+            RecentReliabilityBurden.SEVERE,
+            RecentReliabilityPolicy.classify(
+                interruptionCount = 0,
+                cumulativeMillis = 0L,
+                longestMillis = 0L,
+                lowQualityEpisodeCount = 2,
+                lowQualityCumulativeMillis = 31L * 60L * 1000L,
+                lowQualityLongestMillis = 9L * 60L * 1000L
+            )
+        )
+    }
+
     @Test fun longOutageIsSevere() {
         assertEquals(
             RecentReliabilityBurden.SEVERE,
