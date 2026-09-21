@@ -19,9 +19,9 @@ When this command is used in another KINLINK conversation/workspace:
 6. Never promote a DEV APK over the canonical field APK.
 7. Preserve fail-open/mobile-observation-only invariants and CI fences.
 8. Prefer large coherent batches over micro-RCs.
-9. Communication protocol is mandatory for every substantial KINLINKGO tranche (current cadence: 25 minutes):
+9. Communication protocol is mandatory for every substantial KINLINKGO tranche (current cadence: 30 minutes):
    - send the Gmail start-of-tranche message first and apply the Gmail label `KINLINK`;
-   - execute one coherent 25-minute tranche, not micro-betas;
+   - execute one coherent 30-minute tranche, not micro-betas;
    - intermediate user feedback does not interrupt or restart the active tranche;
    - the only permitted early stop is a true human gate objectively required to continue;
    - send the complete end-of-tranche report by Gmail before any ChatGPT-app response and apply label `KINLINK`;
