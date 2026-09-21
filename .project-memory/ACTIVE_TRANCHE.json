@@ -11,9 +11,9 @@
   "close_deadline_local": "2026-09-22T01:03:00+01:00",
   "forced_stop_new_mutations_local": "2026-09-22T00:58:00+01:00",
   "foreground_time_check_rule": "CHECK_TIME_BEFORE_EVERY_MAJOR_MUTATION_BATCH_AND_AFTER_AT_MOST_3_TOOL_BATCHES",
-  "work_state": "WORKING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "ACTIVE",
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSE_INTENT_PERSISTED",
+  "status": "CLOSING",
   "gmail_start_message_id": "1a0c655d61b9e72e",
   "gmail_start_thread_id": "1a0c655d61b9e72e",
   "gmail_label": "KINLINK",
@@ -47,5 +47,51 @@
     "android_run": 35664821258,
     "android_status": "PASS"
   },
-  "next_atomic_action": "persist communication v6 deadline protocol, verify watchdog calibration, then fetch/inspect 45-shot proof for 7d589ddd"
+  "next_atomic_action": "fresh START; continue W2 with optional capability-gated NetworkStats/per-subscription-safe evidence and complete Mobile Vault surface; no install",
+  "close_intent_persisted": true,
+  "close_owner": "PRIMARY_ASSISTANT",
+  "no_more_product_mutations": true,
+  "close_intent_local": "2026-09-22T00:50:00+01:00",
+  "last_durable_checkpoint": {
+    "communication": {
+      "incident": "K25-13 missed foreground END; watchdog did not fail but hourly cadence had not reached next run",
+      "protocol": "v6",
+      "foreground_budget": "20 min work + 5 min hard close reserve",
+      "deadline_fields_persisted": true,
+      "time_check_rule": "before major mutation batches and after at most 3 tool batches",
+      "watchdog": "KINLINK Continuity & Comms",
+      "watchdog_role": "HOURLY_FAILOVER_ONLY_NOT_25_MIN_GUARANTEE",
+      "automation_id": "6ab1916ae7bc8191aa1b472febd2d844",
+      "automation_enabled": true
+    },
+    "continuity": {
+      "main_head": "62f09af111fd7b13fa689c63642cee79ef98df19",
+      "design_lint_run": 35669289065,
+      "design_lint_status": "PASS",
+      "resume_capsule": "synchronized",
+      "cold_takeover": "PASS as part of design-lint"
+    },
+    "full_spec": {
+      "macro_capabilities": 80,
+      "b_depth": "B31-B100",
+      "active_wave": "W2",
+      "maturity_percent": 46,
+      "upgrades": [
+        "K014 IMPLEMENTED_UNQUALIFIED",
+        "K017 IMPLEMENTED_UNQUALIFIED",
+        "K068 IMPLEMENTED_UNQUALIFIED"
+      ]
+    },
+    "w2": {
+      "head": "7d589ddd6038adcb7c318f2b00dc1cf03faaa355",
+      "design_lint_run": 35664821268,
+      "android_run": 35664821258,
+      "android_status": "PASS",
+      "artifact_id": 10669160578,
+      "rendered_screenshots_inspected": 45,
+      "visual_verdict": "PASS_W2_XL_DIALOG_AND_RESPONSIVE_TRUTH",
+      "xl_mobile_vault_clear_action": "VISIBLE_AND_SCROLLABLE",
+      "install_requested": false
+    }
+  }
 }
