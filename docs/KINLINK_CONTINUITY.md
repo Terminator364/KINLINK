@@ -90,3 +90,17 @@ After installation:
 ## Short code
 
 `KINLINKGO`
+
+
+## Interruption-safe tranche watchdog
+
+A 25-minute tranche now reserves its final **5 minutes** for closeout. The first 20 minutes are the primary work budget.
+
+Mandatory rule:
+- no new technical mutation may begin after the closeout reserve is entered;
+- the reserve is used for exact-head CI state, durable checkpoint, Gmail end report, returned Gmail message ID and tranche closure;
+- a tranche has a maximum of 12 mutation groups before forced closeout even if wall-clock information is unavailable;
+- if a previous ACTIVE_TRANCHE lacks a verified Gmail end message ID, the next session must repair that missing end mail **before** new project work or any app reply;
+- a system/tool interruption never converts an unclosed tranche into a normal final response.
+
+This rule exists specifically to prevent a system interruption from consuming the end-mail slot.
