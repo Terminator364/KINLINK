@@ -40,7 +40,7 @@ Status meanings:
 | CA-010 stale manual post-handoff refresh | PROVEN | manual optimizer rechecks captured Wi-Fi before any final refresh |
 | CA-011 bounded diagnostic workers | PROVEN | HTTP/DNS helper work shares a max-2 fail-open executor; saturation rejects new work |
 | CA-012 callback reduction handoff race | PROVEN | callback network identity is checked before and after truth reduction |
-| Exact signed 0.7.1 target-phone field gate | FIELD_PENDING | no human install until final exact-head CI/audit/signing is closed |
+| Exact signed 0.7.2 target-phone field gate | FIELD_PENDING | exact head cc48c1d machine PASS, signed, Drive readback PASS; one in-place v10 field install required |
 
 ## User-facing product functions
 
@@ -51,10 +51,10 @@ Status meanings:
 | Automatic Wi-Fi recovery | PROVEN machine-side | bounded/reversible; never owns cellular routing |
 | Manual “Optimiser le Wi-Fi” | PROVEN machine-side | Wi-Fi only; metered Wi-Fi = zero HTTP |
 | Mobile prudence threshold | PROVEN machine-side | Android device-wide TrafficStats heuristic; not operator balance |
-| Mobile Assist passive diagnosis | INTEGRATED_PENDING_FINAL_CI | cellular low-capacity/congestion/suspension/unvalidated causes from Android passive evidence |
-| Mobile Assist zero-probe metric refresh | INTEGRATED_PENDING_FINAL_CI | validated degraded cellular only; no HTTP/DNS/speedtest; cooldown/hourly cap/resource/budget gates |
-| Mobile Assist manual system recovery bridge | INTEGRATED_PENDING_FINAL_CI | explicit user tap opens Android Internet panel for unvalidated/suspended mobile state |
-| Mobile Assist effectiveness/anti-repeat | INTEGRATED_PENDING_FINAL_CI | two-observation outcome evidence; pause after two recent unchanged/degraded outcomes |
+| Mobile Assist passive diagnosis | PROVEN_MACHINE | exact 0.7.2 head passes unit/lint/candidate contract; field behavior still requires v10 receipts |
+| Mobile Assist zero-probe metric refresh | PROVEN_MACHINE | validated degraded cellular only; no HTTP/DNS/speedtest; cooldown/hourly/resource/budget gates; request is never described as throughput acceleration |
+| Mobile Assist manual system recovery bridge | PROVEN_MACHINE | explicit user tap opens Android Internet panel for unvalidated/suspended mobile state; no hidden mobile probe |
+| Mobile Assist continuous evidence/anti-repeat | PROVEN_MACHINE_FIELD_PENDING | pre-action baseline, bounded samples, sustained delta, early/late relapse, anti-repeat; target-phone v10 proof still required |
 | Incident marker | PROVEN machine-side | passive local snapshot, zero probe |
 | Field qualification status | PROVEN machine-side | version-scoped receipts and current assessment |
 | Diagnostic export | PARTIAL | 0.7.1 now exports a privacy-safe ZIP core bundle (`manifest.json`, `summary.json`, `recent_actions.jsonl`, `report.txt`); the larger canonical bundle still has additional future files to implement |
@@ -70,7 +70,7 @@ Status meanings:
 | Independent network data-plane process | GATED_FUTURE | only required when strong stabilizer is enabled |
 | Personal Network Twin / learner / shadow evaluation | GATED_FUTURE | evidence model and resource budget not yet qualified |
 | Full carrier/operator wallet integration | GATED_FUTURE | current build only has local device-wide mobile-byte prudence |
-| Full structured diagnostic ZIP schema | PARTIAL | current TXT export is useful but does not satisfy the complete ZIP layout |
+| Full structured diagnostic ZIP schema | PARTIAL | privacy-safe core ZIP exists; remaining canonical future files (failure clusters/carrier wallet/energy/crash enrichment) are not all implemented |
 | Autonomous cloud/BCP diagnostic bridge | GATED_FUTURE | local-first remains default; no paid cloud dependency |
 
 ## Release rule
@@ -85,3 +85,6 @@ A release can be called **functionally ready at the user's current level** only 
 7. no known blocking finding is open.
 
 GATED_FUTURE items are not silently counted as completed current-release features.
+
+| Compact final-like cockpit | PROVEN_MACHINE_FIELD_PENDING | 0.7.2 target layout implements status/action/proof hierarchy and contextual action; visual target-phone v10 validation pending |
+| Continuous post-action relapse monitoring | PROVEN_MACHINE_FIELD_PENDING | max three one-shot local samples + one best-effort later recheck + natural callback evidence; no repeating speedtest/polling loop |
