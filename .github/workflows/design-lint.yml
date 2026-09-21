@@ -47,6 +47,8 @@ jobs:
           test -f .project-memory/SUPERSESSION_LEDGER.json
       - name: Deterministic resume capsule contract
         run: python tools/release/verify_resume_capsule.py
+      - name: Cold takeover state reconciliation
+        run: python tools/release/verify_cold_takeover.py
       - name: Full A+B+C continuity context contract
         run: python tools/release/verify_continuity_context.py
       - name: Project memory integrity contract

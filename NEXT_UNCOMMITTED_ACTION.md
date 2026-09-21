@@ -2,50 +2,48 @@
 
 Resume with `KINLINKGO`.
 
-Mandatory first step: reconcile communication state. If K25-09 is not CLOSED, finish its END/ACK before any product mutation.
+## 0. First — deterministic continuity
 
-## Canonical scope
+Before product work:
+1. load and verify `.project-memory/RESUME_CAPSULE.json`;
+2. read `.project-memory/ACTIVE_TRANCHE.json` and `.project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl` fresh;
+3. reconcile any unclosed tranche;
+4. load A+B+C, scorecard, B-depth, dead-end registry and W0-W6 program;
+5. only then send a new Gmail START if substantive work will continue.
 
-Load A + B + C, not recent traceability alone.
+Do not reconstruct from chat memory or a stale context summary.
 
-- A: recovered original preconception anchor `c565b6f1164d327caaa17e1de47d1cf48ed3c885`
-- B: depth B3, B31-B80 in `docs/B_EXPANSION_V3.md` + `.project-memory/B_EXPANSION_LEDGER.json`
-- C: `.project-memory/PRODUCT_EVOLUTION_C.json`
-- macro denominator: 80
-- conservative macro maturity: 44.8%
-- B-depth items: 50; they do not change the macro denominator without explicit deduplication review.
+## Canonical A+B+C
 
-Memory/continuity reads must also include:
-- `.project-memory/MEMORY_POLICY_V2.json`
-- `.project-memory/PROJECT_CHRONICLE.jsonl`
-- `.project-memory/SUPERSESSION_LEDGER.json`
-- `.project-memory/DEAD_END_REGISTRY.json`
-- `.project-memory/COMMUNICATION_WATCHDOG_POLICY.json`
-- `.project-memory/CANONICAL_CONTEXT_PACK.json`
+- A anchor: `c565b6f1164d327caaa17e1de47d1cf48ed3c885`
+- B: **B4 / B31-B90 / 60 subrequirements**
+- C: append-only field/product evolution
+- macro denominator: **80**
+- conservative maturity: **44.8%**
+- integrated program: **W0-W6**
+- active wave: **W1**
+- no micro-beta/user reinstall chain
 
-## Communication watchdog
-
-Exactly one automation: **KINLINK Comms Watchdog**.
-It repairs stale/missed END closure idempotently. A WORKING tranche older than 35 minutes is treated as interrupted, closed from durable facts only, and never auto-reopened into an orphan START. Foreground work must send a fresh START.
-
-## Active 0.8 successor
+## Active 0.8 line
 
 - branch: `dev/0.8.0-integrated-truth-and-control`
-- exact head: `c6fb86ec8ef075f7e0cbdfd9cf0f04b8954088f1`
-- design-lint run 35652449660: PASS
-- Android run 35652449928: IN PROGRESS at close intent
-- previous c8eb Android run 35651559235: PASS
-- manual visual audit rejected one proof artifact: `technical-details-start` still captured the top page because the scroll ran before expanded layout settled.
-- c6fb fixes that by waiting for layout, scrolling to the actual detail body, and asserting it lands near the viewport top.
-- 45 screenshots expected.
+- last fully audited head: `b54020291f866042103ad0f63cae3645977638d1`
+- 45/45 rendered screenshots manually inspected: PASS UI/truth
+- head `62a910a698286896af90d22551366f728ee0c4e7` passed CI but **failed artifact provenance readback** because generated JSON contained literal `\\1` for version/versionCode
+- current exact head: `e633db6f6441f563256deb04890bbc28267d08b8`
+- design-lint run `35658883138`: PASS
+- Android run `35658883177`: IN PROGRESS at this checkpoint
 
 ## Exact next engineering action
 
-1. poll Android run 35652449928;
-2. if PASS, fetch `KINLINK-0.8.0-responsive-ui-proof`;
-3. manually counter-audit all 45 screenshots, especially xl-font mobile-data dialog and technical-details-start/bottom;
-4. reject any clipping, overlap, misleading quality language, raw enum leakage, or proof screenshot that does not show what it claims;
-5. if clean, continue major A+B+C implementation blocks (not a micro-beta);
-6. no field install/sign/Drive promotion until a coherent integrated batch is ready.
+1. poll Android run `35658883177`;
+2. if PASS, download `KINLINK-0.8.0-dev-ci-build`;
+3. independently read `KINLINK-build-manifest.json`;
+4. require exactly:
+   - version `0.8.0-dev`
+   - versionCode `12`
+   - commit `e633db6f6441f563256deb04890bbc28267d08b8`
+5. if provenance passes, continue W1 and begin W2 Context + Mobile Vault core as one integrated internal stream;
+6. no field sign/Drive/install yet.
 
 Communication: Gmail START provider ACK before substantive work; Gmail END provider ACK + durable CLOSED before final app closeout.

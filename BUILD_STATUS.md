@@ -1,46 +1,48 @@
 # KINLINK build status
 
-## Installed phone
-- KINLINK 0.7.2 / versionCode 10
-- installed and usable
+## Field baseline installed
+- KINLINK **0.7.3-dev / versionCode 11**
+- installed and usable as the current field baseline
+- **not near-final** after target-device visual/truthfulness counter-audit
+- keep installed while the integrated successor is developed internally
 
-## Frozen 0.7.3 field candidate
-- versionName 0.7.3-dev / versionCode 11
-- source `2aeac4cf801e60986c33347676e12310790d1d98`
-- design-lint `35626585191`: PASS
-- Android CI `35626585156`: PASS
-- responsive matrix: 36/36 assertion PASS + manual visual PASS
-- signed SHA-256 `d268542a4e6d4a4a5869deddd71bf0aec32c46386d2193cf96da6b825e68877d`
-- signer `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+## Full product scope
+- A+B+C macro capabilities: **80**
+- conservative maturity: **44.8%**
+- B-depth: **B31-B90** / 60 concrete subrequirements
+- integrated program: **W0-W6**
+- active wave: **W1 — Platform diagnostics + capability discovery**
+- human installation is not the unit of progress; no micro-beta chain
 
-## Delivery-security repair
-Observed incident: old canonical rollback 0.6.0-rc3/versionCode7 was still exposed as `INSTALLER/KINLINK_LATEST.apk` while versionCode10 was installed. APK integrity/signature were valid, but Android rejected the downgrade with a generic invalid-package message.
+## Last fully visual-audited 0.8 head
+- head `b54020291f866042103ad0f63cae3645977638d1`
+- design-lint `35656916055`: PASS
+- Android `35656916207`: PASS
+- rendered/manual proof: **45/45 inspected**
+- verdict: UI/truth PASS
+- no field install authorized
 
-Repair:
-- old INSTALLER renamed `ROLLBACK_CANONICAL_DO_NOT_INSTALL`;
-- new human `INSTALLER` contains exactly one `KINLINK_INSTALL_NOW.apk`;
-- Drive file ID `1dj2j2zhLmUPb63NVIaMx0jElpNdb04ky`;
-- readback SHA-256 exact match PASS;
-- signer PASS;
-- monotonic version gate 11 > 10 PASS.
+## Release-provenance incident found after CI
+Head `62a910a698286896af90d22551366f728ee0c4e7` passed CI, but artifact readback found:
 
-## Current gate
-One in-place install of `KINLINK/INSTALLER/KINLINK_INSTALL_NOW.apk`. Do not uninstall 0.7.2 first. Canonical promotion remains blocked until target-device field verification passes.
+- APK identity itself: 0.8.0-dev / versionCode 12
+- generated `KINLINK-build-manifest.json`: literal `\\1` for version and versionCode
 
+Cause: shell/sed backreference escaping produced the same bad value that the workflow later compared, so the self-check was not independent enough.
 
-## 0.8 integrated successor — ACTIVE
+This blocks signing/staging despite green CI.
 
-0.7.3/v11 is installed but field-counter-audit rejected its near-final claim.
+## Active exact 0.8 successor
+- branch: `dev/0.8.0-integrated-truth-and-control`
+- head: `e633db6f6441f563256deb04890bbc28267d08b8`
+- change: deterministic Python parser reads versionName/versionCode from Gradle, writes JSON, then read-backs parsed JSON
+- design-lint `35658883138`: **PASS**
+- Android `35658883177`: **IN PROGRESS**
+- no signing, Drive staging or phone install until exact-head provenance readback passes
 
-0.8.0-dev/v12 branch:
-`dev/0.8.0-integrated-truth-and-control`
-
-This is a coherent successor line, not a micro-beta. No user install until its entire integrated batch passes fresh CI, rendered visual/truthfulness audit, signing and Drive readback.
-
-Main corrections under qualification:
-- no user-facing passive 100/100 pseudo-quality;
-- user-reported bad experience and unstable history override optimistic framework estimates;
-- MB/GB mobile data UI;
-- compact profile/data controls;
-- causal-benefit wording fence;
-- repeated ineffective Mobile Assist escalation rather than repeated metric-refresh theatre.
+## Continuity
+- deterministic capsule: `.project-memory/RESUME_CAPSULE.json`
+- capsule verifier: `tools/release/verify_resume_capsule.py`
+- cold takeover verifier: `tools/release/verify_cold_takeover.py`
+- communication protocol: v5
+- one watchdog only: **KINLINK Comms Watchdog**

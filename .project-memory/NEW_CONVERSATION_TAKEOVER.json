@@ -40,12 +40,14 @@
     ".project-memory/DEAD_END_REGISTRY.json",
     "docs/B_EXPANSION_V4.md",
     ".project-memory/INTEGRATED_PROGRAM_PLAN.json",
-    "docs/INTEGRATED_0_8_PLUS_PROGRAM.md"
+    "docs/INTEGRATED_0_8_PLUS_PROGRAM.md",
+    "docs/COLD_TAKEOVER_SIMULATION.md"
   ],
   "takeover_algorithm": [
     "DO_NOT_ASK_USER_TO_RECONSTRUCT_PRIOR_CHAT",
     "VERIFY_RESUME_CAPSULE_BLOBS_BEFORE_USING_DERIVED_CONTEXT",
     "READ_DURABLE_STATE_BEFORE_EXPLAINING_ANYTHING",
+    "RUN_COLD_TAKEOVER_STATE_RECONCILIATION",
     "VERIFY_FULL_CONTEXT_MANIFEST_BEFORE_SCOPING",
     "RECONCILE_ANY_UNCLOSED_TRANCHE_BEFORE_NEW_WORK",
     "LOAD_PROJECT_CHRONICLE_SUPERSESSIONS_AND_CANONICAL_CONTEXT_PACK",
@@ -80,7 +82,7 @@
     "macro_capabilities": 80,
     "previous_56_percent": "superseded because it omitted original preconception breadth",
     "no_micro_beta": true,
-    "next_action": "requalify 0.8 after capability discovery and visual semantic cleanup; no install until coherent batch closes",
+    "next_action": "poll e633 Android CI and independently verify 0.8.0-dev/v12 release manifest, then continue W1→W2; no install",
     "b_depth": "B31-B90 canonical; macro denominator remains 80"
   },
   "full_spec_rule": "ALWAYS_LOAD_A_PLUS_B_PLUS_C_BEFORE_SCOPING_OR_PERCENT_COMPLETE; recent traceability is a derivative view, never the full product spec. B depth is a separate canonical layer; deepen it without silently changing the macro denominator.",

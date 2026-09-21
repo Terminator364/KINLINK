@@ -79,6 +79,7 @@
     "B-depth growth must update the integrity verifier and context pack without changing the 80-macro denominator automatically.",
     "Progress is organized by integrated waves; internal CI iterations must never be confused with user-facing micro-beta delivery.",
     "Canonical A+B+C and communication-policy files are Git-blob pinned by RESUME_CAPSULE; partial sync fails CI instead of silently degrading context.",
-    "Volatile state is never frozen into the capsule as truth; takeover must read it fresh."
+    "Volatile state is never frozen into the capsule as truth; takeover must read it fresh.",
+    "Cold-takeover CI must prove project_state, BUILD_STATUS, NEXT_UNCOMMITTED_ACTION and current communication ledger tell the same live story."
   ]
 }
