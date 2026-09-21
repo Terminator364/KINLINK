@@ -11,7 +11,7 @@ def require(condition: bool, message: str) -> None:
 def main() -> int:
     data = json.loads(PATH.read_text(encoding="utf-8"))
     require(data.get("project") == "KINLINK", "communication protocol: project mismatch")
-    require(data.get("cadence_minutes") == 30, "communication protocol: cadence must be 30 minutes")
+    require(data.get("cadence_minutes") == 25, "communication protocol: cadence must be 25 minutes")
     require(
         data.get("start_sequence") == [
             "SEND_GMAIL_START",
@@ -41,6 +41,15 @@ def main() -> int:
         data.get("only_early_stop") == "TRUE_HUMAN_GATE_OBJECTIVELY_REQUIRED_TO_CONTINUE",
         "communication protocol: human-gate exception widened",
     )
+    active_path = Path(".project-memory/ACTIVE_TRANCHE.json")
+    require(active_path.exists(), "communication protocol: ACTIVE_TRANCHE.json missing")
+    active = json.loads(active_path.read_text(encoding="utf-8"))
+    require(active.get("cadence_minutes") == 25,
+            "communication protocol: active tranche cadence mismatch")
+    require(bool(active.get("gmail_start_message_id")),
+            "communication protocol: start Gmail message ID missing")
+    require(active.get("end_mail_required_before_app_reply") is True,
+            "communication protocol: active tranche end-mail fence missing")
     print("communication-protocol: PASS")
     return 0
 
