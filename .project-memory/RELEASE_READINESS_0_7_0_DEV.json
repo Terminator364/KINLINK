@@ -2,13 +2,13 @@
   "project": "KINLINK",
   "line": "0.7.0",
   "versionCode": 8,
-  "code_head": "5cc9e4a52d67447fceba1831eb999aa31ca1c3ce",
+  "code_head": "a00ed98ab269a851f38fb33cfda8bb77a624e502",
   "latest_full_machine_pass": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
       "status": "PENDING",
-      "evidence": "0.7.0 version identity frozen at 5cc9e4a52d67447fceba1831eb999aa31ca1c3ce; fresh candidate CI required"
+      "evidence": "unsigned release-like candidate variant added; fresh android-0.7-candidate CI required at a00ed98ab269a851f38fb33cfda8bb77a624e502"
     },
     "MIGRATION": {
       "status": "PASS",
@@ -47,5 +47,11 @@
     "manifest_commit": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
     "manifest_version": "0.7.0-dev",
     "local_readback_hash_match": true
+  },
+  "candidate_artifact_policy": {
+    "variant": "candidate-unsigned",
+    "must_be_unsigned": true,
+    "stable_signing": "OFFLINE_PRIVATE_STATION_ONLY",
+    "canonical_signer_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
   }
 }
