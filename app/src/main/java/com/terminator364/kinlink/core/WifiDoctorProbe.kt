@@ -10,6 +10,17 @@ object WifiProbeHttpPolicy {
     fun confirmsInternet(code: Int): Boolean = code == 204
 }
 
+object WifiProbeDeadlinePolicy {
+    const val MAX_ENDPOINTS = 2
+    const val CONNECT_TIMEOUT_MS = 900
+    const val READ_TIMEOUT_MS = 900
+    const val WORST_CASE_HTTP_WAIT_MS =
+        MAX_ENDPOINTS * (CONNECT_TIMEOUT_MS + READ_TIMEOUT_MS)
+
+    fun fitsWithin(hardDeadlineMillis: Long): Boolean =
+        WORST_CASE_HTTP_WAIT_MS < hardDeadlineMillis
+}
+
 data class WifiProbeResult(
     val success: Boolean,
     val summary: String,
@@ -80,8 +91,8 @@ class WifiDoctorProbe(private val context: Context) {
             val started = System.nanoTime()
             val attempt = runCatching {
                 val connection = network.openConnection(URL(endpoint.url)) as HttpURLConnection
-                connection.connectTimeout = 1_600
-                connection.readTimeout = 1_600
+                connection.connectTimeout = WifiProbeDeadlinePolicy.CONNECT_TIMEOUT_MS
+                connection.readTimeout = WifiProbeDeadlinePolicy.READ_TIMEOUT_MS
                 connection.instanceFollowRedirects = false
                 connection.requestMethod = "GET"
                 connection.useCaches = false
