@@ -80,7 +80,10 @@
         "KINLINK Comms Watchdog design review"
       ],
       "safe_alternative": "Watchdog closes stale tranche and leaves NEXT_UNCOMMITTED_ACTION; foreground worker opens a fresh START before substantive work.",
-      "supersession_condition": "A future automation is explicitly authorized to execute substantive product work after START."
+      "supersession_condition": "A future automation is explicitly authorized to execute substantive product work after START.",
+      "status": "SUPERSEDED_BY_EXPLICIT_USER_AUTH_2026-09-21",
+      "superseded_by": "DEAD-010",
+      "supersession_evidence": "User explicitly authorized the single automation to send a proper END, open a fresh START, and continue KINLINK work."
     },
     {
       "id": "DEAD-008",
@@ -103,6 +106,17 @@
       ],
       "safe_alternative": "CLOSE_INTENT creates an immediate foreground END obligation. The next foreground turn reconciles old END before any new START/work; hourly watchdog is fallback only.",
       "supersession_condition": "Only a platform-level atomic close transaction that proves Gmail provider ACK and durable CLOSED in one operation could replace this rule."
+    },
+    {
+      "id": "DEAD-010",
+      "premise": "A terse machine-style watchdog email is an adequate replacement for the normal explanatory KINLINK END, and failover should stop after closure even when the mission can continue.",
+      "verdict": "REJECTED",
+      "evidence": [
+        "user feedback 2026-09-21 after KINLINK failover mail",
+        "single automation KINLINK Continuity & Comms explicit authorization"
+      ],
+      "safe_alternative": "Failover sends the same kind of natural explanatory French END as the primary assistant, verifies/persists CLOSED, then if no real gate exists opens a fresh CONTINUER START, performs at least one bounded real next action, and closes/checkpoints safely before the automation run ends.",
+      "supersession_condition": "Only an explicit user rescope or a stronger atomic communication/continuation mechanism."
     }
   ]
 }

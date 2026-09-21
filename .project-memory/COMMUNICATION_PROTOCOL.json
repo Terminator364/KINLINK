@@ -76,7 +76,7 @@
     "rule": "A_USER_MESSAGE_OR_TOOL_INTERRUPTION_MUST_NOT_SILENTLY_ABANDON_AN_ACTIVE_TRANCHE",
     "reconcile_first": true,
     "if_start_exists_end_missing": "checkpoint current work, persist close intent, send/verify exactly one END, persist CLOSED",
-    "if_mission_continues_after_close": "open a NEW tranche and send a NEW Gmail START before substantive continuation",
+    "if_mission_continues_after_close": "automation or foreground may open a NEW tranche with a NEW Gmail START; an automation START is permitted only when the same automation immediately executes at least one real bounded next action and then closes/checkpoints safely",
     "in_tranche_deliverables": "PDF/report/artifact messages are neither START nor END unless explicitly typed as such",
     "no_false_end": "Do not treat an intermediate requested deliverable as tranche completion.",
     "idempotency": "Search/verify provider message IDs before replaying START or END."
@@ -88,13 +88,34 @@
     "deadline_minutes": 25
   },
   "foreground_handoff": {
-    "rule": "A tool/user interruption after CLOSE_INTENT does not cancel the END obligation. The next foreground turn reconciles and closes the old tranche before opening a new START.",
+    "rule": "A tool/user/automation interruption after CLOSE_INTENT does not cancel the END obligation. Reconcile and close old tranche first. If continuation is authorized and no human/security gate exists, open a fresh START and actually continue work.",
     "required_order": [
       "RECONCILE_OLD_END",
       "PERSIST_CLOSED",
       "SEND_NEW_START",
       "PERSIST_START_ACK",
-      "RESUME_WORK"
+      "EXECUTE_REAL_NEXT_ACTION",
+      "CHECKPOINT_OR_CLOSE"
     ]
+  },
+  "automation_failover": {
+    "name": "KINLINK Continuity & Comms",
+    "cardinality": 1,
+    "user_authorized_auto_resume": true,
+    "trigger": "missed END / CLOSE_INTENT orphan / stale WORKING >=28m",
+    "repaired_end_style": "NORMAL_HUMAN_FRENCH_EXPLANATORY",
+    "repaired_end_subject_rule": "KINLINK — FIN DE TRANCHE — date/heure Kinshasa; never expose WATCHDOG/RECOVERY/RATTRAPAGE/FAILSAFE unless technically necessary",
+    "after_repaired_close": [
+      "IF_NO_HUMAN_OR_SECURITY_GATE_OPEN_NEW_TRANCHE",
+      "SEND_NEW_START_WITH_CONTINUE_KEYWORD",
+      "VERIFY_PROVIDER_ACK",
+      "PERSIST_START_ACK",
+      "EXECUTE_AT_LEAST_ONE_BOUNDED_SAFE_NEXT_ACTION",
+      "CHECKPOINT",
+      "CLOSE_NEW_AUTOMATION_TRANCHE_BEFORE_RUN_END_UNLESS_A_REAL_FOREGROUND_WORKER_OWNS_IT"
+    ],
+    "start_keyword": "CONTINUER",
+    "orphan_start_forbidden": true,
+    "human_gate_rule": "if true human/security/platform gate, close normally and do not auto-restart"
   }
 }

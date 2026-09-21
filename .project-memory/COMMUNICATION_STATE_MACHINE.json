@@ -24,7 +24,8 @@
     "PRIMARY_ASSISTANT",
     "INTERRUPTION_RECOVERY",
     "SHADOW_BACKUP",
-    "HARD_GUARD"
+    "HARD_GUARD",
+    "AUTOMATION_FAILOVER"
   ],
   "normal_path": [
     "NONE->START_SEND_PENDING",
@@ -51,6 +52,10 @@
     {
       "window": "user/tool interruption after START or intermediate deliverable before normal END",
       "recovery": "reconcile active tranche first; close it exactly once if close intent is required; if the mission continues, create a NEW tranche and send a NEW START before more substantive work"
+    },
+    {
+      "window": "automation closes stale tranche and mission can continue",
+      "recovery": "send human-style END and persist CLOSED; open a new CONTINUER START only if the same automation will execute at least one real bounded next action; close/checkpoint before automation run ends"
     }
   ],
   "security_invariants": [
@@ -60,7 +65,8 @@
     "human APK delivery exposes one authorized install file only",
     "rollback APKs are not present in the normal human install surface",
     "an intermediate PDF/report/artifact email never counts as END unless it is explicitly the END transition",
-    "a forced close caused by interruption does not mean the mission is complete; continued mission requires a fresh START tranche"
+    "a forced close caused by interruption does not end the mission; user-authorized failover may open a new START only with immediate real work and no human/security gate",
+    "automation-generated END/START emails must remain human-readable and explanatory, not machine-status prose"
   ],
   "backup_earliest_offset_minutes": 26,
   "hard_guard_offset_minutes": 29
