@@ -1,71 +1,68 @@
-# KINLINK communication & continuity architecture
+# KINLINK communication & continuity architecture v2
 
-## Imported lessons from BCP
+## Objective
 
-KINLINK now adopts the parts of BCP that directly address the repeated communication failures:
+A 25-minute tranche must finish like a normal conversation, not like an emergency recovery.
 
-- **START/END provider handshake**: a Gmail send request is not enough; the provider-returned message ID is persisted.
-- **Work state != delivery state**: technical work may be complete while the END report is still undelivered.
-- **One-shot closeout watchdog**: armed at each tranche start and fires at minute 22.
-- **Hard END guard**: independent second one-shot guard at minute 25.
-- **Durable next atomic action**: interruption resumes from the next uncommitted action, never by restarting the project.
-- **No user ping required**: an interrupted main turn must still be closable by the watchdog path.
-- **Provider-acknowledged END before app output**: the ChatGPT app is pointer-only after successful END.
-- **Writer/branch isolation**: product experimentation stays on a work branch while installed/canonical field state remains frozen.
+BCP lessons are used as a control-plane model, but Gmail remains KINLINK's current human delivery surface.
 
-## 22 + 3 contract
+## Cadence
 
-A 25-minute tranche is not 25 minutes of unrestricted engineering.
+- 22 minutes useful work;
+- 3 minutes normal close reserve.
 
-- minutes 0–22: useful technical work;
-- minutes 22–25: reserved closeout only.
+## Normal flow
 
-At closeout:
-1. stop new product mutations;
-2. persist exact branch head / CI / next atomic action;
-3. send complete Gmail END;
-4. apply KINLINK label;
-5. require Gmail provider acknowledgement / message ID;
-6. persist CLOSED;
-7. only then allow ChatGPT pointer output.
+1. reconcile any prior incomplete delivery;
+2. Gmail START;
+3. provider START message ID + thread ID;
+4. persist delivery key;
+5. work + durable checkpoints;
+6. minute 22: primary assistant enters close reserve;
+7. persist CLOSE_INTENT;
+8. send END as a reply in the START Gmail thread;
+9. require provider END message ID;
+10. persist CLOSED;
+11. only then short ChatGPT pointer.
 
-## Two independent facts
+## Invisible redundancy
 
-Every tranche carries:
+Post-nominal backups exist only so a platform/tool interruption cannot lose END.
 
-### Work state
-- WORKING
-- CHECKPOINTED
-- HUMAN_GATE
-- FAILED_SAFE
+They never preempt the primary close and never expose recovery jargon to the user.
 
-### Delivery state
-- START_ACKNOWLEDGED
-- END_SEND_PENDING
-- END_ACKNOWLEDGED
-- CLOSED
-- RECOVERY_REQUIRED
+Before any backup send:
+- search the START thread;
+- search the delivery key;
+- if END exists, reconcile its message ID and close without duplicate mail.
 
-A technical PASS with an unacknowledged END is **not** a closed tranche.
+## Delivery ledger
 
-## Interruption recovery
+`.project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl` is append-only evidence.
 
-If the main assistant turn is interrupted after START:
-- closeout watchdog at +22 min inspects the durable state;
-- if not CLOSED, it sends the END from the latest durable checkpoint;
-- hard guard at +25 min repeats the check;
-- if the first guard succeeded, the second does nothing;
-- if both were delayed, the next KINLINK turn must repair RECOVERY_REQUIRED before any new engineering work.
+Events include:
+- START_ACKNOWLEDGED;
+- WORK_CHECKPOINT;
+- CLOSE_INTENT;
+- END_ACKNOWLEDGED;
+- CLOSED;
+- internal reconciliation events.
 
-This is intentionally idempotent.
+The ledger never treats send intent as delivery proof.
 
-## BCP boundary
+## Writer/continuity discipline
 
-KINLINK does not need the full BCP control plane to benefit from these rules.
-The current implementation uses:
-- GitHub durable state;
-- Gmail provider receipts;
-- ChatGPT one-shot automations;
-- exact-head CI receipts.
+- one active tranche owns communication close;
+- product development uses its fenced work branch;
+- exact-head CI belongs only to the SHA tested;
+- next_atomic_action is always durable;
+- interruption resumes from the last evidence anchor.
 
-A future BCP integration can become the canonical sentinel, but KINLINK continuity must remain correct even before that integration is field-proven.
+## User-visible contract
+
+Normal result:
+- START mail;
+- full FIN mail in the same thread;
+- ChatGPT says only to check Gmail with Kinshasa date/time.
+
+Backup activation should be indistinguishable from a normal FIN mail unless the actual technical report itself contains a real product failure.
