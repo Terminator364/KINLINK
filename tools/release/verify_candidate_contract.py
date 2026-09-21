@@ -141,6 +141,11 @@ require(
     and "callbackMatchedAfterReduction = network != null && network == cm.activeNetwork" in OBSERVER,
     "candidate contract: NetworkCallback active-default identity is not fenced before and after reduction",
 )
+require(
+    "shouldCancelPendingLoss(" in OBSERVER
+    and "network == cm.activeNetwork" in OBSERVER,
+    "candidate contract: stale callback can cancel pending loss-settle generation",
+)
 
 require(
     "WifiOptimizationContinuationPolicy.mayRefresh(" in OPT
