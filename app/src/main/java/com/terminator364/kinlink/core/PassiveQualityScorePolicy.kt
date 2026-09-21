@@ -18,11 +18,11 @@ object PassiveQualityScorePolicy {
         }
 
         var points = when (truth.internetState) {
-            InternetState.VALIDATED -> 45
-            InternetState.PARTIAL -> 24
-            InternetState.CAPTIVE_PORTAL -> 12
-            InternetState.STALLED -> 8
-            InternetState.UNKNOWN -> 16
+            InternetState.VALIDATED -> 50
+            InternetState.PARTIAL -> 20
+            InternetState.CAPTIVE_PORTAL -> 10
+            InternetState.STALLED -> 6
+            InternetState.UNKNOWN -> 14
             InternetState.OFFLINE -> 0
         }
 
