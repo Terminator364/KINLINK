@@ -178,6 +178,9 @@ class ResponsiveRenderMatrixTest {
 
         scenario.onActivity { activity ->
             activity.findViewById<View>(R.id.technicalToggle).performClick()
+        }
+        instrumentation.waitForIdleSync()
+        scenario.onActivity { activity ->
             val detail = activity.findViewById<TextView>(R.id.detailText)
             assertTrue("technical details did not expand", detail.visibility == View.VISIBLE)
             assertTrue("technical details are empty", detail.text.toString().length > 120)
@@ -188,6 +191,18 @@ class ResponsiveRenderMatrixTest {
             root.scrollTo(0, (rect.top - 24).coerceAtLeast(0))
         }
         instrumentation.waitForIdleSync()
+        scenario.onActivity { activity ->
+            val detail = activity.findViewById<TextView>(R.id.detailText)
+            val root = activity.findViewById<ScrollView>(R.id.rootScroll)
+            val detailVisible = Rect()
+            val rootVisible = Rect()
+            assertTrue("technical detail body is not visible after scroll", detail.getGlobalVisibleRect(detailVisible))
+            assertTrue("root viewport is not visible", root.getGlobalVisibleRect(rootVisible))
+            assertTrue(
+                "technical details start proof did not land near the detail body",
+                detailVisible.top <= rootVisible.top + root.height / 3
+            )
+        }
         capture("technical-details-start")
         scenario.onActivity { activity ->
             activity.findViewById<ScrollView>(R.id.rootScroll).fullScroll(View.FOCUS_DOWN)
