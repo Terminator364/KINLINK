@@ -403,3 +403,8 @@ require(
     and "profile: AutopilotProfile" in MOBILE_ASSIST,
     "candidate contract: selected Autopilot mode is detached from background Mobile Assist",
 )
+
+require(
+    "getOrDefault(tuning.mobileAssistMaxActionsPerHour)" in MOBILE_ASSIST,
+    "candidate contract: Mobile Assist action-history failure can bypass profile cap",
+)
