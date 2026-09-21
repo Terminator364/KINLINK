@@ -14,7 +14,9 @@ data class RecoveryEffectivenessEvidence(
     val summary: String
 )
 
-class RecoveryEffectivenessTracker {
+class RecoveryEffectivenessTracker(
+    private val expectedTransport: Transport = Transport.WIFI
+) {
     private var baseline: PassiveLinkQuality? = null
     private var remainingObservations = 0
 
@@ -26,13 +28,13 @@ class RecoveryEffectivenessTracker {
     fun observe(truth: NetworkTruth): RecoveryEffectivenessEvidence? {
         val start = baseline ?: return null
 
-        if (truth.transport != Transport.WIFI || truth.internetState != InternetState.VALIDATED) {
+        if (truth.transport != expectedTransport || truth.internetState != InternetState.VALIDATED) {
             clear()
             return RecoveryEffectivenessEvidence(
                 RecoveryEffectiveness.INCONCLUSIVE,
                 start,
                 PassiveLinkQualityPolicy.assess(truth).quality,
-                "Résultat inconclusif : le contexte Wi-Fi validé a changé après l’action."
+                "Résultat inconclusif : le contexte ${expectedTransport.name} validé a changé après l’action."
             )
         }
 
