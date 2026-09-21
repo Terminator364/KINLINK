@@ -30,6 +30,7 @@ import com.terminator364.kinlink.core.AutopilotProfile
 import com.terminator364.kinlink.core.AutopilotProfileStore
 import com.terminator364.kinlink.core.BudgetState
 import com.terminator364.kinlink.core.ConnectivityStateClassifier
+import com.terminator364.kinlink.core.ConnectivityTruthEngine
 import com.terminator364.kinlink.core.CockpitPrimaryAction
 import com.terminator364.kinlink.core.CockpitPrimaryActionPolicy
 import com.terminator364.kinlink.core.DeviceResourceGuard
@@ -487,11 +488,18 @@ class MainActivity : Activity() {
             }
 
             MobileAssistManualAction.REFRESH_LINK_METRICS -> {
+                val preActionTruth = ConnectivityTruthEngine.reduce(
+                    caps,
+                    cm.getLinkProperties(requireNotNull(network))
+                ).copy(
+                    budgetState = latestTruth.budgetState,
+                    observedAtMillis = SystemClock.elapsedRealtime()
+                )
                 val baselineQuality =
-                    PassiveLinkQualityPolicy.assess(latestTruth).quality
+                    PassiveLinkQualityPolicy.assess(preActionTruth).quality
                 val baselineScore =
-                    PassiveQualityScorePolicy.score(latestTruth).score
-                val baselineObservedAt = SystemClock.elapsedRealtime()
+                    PassiveQualityScorePolicy.score(preActionTruth).score
+                val baselineObservedAt = preActionTruth.observedAtMillis
 
                 val refreshed = runCatching {
                     cm.requestBandwidthUpdate(requireNotNull(network))
