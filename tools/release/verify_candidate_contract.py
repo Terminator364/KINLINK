@@ -389,3 +389,17 @@ require(
     and "24 h " in MAIN_ACTIVITY,
     "candidate contract: current state and historical burden are not distinguished",
 )
+
+PROFILE_TUNING = (SRC / "com/terminator364/kinlink/core/AutopilotProfileControlPolicy.kt").read_text(encoding="utf-8")
+require(
+    "mobileAssistCooldownMs = 10L * 60L * 1000L" in PROFILE_TUNING
+    and "mobileAssistCooldownMs = 5L * 60L * 1000L" in PROFILE_TUNING
+    and "mobileAssistCooldownMs = 3L * 60L * 1000L" in PROFILE_TUNING
+    and "mobileAssistMaxActionsPerHour = 8" in PROFILE_TUNING,
+    "candidate contract: Autopilot modes do not materially tune bounded control",
+)
+require(
+    "profileStore.current()" in SERVICE
+    and "profile: AutopilotProfile" in MOBILE_ASSIST,
+    "candidate contract: selected Autopilot mode is detached from background Mobile Assist",
+)
