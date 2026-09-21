@@ -10,7 +10,7 @@ data class StoredMobileUsageEvidence(
 )
 
 object MobileUsageEvidenceStoragePolicy {
-    const val SCHEMA_VERSION = 1
+    const val MobileUsageEvidenceStoragePolicy.SCHEMA_VERSION = 1
 
     fun validUserEvidence(bytes: Long?, observedAtEpochMillis: Long?): Boolean =
         (bytes == null && observedAtEpochMillis == null) ||
@@ -27,8 +27,8 @@ class MobileUsageEvidenceStore(context: Context) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
     fun read(): StoredMobileUsageEvidence? {
-        val schema = prefs.getInt(KEY_SCHEMA, SCHEMA_VERSION)
-        if (schema != SCHEMA_VERSION) return null
+        val schema = prefs.getInt(KEY_SCHEMA, MobileUsageEvidenceStoragePolicy.SCHEMA_VERSION)
+        if (schema != MobileUsageEvidenceStoragePolicy.SCHEMA_VERSION) return null
 
         val hasUser = prefs.getBoolean(KEY_HAS_USER, false)
         val userBytes = if (hasUser) prefs.getLong(KEY_USER_BYTES, -1L) else null
@@ -70,7 +70,7 @@ class MobileUsageEvidenceStore(context: Context) {
             )
         ) return false
         return prefs.edit()
-            .putInt(KEY_SCHEMA, SCHEMA_VERSION)
+            .putInt(KEY_SCHEMA, MobileUsageEvidenceStoragePolicy.SCHEMA_VERSION)
             .putBoolean(KEY_HAS_USER, true)
             .putLong(KEY_USER_BYTES, usedBytes)
             .putLong(KEY_USER_AT, observedAtEpochMillis)
@@ -79,7 +79,7 @@ class MobileUsageEvidenceStore(context: Context) {
 
     fun clearUserReconciled(): Boolean =
         prefs.edit()
-            .putInt(KEY_SCHEMA, SCHEMA_VERSION)
+            .putInt(KEY_SCHEMA, MobileUsageEvidenceStoragePolicy.SCHEMA_VERSION)
             .remove(KEY_HAS_USER)
             .remove(KEY_USER_BYTES)
             .remove(KEY_USER_AT)
@@ -93,7 +93,7 @@ class MobileUsageEvidenceStore(context: Context) {
                 rawTotalBytes
             ) ?: return null
         val ok = prefs.edit()
-            .putInt(KEY_SCHEMA, SCHEMA_VERSION)
+            .putInt(KEY_SCHEMA, MobileUsageEvidenceStoragePolicy.SCHEMA_VERSION)
             .putBoolean(KEY_HAS_COUNTER, true)
             .putLong(KEY_COUNTER_RAW, advanced.state.lastRawTotalBytes)
             .putLong(KEY_COUNTER_PROVEN, advanced.state.provenCycleBytes)
