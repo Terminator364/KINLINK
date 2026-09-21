@@ -24,8 +24,8 @@ class KinlinkObserverService : Service() {
     private val handoffAudit = NetworkHandoffAudit()
     private val handoffOutcomeTracker = HandoffOutcomeTracker()
     private val recoveryEffectivenessTracker = RecoveryEffectivenessTracker()
-    private val mobileAssistEffectivenessTracker =
-        RecoveryEffectivenessTracker(Transport.CELLULAR)
+    private val mobileAssistEvidenceTracker =
+        MobileAssistEvidenceTracker()
     private val interruptionTracker = ConnectivityInterruptionTracker()
     private val degradedQualityEpisodeTracker = DegradedQualityEpisodeTracker()
     private val mobileDegradedQualityEpisodeTracker =
@@ -139,7 +139,7 @@ class KinlinkObserverService : Service() {
                 recoveryEffectivenessTracker.start(baseline)
             }
             mobileAssist = MobileAssistController(this, ledger) { baseline ->
-                mobileAssistEffectivenessTracker.start(baseline)
+                mobileAssistEvidenceTracker.start(baseline)
             }
         } else if (!coreRuntimeReady) {
             runCatching {
@@ -204,11 +204,12 @@ class KinlinkObserverService : Service() {
                         "${evidence.summary} baseline=${evidence.baseline.name}; current=${evidence.current.name}"
                     )
                 }
-                mobileAssistEffectivenessTracker.observe(truth)?.let { evidence ->
+                mobileAssistEvidenceTracker.observe(truth)?.let { evidence ->
                     ledger.appendAction(
-                        "MOBILE_ASSIST_OUTCOME_${evidence.result.name}",
-                        evidence.result == RecoveryEffectiveness.IMPROVED,
-                        "${evidence.summary} baseline=${evidence.baseline.name}; current=${evidence.current.name}; transport=CELLULAR"
+                        "MOBILE_ASSIST_EVIDENCE_${evidence.result.name}",
+                        evidence.result == MobileAssistEvidenceResult.METRICS_AVAILABLE ||
+                            evidence.result == MobileAssistEvidenceResult.SUSTAINED_BETTER,
+                        "${evidence.summary} baseline=${evidence.baseline.name}; current=${evidence.current.name}; elapsedMs=${evidence.elapsedMillis}; transport=CELLULAR"
                     )
                 }
                 interruptionTracker.observe(truth)?.let { interruption ->
