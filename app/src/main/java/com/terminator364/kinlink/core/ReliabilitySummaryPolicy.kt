@@ -7,9 +7,14 @@ object ReliabilitySummaryPolicy {
         longestMillis: Long,
         lowQualityEpisodeCount: Int,
         dominantCause: String?,
-        qualityTrend: QualityTrend = QualityTrend.INSUFFICIENT
+        qualityTrend: QualityTrend = QualityTrend.INSUFFICIENT,
+        mobileLowQualityEpisodeCount: Int = 0
     ): String {
-        if (interruptionCount <= 0 && lowQualityEpisodeCount <= 0) {
+        if (
+            interruptionCount <= 0 &&
+            lowQualityEpisodeCount <= 0 &&
+            mobileLowQualityEpisodeCount <= 0
+        ) {
             return "24 h · aucune coupure mesurée dans l’historique retenu"
         }
 
@@ -21,6 +26,9 @@ object ReliabilitySummaryPolicy {
         }
         if (lowQualityEpisodeCount > 0) {
             parts += "Wi-Fi lent=" + lowQualityEpisodeCount + " épisode(s)"
+        }
+        if (mobileLowQualityEpisodeCount > 0) {
+            parts += "Mobile lent=" + mobileLowQualityEpisodeCount + " épisode(s)"
         }
         dominantCause?.takeIf { it.isNotBlank() }?.let {
             parts += "cause dominante=" + it
