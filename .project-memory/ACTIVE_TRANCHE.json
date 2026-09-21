@@ -22,7 +22,7 @@
   "end_mail_reply_to_start": true,
   "end_subject_key": "K25-20260921-1516-01",
   "gmail_label": "KINLINK",
-  "next_atomic_action": "qualify exact 0.7.2 branch head and continue final-like counter-audit",
+  "next_atomic_action": "normal close at minute-22 reserve; then user may install exact 0.7.2 in-place; after install collect v10 Stage B field evidence",
   "technical_branch": "dev/0.7.2-continuous-improvement",
   "installed_field_build": "0.7.1/versionCode9 installed and frozen",
   "invariants": [
@@ -34,5 +34,26 @@
     "CLOSE_INTENT is persisted before END send",
     "if END exists but receipt persistence was interrupted, reconcile receipt without duplicate send",
     "no app reply before END provider acknowledgement is persisted"
-  ]
+  ],
+  "mutation_groups_used": 9,
+  "last_durable_checkpoint": {
+    "communication_protocol": "v2 primary-owned normal close + delivery-key/thread idempotency",
+    "exact_candidate_source": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
+    "immutable_release_branch": "release/0.7.2-field-candidate",
+    "design_lint_runs": [
+      35610708971,
+      35610716886
+    ],
+    "android_ci_run": 35610708876,
+    "machine": "PASS",
+    "artifact_id": 10643704115,
+    "signed_apk_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
+    "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
+    "drive_file_id": "1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU",
+    "drive_readback": "PASS",
+    "drive_cleaning": "0.7.1 moved to INSTALLED_SUPERSEDED_0.7.1; 0.7.2 current at FIELD_CANDIDATE root",
+    "field_gate": "ONE_IN_PLACE_0_7_2_INSTALL",
+    "strong_stabilizer_experiment_branch": "experiment/strong-mobile-stabilizer-s0",
+    "unit_test_files": 80
+  }
 }
