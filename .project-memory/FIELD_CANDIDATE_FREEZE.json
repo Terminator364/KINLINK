@@ -1,0 +1,12 @@
+{
+  "active": true,
+  "version": "0.7.0",
+  "versionCode": 8,
+  "source_commit": "4153720cde8c6bd0004b8e69baeadf5254735abe",
+  "signed_apk_sha256": "cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc",
+  "protected_paths": [
+    "app/src",
+    "app/build.gradle.kts"
+  ],
+  "rule": "While Stage B is pending for the installed 0.7.0 candidate, do not mutate production app sources/build identity on main. Engineering support work may continue in docs/tools/workflows. If an app-code fix becomes mandatory, explicitly invalidate the field candidate before changing protected paths."
+}
