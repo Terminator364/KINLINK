@@ -76,14 +76,15 @@
     "hard_guard": "ONE_SHOT_AT_OR_AFTER_MINUTE_29",
     "backup_visible_semantics": "NORMAL_FIN_TRANCHE",
     "duplicate_prevention": "SEARCH_THREAD_AND_DELIVERY_KEY_BEFORE_SEND",
-    "state_repair": "IF_MAIL_EXISTS_BUT_GITHUB_ACK_MISSING_RECONCILE_ONLY"
+    "state_repair": "IF_END_EXISTS_BUT_RECEIPT_MISSING_RECONCILE_ONLY",
+    "primary_precedence": "BACKUP_NOOP_IF_PRIMARY_CLOSE_INTENT_OR_END_ACK_EXISTS"
   },
-  "schema": "kinlink.communication_protocol/2",
+  "schema": "kinlink.communication_protocol/3",
   "normal_close_owner": "PRIMARY_ASSISTANT",
   "backup_earliest_offset_minutes": 26,
   "hard_guard_offset_minutes": 29,
-  "threading": "PREFER_END_REPLY_TO_START_THREAD; IF_PROVIDER_REJECTS_REPLY_AFTER_VERIFIED_NO_END_EXISTS, SEND_STANDALONE_NORMAL_END_WITH_SAME_DELIVERY_KEY",
-  "idempotency": "DELIVERY_KEY_PLUS_START_THREAD_SEARCH_BEFORE_SEND",
+  "threading": "PREFER_END_REPLY_TO_START_THREAD_WITH_VERIFIED_STANDALONE_FALLBACK",
+  "idempotency": "DELIVERY_KEY_PLUS_GMAIL_SEARCH_PLUS_PROVIDER_MESSAGE_ID",
   "normal_end_sequence": [
     "AT_MINUTE_22_ENTER_NORMAL_CLOSE_RESERVE",
     "STOP_NEW_PRODUCT_MUTATIONS",
@@ -115,5 +116,7 @@
       "STANDALONE_END_USES_NORMAL_FIN_SEMANTICS"
     ],
     "rule": "THREADING_CAPABILITY_MUST_NOT_BE_SINGLE_POINT_OF_FAILURE_FOR_END_DELIVERY"
-  }
+  },
+  "normal_close_rule": "PRIMARY closes normally during minute 22-25; backup exists only after nominal window",
+  "recovery_visibility": "NEVER_EXPOSE_RATTRAPAGE_OR_RECOVERY_WORDING_WHEN_NORMAL_FIN_CAN_BE_SENT"
 }
