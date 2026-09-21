@@ -19,7 +19,12 @@ When this command is used in another KINLINK conversation/workspace:
 6. Never promote a DEV APK over the canonical field APK.
 7. Preserve fail-open/mobile-observation-only invariants and CI fences.
 8. Prefer large coherent batches over micro-RCs.
-9. At tranche end, send the full report by Gmail first. The ChatGPT app response may be only the short instruction to check Gmail.
+9. Communication protocol is mandatory for every substantial KINLINKGO tranche:
+   - send a Gmail start-of-tranche message first;
+   - execute one coherent long tranche (the established 8–10 minute work style, not micro-betas);
+   - send the complete end-of-tranche report by Gmail first;
+   - in the ChatGPT app, respond only with a short instruction to check Gmail plus Kinshasa date/time;
+   - do not duplicate the technical report in the app unless Gmail delivery fails.
 
 ## Current durable state
 
@@ -30,8 +35,8 @@ When this command is used in another KINLINK conversation/workspace:
 - Development line: `0.7.0-dev`, versionCode 8.
 - Promotion of DEV: FORBIDDEN until consolidated RC gate.
 - Telemetry schema: v5.
-- Latest full machine PASS code head: `00e4df0d3869daaab777d2b159a1c8228d9b2c7c`.
-- Current durable docs checkpoint before this file: `cc6dd300ea865637b876233ecd23dacb8181b769`.
+- Latest full machine PASS code head: `c8999e902e92af51e34c95349073135df4de6ecc`.
+- Current functional code head under Android CI qualification: `6c18244535e01405bd642e778dc0e94366bd62df`.
 
 ## 0.7.0-dev integrated scope
 
@@ -52,11 +57,11 @@ Includes, among other items:
 ## Next durable action
 
 Continue the large 0.7.0-dev batch with:
-1. longitudinal radio/congestion evidence;
-2. RAM/battery/wakeup qualification;
-3. stronger migration proof;
-4. consolidated release-readiness gate;
-5. no new signed install until the batch is materially larger and all machine gates pass.
+1. finish Android CI qualification of `6c18244535e01405bd642e778dc0e94366bd62df`;
+2. collect automatic >=30-minute target-device resource evidence in the future consolidated candidate;
+3. keep migration proof and release-readiness ledger consistent;
+4. require MACHINE + MIGRATION + SIGNER_CONTINUITY + FIELD_HANDOFF + RESOURCE_QUALIFICATION before signed promotion;
+5. no new signed install until the consolidated gate is ready.
 
 ## Exact short code to give the user
 
