@@ -36,7 +36,7 @@ When this command is used in another KINLINK conversation/workspace:
 - Promotion of DEV: FORBIDDEN until consolidated RC gate.
 - Telemetry schema: v5.
 - Latest full machine PASS code head: `71111619ada624bdf717e869323ac309bd07c7de`.
-- Current functional code head under Android CI qualification: `e1e2e7169d6a13f5fce8b808574cc63ed9fe915d`.
+- Current functional code head under Android CI qualification: `50df92a0fb1131e1b9b136fd7fc25ad6739f406b`.
 
 ## 0.7.0-dev integrated scope
 
@@ -57,7 +57,7 @@ Includes, among other items:
 ## Next durable action
 
 Continue the large 0.7.0-dev batch with:
-1. finish Android CI qualification of `e1e2e7169d6a13f5fce8b808574cc63ed9fe915d`;
+1. finish Android CI qualification of `50df92a0fb1131e1b9b136fd7fc25ad6739f406b`;
 2. close Stage A: MACHINE + MIGRATION + SIGNER_CONTINUITY;
 3. only then produce one consolidated signed field candidate, without replacing RC3;
 4. collect FIELD_HANDOFF + >=30-minute RESOURCE_QUALIFICATION on that candidate;
