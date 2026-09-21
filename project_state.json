@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_1_INSTALLED_STAGE_B_PLUS_0_7_2_DEV",
-  "status": "FIELD_QUALIFICATION_AND_NEXT_LINE_ENGINEERING",
+  "phase": "KINLINK_0_7_2_FINAL_LIKE_FIELD_CANDIDATE_READY",
+  "status": "HUMAN_GATE_ONE_IN_PLACE_INSTALL_REQUIRED",
   "candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "continue target-phone Stage B evidence on installed frozen 0.7.1; next engineering tranche counter-audits exact machine-PASS 0.7.2-dev head d529533... without asking for install until a consolidated successor is deliberately frozen and signed",
+  "next_uncommitted_action": "install exact Drive 0.7.2 field candidate in-place over installed 0.7.1; then collect versionCode 10 self-test/handoff/resource/continuous-evidence field proof; keep canonical 0.6.0-rc3 untouched until Stage B PASS",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -72,11 +72,11 @@
     "versionCode": 9,
     "signed_apk_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
     "installed": true,
-    "install_confirmation": "USER_CONFIRMATION_PLUS_SCREENSHOT_VERSION_LABEL",
     "usable": true,
     "canonical": false,
-    "stage_b": "IN_PROGRESS",
-    "field_candidate_frozen": true
+    "stage_b": "SUPERSEDED_BY_0_7_2_BEFORE_PROMOTION",
+    "superseded_reason": "0.7.2 consolidates compact cockpit + continuous evidence/relapse + resource-path hardening requested after target-phone 0.7.1 screenshots",
+    "field_candidate_frozen": false
   },
   "development_line": {
     "version": "0.7.1",
@@ -186,13 +186,16 @@
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
+    "code_head": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
     "design_lint": "PASS",
-    "design_lint_run": 35594766801,
+    "design_lint_runs": [
+      35610708971,
+      35610716886
+    ],
     "android_ci": "PASS",
-    "android_ci_run": 35594766821,
+    "android_ci_run": 35610708876,
     "full_machine_verdict": "PASS",
-    "latest_full_pass": "a15a784ab51ae048e37ae31c998092ad2cd3f03c"
+    "latest_full_pass": "cc48c1dea1a151af25edc1942bb4efa983c5ff13"
   },
   "continuity": {
     "command": "KINLINKGO",
@@ -208,23 +211,20 @@
     "rule": "resume_from_latest_durable_main_without_restart"
   },
   "communication_protocol": {
-    "tranche_style": "WATCHDOG_PROTECTED_25_MIN",
+    "version": 2,
+    "tranche_style": "PRIMARY_NORMAL_CLOSE_25_MIN",
     "target_minutes": 25,
-    "feedback_policy": "QUEUE_AND_INTEGRATE_WITHOUT_BREAKING_ACTIVE_TRANCHE",
-    "start": "SEND_GMAIL_FIRST_BEFORE_WORK",
-    "end": "SEND_COMPLETE_GMAIL_REPORT_BEFORE_ANY_APP_MESSAGE",
-    "end_send_verification": "REQUIRE_GMAIL_MESSAGE_ID",
+    "useful_work_minutes": 22,
+    "normal_close_reserve_minutes": 3,
+    "normal_close_owner": "PRIMARY_ASSISTANT",
+    "backup_earliest_offset_minutes": 26,
+    "hard_guard_offset_minutes": 29,
+    "start": "SEND_GMAIL_START_AND_PERSIST_PROVIDER_ACK",
+    "end": "PRIMARY_SEND_NORMAL_END_AS_REPLY_TO_START_THREAD",
+    "idempotency": "DELIVERY_KEY_AND_THREAD_SEARCH_BEFORE_BACKUP_SEND",
     "app_response": "ONLY_CHECK_GMAIL_PLUS_KINSHASA_DATE_TIME",
-    "human_gate_exception": "ONLY_WHEN_OBJECTIVELY_REQUIRED_TO_CONTINUE",
-    "network_interruption": "CHECKPOINT_DURABLE_STATE_AND_RESUME",
     "gmail_label": "KINLINK",
-    "apk_via_email": false,
-    "primary_work_budget_minutes": 20,
-    "closeout_reserve_minutes": 5,
-    "max_mutation_groups_before_forced_closeout": 12,
-    "unclosed_tranche_first_action": "SEND_MISSING_GMAIL_END_REPORT",
-    "no_new_mutations_in_closeout_reserve": true,
-    "no_app_reply_before_verified_end_message_id": true
+    "apk_via_email": false
   },
   "release_flow": {
     "stage_a_field_candidate": {
@@ -235,7 +235,7 @@
       ],
       "result": "ONE_CONSOLIDATED_SIGNED_FIELD_CANDIDATE",
       "canonical_replacement": false,
-      "status": "PASS_FIELD_CANDIDATE_READY"
+      "status": "PASS_FIELD_CANDIDATE_READY_0_7_2"
     },
     "stage_b_canonical_promotion": {
       "required": [
@@ -246,7 +246,7 @@
         "RESOURCE_QUALIFICATION"
       ],
       "result": "CANONICAL_PROMOTION",
-      "status": "IN_PROGRESS_TARGET_DEVICE"
+      "status": "PENDING_TARGET_DEVICE_V10"
     }
   },
   "preliminary_signed_candidate": {
@@ -376,33 +376,69 @@
   },
   "development_next_line": {
     "branch": "dev/0.7.2-continuous-improvement",
-    "version": "0.7.2-dev",
+    "version": "0.7.2",
     "versionCode": 10,
-    "head": "d529533b5c7ef8c72b73e9e4ab6fb4cf22cc046a",
-    "design_lint_run": 35604679827,
-    "design_lint": "PASS",
-    "android_ci_run": 35604679752,
-    "android_ci": "PASS",
+    "head": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
+    "status": "FROZEN_FIELD_CANDIDATE",
+    "design_lint_runs": [
+      35610708971,
+      35610716886
+    ],
+    "android_ci_run": 35610708876,
     "full_machine_verdict": "PASS",
-    "artifact_id": 10641472446,
-    "artifact_zip_sha256": "dde386d56535af4a1ef191994ce1a0c5c1a84b37f41f6e63b1a4c9e72e141dd2",
-    "install_requested": false,
+    "artifact_id": 10643704115,
+    "artifact_zip_sha256": "ad2fee91b3d51fa5c2528767dbe004d92366ee8ae46bb9450a35f11a86f7f18b",
+    "unsigned_apk_sha256": "d961ea42c09a6509a228f4bfe9b55b197598efaea2f942ef649e8c8983925779",
+    "signed_apk_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
+    "drive_file_id": "1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU",
+    "drive_readback_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
+    "drive_readback": "PASS",
+    "install_requested": true,
     "merge_to_main": false,
     "integrated": [
       "compact status/action/proof cockpit",
-      "contextual Wi-Fi/mobile primary action",
-      "passive 0-100 quality index with visual meter",
+      "contextual primary action only",
+      "technical details collapsed by default",
+      "passive quality score 0..100 without speedtest",
       "truthful requestBandwidthUpdate semantics",
-      "sustained Mobile Assist evidence",
-      "early relapse and post-sustained relapse detection",
+      "sustained correlated improvement evidence",
+      "transient relapse detection",
+      "post-sustained relapse detection",
       "bounded three-shot post-action framework sampling",
       "manual Mobile Assist proof-loop integration",
       "healthy mobile callback fast path",
       "moderate thermal protection",
+      "resource-abort evidence",
       "synchronized evidence tracker",
       "atomic generation fencing",
-      "volatile cross-thread latestTruth publication"
+      "large-font cockpit hardening"
+    ]
+  },
+  "final_0_7_2_candidate": {
+    "version": "0.7.2",
+    "versionCode": 10,
+    "source_commit": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
+    "design_lint_runs": [
+      35610708971,
+      35610716886
     ],
-    "next_gate": "FIELD-QUALIFY_INSTALLED_0_7_1_AND_COUNTER-AUDIT_0_7_2_BEFORE_FREEZE"
+    "android_ci_run": 35610708876,
+    "artifact_id": 10643704115,
+    "artifact_zip_sha256": "ad2fee91b3d51fa5c2528767dbe004d92366ee8ae46bb9450a35f11a86f7f18b",
+    "unsigned_apk_sha256": "d961ea42c09a6509a228f4bfe9b55b197598efaea2f942ef649e8c8983925779",
+    "unsigned_size_bytes": 349412,
+    "signed_apk_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
+    "signed_size_bytes": 369611,
+    "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
+    "signature": "APK_SIGNATURE_SCHEME_V3_PASS",
+    "signers": 1,
+    "drive_file_id": "1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU",
+    "drive_readback_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
+    "drive_readback_status": "PASS",
+    "stage_a": "PASS",
+    "stage_b": "PENDING_TARGET_DEVICE_V10",
+    "installed": false,
+    "canonical": false,
+    "human_gate": "ONE_IN_PLACE_UPDATE_FROM_INSTALLED_0_7_1"
   }
 }
