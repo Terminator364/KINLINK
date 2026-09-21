@@ -26,11 +26,13 @@ import com.terminator364.kinlink.core.AutopilotProfile
 import com.terminator364.kinlink.core.AutopilotProfileStore
 import com.terminator364.kinlink.core.BudgetState
 import com.terminator364.kinlink.core.ConnectivityStateClassifier
+import com.terminator364.kinlink.core.DeviceResourceGuard
 import com.terminator364.kinlink.core.KinlinkObserverService
 import com.terminator364.kinlink.core.MobileBudgetSnapshot
 import com.terminator364.kinlink.core.MobileBudgetTracker
 import com.terminator364.kinlink.core.MobileAssistController
 import com.terminator364.kinlink.core.MobileAssistManualPolicy
+import com.terminator364.kinlink.core.MobileAssistPolicy
 import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.NetworkObserver
 import com.terminator364.kinlink.core.PassiveLinkQuality
@@ -399,9 +401,30 @@ class MainActivity : Activity() {
         }.getOrNull()
         val sinceLast =
             lastAction?.let { (nowWall - it).coerceAtLeast(0L) } ?: Long.MAX_VALUE
-        if (!MobileAssistManualPolicy.allowed(sinceLast)) {
-            adviceTitleText.text = "Mobile Assist · pause courte"
-            adviceText.text = "Une action mobile vient déjà d’être lancée. KINLINK évite les répétitions inutiles pendant 30 secondes."
+        val recentActions = runCatching {
+            ledger.countActionsSince(
+                MobileAssistController.ACTION_PREFIX,
+                nowWall - MobileAssistPolicy.HOURLY_WINDOW_MS
+            )
+        }.getOrDefault(MobileAssistPolicy.MAX_ACTIONS_PER_HOUR)
+        val resourceConstrained = runCatching {
+            DeviceResourceGuard(this).snapshot().constrained
+        }.getOrDefault(true)
+        if (!MobileAssistManualPolicy.allowed(
+                millisSinceLastAction = sinceLast,
+                recentActions = recentActions,
+                resourceConstrained = resourceConstrained
+            )
+        ) {
+            adviceTitleText.text = "Mobile Assist · protection active"
+            adviceText.text = when {
+                resourceConstrained ->
+                    "Batterie, mémoire ou température : KINLINK reste passif pour protéger le téléphone."
+                recentActions >= MobileAssistPolicy.MAX_ACTIONS_PER_HOUR ->
+                    "Plafond horaire Mobile Assist atteint. KINLINK évite les actions répétées."
+                else ->
+                    "Une action mobile vient déjà d’être lancée. KINLINK évite les répétitions inutiles pendant 30 secondes."
+            }
             return
         }
 
