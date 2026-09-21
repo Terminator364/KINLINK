@@ -72,4 +72,18 @@ class PassiveRadioDiagnosisTest {
         assertEquals(PassiveProblemCause.MOBILE_NETWORK_SUSPENDED, a.cause)
     }
 
+    @Test fun weakCellularSignalHasPriorityOverGenericMobileLowCapacity() {
+        val a = PassiveProblemClassifier.classify(
+            NetworkTruth(
+                transport = Transport.CELLULAR,
+                internetState = InternetState.VALIDATED,
+                signalStrengthDbm = -115,
+                downstreamKbps = 600,
+                upstreamKbps = 200,
+                androidNotCongested = false
+            )
+        )
+        assertEquals(PassiveProblemCause.MOBILE_WEAK_SIGNAL, a.cause)
+    }
+
 }
