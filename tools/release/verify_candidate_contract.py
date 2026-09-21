@@ -43,6 +43,17 @@ require(
     "candidate contract: new telemetry rows no longer prove NULL legacy interface/gateway persistence",
 )
 require(
+    'fun countExactAction(action: String)' in LEDGER
+    and 'fun countSuccessfulExactAction(action: String)' in LEDGER
+    and 'fun latestExactActionTimestamp(action: String)' in LEDGER,
+    "candidate contract: exact qualification receipt lookup helpers missing",
+)
+require(
+    re.search(r"count(?:Successful)?Actions\(\s*QualificationReceiptNames", production) is None
+    and re.search(r"latestActionTimestamp\(\s*QualificationReceiptNames", production) is None,
+    "candidate contract: version-scoped qualification receipt still uses prefix matching",
+)
+require(
     'android.permission.CHANGE_NETWORK_STATE' not in MANIFEST
     and 'android.permission.CHANGE_WIFI_STATE' not in MANIFEST
     and 'android.net.VpnService' not in MANIFEST,
