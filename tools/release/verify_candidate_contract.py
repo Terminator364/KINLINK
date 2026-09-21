@@ -83,12 +83,24 @@ def const_int(name: str, text: str) -> int:
 
 connect_ms = const_int("CONNECT_TIMEOUT_MS", PROBE)
 read_ms = const_int("READ_TIMEOUT_MS", PROBE)
+attempt_hard_ms = const_int("ATTEMPT_HARD_TIMEOUT_MS", PROBE)
 max_endpoints = const_int("MAX_ENDPOINTS", PROBE)
 deadline_ms = const_int("RECOVERY_DEADLINE_MS", AUTO)
-worst_case = max_endpoints * (connect_ms + read_ms)
+socket_envelope = max_endpoints * (connect_ms + read_ms)
+hard_envelope = max_endpoints * attempt_hard_ms
 require(
-    worst_case < deadline_ms,
-    f"candidate contract: HTTP timeout bound {worst_case}ms is not below recovery deadline {deadline_ms}ms",
+    socket_envelope < deadline_ms,
+    f"candidate contract: socket timeout envelope {socket_envelope}ms is not below recovery deadline {deadline_ms}ms",
+)
+require(
+    hard_envelope < deadline_ms,
+    f"candidate contract: outer hard probe envelope {hard_envelope}ms is not below recovery deadline {deadline_ms}ms",
+)
+require(
+    "TimeoutException" in PROBE
+    and "future.get(" in PROBE
+    and "connectionRef.getAndSet(null)?.disconnect()" in PROBE,
+    "candidate contract: outer probe timeout/disconnect enforcement missing",
 )
 
 tests = list((ROOT / "app/src/test").rglob("*Test.kt"))
@@ -96,7 +108,8 @@ require(len(tests) >= 64, f"candidate contract: regression suite unexpectedly sh
 
 print("candidate-contract: PASS")
 print("version: 0.7.1 / code 9")
-print(f"probe_timeout_bound_ms: {worst_case}")
+print(f"probe_socket_envelope_ms: {socket_envelope}")
+print(f"probe_hard_envelope_ms: {hard_envelope}")
 print(f"recovery_deadline_ms: {deadline_ms}")
 print(f"test_files: {len(tests)}")
 
