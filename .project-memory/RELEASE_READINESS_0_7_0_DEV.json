@@ -2,7 +2,7 @@
   "project": "KINLINK",
   "line": "0.7.0-dev",
   "versionCode": 8,
-  "code_head": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
+  "code_head": "3ddab9f6ebf9ccfee778fc428f99ccdb8def5b52",
   "latest_full_machine_pass": "c8999e902e92af51e34c95349073135df4de6ecc",
   "promotion_allowed": false,
   "gates": {
@@ -15,8 +15,8 @@
       "evidence": "contiguous v1-v5 plan + historical schema boundary tests + SQL failures not swallowed; machine-PASS at c8999e9"
     },
     "SIGNER_CONTINUITY": {
-      "status": "PENDING",
-      "evidence": "RC3 signer identity pinned; next candidate not yet signed/read back"
+      "status": "PASS",
+      "evidence": "canonical signer certificate SHA-256 pinned consistently in project_state, RC3 promotion receipt and stable signing pipeline; CI verifier enforces identity contract; final signed candidate must still verify this fingerprint before install"
     },
     "FIELD_HANDOFF": {
       "status": "PENDING",
