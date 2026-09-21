@@ -425,7 +425,7 @@
                 android:gravity="center"
                 android:minHeight="52dp"
                 android:padding="8dp"
-                android:text="Forfait & réserves"
+                android:text="Forfait &amp; réserves"
                 android:textColor="#0B57D0"
                 android:textSize="12sp"
                 android:textStyle="bold" />
