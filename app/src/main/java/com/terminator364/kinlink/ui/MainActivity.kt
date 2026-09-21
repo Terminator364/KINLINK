@@ -36,6 +36,12 @@ import com.terminator364.kinlink.core.ReliabilitySummaryPolicy
 import com.terminator364.kinlink.core.RecentReliabilityPolicy
 import com.terminator364.kinlink.core.ProfileRecommendationPolicy
 import com.terminator364.kinlink.core.QualificationReceiptNames
+import com.terminator364.kinlink.core.FieldCandidateQualificationEvidence
+import com.terminator364.kinlink.core.FieldCandidateQualificationPolicy
+import com.terminator364.kinlink.core.FieldCandidateQualificationVerdict
+import com.terminator364.kinlink.core.HandoffKind
+import com.terminator364.kinlink.core.HandoffOutcome
+import com.terminator364.kinlink.core.RuntimeResourceVerdict
 import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.WifiDoctor
@@ -511,17 +517,57 @@ class MainActivity : Activity() {
         if (!force && now - lastQualificationUiRefreshElapsed < 30_000L) return
         lastQualificationUiRefreshElapsed = now
 
-        val qualified = ledger.countSuccessfulActions(
-            QualificationReceiptNames.fieldQualified(installedVersionCode)
-        ) > 0
-        val blocked = ledger.countActions(
-            QualificationReceiptNames.fieldBlocked(installedVersionCode)
-        ) > 0
+        val assessment = FieldCandidateQualificationPolicy.evaluate(
+            FieldCandidateQualificationEvidence(
+                coreSelfTestPasses = ledger.countSuccessfulActions(
+                    QualificationReceiptNames.coreSelfTest(installedVersionCode)
+                ),
+                observerSelfTestPasses = ledger.countSuccessfulActions(
+                    QualificationReceiptNames.observerSelfTest(installedVersionCode)
+                ),
+                mobileValidatedHandoffs = ledger.countSuccessfulActions(
+                    QualificationReceiptNames.handoffOutcome(
+                        HandoffOutcome.MOBILE_VALIDATED,
+                        installedVersionCode
+                    )
+                ),
+                cellularToWifiReturns = ledger.countSuccessfulActions(
+                    QualificationReceiptNames.handoff(
+                        HandoffKind.CELLULAR_TO_WIFI,
+                        installedVersionCode
+                    )
+                ),
+                runtimeResourcePasses = ledger.countSuccessfulActions(
+                    QualificationReceiptNames.resourceGate(
+                        RuntimeResourceVerdict.PASS,
+                        installedVersionCode
+                    )
+                ),
+                runtimeResourceBlocks = ledger.countActions(
+                    QualificationReceiptNames.resourceGate(
+                        RuntimeResourceVerdict.BLOCKED,
+                        installedVersionCode
+                    )
+                ),
+                latestRuntimeResourcePassMillis = ledger.latestActionTimestamp(
+                    QualificationReceiptNames.resourceGate(
+                        RuntimeResourceVerdict.PASS,
+                        installedVersionCode
+                    )
+                ),
+                latestRuntimeResourceBlockMillis = ledger.latestActionTimestamp(
+                    QualificationReceiptNames.resourceGate(
+                        RuntimeResourceVerdict.BLOCKED,
+                        installedVersionCode
+                    )
+                )
+            )
+        )
 
-        val state = when {
-            qualified -> "terrain QUALIFIÉ"
-            blocked -> "terrain BLOQUÉ"
-            else -> "qualification terrain en cours"
+        val state = when (assessment.verdict) {
+            FieldCandidateQualificationVerdict.PASS -> "terrain QUALIFIÉ"
+            FieldCandidateQualificationVerdict.BLOCKED -> "terrain BLOQUÉ"
+            FieldCandidateQualificationVerdict.PENDING -> "qualification terrain en cours"
         }
         versionText.text = "KINLINK $installedVersionName · $state"
     }
