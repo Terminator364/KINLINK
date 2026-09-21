@@ -147,3 +147,21 @@ Repair integrated:
 - all `QualificationReceiptNames` evidence lookups in the service, cockpit and diagnostic qualification path now use exact matching;
 - candidate-contract CI rejects any regression back to prefix matching for version-scoped qualification receipts.
 
+
+
+### CA-007 — historical QUALIFIED receipt could force a stale PASS after later blocking evidence
+
+The service cached whether a `FIELD_CANDIDATE_QUALIFIED_Vn` receipt had ever been written. Its qualification refresh then returned early and forced the live verdict to PASS whenever that historical receipt existed.
+
+That conflicts with the intended rule that the latest authoritative resource evidence controls current qualification. A later service session could produce a newer blocking resource verdict while the foreground service still advertised qualification complete.
+
+The cockpit independently recomputed the latest evidence, so the app UI and foreground notification could diverge.
+
+**Verdict: blocking truthfulness/promotion-safety defect.**
+
+Repair integrated:
+- a historical terminal QUALIFIED receipt no longer bypasses live evidence evaluation;
+- the service always recomputes the current field assessment from exact version-scoped receipts;
+- a newer blocking resource verdict can revoke the live PASS display;
+- candidate-contract CI rejects reintroduction of the stale-PASS shortcut.
+
