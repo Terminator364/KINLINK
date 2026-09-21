@@ -224,6 +224,30 @@
             android:textSize="12sp" />
 
         <TextView
+            android:id="@+id/mobileAssistButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/button_outline"
+            android:gravity="center"
+            android:paddingStart="14dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="12dp"
+            android:text="Mobile Assist · améliorer maintenant"
+            android:textColor="#0B57D0"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Mobile : zéro speedtest caché. KINLINK rafraîchit seulement les métriques Android ou ouvre le panneau système si Android ne valide plus Internet."
+            android:textColor="#667085"
+            android:textSize="12sp" />
+
+        <TextView
             android:id="@+id/budgetButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
