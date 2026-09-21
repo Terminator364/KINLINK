@@ -52,7 +52,7 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         }
         TelemetryMigrationPlan.path(oldVersion, newVersion).forEach { step ->
             step.sqlStatements.forEach { sql ->
-                runCatching { db.execSQL(sql) }
+                db.execSQL(sql)
             }
         }
     }
