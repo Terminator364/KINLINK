@@ -14,5 +14,8 @@ class RecentReliabilityWindowDataTest {
         assertEquals(0, window.lowQualityEpisodeCount)
         assertEquals(0L, window.lowQualityCumulativeMillis)
         assertEquals(0L, window.lowQualityLongestMillis)
+        assertEquals(0, window.mobileLowQualityEpisodeCount)
+        assertEquals(0L, window.mobileLowQualityCumulativeMillis)
+        assertEquals(0L, window.mobileLowQualityLongestMillis)
     }
 }
