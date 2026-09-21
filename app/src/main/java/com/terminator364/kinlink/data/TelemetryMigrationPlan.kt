@@ -18,8 +18,7 @@ object TelemetryMigrationPlan {
                   ts_wall_ms INTEGER NOT NULL,
                   action TEXT NOT NULL,
                   success INTEGER NOT NULL,
-                  summary TEXT NOT NULL,
-                  duration_ms INTEGER
+                  summary TEXT NOT NULL
                 )""".trimIndent(),
                 "CREATE INDEX IF NOT EXISTS idx_action_receipts_ts ON action_receipts(ts_wall_ms)"
             )
