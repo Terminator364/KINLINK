@@ -10,7 +10,8 @@ class MobileAssistPolicyTest {
         up: Int = 2_000,
         congested: Boolean = false,
         suspended: Boolean = false,
-        budget: BudgetState = BudgetState.BALANCE_UNKNOWN
+        budget: BudgetState = BudgetState.BALANCE_UNKNOWN,
+        signalDbm: Int? = null
     ) = NetworkTruth(
         transport = Transport.CELLULAR,
         internetState = internet,
@@ -19,6 +20,7 @@ class MobileAssistPolicyTest {
         androidNotCongested = !congested,
         androidNotSuspended = !suspended,
         budgetState = budget,
+        signalStrengthDbm = signalDbm,
         metered = true
     )
 
@@ -112,6 +114,18 @@ class MobileAssistPolicyTest {
                 recent = MobileAssistPolicy.MAX_ACTIONS_PER_HOUR
             ).blockReason
         )
+    }
+
+    @Test fun weakCellularRadioSuppressesPointlessMetricRefresh() {
+        val decision = decide(
+            cellular(
+                down = 600,
+                up = 200,
+                signalDbm = -115
+            )
+        )
+        assertEquals(MobileAssistAction.NONE, decision.action)
+        assertEquals(MobileAssistBlockReason.WEAK_SIGNAL, decision.blockReason)
     }
 
     @Test fun repeatedIneffectiveAssistTriggersAntiRepeatPause() {
