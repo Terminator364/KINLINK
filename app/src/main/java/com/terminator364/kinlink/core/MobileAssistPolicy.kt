@@ -101,12 +101,6 @@ object MobileAssistPolicy {
             )
         }
 
-        if (preferSystemPanel) {
-            return MobileAssistManualDecision(
-                MobileAssistManualAction.OPEN_SYSTEM_CONNECTIVITY_PANEL,
-                MobileAssistManualBlockReason.NONE
-            )
-        }
         if (recentActions >= tuning.mobileAssistMaxActionsPerHour) {
             return MobileAssistDecision(
                 MobileAssistAction.NONE,
@@ -197,6 +191,12 @@ object MobileAssistManualPolicy {
             return MobileAssistManualDecision(
                 MobileAssistManualAction.NONE,
                 MobileAssistManualBlockReason.NOT_CELLULAR
+            )
+        }
+        if (preferSystemPanel) {
+            return MobileAssistManualDecision(
+                MobileAssistManualAction.OPEN_SYSTEM_CONNECTIVITY_PANEL,
+                MobileAssistManualBlockReason.NONE
             )
         }
         if (recentActions >= tuning.mobileAssistMaxActionsPerHour) {
