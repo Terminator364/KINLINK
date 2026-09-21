@@ -31,3 +31,13 @@ jobs:
         run: python tools/release/verify_release_readiness.py --audit
       - name: Canonical signer continuity contract
         run: python tools/release/verify_signer_contract.py
+      - name: Public-repo private signing material fence
+        run: |
+          set -euo pipefail
+          leaked="$(find . -type f \( -iname '*.p12' -o -iname '*.pfx' -o -iname '*.jks' -o -iname '*.keystore' -o -iname '*SIGNING_CREDENTIALS*' \) -not -path './.git/*' -print)"
+          if [ -n "$leaked" ]; then
+            echo "Private signing material or credential file must never exist in the public repository:"
+            echo "$leaked"
+            exit 1
+          fi
+          echo "Private signing material fence passed."
