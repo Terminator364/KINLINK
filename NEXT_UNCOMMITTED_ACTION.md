@@ -1,28 +1,30 @@
 # NEXT_UNCOMMITTED_ACTION
 
 ## Stable field baseline
-0.6.0-rc3 remains installed and Drive-canonical.
+0.6.0-rc3 remains installed and Drive-canonical. Do not replace it with a DEV build.
 
 ## Active development line
 0.7.0-dev / versionCode 8.
 
-## This tranche integrated
-1. passive Wi-Fi radio signal model;
-2. Android congestion/suspension evidence;
-3. weak-radio / possible-congestion / suspended-network causes;
-4. cause-aware Autopilot suppression of useless recovery;
-5. visible 24 h reliability summary;
-6. recent passive quality trend;
-7. profile recommendation from reliability burden;
-8. slow-link burden contributes to reliability severity.
+## Latest proven full machine PASS
+`858e63b92543df4dbed924dc9152a1161e63f168`.
 
-## Current gate
-Complete design-lint + Android CI for code head `00e4df0d3869daaab777d2b159a1c8228d9b2c7c`.
+## Current code head under qualification
+`1b404fa59aba02746f68291f21f8b8a5e533544f`.
 
-## After gate
-Continue large 0.7.0-dev functionality:
-- longitudinal radio/cause evidence;
-- resource and wakeup qualification;
-- migration proof;
-- consolidated release-readiness gate;
-- no new signed install until the feature batch is materially larger and all gates pass.
+Design-lint: PASS.
+Android CI: IN_PROGRESS at checkpoint time.
+
+## Newly integrated
+1. longitudinal passive radio/congestion/suspension evidence;
+2. explicit contiguous telemetry migration plan v1 -> v5, now used by TelemetryLedger.onUpgrade();
+3. conservative runtime resource qualification gate;
+4. automatic >=30-minute resource verdict using PSS, battery-rate evidence and callback churn;
+5. longitudinal radio evidence surfaced in diagnostic export.
+
+## Next durable action
+1. read final Android CI result for `1b404fa59aba02746f68291f21f8b8a5e533544f`;
+2. if PASS, promote it to latest full machine PASS in canonical state;
+3. continue consolidated release-readiness qualification;
+4. target-device >=30-minute evidence remains required before signed promotion;
+5. no new signed install until the consolidated gate passes.
