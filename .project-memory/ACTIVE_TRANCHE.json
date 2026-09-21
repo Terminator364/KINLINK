@@ -7,8 +7,8 @@
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
   "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSE_INTENT_PERSISTED",
-  "status": "CLOSING",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "gmail_start_message_id": "1a0c568a9e6e9a39",
   "gmail_start_thread_id": "1a0c568a9e6e9a39",
   "gmail_label": "KINLINK",
@@ -43,5 +43,11 @@
     "root_cause": "A user message arrived while tranche K25-07 was still ACTIVE after START+PDF, before END had been emitted. The assistant turn was interrupted before normal closeout.",
     "required_order": "END_PREVIOUS_FIRST_THEN_OPTIONAL_NEW_START",
     "protocol_gap": "A mid-tranche user interruption can preempt normal closeout; next-turn reconciliation must close the open tranche before any new START or product work."
-  }
+  },
+  "gmail_end_message_id": "1a0c57f6eb4b960a",
+  "gmail_end_thread_id": "1a0c568a9e6e9a39",
+  "end_mail_verified": true,
+  "closed_state": true,
+  "closed_at_provider_ts": "2026-09-21T19:44:18",
+  "closed_at_local": "2026-09-21T20:44:18+01:00"
 }
