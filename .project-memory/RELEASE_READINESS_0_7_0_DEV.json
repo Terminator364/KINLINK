@@ -2,29 +2,29 @@
   "project": "KINLINK",
   "line": "0.7.0",
   "versionCode": 8,
-  "code_head": "6b5c31d7c16d916c0d5768fd0284823165d3c210",
-  "latest_full_machine_pass": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
+  "code_head": "4153720cde8c6bd0004b8e69baeadf5254735abe",
+  "latest_full_machine_pass": "4153720cde8c6bd0004b8e69baeadf5254735abe",
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
-      "status": "PENDING",
-      "evidence": "final tranche app head 6b5c31d7c16d916c0d5768fd0284823165d3c210 under candidate CI; previous 9a4a0c5 machine pass is superseded before delivery"
+      "status": "PASS",
+      "evidence": "android-0.7-candidate run 35550539216 PASS + design-lint run 35550539365 PASS on 4153720cde8c6bd0004b8e69baeadf5254735abe; all safety fences, unit tests, Android lint, candidate identity/unsigned fence and artifact upload passed"
     },
     "MIGRATION": {
       "status": "PASS",
-      "evidence": "contiguous v1-v5 migration plan, exact historical schema boundaries, SQL migration failures not swallowed, regression tests PASS in candidate CI"
+      "evidence": "executable SQLite v1-v5 migration simulation with sentinel-data preservation PASS in design-lint, plus Kotlin regression tests and schema-integrity self-test"
     },
     "SIGNER_CONTINUITY": {
       "status": "PASS",
-      "evidence": "CI input hash pinned; private key certificate and signed APK both verify canonical signer SHA-256 2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
+      "evidence": "final unsigned CI input SHA-256 3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb signed with canonical certificate SHA-256 2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3; apksigner v3 verification PASS"
     },
     "FIELD_HANDOFF": {
       "status": "PENDING",
-      "evidence": "RC3 bidirectional handoff PASS; must be requalified on the single consolidated 0.7 field candidate before canonical promotion"
+      "evidence": "must be collected on exact final signed versionCode 8 field candidate using version-scoped receipts"
     },
     "RESOURCE_QUALIFICATION": {
       "status": "PENDING",
-      "evidence": "automatic >=30m resource gate integrated; must be collected on the consolidated signed field candidate before canonical promotion"
+      "evidence": "must be collected on exact final signed versionCode 8 candidate; charging-safe >=30min automatic resource window required"
     }
   },
   "invariants": [
@@ -36,7 +36,7 @@
     "no routing/network ownership APIs",
     "VPN/TUN remains disabled"
   ],
-  "field_candidate_allowed": false,
+  "field_candidate_allowed": true,
   "previous_machine_artifact": {
     "workflow_run": 35548684588,
     "artifact_id": 10617836246,
@@ -55,33 +55,37 @@
     "canonical_signer_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
   },
   "machine_artifact": {
-    "workflow_run": 35549053623,
-    "artifact_id": 10617413284,
+    "workflow_run": 35550539216,
+    "design_lint_run": 35550539365,
+    "artifact_id": 10618495983,
     "artifact_name": "KINLINK-0.7.0-ci-build",
-    "artifact_zip_sha256": "350492836325bb9b2644e90737f26bb63288e0b3aaecf24823e039570ce12209",
-    "input_unsigned_apk_sha256": "987fd96554b577cc8d03b0ac2b0715c25e755c2b8afe7be17a23e3177f2cc588",
-    "manifest_commit": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
+    "artifact_zip_sha256": "0deb11a13ba4ee2b8f15d96865741af3be42483d707e2814dabe5bef22717c09",
+    "unsigned_apk_sha256": "3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb",
+    "unsigned_apk_size_bytes": 308944,
+    "manifest_commit": "4153720cde8c6bd0004b8e69baeadf5254735abe",
     "manifest_version": "0.7.0",
     "manifest_variant": "candidate-unsigned"
   },
   "signed_field_candidate": {
     "version": "0.7.0",
     "versionCode": 8,
-    "source_commit": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
-    "signing_tool_commit": "fcc13cf5de055ba62f20cfc92944d63573a72175",
-    "signed_apk_sha256": "aed0643ea4d03e46f9befdc99866bcbbb4a599c9fddbb552ea7397e285ea8b79",
-    "size_bytes": 316363,
+    "source_commit": "4153720cde8c6bd0004b8e69baeadf5254735abe",
+    "ci_run": 35550539216,
+    "artifact_id": 10618495983,
+    "unsigned_apk_sha256": "3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb",
+    "signed_apk_sha256": "cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc",
+    "size_bytes": 320260,
     "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
-    "apksigner_verified": true,
+    "apk_signature_v3": true,
+    "signers": 1,
+    "status": "READY_FOR_FIELD",
+    "delivered": false,
+    "installed": false,
     "canonical_promotion": false,
     "next_required": [
       "FIELD_HANDOFF",
       "RESOURCE_QUALIFICATION"
-    ],
-    "status": "SUPERSEDED_BEFORE_DELIVERY",
-    "delivered": false,
-    "installed": false,
-    "superseded_by_head": "f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3"
+    ]
   },
   "field_qualification_model": {
     "evidence_scope": "RUNNING_VERSION_ONLY",
