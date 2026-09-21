@@ -35,6 +35,7 @@ class KinlinkObserverService : Service() {
     private var coreRuntimeReady = true
     private var runtimeBudgetCheckpointWritten = false
     private var runtimeCallbackEvents = 0
+    private var runtimeResourceQualificationAttempts = 0
     private var fieldQualificationReceiptWritten = false
     private var fieldQualificationBlockedWritten = false
     private val runtimeBudgetHandler by lazy { android.os.Handler(android.os.Looper.getMainLooper()) }
@@ -244,11 +245,15 @@ class KinlinkObserverService : Service() {
         )
     }
 
-    private fun resetRuntimeBudgetBaseline(reason: String) {
+    private fun resetRuntimeBudgetBaseline(
+        reason: String,
+        resetAttempts: Boolean = true
+    ) {
         if (!::runtimeBudgetSampler.isInitialized) return
         runtimeBudgetStart = runtimeBudgetSampler.sample()
         runtimeCallbackEvents = 0
         runtimeBudgetCheckpointWritten = false
+        if (resetAttempts) runtimeResourceQualificationAttempts = 0
         scheduleRuntimeBudgetCheckpoint()
         if (::ledger.isInitialized) {
             runCatching {
@@ -279,26 +284,41 @@ class KinlinkObserverService : Service() {
                 durationMillis = evidence.durationMillis,
                 pssDeltaMiB = evidence.pssDeltaMiB,
                 batteryPercentPerHour = evidence.batteryPercentPerHour,
-                backgroundChurnEvents = runtimeCallbackEvents
+                backgroundChurnEvents = runtimeCallbackEvents,
+                batteryDeltaPercent = evidence.batteryDeltaPercent
             )
         )
 
+        runtimeResourceQualificationAttempts += 1
         val checkpointPersisted = runCatching {
             ledger.appendAction(
                 "RUNTIME_BUDGET_CHECKPOINT",
                 true,
-                "durationMs=${evidence.durationMillis}; pssStartMiB=${evidence.startPssMiB}; pssEndMiB=${evidence.endPssMiB}; pssDeltaMiB=${evidence.pssDeltaMiB}; batteryDelta=${evidence.batteryDeltaPercent ?: -1}; batteryPctPerHour=$rate; callbackEvents=$runtimeCallbackEvents"
+                "durationMs=${evidence.durationMillis}; pssStartMiB=${evidence.startPssMiB}; pssEndMiB=${evidence.endPssMiB}; pssDeltaMiB=${evidence.pssDeltaMiB}; batteryDelta=${evidence.batteryDeltaPercent ?: -1}; batteryPctPerHour=$rate; callbackEvents=$runtimeCallbackEvents; attempt=$runtimeResourceQualificationAttempts"
             )
             ledger.appendAction(
                 QualificationReceiptNames.resourceGate(resourceAssessment.verdict, runningVersionCode),
                 resourceAssessment.verdict == RuntimeResourceVerdict.PASS,
-                "reasons=${resourceAssessment.reasons.sorted().joinToString(",")}; callbackEvents=$runtimeCallbackEvents"
+                "reasons=${resourceAssessment.reasons.sorted().joinToString(",")}; callbackEvents=$runtimeCallbackEvents; attempt=$runtimeResourceQualificationAttempts"
             )
         }.isSuccess
         runtimeBudgetCheckpointWritten = checkpointPersisted
         if (checkpointPersisted) {
             maybeRecordFieldCandidateQualification()
+            if (
+                RuntimeResourceRetryPolicy.shouldRetry(
+                    resourceAssessment,
+                    runtimeResourceQualificationAttempts
+                )
+            ) {
+                resetRuntimeBudgetBaseline(
+                    "QUALIFICATION_RETRY_${resourceAssessment.verdict.name}",
+                    resetAttempts = false
+                )
+            }
         } else {
+            runtimeResourceQualificationAttempts =
+                (runtimeResourceQualificationAttempts - 1).coerceAtLeast(0)
             scheduleRuntimeBudgetCheckpointRetry()
         }
     }
