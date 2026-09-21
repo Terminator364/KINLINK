@@ -9,10 +9,10 @@
   "normal_close_owner": "PRIMARY_ASSISTANT",
   "backup_earliest_offset_minutes": 26,
   "hard_guard_offset_minutes": 29,
-  "work_state": "RUNNING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "RUNNING",
-  "close_intent_persisted": false,
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSE_INTENT_PERSISTED",
+  "status": "CLOSEOUT",
+  "close_intent_persisted": true,
   "close_owner": "PRIMARY_ASSISTANT",
   "close_mode": "NORMAL_PRIMARY",
   "gmail_start_message_id": "1a0c470b7c92a528",
@@ -21,7 +21,7 @@
   "end_mail_verified": false,
   "end_mail_reply_to_start": true,
   "gmail_label": "KINLINK",
-  "next_atomic_action": "invalidate installed 0.7.2 as near-final candidate due P0 responsive header bug; branch 0.7.3 dev; fix responsive cockpit + continuous before/now/maintained/relapse evidence; run exact-head CI",
+  "next_atomic_action": "recheck 0.7.3 exact-head design-lint 35616879792 and Android 35616879783; if both PASS final counter-audit, freeze/sign/Drive-stage/readback; otherwise patch exact failure",
   "technical_branch": "dev/0.7.3-final-like-ui-control",
   "installed_field_build": "0.7.2/versionCode10 installed; functional but P0 UX-invalid as near-final candidate",
   "invariants": [
@@ -33,8 +33,28 @@
     "if interrupted, reconcile existing END before duplicate send",
     "no app reply before END provider acknowledgement is persisted"
   ],
-  "mutation_groups_used": 0,
+  "mutation_groups_used": 9,
   "max_mutation_groups_before_forced_closeout": 10,
-  "forced_closeout_entered": false,
-  "no_more_product_mutations": false
+  "forced_closeout_entered": true,
+  "no_more_product_mutations": true,
+  "last_durable_checkpoint": {
+    "installed": "0.7.2 / versionCode 10",
+    "field_invalidation": "P0 responsive header compression proven by target-phone screenshots",
+    "dev_branch": "dev/0.7.3-final-like-ui-control",
+    "dev_head": "6ef270d83461628aa8a6a6356b0d56dece6f0ca1",
+    "design_lint_run": 35616879792,
+    "design_lint_status": "PENDING",
+    "android_run": 35616879783,
+    "android_status": "IN_PROGRESS",
+    "changes": [
+      "vertical full-width header",
+      "before/now/delta/maintenance/evidence card",
+      "now-vs-24h distinction",
+      "explicit Conservateur/Stable/Max modes",
+      "profile-aware bounded mobile control",
+      "resource-specific battery/thermal/RAM explanation",
+      "responsive UI CI contract"
+    ],
+    "honest_limit": "Level-1 requestBandwidthUpdate refreshes Android metrics; no causal throughput acceleration claim"
+  }
 }
