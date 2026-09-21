@@ -1,0 +1,20 @@
+{
+  "project": "KINLINK",
+  "cadence_minutes": 25,
+  "start_sequence": [
+    "SEND_GMAIL_START",
+    "APPLY_GMAIL_LABEL_KINLINK",
+    "BEGIN_WORK"
+  ],
+  "feedback_during_tranche": "CONTINUE_CURRENT_TRANCHE_REGARDLESS_OF_INTERMEDIATE_FEEDBACK",
+  "only_early_stop": "TRUE_HUMAN_GATE_OBJECTIVELY_REQUIRED_TO_CONTINUE",
+  "end_sequence": [
+    "SEND_COMPLETE_GMAIL_END_REPORT",
+    "APPLY_GMAIL_LABEL_KINLINK",
+    "ONLY_THEN_REPLY_IN_CHAT_APP"
+  ],
+  "chat_app_reply": "VA_SUR_GMAIL_PLUS_KINSHASA_DATE_TIME_ONLY",
+  "apk_delivery": "DRIVE_KINLINK_ONLY_NEVER_GMAIL_ATTACHMENT",
+  "gmail_label": "KINLINK",
+  "rule_priority": "MANDATORY_CONTINUITY_PROTOCOL"
+}
