@@ -2,6 +2,7 @@
   "project": "KINLINK",
   "cadence_minutes": 25,
   "start_sequence": [
+    "REPAIR_ANY_UNCLOSED_PRIOR_TRANCHE",
     "SEND_GMAIL_START",
     "APPLY_GMAIL_LABEL_KINLINK",
     "PERSIST_ACTIVE_TRANCHE_WITH_START_MESSAGE_ID",
@@ -10,6 +11,8 @@
   "feedback_during_tranche": "QUEUE_AND_INTEGRATE_WITHOUT_BREAKING_ACTIVE_TRANCHE",
   "only_early_stop": "TRUE_HUMAN_GATE_OBJECTIVELY_REQUIRED_TO_CONTINUE",
   "end_sequence": [
+    "ENTER_FORCED_CLOSEOUT_RESERVE",
+    "STOP_NEW_TECHNICAL_MUTATIONS",
     "PERSIST_FINAL_TECHNICAL_CHECKPOINT",
     "SEND_COMPLETE_GMAIL_END_REPORT",
     "APPLY_GMAIL_LABEL_KINLINK",
@@ -28,6 +31,17 @@
   "evidence_required_each_tranche": [
     "gmail_start_message_id",
     "durable_work_checkpoint",
-    "gmail_end_message_id"
-  ]
+    "forced_closeout_entered",
+    "gmail_end_message_id",
+    "end_mail_verified"
+  ],
+  "closeout_reserve_minutes": 5,
+  "primary_work_budget_minutes": 20,
+  "max_mutation_groups_before_forced_closeout": 12,
+  "closeout_reserve_rule": "AT_OR_BEFORE_RESERVE_BOUNDARY_STOP_ALL_NEW_TECHNICAL_MUTATIONS_AND_CLOSE_TRANCHE",
+  "system_interruption_guard": {
+    "rule": "IF_PREVIOUS_ACTIVE_TRANCHE_LACKS_VERIFIED_END_MESSAGE_ID_REPAIR_IT_BEFORE_ANY_NEW_WORK_OR_APP_REPLY",
+    "required_first_action": "SEND_MISSING_GMAIL_END_REPORT",
+    "never_reply_in_app_with_unclosed_tranche": true
+  }
 }
