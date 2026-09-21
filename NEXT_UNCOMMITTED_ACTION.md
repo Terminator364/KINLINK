@@ -1,61 +1,79 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Immediate handoff
+## Mandatory communication gate
 
 Resume with exactly:
 
 `KINLINKGO`
 
-Reload canonical continuity state before any mutation. Preserve:
-- Gmail START before substantial work;
-- 25 min = 22 min useful work + 3 min normal close;
-- Gmail END before final app reply;
-- delivery-key/idempotency;
-- no micro-beta chain;
-- no install before rendered responsive UI proof is clean.
+Before substantial product work:
+1. reload `.project-memory/ACTIVE_TRANCHE.json` and `.project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl`;
+2. if ACTIVE_TRANCHE is CLOSED, open a NEW tranche and persist Gmail START ACK before product mutations;
+3. never reuse a previously CLOSED tranche for new work;
+4. before any final ChatGPT app reply: checkpoint product state, persist CLOSE_INTENT, send Gmail END, verify provider ACK, persist END_ACKNOWLEDGED;
+5. final app reply is forbidden while delivery_state is not CLOSED / END_ACKNOWLEDGED.
 
-## Product state to resume
+The app chat may contain progress updates while work is active, but not a final/closeout answer.
+
+## Communication incident fixed
+
+The previous session sent Gmail START message `1a0c4b5a1a669b91` but produced a final ChatGPT reply without Gmail END.
+Root cause: new work had started while durable `ACTIVE_TRANCHE` still referenced the already-closed tranche `KINLINK-2026-09-21-1631-K25-02`.
+
+Remediation now persisted:
+- ACTIVE_TRANCHE schema v4;
+- mandatory new-tranche gate;
+- final-response END_ACK gate;
+- closeout priority over additional product work;
+- incident recorded in communication ledger.
+
+Current active recovery tranche:
+- tranche: `KINLINK-2026-09-21-COMM-RECOVERY-K25-03`
+- delivery key: `K25-20260921-COMMRECOVERY-03`
+- Gmail START ACK: `1a0c4cf26258ae7d`
+
+## Product state
 
 Installed target phone:
-- 0.7.2 / versionCode 10;
-- functionally usable;
-- P0 UX-invalid as near-final because the target-phone screenshots proved responsive header compression.
+- KINLINK 0.7.2 / versionCode 10;
+- usable, but P0 UX-invalid as near-final because target-phone screenshots showed responsive header compression.
 
 Current engineering line:
 - branch: `dev/0.7.3-final-like-ui-control`
-- exact head: `eb499e6dc0fef2983785f7b68cb50000ce31e7c6`
-- design-lint run `35621729438`: PASS
-- Android exact-head run `35621729452`: PENDING at tranche close intent
+- exact head: `c98aaf23ed2818392d7330efb8785eca36befd2a`
+- current Android run: `35625701977`
+- design-lint: PASS
+- unit tests: PASS
+- Android lint: PASS
+- unsigned candidate build: PASS
+- candidate package identity/unsigned fence: PASS
+- rendered responsive matrix: IN_PROGRESS at checkpoint
 
-## What changed in this tranche
+## Responsive qualification already established
 
-The previous static XML responsive gate was judged insufficient. A real rendered regression gate is now integrated:
-- Android instrumentation test `ResponsiveRenderMatrixTest`;
+The matrix covers:
 - 3 screen/font configurations;
-- 6 UI/network/resource states;
-- top + bottom viewport captures;
-- 36 screenshots expected;
-- assertions for clipping, ellipsis, suspicious one-character columns, sibling overlap, touch-target size and collapsed technical details;
-- versioned Bash harness: `tools/release/run_ui_matrix.sh`;
-- emulator runner pinned to an exact commit.
+- 6 representative KINLINK states;
+- top + bottom captures = 36 expected screenshots;
+- clipping/ellipsis detection;
+- suspicious narrow-column detection;
+- sibling overlap detection;
+- 48dp tap-target checks;
+- collapsed technical details;
+- safe-mode state;
+- deterministic resource-constrained state.
 
-Two CI failures were classified as harness failures, not UI failures:
-1. run `35620573204`: `/bin/sh` rejected `pipefail`;
-2. run `35621149033`: emulator runner split the multiline function block.
-
-Both harness defects were corrected without promoting or installing an APK.
+Previous test assertions passed across the 3 configurations. Remaining work is preserving and visually inspecting the screenshot evidence. Screenshot persistence was moved to `/data/local/tmp/KINLINK-ui-proof` at exact head `c98aaf23...`.
 
 ## Exact next technical action
 
-1. Poll Android run `35621729452` for exact head `eb499e6dc0fef2983785f7b68cb50000ce31e7c6`.
-2. If FAIL: read exact logs and classify harness failure vs real UI failure; mutate only from evidence.
-3. If PASS: fetch both CI artifacts and inspect the 36 screenshots, not just the test status.
-4. Reject clipping, overlap, single-character columns, absurd whitespace or broken controls.
-5. Only after visual proof is clean: freeze exact candidate, sign with canonical signer, stage to Drive FIELD_CANDIDATE, read back hash.
-6. Only then request one in-place phone update.
+1. Poll Android run `35625701977`.
+2. If FAIL: inspect exact preserved test/report artifact and correct only the proven failure.
+3. If PASS: fetch candidate + responsive proof artifacts.
+4. Inspect all 36 PNGs visually, not merely CI status.
+5. Reject any clipping, overlap, one-character columns, absurd whitespace or broken controls.
+6. Only if visual proof is clean: freeze exact candidate, canonical sign, stage Drive FIELD_CANDIDATE and read back hash.
+7. Only then request one in-place phone update.
+8. At tranche close: Gmail END -> provider ACK -> persist END_ACKNOWLEDGED -> short app reply only.
 
 No phone installation is requested at this checkpoint.
-
-## Resume code
-
-`KINLINKGO`
