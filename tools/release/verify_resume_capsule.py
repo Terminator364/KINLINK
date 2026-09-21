@@ -28,7 +28,8 @@ req(score["result"]["macro_capabilities"]==truth["macro_capabilities"],"macro co
 req(float(score["result"]["overall_percent"])==float(truth["maturity_percent"]),"maturity mismatch")
 ids=[x["id"] for x in b["items"]]
 req(len(ids)==truth["b_depth_count"],"B depth count mismatch")
-req(ids[0]=="B31" and ids[-1]=="B90","B range mismatch")
+first,last=truth["b_depth_range"].split("-",1)
+req(ids[0]==first and ids[-1]==last,"B range mismatch")
 req(b.get("version")==truth["b_depth_version"],"B version mismatch")
 req(program.get("doctrine")=="ONE_COHERENT_FIELD_DELIVERY_AFTER_LARGE_INTERNAL_WAVES","integrated-program doctrine drift")
 req(program.get("macro_denominator")==truth["macro_capabilities"],"program denominator mismatch")

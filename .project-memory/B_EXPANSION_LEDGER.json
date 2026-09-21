@@ -1,8 +1,8 @@
 {
   "schema": "kinlink.b_expansion_ledger/2",
-  "version": "B4",
+  "version": "B5",
   "generated_at": "2026-09-21",
-  "rule": "B is concrete depth, not vague enhancement. B31-B90 are subrequirements mapped to existing macro capabilities; they do not change the macro completion denominator unless a deduplication review proves a genuinely new independent product capability.",
+  "rule": "B is concrete depth, not vague enhancement. B31-B100 are subrequirements mapped to existing macro capabilities; they do not change the macro completion denominator unless a deduplication review proves a genuinely new independent product capability.",
   "critical_research_corrections": [
     {
       "id": "B-RESEARCH-001",
@@ -788,6 +788,133 @@
         "dev:app/src/main/java/com/terminator364/kinlink/core/PlatformCapabilityDiscovery.kt",
         "git:b54020291f866042103ad0f63cae3645977638d1"
       ]
+    },
+    {
+      "id": "B91",
+      "title": "Usage Access is optional capability, never core dependency",
+      "parent_macro_ids": [
+        "K017",
+        "K041",
+        "K060"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Treat PACKAGE_USAGE_STATS / Settings Usage Access as an explicit optional lane. KINLINK core must remain correct when the user never grants it or later revokes it.",
+      "acceptance": "Capability discovery distinguishes granted/revoked; core observer/Mobile Vault user-entered mode remains functional with no Usage Access.",
+      "source": "https://developer.android.com/reference/android/app/usage/NetworkStatsManager"
+    },
+    {
+      "id": "B92",
+      "title": "NetworkStats query latency budget",
+      "parent_macro_ids": [
+        "K017",
+        "K058"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "NetworkStatsManager queries may take seconds, so every query runs on one bounded worker with timeout/cancellation and never on the UI or ConnectivityManager callback thread.",
+      "acceptance": "Instrumentation proves no NetworkStats query executes on main/connectivity callbacks and a stalled query cannot block cockpit or recovery.",
+      "source": "https://developer.android.com/reference/android/app/usage/NetworkStatsManager"
+    },
+    {
+      "id": "B93",
+      "title": "Aggregate-mobile fallback is not per-SIM truth",
+      "parent_macro_ids": [
+        "K016",
+        "K017",
+        "K060"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "When restricted subscriber identifiers are unavailable, null-subscriber NetworkStats results may aggregate all mobile networks. Label this DEVICE_MOBILE_AGGREGATE and never attribute it to one SIM/plan.",
+      "acceptance": "Two-SIM fixture never maps aggregate bytes to a specific plan; per-plan zone stays UNKNOWN until attributable evidence exists.",
+      "source": "https://developer.android.com/reference/android/app/usage/NetworkStatsManager"
+    },
+    {
+      "id": "B94",
+      "title": "Subscription ID privacy boundary",
+      "parent_macro_ids": [
+        "K016",
+        "K043"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "If per-subscription behavior is truly needed, use Android Subscription ID under explicit READ_PHONE_STATE capability and keep it local. Never use/export ICCID, IMSI, IMEI or other non-resettable identifiers.",
+      "acceptance": "No privileged/non-resettable telephony identifier API is present; diagnostics redact subscription identity; denial degrades to aggregate/unknown mode.",
+      "source": "https://developer.android.com/identity/user-data-ids"
+    },
+    {
+      "id": "B95",
+      "title": "Active-data subscription is not always default-data subscription",
+      "parent_macro_ids": [
+        "K016",
+        "K066"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Model the actually active data subscription separately from default-data preference because opportunistic networks can differ. Telephony observations pinned to a subId must not be silently reused after active-data changes.",
+      "acceptance": "Default/active-data switch tests invalidate stale per-sub evidence and do not merge plans.",
+      "source": "https://developer.android.com/reference/android/telephony/TelephonyManager"
+    },
+    {
+      "id": "B96",
+      "title": "NetworkStats usage callbacks are advisory while process lives",
+      "parent_macro_ids": [
+        "K017",
+        "K045",
+        "K058"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "registerUsageCallback is an efficiency hint while the process is alive, not a durable wakeup/alarm guarantee. Mobile Vault correctness must derive from persisted plan state plus fresh reconciliation.",
+      "acceptance": "Process-kill/restart test does not assume missed callback means zero usage; fresh reconciliation runs before spending decisions.",
+      "source": "https://developer.android.com/reference/android/app/usage/NetworkStatsManager"
+    },
+    {
+      "id": "B97",
+      "title": "Plan-cycle wall time versus control-loop monotonic time",
+      "parent_macro_ids": [
+        "K015",
+        "K029",
+        "K031"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Use wall-clock/calendar semantics only for carrier plan cycle/expiry, while cooldowns, probe deadlines, evidence windows and relapse timing remain on elapsedRealtime/monotonic time.",
+      "acceptance": "Manual clock/timezone change cannot shorten cooldowns or fake causal windows; explicit plan expiry follows intended calendar semantics.",
+      "source": "https://developer.android.com/reference/android/os/SystemClock"
+    },
+    {
+      "id": "B98",
+      "title": "Carrier Wallet evidence provenance and confidence",
+      "parent_macro_ids": [
+        "K015",
+        "K017",
+        "K032"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Every balance/usage observation stores value, semantic kind, source, observed-at time, attribution scope, confidence and adapter/version provenance. Conflicting sources remain CONFLICT instead of being averaged.",
+      "acceptance": "Reconciliation tests preserve disagreement and choose HOLD/UNKNOWN when attribution or freshness is insufficient.",
+      "source": "internal:MOBILE_VAULT_AND_CARRIER_WALLET"
+    },
+    {
+      "id": "B99",
+      "title": "Counter-reset and reboot reconciliation for plan usage",
+      "parent_macro_ids": [
+        "K015",
+        "K017",
+        "K046"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "A lower Android traffic counter after reboot/reset closes the old counter segment; it must never subtract usage or create free quota. Reconcile with persisted segments and higher-authority plan evidence.",
+      "acceptance": "Counter rollback test never decreases proven cycle usage and never promotes a stricter zone back to NORMAL solely because the device counter reset.",
+      "source": "internal:field-budget-hardening"
+    },
+    {
+      "id": "B100",
+      "title": "User-entered plan/expiry is first-class offline fallback",
+      "parent_macro_ids": [
+        "K015",
+        "K041",
+        "K060"
+      ],
+      "stage": "PARTIAL",
+      "design": "Because privileged carrier/account data may be unavailable, allow a simple local user-entered plan size, expiry and reserve policy to drive Mobile Vault safely without cloud, carrier login or privileged IDs.",
+      "acceptance": "A device with no Usage Access/READ_PHONE_STATE/carrier adapter can configure plan envelopes locally in MB/GB and receives truthful UNKNOWN where usage cannot be attributed.",
+      "source": "internal:A+C-zero-dollar-offline-first"
     }
   ],
   "research_notes": [
@@ -798,6 +925,10 @@
     "VpnService permission can be revoked; onRevoke must cleanly shut down. protect() prevents tunnel self-routing loops.",
     "Android 17 (API 37 target) introduces ACCESS_LOCAL_NETWORK for direct LAN communication; KINLINK must request it only for features that actually need LAN sockets/discovery.",
     "VpnService.Builder.excludeRoute exists from API 33 and is relevant to preserving LAN reachability in a future Strong Stabilizer.",
-    "Foreground-service types/start legality and always-on VPN support must be explicitly qualified rather than assumed from manifest defaults."
+    "Foreground-service types/start legality and always-on VPN support must be explicitly qualified rather than assumed from manifest defaults.",
+    "NetworkStatsManager device/user-wide access is optional Usage Access, may take seconds, and must stay off UI/connectivity callback threads.",
+    "Restricted subscriber identity means null-subscriber mobile stats can be aggregate; aggregate evidence must never masquerade as per-SIM plan usage.",
+    "Subscription ID is preferable to non-resettable telephony identifiers when per-SIM association is justified, but requires explicit telephony permission and local privacy controls.",
+    "NetworkStats usage callbacks live only with the process; Mobile Vault must reconcile after restart instead of assuming callback continuity."
   ]
 }

@@ -28,7 +28,7 @@ req(state["active_integrated_successor"]["versionCode"]==12,"active successor ve
 
 next_text=(ROOT/"NEXT_UNCOMMITTED_ACTION.md").read_text(encoding="utf-8")
 build_text=(ROOT/"BUILD_STATUS.md").read_text(encoding="utf-8")
-for token in ["B31-B90","44.8%","RESUME_CAPSULE","Gmail START","Gmail END"]:
+for token in [truth["b_depth_range"],f"{truth['maturity_percent']}%","RESUME_CAPSULE","Gmail START","Gmail END"]:
     req(token in next_text,f"NEXT_UNCOMMITTED_ACTION missing {token}")
 latest=state["active_integrated_successor"]["latest_head"]
 req(latest in next_text,"NEXT_UNCOMMITTED_ACTION does not name latest engineering head")

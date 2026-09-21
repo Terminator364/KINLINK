@@ -1,6 +1,6 @@
 {
   "schema": "kinlink.canonical_context_pack/2",
-  "generated_at": "2026-09-21T22:56:00+01:00",
+  "generated_at": "2026-09-21T22:58:00+01:00",
   "project": "KINLINK",
   "immutable_A": {
     "preconception_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
@@ -11,11 +11,12 @@
     "depth_v2": "docs/B_EXPANSION_V2.md",
     "ledger": ".project-memory/B_EXPANSION_LEDGER.json",
     "critical_correction": "Lite Observer remains ineligible for ConnectivityDiagnostics callbacks; Android 17 direct LAN access is separately permission-gated and must not be conflated with public Internet observation.",
-    "depth_version": "B4",
-    "depth_range": "B31-B90",
-    "depth_count": 60,
+    "depth_version": "B5",
+    "depth_range": "B31-B100",
+    "depth_count": 70,
     "depth_v3": "docs/B_EXPANSION_V3.md",
-    "depth_v4": "docs/B_EXPANSION_V4.md"
+    "depth_v4": "docs/B_EXPANSION_V4.md",
+    "depth_v5": "docs/B_EXPANSION_V5.md"
   },
   "C": {
     "evolution": ".project-memory/PRODUCT_EVOLUTION_C.json",
@@ -62,7 +63,7 @@
     "watchdog_cadence": "HOURLY",
     "watchdog_policy": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json"
   },
-  "next_action": "Poll 3b12 Android run; if PASS continue W2 store/source reconciliation/UI integration; no phone install.",
+  "next_action": "Poll 3b12 Android run; continue W2 under B5 attribution/permission rules; no phone install.",
   "memory": {
     "policy": ".project-memory/MEMORY_POLICY_V2.json",
     "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",

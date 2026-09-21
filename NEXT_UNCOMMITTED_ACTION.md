@@ -7,7 +7,7 @@ Resume with `KINLINKGO`.
 1. verify `.project-memory/RESUME_CAPSULE.json`;
 2. read ACTIVE_TRANCHE + communication ledger fresh;
 3. reconcile START/CLOSE/END;
-4. load A+B+C, B4 B31-B90, 80-macro scorecard, dead-end registry and W0-W6 plan;
+4. load A+B+C, B5 B31-B100, 80-macro scorecard, dead-end registry and W0-W6 plan;
 5. read project_state/BUILD_STATUS/NEXT fresh;
 6. send Gmail START before substantive continuation.
 
@@ -20,10 +20,11 @@ Latest continuity simulation:
 ## Canonical scope
 
 - A anchor `c565b6f1164d327caaa17e1de47d1cf48ed3c885`
-- B4: **B31-B90**
+- B5: **B31-B100**
 - C: append-only
 - 80 macro capabilities
 - 44.8% conservative maturity
+- B5 adds Usage Access/NetworkStats/per-SIM/restart/source-provenance rules without changing the denominator
 - program W0-W6
 - no micro-beta/user reinstall chain
 

@@ -162,3 +162,10 @@ Key additions:
 - 0.8 begins implementing a read-only runtime capability inventory.
 
 The denominator remains 80 macro capabilities until deduplication proves a genuinely independent new product capability.
+
+
+## B depth v5 — Mobile Vault / Carrier Wallet evidence discipline
+
+B now extends through **B100** via `docs/B_EXPANSION_V5.md`. The new layer makes Usage Access optional, keeps NetworkStats off latency-sensitive threads, distinguishes aggregate mobile data from per-SIM truth, forbids ICCID/IMEI-style identity shortcuts, separates active-data from default-data subscription semantics, treats usage callbacks as advisory rather than durable, separates carrier wall-clock cycles from monotonic control timing, records source/confidence provenance, preserves usage across counter resets, and makes local user-entered plan/expiry a first-class offline fallback.
+
+These remain subrequirements mapped to the existing 80 macro capabilities; research depth alone does not change completion percentage.

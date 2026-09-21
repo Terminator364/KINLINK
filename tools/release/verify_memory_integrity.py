@@ -16,9 +16,9 @@ b=load(".project-memory/B_EXPANSION_LEDGER.json")
 
 req(policy["schema"]=="kinlink.project_memory_policy/2","memory policy schema")
 req(policy["doctrine"]=="MEMORY_IS_PROVENANCE_AND_RECOVERY_INFRASTRUCTURE_NOT_A_CHAT_SUMMARY","doctrine drift")
-req(len(b["items"])==60,"B31-B90 depth count must be 60")
+req(len(b["items"])==70,"B31-B100 depth count must be 70")
 ids=[x["id"] for x in b["items"]]
-req(ids[0]=="B31" and ids[-1]=="B90","B depth range drift")
+req(ids[0]=="B31" and ids[-1]=="B100","B depth range drift")
 req(len(ids)==len(set(ids)),"duplicate B depth ids")
 req(pack["immutable_A"]["preconception_anchor"]=="c565b6f1164d327caaa17e1de47d1cf48ed3c885","context pack A anchor drift")
 req(pack["completion"]["macro_count"]==score["result"]["macro_capabilities"],"context pack macro count stale")
@@ -54,6 +54,7 @@ required_memory=[
     "docs/B_EXPANSION_V2.md",
     "docs/B_EXPANSION_V3.md",
     "docs/B_EXPANSION_V4.md",
+    "docs/B_EXPANSION_V5.md",
 ]
 for p in required_memory:
     req((ROOT/p).exists(),f"missing {p}")
@@ -84,6 +85,6 @@ for e in dead["entries"]:
 req(pack.get("communication",{}).get("watchdog_cardinality")==1,"context pack watchdog cardinality stale")
 cap=load(".project-memory/RESUME_CAPSULE.json")
 req(cap.get("schema")=="kinlink.resume_capsule/1","resume capsule schema")
-req(cap["canonical_truth"]["b_depth_range"]=="B31-B90","resume capsule B depth stale")
+req(cap["canonical_truth"]["b_depth_range"]=="B31-B100","resume capsule B depth stale")
 req(cap["canonical_truth"]["macro_capabilities"]==score["result"]["macro_capabilities"],"resume capsule macro count stale")
 print(f"memory-integrity: PASS | chronicle={len(chron)} | B-depth={len(ids)} | macros={score['result']['macro_capabilities']} | maturity={score['result']['overall_percent']}%")

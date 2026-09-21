@@ -17,7 +17,8 @@
       ".project-memory/B_EXPANSION_LEDGER.json",
       "docs/RESEARCH_NETWORK_QUALITY_TRUTH_0_8.md",
       "docs/B_EXPANSION_V3.md",
-      "docs/B_EXPANSION_V4.md"
+      "docs/B_EXPANSION_V4.md",
+      "docs/B_EXPANSION_V5.md"
     ],
     "C_evolution": [
       ".project-memory/PRODUCT_EVOLUTION_C.json",
@@ -80,6 +81,7 @@
     "Progress is organized by integrated waves; internal CI iterations must never be confused with user-facing micro-beta delivery.",
     "Canonical A+B+C and communication-policy files are Git-blob pinned by RESUME_CAPSULE; partial sync fails CI instead of silently degrading context.",
     "Volatile state is never frozen into the capsule as truth; takeover must read it fresh.",
-    "Cold-takeover CI must prove project_state, BUILD_STATUS, NEXT_UNCOMMITTED_ACTION and current communication ledger tell the same live story."
+    "Cold-takeover CI must prove project_state, BUILD_STATUS, NEXT_UNCOMMITTED_ACTION and current communication ledger tell the same live story.",
+    "Per-SIM Mobile Vault truth must never be inferred from aggregate mobile counters; B91-B100 preserve attribution, permission and restart semantics."
   ]
 }

@@ -9,9 +9,9 @@
 ## Full product scope
 - A+B+C macro capabilities: **80**
 - conservative maturity: **44.8%**
-- B-depth: **B31-B90** / 60 subrequirements
+- B-depth: **B31-B100** / 70 subrequirements
 - integrated program: **W0-W6**
-- W1 is substantially qualified; **W2 has started**
+- W1 is substantially qualified; **W2 has started under B5 attribution/permission rules**
 - no user-facing micro-beta chain
 
 ## Continuity state

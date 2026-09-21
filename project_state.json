@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "SINGLE_HUMAN_INSTALL_SURFACE_READY",
-  "next_uncommitted_action": "poll exact Android run 35659643216 for head 3b12df65ed64538159ca13eee752c3d8d762e3ad; if PASS promote W2 Mobile Vault core to machine-proven subrequirement evidence and continue W2 context/store/UI integration; no phone install",
+  "next_uncommitted_action": "poll exact Android run 35659643216 for head 3b12df65ed64538159ca13eee752c3d8d762e3ad; if PASS continue W2 store/source reconciliation/UI integration under B5 B31-B100; no phone install",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -526,7 +526,8 @@
       "unsigned_apk_sha256": "8b81f3ec51e6f558ebe5c1a41904b47fe65aef2c0cd1ee4e0d21d372837fa1ff"
     },
     "w2_started": true,
-    "w2_first_block": "MobilePlanVaultPolicy"
+    "w2_first_block": "MobilePlanVaultPolicy",
+    "latest_research_depth": "B91-B100 Mobile Vault attribution/Usage Access/multi-SIM/restart discipline"
   },
   "product_completion_scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
   "visual_counter_audit_policy": ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json",
@@ -543,9 +544,9 @@
     "continuity_context_manifest": ".project-memory/CONTINUITY_CONTEXT_MANIFEST.json",
     "continuity_context_design_lint_run": 35642199255,
     "continuity_context_design_lint_status": "PASS",
-    "b_depth_version": "B4",
-    "b_depth_range": "B31-B90",
-    "b_depth_count": 60,
+    "b_depth_version": "B5",
+    "b_depth_range": "B31-B100",
+    "b_depth_count": 70,
     "b_depth_ledger": ".project-memory/B_EXPANSION_LEDGER.json",
     "memory_policy": ".project-memory/MEMORY_POLICY_V2.json",
     "project_chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",
@@ -558,7 +559,8 @@
     "integrated_program": ".project-memory/INTEGRATED_PROGRAM_PLAN.json",
     "active_wave": "W1_PLATFORM_DIAGNOSTICS_AND_CAPABILITY_DISCOVERY",
     "resume_capsule": ".project-memory/RESUME_CAPSULE.json",
-    "cold_takeover_verifier": "tools/release/verify_cold_takeover.py"
+    "cold_takeover_verifier": "tools/release/verify_cold_takeover.py",
+    "b_depth_doc": "docs/B_EXPANSION_V5.md"
   },
   "communication": {
     "protocol": "v5",
