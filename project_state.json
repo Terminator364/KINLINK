@@ -234,17 +234,19 @@
     "latest_main_design_lint_status": "PASS"
   },
   "communication_protocol": {
-    "version": 5,
+    "version": 6,
     "tranche_style": "PRIMARY_NORMAL_CLOSE_25_MIN",
     "target_minutes": 25,
-    "useful_work_minutes": 22,
+    "useful_work_minutes": 20,
     "normal_close_reserve_minutes": 3,
     "final_reply_gate": "GMAIL_END_PROVIDER_ACK_AND_DURABLE_END_ACK",
     "gmail_label": "KINLINK",
     "apk_via_email": false,
-    "watchdog": "KINLINK Comms Watchdog",
+    "watchdog": "KINLINK Continuity & Comms",
     "watchdog_cardinality": 1,
-    "watchdog_behavior": "repair stale/missed END only; never auto-open orphan START"
+    "watchdog_behavior": "hourly failover only; foreground durable deadline is primary",
+    "hard_close_reserve_minutes": 5,
+    "watchdog_stale_work_threshold_minutes": 25
   },
   "release_flow": {
     "stage_a_field_candidate": {
