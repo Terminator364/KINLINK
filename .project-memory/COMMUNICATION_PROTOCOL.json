@@ -1,5 +1,5 @@
 {
-  "schema": "kinlink.communication_protocol/4",
+  "schema": "kinlink.communication_protocol/5",
   "project": "KINLINK",
   "cadence_minutes": 25,
   "primary_work_budget_minutes": 22,
@@ -11,6 +11,7 @@
   "rule_priority": "P0_COMMUNICATION_CONTINUITY_THEN_DELIVERY_SECURITY_THEN_PRODUCT",
   "start_sequence": [
     "RECONCILE_OR_CLOSE_ANY_PRIOR_TRANCHE",
+    "IF_MISSION_CONTINUES_AFTER_FORCED_CLOSE_CREATE_NEW_TRANCHE",
     "LOAD_DELIVERY_SECURITY_POLICY",
     "SEND_GMAIL_START",
     "VERIFY_START_PROVIDER_ACK_MESSAGE_ID_AND_THREAD_ID",
@@ -70,5 +71,14 @@
     "rule": "SCREENSHOTS_OR_FIELD_EVIDENCE_TRIGGER_AUTOMATIC_COUNTER_AUDIT_BEFORE_USER_IS_ASKED_TO_DIAGNOSE",
     "communication": "OPEN_NEW_TRANCHE_WITH_GMAIL_START_ACK_BEFORE_SUBSTANTIVE_REPAIR",
     "closeout": "GMAIL_END_ACK_AND_DURABLE_END_ACK_REQUIRED"
+  },
+  "interruption_recovery": {
+    "rule": "A_USER_MESSAGE_OR_TOOL_INTERRUPTION_MUST_NOT_SILENTLY_ABANDON_AN_ACTIVE_TRANCHE",
+    "reconcile_first": true,
+    "if_start_exists_end_missing": "checkpoint current work, persist close intent, send/verify exactly one END, persist CLOSED",
+    "if_mission_continues_after_close": "open a NEW tranche and send a NEW Gmail START before substantive continuation",
+    "in_tranche_deliverables": "PDF/report/artifact messages are neither START nor END unless explicitly typed as such",
+    "no_false_end": "Do not treat an intermediate requested deliverable as tranche completion.",
+    "idempotency": "Search/verify provider message IDs before replaying START or END."
   }
 }
