@@ -63,4 +63,26 @@ class DiagnosticReportBuilderTest {
         assertTrue(report.contains("no automatic data test"))
         assertTrue(report.contains("did not run a speed test"))
     }
+    @Test fun reportSeparatesMobileSlowLinkBurdenFromWifi() {
+        val report = DiagnosticReportBuilder.build(
+            DiagnosticSummary(
+                generatedAtMillis = 1L,
+                totalEvents = 0,
+                currentTruth = NetworkTruth(
+                    transport = Transport.CELLULAR,
+                    internetState = InternetState.VALIDATED
+                ),
+                stateCounts = emptyMap(),
+                recent24hMobileLowQualityEpisodeCount = 2,
+                recent24hMobileLowQualityMillis = 6_000L,
+                recent24hMobileLowQualityLongestMillis = 4_000L,
+                mobileLowQualityEpisodes = 2,
+                totalMobileLowQualityMillis = 6_000L,
+                longestMobileLowQualityMillis = 4_000L
+            )
+        )
+        assertTrue(report.contains("Slow-but-validated mobile 24h: 2"))
+        assertTrue(report.contains("Observed slow-but-validated mobile episodes"))
+    }
+
 }
