@@ -238,9 +238,11 @@ require(
     "candidate contract: UI overclaims Mobile Assist throughput improvement",
 )
 
+EVIDENCE_SAMPLING = (SRC / "com/terminator364/kinlink/core/MobileAssistEvidenceSamplingPolicy.kt").read_text(encoding="utf-8")
 require(
-    "MOBILE_EVIDENCE_SAMPLE_DELAYS_MS" in SERVICE
-    and "longArrayOf(21_000L, 42_000L, 65_000L)" in SERVICE
+    "MAX_SAMPLES_PER_ACTION = 3" in EVIDENCE_SAMPLING
+    and "longArrayOf(21_000L, 42_000L, 65_000L)" in EVIDENCE_SAMPLING
+    and "MobileAssistEvidenceSamplingPolicy.sampleDelaysMs" in SERVICE
     and "postDelayed" in SERVICE
     and "mobileAssistEvidenceHandler.removeCallbacksAndMessages(null)" in SERVICE,
     "candidate contract: bounded one-shot Mobile Assist evidence confirmation missing",
