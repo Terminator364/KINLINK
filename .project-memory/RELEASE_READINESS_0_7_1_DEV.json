@@ -2,18 +2,18 @@
   "project": "KINLINK",
   "line": "0.7.1-dev",
   "versionCode": 9,
-  "code_head": null,
-  "latest_full_machine_pass": null,
+  "code_head": "4e1459b802ae52b9edcb5de382db50927ebc6fcd",
+  "latest_full_machine_pass": "18907ecb5c365335a4f9c102a2b0610796da3983",
   "field_candidate_allowed": false,
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
       "status": "PENDING",
-      "evidence": "fresh full candidate CI required after CA-001..CA-004 repair"
+      "evidence": "exact-head Android CI + design-lint pending for 0.7.1 CA-001..CA-012 consolidated batch"
     },
     "MIGRATION": {
       "status": "PENDING",
-      "evidence": "schema unchanged, but executable migration simulation must pass on final repair head"
+      "evidence": "telemetry schema remains v5; executable migration simulation must pass on final exact head"
     },
     "SIGNER_CONTINUITY": {
       "status": "PENDING",
@@ -29,10 +29,18 @@
     }
   },
   "counter_audit_repairs": {
-    "CA-001": "IN_PROGRESS",
-    "CA-002": "IN_PROGRESS",
-    "CA-003": "IN_PROGRESS",
-    "CA-004": "IN_PROGRESS"
+    "CA-001": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
+    "CA-002": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
+    "CA-003": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
+    "CA-004": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
+    "CA-005": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
+    "CA-006": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
+    "CA-007": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
+    "CA-008": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
+    "CA-009": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
+    "CA-010": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
+    "CA-011": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI",
+    "CA-012": "INTEGRATED_PENDING_FINAL_EXACT_HEAD_CI"
   },
   "invariants": [
     "No micro-beta chain",
@@ -43,5 +51,19 @@
     "No Android routing ownership APIs",
     "VPN/TUN remains disabled",
     "Stable signer continuity is mandatory"
+  ],
+  "integrated_scope": [
+    "hard probe wall-clock envelope",
+    "battery quantization-aware resource evidence",
+    "bounded resource retry",
+    "authoritative live field verdict",
+    "pinned irreplaceable qualification receipts",
+    "exact version-scoped qualification SQL",
+    "stale historical qualified verdict revocation",
+    "two-phase active-default callback fence",
+    "manual Wi-Fi post-handoff abort",
+    "bounded shared diagnostic helper executor",
+    "structured privacy-safe diagnostic ZIP core bundle",
+    "exhaustive P0 transport/resource scenario sweep"
   ]
 }
