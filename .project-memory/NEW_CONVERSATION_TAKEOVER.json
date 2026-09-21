@@ -27,13 +27,21 @@
     ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
     ".project-memory/PRODUCT_EVOLUTION_C.json",
     "docs/FULL_PRODUCT_SPEC_A_B_C.md",
-    "docs/RESEARCH_NETWORK_QUALITY_TRUTH_0_8.md"
+    "docs/RESEARCH_NETWORK_QUALITY_TRUTH_0_8.md",
+    ".project-memory/MEMORY_POLICY_V2.json",
+    ".project-memory/PROJECT_CHRONICLE.jsonl",
+    ".project-memory/CANONICAL_CONTEXT_PACK.json",
+    ".project-memory/SUPERSESSION_LEDGER.json",
+    ".project-memory/B_EXPANSION_LEDGER.json",
+    "docs/B_EXPANSION_V2.md"
   ],
   "takeover_algorithm": [
     "DO_NOT_ASK_USER_TO_RECONSTRUCT_PRIOR_CHAT",
     "READ_DURABLE_STATE_BEFORE_EXPLAINING_ANYTHING",
     "VERIFY_FULL_CONTEXT_MANIFEST_BEFORE_SCOPING",
     "RECONCILE_ANY_UNCLOSED_TRANCHE_BEFORE_NEW_WORK",
+    "LOAD_PROJECT_CHRONICLE_SUPERSESSIONS_AND_CANONICAL_CONTEXT_PACK",
+    "LOAD_B_DEPTH_LEDGER_AND_RESEARCH_CORRECTIONS",
     "LOAD_AND_ENFORCE_DELIVERY_SECURITY_POLICY",
     "LOAD_PRODUCT_COMPLETION_SCORECARD_AND_VISUAL_COUNTER_AUDIT_POLICY",
     "AUTO_COUNTER_AUDIT_TARGET_SCREENSHOTS_BEFORE_WAITING_FOR_USER_DEFECT_LIST",
@@ -64,5 +72,5 @@
     "no_micro_beta": true,
     "next_action": "continue integrated 0.8 against FULL_REQUIREMENTS_LEDGER; no install until coherent batch closes"
   },
-  "full_spec_rule": "ALWAYS_LOAD_A_PLUS_B_PLUS_C_BEFORE_SCOPING_OR_PERCENT_COMPLETE; recent traceability is a derivative view, never the full product spec."
+  "full_spec_rule": "ALWAYS_LOAD_A_PLUS_B_PLUS_C_BEFORE_SCOPING_OR_PERCENT_COMPLETE; recent traceability is a derivative view, never the full product spec. B depth is a separate canonical layer; deepen it without silently changing the macro denominator."
 }

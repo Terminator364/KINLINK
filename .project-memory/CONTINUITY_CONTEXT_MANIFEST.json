@@ -1,5 +1,5 @@
 {
-  "schema": "kinlink.continuity_context_manifest/1",
+  "schema": "kinlink.continuity_context_manifest/2",
   "project": "KINLINK",
   "purpose": "prevent recent-slice amnesia and force A+B+C reconstruction before scope/progress/release decisions",
   "immutable_history_anchors": {
@@ -14,6 +14,7 @@
     ],
     "B_expansion": [
       ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
+      ".project-memory/B_EXPANSION_LEDGER.json",
       "docs/RESEARCH_NETWORK_QUALITY_TRUTH_0_8.md"
     ],
     "C_evolution": [
@@ -28,6 +29,12 @@
       "BUILD_STATUS.md",
       ".project-memory/ACTIVE_TRANCHE.json",
       ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl"
+    ],
+    "memory_core": [
+      ".project-memory/MEMORY_POLICY_V2.json",
+      ".project-memory/PROJECT_CHRONICLE.jsonl",
+      ".project-memory/CANONICAL_CONTEXT_PACK.json",
+      ".project-memory/SUPERSESSION_LEDGER.json"
     ]
   },
   "full_completion_contract": {
@@ -56,6 +63,9 @@
     "Every new researched capability added to B gets explicit provenance and a release/safety gate.",
     "The installed field baseline and active development successor are distinct.",
     "No micro-beta chain is created merely to show progress.",
-    "Gmail END provider ACK and durable END_ACK precede final app closeout."
+    "Gmail END provider ACK and durable END_ACK precede final app closeout.",
+    "B depth is loaded separately from the macro ledger so research can deepen requirements without gaming the completion denominator.",
+    "ConnectivityDiagnostics eligibility is capability-gated; Lite Observer never assumes callback delivery from registration success.",
+    "Canonical context pack is derived and must match scorecard/anchors; it never replaces chronicle/history."
   ]
 }

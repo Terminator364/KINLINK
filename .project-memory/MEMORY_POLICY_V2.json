@@ -1,0 +1,84 @@
+{
+  "schema": "kinlink.project_memory_policy/2",
+  "project": "KINLINK",
+  "doctrine": "MEMORY_IS_PROVENANCE_AND_RECOVERY_INFRASTRUCTURE_NOT_A_CHAT_SUMMARY",
+  "sources": [
+    "KINLINK A+B+C doctrine PDF / full spec",
+    "UCMF001 Universal Chronicle & Memory Fabric",
+    "APIAX07 continuity handoff",
+    "field/user C feedback"
+  ],
+  "object_model": [
+    "conversation",
+    "session",
+    "turn",
+    "event",
+    "artifact",
+    "requirement",
+    "decision",
+    "test",
+    "receipt",
+    "checkpoint",
+    "release",
+    "supersession",
+    "tombstone"
+  ],
+  "admission_states": [
+    "RAW",
+    "CANDIDATE",
+    "CANONICAL",
+    "SUPERSEDED",
+    "CONFLICT",
+    "TOMBSTONE",
+    "EXPIRED"
+  ],
+  "authority_rules": [
+    "Immutable preconception anchors define historical A but can be explicitly superseded for future behavior only with reason/evidence.",
+    "Explicit user product feedback is authoritative for desired behavior/preferences, not proof that implementation exists.",
+    "FIELD/device receipts outrank simulations for field claims.",
+    "Exact-head CI outranks design prose for machine-tested claims.",
+    "Derived summaries and retrieval scores are navigation aids, never canonical truth by themselves.",
+    "Conflicting authoritative facts become CONFLICT/HOLD until resolved; never silently merge."
+  ],
+  "write_protocol": [
+    "IDENTIFY_SCOPE_AND_WRITER",
+    "LOAD_CONTEXT_MANIFEST",
+    "READ_CURRENT_REVISION",
+    "CHECK_IDEMPOTENCY_KEY",
+    "VALIDATE_SCHEMA_AND_PRIVACY",
+    "WRITE_ATOMIC_CHANGE",
+    "READBACK",
+    "APPEND_CHRONICLE_EVENT",
+    "REFRESH_DERIVED_CONTEXT_PACK",
+    "PERSIST_NEXT_UNCOMMITTED_ACTION"
+  ],
+  "retrieval_contract": [
+    "load immutable A anchor",
+    "load B expansion ledger and research corrections",
+    "load C append-only evolution",
+    "load current macro ledger + scorecard",
+    "load active/installed version state",
+    "load unresolved conflicts/regressions",
+    "load communication/delivery state",
+    "load last checkpoint and next action"
+  ],
+  "context_pack_budget_rule": "Prefer a minimal authoritative pack over replaying full history. Cold history remains searchable and reconstructible.",
+  "supersession": {
+    "required_fields": [
+      "old_ref",
+      "new_ref",
+      "reason",
+      "evidence_refs",
+      "effective_at"
+    ],
+    "rule": "Never delete an old canonical fact merely because a new one is current."
+  },
+  "idempotency": "Every durable mutation/communication action must have a stable idempotency key or provider receipt used for reconciliation.",
+  "single_writer": "Critical mutable scopes use one active writer and revision/fencing semantics. A superseded writer becomes read-only.",
+  "readback": "An API success without readback is not COMMITTED for critical state.",
+  "privacy": "Secrets, signing material, tokens and unnecessary raw network identifiers are excluded from public/project memory.",
+  "compaction": "Indexes/summaries can be rebuilt or replaced; canonical events/evidence are retained according to explicit retention/tombstone rules.",
+  "interruption_rule": "On interruption or unknown result, reconcile durable state before replaying any action.",
+  "communication_rule": "Communication and product work are separate state machines; active mission continuation after forced close requires a new START before more substantive work.",
+  "verification": "tools/release/verify_memory_integrity.py"
+}

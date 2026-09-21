@@ -14,7 +14,7 @@ sc=load(".project-memory/PRODUCT_COMPLETION_SCORECARD.json")
 ledger=load(".project-memory/FULL_REQUIREMENTS_LEDGER.json")
 c=load(".project-memory/COMMUNICATION_PROTOCOL.json")
 
-req(m.get("schema")=="kinlink.continuity_context_manifest/1","manifest schema missing")
+req(m.get("schema")=="kinlink.continuity_context_manifest/2","manifest schema missing")
 req(m["immutable_history_anchors"]["preconception_anchor"]=="c565b6f1164d327caaa17e1de47d1cf48ed3c885","preconception anchor drifted")
 required=set()
 for layer in m["mandatory_context_layers"].values():

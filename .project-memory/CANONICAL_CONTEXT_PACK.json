@@ -1,0 +1,41 @@
+{
+  "schema": "kinlink.canonical_context_pack/2",
+  "generated_at": "2026-09-21T20:55:00+01:00",
+  "project": "KINLINK",
+  "immutable_A": {
+    "preconception_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
+    "file": ".project-memory/PRECONCEPTION_BASELINE_A.json"
+  },
+  "B": {
+    "full_spec": "docs/FULL_PRODUCT_SPEC_A_B_C.md",
+    "depth_v2": "docs/B_EXPANSION_V2.md",
+    "ledger": ".project-memory/B_EXPANSION_LEDGER.json",
+    "critical_correction": "ConnectivityDiagnostics callbacks are not assumed available in Lite Observer."
+  },
+  "C": {
+    "evolution": ".project-memory/PRODUCT_EVOLUTION_C.json",
+    "visual_counter_audit": ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json"
+  },
+  "completion": {
+    "macro_count": 80,
+    "maturity_percent": 44.8,
+    "rule": "B depth subrequirements do not change denominator until macro dedup review."
+  },
+  "field": {
+    "installed": "0.7.3-dev/versionCode11",
+    "verdict": "BASELINE_ONLY_NOT_NEAR_FINAL"
+  },
+  "active_engineering": {
+    "successor": "0.8.0-dev/versionCode12",
+    "branch": "dev/0.8.0-integrated-truth-and-control",
+    "last_known_pre_memory_hardening_head": "f331b0cbe02941452acab560742deadc7e87f700",
+    "current_focus": "truthful diagnostics eligibility, render harness requalification, broader A+B+C integration",
+    "install_requested": false
+  },
+  "communication": {
+    "current_tranche": "KINLINK-2026-09-21-2049-K25-08",
+    "state": "START_ACKNOWLEDGED_WORKING",
+    "gmail_start_message_id": "1a0c58438ce7c050"
+  },
+  "next_action": "Wait for exact-head 0.8 CI after harness/eligibility fixes; inspect rendered proof; continue large integrated A+B+C blocks; no phone install."
+}

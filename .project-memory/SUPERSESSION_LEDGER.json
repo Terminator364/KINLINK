@@ -1,0 +1,26 @@
+{
+  "schema": "kinlink.supersession_ledger/1",
+  "entries": [
+    {
+      "supersession_id": "SUP-001",
+      "old_ref": "recent-slice-56-percent",
+      "new_ref": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
+      "reason": "Recent traceability omitted recovered preconception breadth.",
+      "evidence_refs": [
+        ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
+        "docs/FULL_PRODUCT_SPEC_A_B_C.md"
+      ],
+      "effective_at": "2026-09-21T20:04:00+01:00"
+    },
+    {
+      "supersession_id": "SUP-002",
+      "old_ref": "ConnectivityDiagnostics-active-in-Lite-assumption",
+      "new_ref": ".project-memory/B_EXPANSION_LEDGER.json#B-RESEARCH-001",
+      "reason": "Android docs say callbacks are invoked only for eligible connectivity providers; registration alone is insufficient.",
+      "evidence_refs": [
+        "https://developer.android.com/reference/android/net/ConnectivityDiagnosticsManager"
+      ],
+      "effective_at": "2026-09-21T20:55:00+01:00"
+    }
+  ]
+}

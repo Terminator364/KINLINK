@@ -38,8 +38,16 @@ jobs:
           test -f .project-memory/FULL_REQUIREMENTS_LEDGER.json
           test -f .project-memory/PRODUCT_EVOLUTION_C.json
           test -f docs/FULL_PRODUCT_SPEC_A_B_C.md
+          test -f docs/B_EXPANSION_V2.md
+          test -f .project-memory/B_EXPANSION_LEDGER.json
+          test -f .project-memory/MEMORY_POLICY_V2.json
+          test -f .project-memory/PROJECT_CHRONICLE.jsonl
+          test -f .project-memory/CANONICAL_CONTEXT_PACK.json
+          test -f .project-memory/SUPERSESSION_LEDGER.json
       - name: Full A+B+C continuity context contract
         run: python tools/release/verify_continuity_context.py
+      - name: Project memory integrity contract
+        run: python tools/release/verify_memory_integrity.py
       - name: Communication protocol contract
         run: python tools/release/verify_communication_protocol.py
       - name: Delivery security contract

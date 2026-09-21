@@ -1,0 +1,406 @@
+{
+  "schema": "kinlink.b_expansion_ledger/2",
+  "version": "B2",
+  "generated_at": "2026-09-21",
+  "rule": "B is concrete depth, not vague enhancement. B31-B60 are subrequirements mapped to existing macro capabilities; they do not change the macro completion denominator unless a deduplication review proves a genuinely new independent product capability.",
+  "critical_research_corrections": [
+    {
+      "id": "B-RESEARCH-001",
+      "statement": "ConnectivityDiagnosticsManager registration success is not enough: Android invokes callbacks only for apps that offer connectivity, such as active VPNs, carrier apps with active subscriptions, or Wi-Fi suggesters; location permissions can also be required for location-bound networks.",
+      "impact": "0.8 Lite Observer must not claim native data-stall diagnostics are active. Keep the adapter dormant until KINLINK qualifies, and continue using NetworkCallback/NetworkCapabilities/LinkProperties in Lite mode.",
+      "source": "https://developer.android.com/reference/android/net/ConnectivityDiagnosticsManager"
+    },
+    {
+      "id": "B-RESEARCH-002",
+      "statement": "NetworkStatsManager cross-app/user-wide access requires user-granted Usage Access and queries can take seconds.",
+      "impact": "Make it optional, explicit and off the main thread; never make it a correctness dependency.",
+      "source": "https://developer.android.com/reference/android/app/usage/NetworkStatsManager"
+    },
+    {
+      "id": "B-RESEARCH-003",
+      "statement": "VpnService.Builder supports allowed/disallowed app rollout and explicit meteredness; VpnService can declare underlying networks.",
+      "impact": "Strong Stabilizer can be canary-deployed per app, preserve data-cost semantics and explicitly model underlying networks.",
+      "source": "https://developer.android.com/reference/android/net/VpnService.Builder"
+    }
+  ],
+  "items": [
+    {
+      "id": "B31",
+      "title": "Diagnostics eligibility ladder",
+      "parent_macro_ids": [
+        "K003",
+        "K009"
+      ],
+      "stage": "PARTIAL",
+      "design": "Separate universally available NetworkCallback/NetworkCapabilities/LinkProperties from ConnectivityDiagnostics callbacks that Android only delivers to eligible connectivity providers. Never call a silent registration success 'active diagnostics'.",
+      "acceptance": "Lite Observer proves Tier 0; Tier 1 only when KINLINK itself qualifies as active VPN/carrier/Wi-Fi suggester and required permissions are explicit.",
+      "source": "https://developer.android.com/reference/android/net/ConnectivityDiagnosticsManager"
+    },
+    {
+      "id": "B32",
+      "title": "Probe budget and ambiguity resolver",
+      "parent_macro_ids": [
+        "K003",
+        "K006",
+        "K060"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Keep zero-probe observation as default. Allow only explicitly budgeted tiny active probes when passive evidence cannot distinguish WAN/DNS/remote-service failure; mobile probes default OFF.",
+      "acceptance": "Every probe class has byte cap, transport policy, cooldown, user-visible rationale, privacy review and negative control.",
+      "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
+    },
+    {
+      "id": "B33",
+      "title": "Monotonic causal windows",
+      "parent_macro_ids": [
+        "K029",
+        "K031",
+        "K032"
+      ],
+      "stage": "PARTIAL",
+      "design": "Use wall time for human reports and monotonic elapsed time for durations, cooldowns, evidence windows and relapse logic.",
+      "acceptance": "Clock changes cannot alter causal duration, cooldown or at-most-once reporting.",
+      "source": "https://developer.android.com/reference/android/os/SystemClock"
+    },
+    {
+      "id": "B34",
+      "title": "Privacy-preserving network identity",
+      "parent_macro_ids": [
+        "K004",
+        "K005",
+        "K043",
+        "K061"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Represent trusted/home networks using pseudonymous local identifiers, confidence and recency; raw SSID/BSSID should not become general telemetry.",
+      "acceptance": "Identity survives normal reconnects without exposing raw identifiers in exports; reset/forget is explicit.",
+      "source": "https://developer.android.com/develop/connectivity/wifi/wifi-permissions"
+    },
+    {
+      "id": "B35",
+      "title": "Confidence calibration and abstention",
+      "parent_macro_ids": [
+        "K003",
+        "K006",
+        "K013"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Every diagnosis exposes evidence strength and can return UNKNOWN/HOLD rather than force a confident label.",
+      "acceptance": "Calibration tests include false-positive/false-negative cases; UI never converts internal confidence into unsupported certainty.",
+      "source": "https://developer.android.com/reference/android/net/NetworkCapabilities"
+    },
+    {
+      "id": "B36",
+      "title": "Incident fingerprints and recurrence clustering",
+      "parent_macro_ids": [
+        "K031",
+        "K077"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Create privacy-safe fingerprints for recurring combinations of transport, DNS, route, stall, handoff and resource symptoms.",
+      "acceptance": "Clusters are reproducible from durable events and never rely on payload inspection.",
+      "source": "https://aclanthology.org/2026.findings-acl.2069/"
+    },
+    {
+      "id": "B37",
+      "title": "Deterministic Personal Network Twin replay",
+      "parent_macro_ids": [
+        "K003",
+        "K028",
+        "K029"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Replay recorded event sequences through candidate policies offline before activation; compare candidate decisions with historical champion behavior.",
+      "acceptance": "Same event trace + same policy version yields same decisions; replays cannot mutate production state.",
+      "source": "https://martinfowler.com/eaaDev/EventSourcing.html"
+    },
+    {
+      "id": "B38",
+      "title": "Feature flags, kill switches and staged policy rollout",
+      "parent_macro_ids": [
+        "K025",
+        "K048",
+        "K054"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Every risky policy/action family gets a durable enablement flag, rollback target and blast-radius boundary.",
+      "acceptance": "One switch can disable a harmful policy without reinstall; state is versioned and read back.",
+      "source": "https://developer.android.com/topic/architecture"
+    },
+    {
+      "id": "B39",
+      "title": "OEM survival qualification matrix",
+      "parent_macro_ids": [
+        "K045",
+        "K053",
+        "K058"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Qualify long-running observer behavior across Samsung/One UI and representative Android API levels, including reboot, idle, battery saver and process death.",
+      "acceptance": "No OEM assumption is promoted from emulator-only evidence.",
+      "source": "https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start"
+    },
+    {
+      "id": "B40",
+      "title": "Existing VPN / Always-on / Lockdown coexistence",
+      "parent_macro_ids": [
+        "K019",
+        "K056"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Detect incompatible VPN state and avoid breaking user networking. Strong Stabilizer must coexist or fail closed when another VPN/lockdown policy owns the path.",
+      "acceptance": "Never silently replace an existing VPN; user escape path is always available.",
+      "source": "https://developer.android.com/reference/android/app/admin/DevicePolicyManager"
+    },
+    {
+      "id": "B41",
+      "title": "Per-app canary rollout for Strong Stabilizer",
+      "parent_macro_ids": [
+        "K019",
+        "K022",
+        "K023"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Start with an allowlist of selected apps instead of whole-device interception to constrain blast radius.",
+      "acceptance": "Allowed/disallowed sets are mutually exclusive, validated against installed packages and rollback to native networking.",
+      "source": "https://developer.android.com/reference/android/net/VpnService.Builder"
+    },
+    {
+      "id": "B42",
+      "title": "TUN parser and data-plane fuzzing",
+      "parent_macro_ids": [
+        "K019",
+        "K020",
+        "K079"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Before any production VPN data plane, fuzz IPv4/IPv6/UDP/TCP/fragment/truncation/error paths and enforce memory bounds.",
+      "acceptance": "Malformed packets cannot crash, loop, leak payloads or wedge teardown.",
+      "source": "https://source.android.com/docs/security/test"
+    },
+    {
+      "id": "B43",
+      "title": "Transport migration awareness",
+      "parent_macro_ids": [
+        "K019",
+        "K023",
+        "K066"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Design future data plane so it does not break QUIC migration and can observe handoffs without inventing seamlessness it cannot guarantee.",
+      "acceptance": "Tests cover address changes, NAT rebinding, path validation and rollback behavior.",
+      "source": "https://www.rfc-editor.org/rfc/rfc9000.html"
+    },
+    {
+      "id": "B44",
+      "title": "Happy-Eyeballs strategy for KINLINK-owned connections",
+      "parent_macro_ids": [
+        "K063",
+        "K064"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Where KINLINK itself opens diagnostic/control connections, prefer bounded IPv6/IPv4 racing rather than serial long stalls.",
+      "acceptance": "Only KINLINK-owned sockets are affected; no claim of changing other apps without VPN/data plane.",
+      "source": "https://www.rfc-editor.org/rfc/rfc8305.html"
+    },
+    {
+      "id": "B45",
+      "title": "Multi-path research gate, not a fake feature",
+      "parent_macro_ids": [
+        "K019",
+        "K023",
+        "K066"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Treat MPTCP/multi-path as a research/feasibility gate. Android app-space must not claim multipath aggregation unless the chosen stack and peers actually support it.",
+      "acceptance": "Prototype must prove compatibility, cost, battery and server requirements before inclusion.",
+      "source": "https://www.rfc-editor.org/rfc/rfc8684.html"
+    },
+    {
+      "id": "B46",
+      "title": "Meteredness inheritance contract",
+      "parent_macro_ids": [
+        "K019",
+        "K060"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Future VPN must preserve or deliberately mark meteredness so downstream apps do not assume free data when underlying mobile is paid.",
+      "acceptance": "Automated tests compare underlying and VPN metered state across Wi-Fi/mobile transitions.",
+      "source": "https://developer.android.com/reference/android/net/VpnService.Builder#setMetered(boolean)"
+    },
+    {
+      "id": "B47",
+      "title": "Multi-SIM / subscription-aware policy",
+      "parent_macro_ids": [
+        "K014",
+        "K015",
+        "K016",
+        "K060"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Model multiple mobile subscriptions separately where platform permission/role permits; never merge quotas or confidence across SIMs.",
+      "acceptance": "Unknown subscription identity stays UNKNOWN; no subscriber identifiers are exported.",
+      "source": "https://developer.android.com/reference/android/telephony/SubscriptionManager"
+    },
+    {
+      "id": "B48",
+      "title": "Resource SLO envelopes and percentile budgets",
+      "parent_macro_ids": [
+        "K044",
+        "K058",
+        "K075"
+      ],
+      "stage": "PARTIAL",
+      "design": "Move from single snapshots to rolling P50/P95 budgets for PSS, CPU, wakeups, battery drain and thermal throttling.",
+      "acceptance": "Promotion fails if benefit is smaller than resource cost or if tail usage violates weak-device budgets.",
+      "source": "https://developer.android.com/topic/performance/power"
+    },
+    {
+      "id": "B49",
+      "title": "Telemetry compaction and rebuildable indexes",
+      "parent_macro_ids": [
+        "K032"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Keep append-only canonical facts but compact/reindex derived views; indexes may be deleted and rebuilt from canonical events.",
+      "acceptance": "Compaction never removes evidence required for active gates or unresolved incidents.",
+      "source": "https://www.sqlite.org/wal.html"
+    },
+    {
+      "id": "B50",
+      "title": "Diagnostic redaction and privacy classes",
+      "parent_macro_ids": [
+        "K033",
+        "K043"
+      ],
+      "stage": "PARTIAL",
+      "design": "Assign privacy classes to every exported field and enforce allowlist-based diagnostic export.",
+      "acceptance": "Secrets, raw payloads and unnecessary identifiers cannot enter export even after new modules are added.",
+      "source": "https://developer.android.com/privacy-and-security"
+    },
+    {
+      "id": "B51",
+      "title": "Reproducible release metadata and SBOM",
+      "parent_macro_ids": [
+        "K047",
+        "K048"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Record exact dependencies/toolchain/build provenance and generate a dependency inventory for every promoted artifact.",
+      "acceptance": "A field artifact can be traced back to source commit, toolchain, signer and dependency set.",
+      "source": "https://slsa.dev/spec/v1.0/"
+    },
+    {
+      "id": "B52",
+      "title": "Backward-compatible telemetry/schema migration",
+      "parent_macro_ids": [
+        "K032",
+        "K046"
+      ],
+      "stage": "PARTIAL",
+      "design": "Version every durable schema; migrations are idempotent, tested across skips and reversible where feasible.",
+      "acceptance": "Old field data remains readable or has an explicit migration/tombstone path.",
+      "source": "https://developer.android.com/training/data-storage/room/migrating-db-versions"
+    },
+    {
+      "id": "B53",
+      "title": "Capability discovery before policy activation",
+      "parent_macro_ids": [
+        "K041",
+        "K056"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "At runtime discover API level, permissions, VPN ownership, Usage Access, battery/thermal support and optional diagnostics eligibility before enabling features.",
+      "acceptance": "UI and policy expose unavailable/optional/ready states instead of failing later.",
+      "source": "https://developer.android.com/guide/topics/permissions/overview"
+    },
+    {
+      "id": "B54",
+      "title": "Explainable action receipts",
+      "parent_macro_ids": [
+        "K029",
+        "K032",
+        "K035"
+      ],
+      "stage": "PARTIAL",
+      "design": "Every intervention should answer WHY, WHAT, EXPECTED BENEFIT, COST, RESULT and WHY NEXT/STOP in human and machine-readable forms.",
+      "acceptance": "No action without durable receipt; UI can show concise human explanation without raw enum leakage.",
+      "source": "https://cloudevents.io/"
+    },
+    {
+      "id": "B55",
+      "title": "Emergency disable and native-network escape",
+      "parent_macro_ids": [
+        "K040",
+        "K019",
+        "K025"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Provide a single local action to disable risky automation/data plane and return immediately to Android-native networking.",
+      "acceptance": "Must work without Internet and without cloud/BCP availability.",
+      "source": "https://developer.android.com/develop/connectivity/vpn"
+    },
+    {
+      "id": "B56",
+      "title": "Automatic harm rollback",
+      "parent_macro_ids": [
+        "K029",
+        "K078"
+      ],
+      "stage": "PARTIAL",
+      "design": "If post-action evidence crosses harm thresholds, stop the policy, restore prior safe state and persist a harmful-outcome receipt.",
+      "acceptance": "Rollback is bounded, idempotent and cannot oscillate indefinitely.",
+      "source": "https://martinfowler.com/bliki/CircuitBreaker.html"
+    },
+    {
+      "id": "B57",
+      "title": "Network impairment replay lab",
+      "parent_macro_ids": [
+        "K027",
+        "K052",
+        "K053"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Turn recurring field failures into deterministic CI scenarios: flapping, latency, loss, DNS blackhole, WAN-down/LAN-up, captive, IPv6 partial, process kill and resource pressure.",
+      "acceptance": "Each field incident can acquire a replay fixture and regression obligation.",
+      "source": "https://developer.android.com/studio/run/emulator-networking"
+    },
+    {
+      "id": "B58",
+      "title": "Human-interaction budget",
+      "parent_macro_ids": [
+        "K001",
+        "K002",
+        "K041",
+        "K054"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Treat taps, screenshots, reinstalls, permission trips and copy/paste as a measurable scarce resource, especially under fatigue/poor connectivity.",
+      "acceptance": "A release plan states expected human actions and rejects avoidable repeated steps.",
+      "source": "internal:C-feedback"
+    },
+    {
+      "id": "B59",
+      "title": "Bounded BCP diagnostic bridge",
+      "parent_macro_ids": [
+        "K051",
+        "K052"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Expose signed, allowlisted, read-only diagnostic/receipt retrieval to the wider personal control plane before any remote actuation.",
+      "acceptance": "No arbitrary shell, no secret export, local app remains correct if bridge is offline.",
+      "source": "internal:BCP/APIAX07"
+    },
+    {
+      "id": "B60",
+      "title": "Dead-end / impossibility registry",
+      "parent_macro_ids": [
+        "K055"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Persist disproven approaches, platform restrictions and failed assumptions so future conversations do not rediscover the same dead end.",
+      "acceptance": "Each entry records premise, evidence, scope, date, supersession condition and safe alternative.",
+      "source": "internal:memory-doctrine"
+    }
+  ]
+}

@@ -124,3 +124,16 @@ No field installation is requested until the integrated batch has:
 6. target-device field plan.
 
 Major missing A-value (Strong Stabilizer, full Mobile Vault/Carrier Wallet, learner, full screens/reports) remains explicitly visible and scheduled rather than disappearing from the specification.
+
+
+## B depth v2 — B31-B60
+
+The first B layer (B1-B30) is now supplemented by a second concrete depth layer in:
+- `docs/B_EXPANSION_V2.md`
+- `.project-memory/B_EXPANSION_LEDGER.json`
+
+Important research correction: `ConnectivityDiagnosticsManager` callbacks must not be assumed available to KINLINK Lite Observer. Android documents callback delivery only for apps that provide connectivity (for example active VPNs, carrier apps or Wi-Fi suggesters). The 0.8 Lite line therefore treats the adapter as dormant until eligibility is real and continues to rely on `NetworkCallback`, `NetworkCapabilities` and `LinkProperties`.
+
+B31-B60 add concrete depth for capability gating, probe budgets, causal time, privacy-preserving context identity, confidence/abstention, incident clustering, deterministic Network Twin replay, staged rollout, OEM survival, VPN coexistence, per-app canaries, fuzzing, QUIC/MPTCP/Happy-Eyeballs awareness, meteredness, multi-SIM economics, percentile resource SLOs, rebuildable telemetry, privacy classes, SBOM/provenance, schema evolution, capability discovery, explainable receipts, emergency escape, automatic harm rollback, impairment replay, human-interaction budgets, bounded BCP bridge and a dead-end registry.
+
+These are subrequirements mapped to existing macro capabilities. They change the 80-macro denominator only after explicit deduplication shows an independent product capability; this prevents B research from gaming the completion percentage.
