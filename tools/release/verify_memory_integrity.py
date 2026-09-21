@@ -16,9 +16,9 @@ b=load(".project-memory/B_EXPANSION_LEDGER.json")
 
 req(policy["schema"]=="kinlink.project_memory_policy/2","memory policy schema")
 req(policy["doctrine"]=="MEMORY_IS_PROVENANCE_AND_RECOVERY_INFRASTRUCTURE_NOT_A_CHAT_SUMMARY","doctrine drift")
-req(len(b["items"])==30,"B31-B60 depth count must be 30")
+req(len(b["items"])==50,"B31-B80 depth count must be 50")
 ids=[x["id"] for x in b["items"]]
-req(ids[0]=="B31" and ids[-1]=="B60","B depth range drift")
+req(ids[0]=="B31" and ids[-1]=="B80","B depth range drift")
 req(len(ids)==len(set(ids)),"duplicate B depth ids")
 req(pack["immutable_A"]["preconception_anchor"]=="c565b6f1164d327caaa17e1de47d1cf48ed3c885","context pack A anchor drift")
 req(pack["completion"]["macro_count"]==score["result"]["macro_capabilities"],"context pack macro count stale")

@@ -10,7 +10,11 @@
     "full_spec": "docs/FULL_PRODUCT_SPEC_A_B_C.md",
     "depth_v2": "docs/B_EXPANSION_V2.md",
     "ledger": ".project-memory/B_EXPANSION_LEDGER.json",
-    "critical_correction": "ConnectivityDiagnostics callbacks are not assumed available in Lite Observer."
+    "critical_correction": "ConnectivityDiagnostics callbacks are not assumed available in Lite Observer. Callback flow is also constrained by Android's onAvailable race guidance; current 0.8 work removes synchronous property queries.",
+    "depth_version": "B3",
+    "depth_range": "B31-B80",
+    "depth_count": 50,
+    "depth_v3": "docs/B_EXPANSION_V3.md"
   },
   "C": {
     "evolution": ".project-memory/PRODUCT_EVOLUTION_C.json",
@@ -29,7 +33,7 @@
     "successor": "0.8.0-dev/versionCode12",
     "branch": "dev/0.8.0-integrated-truth-and-control",
     "last_known_pre_memory_hardening_head": "f331b0cbe02941452acab560742deadc7e87f700",
-    "current_focus": "truthful diagnostics eligibility, render harness requalification, broader A+B+C integration",
+    "current_focus": "callback-race-safe truth assembly, visual proof requalification, broader A+B+C integration",
     "install_requested": false
   },
   "communication": {

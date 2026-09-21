@@ -1,8 +1,8 @@
 {
   "schema": "kinlink.b_expansion_ledger/2",
-  "version": "B2",
+  "version": "B3",
   "generated_at": "2026-09-21",
-  "rule": "B is concrete depth, not vague enhancement. B31-B60 are subrequirements mapped to existing macro capabilities; they do not change the macro completion denominator unless a deduplication review proves a genuinely new independent product capability.",
+  "rule": "B is concrete depth, not vague enhancement. B31-B80 are subrequirements mapped to existing macro capabilities; they do not change the macro completion denominator unless a deduplication review proves a genuinely new independent product capability.",
   "critical_research_corrections": [
     {
       "id": "B-RESEARCH-001",
@@ -401,6 +401,258 @@
       "design": "Persist disproven approaches, platform restrictions and failed assumptions so future conversations do not rediscover the same dead end.",
       "acceptance": "Each entry records premise, evidence, scope, date, supersession condition and safe alternative.",
       "source": "internal:memory-doctrine"
+    },
+    {
+      "id": "B61",
+      "title": "Callback-first race discipline",
+      "parent_macro_ids": [
+        "K003",
+        "K008"
+      ],
+      "stage": "PARTIAL",
+      "design": "Never synchronously query NetworkCapabilities/LinkProperties from onAvailable. Assemble truth from onCapabilitiesChanged/onLinkPropertiesChanged for the same still-active Network generation.",
+      "acceptance": "No synchronous capability/link-property query remains in NetworkObserver callback flow; publish requires both callback snapshots and active-network identity before/after reduction.",
+      "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
+    },
+    {
+      "id": "B62",
+      "title": "Callback registration budget",
+      "parent_macro_ids": [
+        "K008",
+        "K058"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Track every registered NetworkCallback as a scarce resource, unregister deterministically, and reject accidental duplicate registration.",
+      "acceptance": "Lifecycle test proves one observer registration per owner, deterministic unregister on stop, and no callback-count leak after repeated start/stop.",
+      "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
+    },
+    {
+      "id": "B63",
+      "title": "Default-network generation identity",
+      "parent_macro_ids": [
+        "K003",
+        "K066"
+      ],
+      "stage": "PARTIAL",
+      "design": "Treat each Android Network object as a generation token. Reconnecting to the same AP/carrier is a new generation; stale callbacks cannot mutate the current truth.",
+      "acceptance": "Loss/reconnect tests prove old Network callbacks cannot cancel or overwrite state of the new default Network.",
+      "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
+    },
+    {
+      "id": "B64",
+      "title": "Multi-transport truth model",
+      "parent_macro_ids": [
+        "K003",
+        "K063"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Do not force one physical-transport assumption when NetworkCapabilities can represent VPN plus Wi-Fi/mobile or other combinations. Preserve logical and underlying transport evidence separately.",
+      "acceptance": "Truth schema can express logical VPN + underlying transport set without collapsing it to one misleading label.",
+      "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
+    },
+    {
+      "id": "B65",
+      "title": "Bandwidth-estimate prior, never throughput verdict",
+      "parent_macro_ids": [
+        "K013",
+        "K031"
+      ],
+      "stage": "PARTIAL",
+      "design": "Treat getLinkDownstream/UpstreamBandwidthKbps as Android estimates/prior information, not current measured throughput or user QoE.",
+      "acceptance": "No user-facing quality verdict can be produced from bandwidth estimate alone; field history/user report can override it.",
+      "source": "https://developer.android.com/about/versions/12/features"
+    },
+    {
+      "id": "B66",
+      "title": "Meteredness independent of transport",
+      "parent_macro_ids": [
+        "K014",
+        "K060"
+      ],
+      "stage": "PARTIAL",
+      "design": "Never infer cost from Wi-Fi vs cellular. Use NET_CAPABILITY_NOT_METERED and explicit user/carrier budget state.",
+      "acceptance": "Metered Wi-Fi and unmetered cellular test fixtures do not follow transport-name assumptions.",
+      "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
+    },
+    {
+      "id": "B67",
+      "title": "Connectivity-thread work budget",
+      "parent_macro_ids": [
+        "K008",
+        "K058"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Keep ConnectivityManager callback work minimal; longer ledger/policy/report work must be serialized outside the connectivity callback thread without unbounded executors.",
+      "acceptance": "Callback handler latency budget is measured; long operations are offloaded to one bounded worker and cleanly shut down.",
+      "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
+    },
+    {
+      "id": "B68",
+      "title": "Radio signal freshness semantics",
+      "parent_macro_ids": [
+        "K006",
+        "K031"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "TelephonyManager signal strength can be cached/stale under power saving. Record freshness/source and never equate one cached signal sample with current radio quality.",
+      "acceptance": "UI/diagnostics expose stale/unknown rather than pretending a cached modem sample is fresh.",
+      "source": "https://developer.android.com/reference/android/telephony/TelephonyManager"
+    },
+    {
+      "id": "B69",
+      "title": "Permission-aware telephony evidence ladder",
+      "parent_macro_ids": [
+        "K006",
+        "K041"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Use only telephony observations available under ordinary user-granted permissions. Carrier-privileged/MODIFY_PHONE_STATE APIs remain out of normal KINLINK requirements.",
+      "acceptance": "Capability discovery marks each telephony signal as AVAILABLE/OPTIONAL/PRIVILEGED/UNAVAILABLE and degrades gracefully.",
+      "source": "https://developer.android.com/reference/android/telephony/TelephonyManager"
+    },
+    {
+      "id": "B70",
+      "title": "Multi-SIM observer isolation",
+      "parent_macro_ids": [
+        "K016",
+        "K047"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "When permissions allow, create per-subscription TelephonyManager/callback state. Never merge evidence, budgets or carrier confidence across SIMs.",
+      "acceptance": "Two-SIM simulation keeps subscription state and evidence windows separate and survives default-data-SIM changes.",
+      "source": "https://developer.android.com/reference/android/telephony/TelephonyManager"
+    },
+    {
+      "id": "B71",
+      "title": "Always-on and lockdown VPN awareness",
+      "parent_macro_ids": [
+        "K019",
+        "K056"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Strong Stabilizer must explicitly detect/handle always-on and lockdown semantics; a bad VPN must not accidentally strand networking.",
+      "acceptance": "Tests cover normal VPN, always-on, lockdown, reboot and service restart; escape/recovery behavior is documented and bounded.",
+      "source": "https://developer.android.com/reference/android/net/VpnService"
+    },
+    {
+      "id": "B72",
+      "title": "VPN consent revocation path",
+      "parent_macro_ids": [
+        "K019",
+        "K025",
+        "K056"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "VpnService permission can be revoked at any time. onRevoke must close descriptors/tunnel state, persist receipt and return to Android-native networking cleanly.",
+      "acceptance": "Revocation fault-injection proves no stuck TUN, loop, orphan worker or false active status.",
+      "source": "https://developer.android.com/reference/android/net/VpnService"
+    },
+    {
+      "id": "B73",
+      "title": "Underlying-network declaration integrity",
+      "parent_macro_ids": [
+        "K019",
+        "K023",
+        "K066"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "If future VPN upstream sockets are explicitly bound to Networks, call setUnderlyingNetworks whenever the set changes and preserve preference ordering.",
+      "acceptance": "Handoff tests prove system-visible underlying networks match actual protected upstream sockets before/after Wi-Fi↔mobile change.",
+      "source": "https://developer.android.com/reference/android/net/VpnService"
+    },
+    {
+      "id": "B74",
+      "title": "VPN loop-prevention contract",
+      "parent_macro_ids": [
+        "K019",
+        "K025"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Every tunnel/upstream socket whose destination falls inside VPN routes must be protect()'ed or equivalently excluded to prevent self-routing loops.",
+      "acceptance": "Fault test intentionally covers tunnel destination with VPN route and proves no infinite loop/resource runaway.",
+      "source": "https://developer.android.com/reference/android/net/VpnService"
+    },
+    {
+      "id": "B75",
+      "title": "Visible network is not necessarily usable",
+      "parent_macro_ids": [
+        "K003",
+        "K006"
+      ],
+      "stage": "PARTIAL",
+      "design": "A network seen by callback may lack Internet or be restricted. Internet usability requires relevant capabilities such as INTERNET/VALIDATED and policy context.",
+      "acceptance": "Network-present-but-restricted fixtures do not become 'Internet available'.",
+      "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
+    },
+    {
+      "id": "B76",
+      "title": "No background-network activation in Lite mode",
+      "parent_macro_ids": [
+        "K010",
+        "K060"
+      ],
+      "stage": "MACHINE_PROVEN",
+      "design": "Lite KINLINK observes the default network and must not request/bring up alternate paid networks. CHANGE_NETWORK_STATE stays forbidden until an explicitly redesigned subsystem justifies it.",
+      "acceptance": "Manifest/API fences reject requestNetwork/CHANGE_NETWORK_STATE in Lite build.",
+      "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
+    },
+    {
+      "id": "B77",
+      "title": "Telephony feature detection before access",
+      "parent_macro_ids": [
+        "K041",
+        "K058"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Check FEATURE_TELEPHONY_* support and nullable/unsupported behavior before telephony access, especially on tablets or unusual devices.",
+      "acceptance": "No-telephony device fixture remains fully functional in observer mode with explicit unavailable capability state.",
+      "source": "https://developer.android.com/reference/android/telephony/TelephonyManager"
+    },
+    {
+      "id": "B78",
+      "title": "Transport-history priors by context, not hard constants",
+      "parent_macro_ids": [
+        "K004",
+        "K028",
+        "K031"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Use local historical priors per trusted context/signal band/time window to interpret Android estimates, instead of fixed assumptions such as Wi-Fi > mobile.",
+      "acceptance": "Priors remain local, decay with age, are resettable, and never override direct recent field evidence.",
+      "source": "https://developer.android.com/about/versions/12/features"
+    },
+    {
+      "id": "B79",
+      "title": "Reconnect-generation reset semantics",
+      "parent_macro_ids": [
+        "K003",
+        "K032",
+        "K066"
+      ],
+      "stage": "DESIGN_ONLY",
+      "design": "Because reconnect yields a new Network object, evidence windows tied to the old generation must close/supersede rather than silently continue.",
+      "acceptance": "Reconnect simulation proves latency/stall/handoff windows are attributed to the correct generation and stale evidence cannot promote a new link.",
+      "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
+    },
+    {
+      "id": "B80",
+      "title": "Proof hierarchy for network quality",
+      "parent_macro_ids": [
+        "K013",
+        "K031",
+        "K052"
+      ],
+      "stage": "PARTIAL",
+      "design": "Formalize source precedence: explicit user incident + sustained local experience history > direct current validated state > platform capability estimates > static defaults. Confidence is source-aware and can abstain.",
+      "acceptance": "Contradiction tests show optimistic bandwidth estimates cannot override repeated stalls/user incident, while old incidents decay and do not permanently poison a recovered link.",
+      "source": "https://developer.android.com/develop/connectivity/network-ops/reading-network-state"
     }
+  ],
+  "research_notes": [
+    "Android warns not to synchronously query network properties from onAvailable; capabilities/link-properties callbacks are the race-safe source.",
+    "A Network object is generation-specific; reconnecting to the same physical network yields a new Network object.",
+    "NetworkCapabilities transport is not a reliable proxy for bandwidth or meteredness; VPN may expose multiple transports.",
+    "Telephony signal strength may be cached/stale under power saving and can be null/unsupported.",
+    "VpnService permission can be revoked; onRevoke must cleanly shut down. protect() prevents tunnel self-routing loops."
   ]
 }

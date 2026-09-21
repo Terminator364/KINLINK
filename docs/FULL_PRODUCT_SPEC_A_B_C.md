@@ -137,3 +137,12 @@ Important research correction: `ConnectivityDiagnosticsManager` callbacks must n
 B31-B60 add concrete depth for capability gating, probe budgets, causal time, privacy-preserving context identity, confidence/abstention, incident clustering, deterministic Network Twin replay, staged rollout, OEM survival, VPN coexistence, per-app canaries, fuzzing, QUIC/MPTCP/Happy-Eyeballs awareness, meteredness, multi-SIM economics, percentile resource SLOs, rebuildable telemetry, privacy classes, SBOM/provenance, schema evolution, capability discovery, explainable receipts, emergency escape, automatic harm rollback, impairment replay, human-interaction budgets, bounded BCP bridge and a dead-end registry.
 
 These are subrequirements mapped to existing macro capabilities. They change the 80-macro denominator only after explicit deduplication shows an independent product capability; this prevents B research from gaming the completion percentage.
+
+
+## B depth v3 — B61-B80
+
+The B layer is further deepened in `docs/B_EXPANSION_V3.md`.
+
+This batch adds platform-grounded constraints for callback race safety, callback registration budgets, Network-generation identity, multi-transport truth, bandwidth-estimate semantics, meteredness, callback-thread work budgets, telephony freshness/permissions/multi-SIM isolation, always-on/lockdown VPN behavior, revocation, underlying-network declarations, VPN loop prevention, visibility-vs-usability, prohibition of background alternate-network activation in Lite mode, telephony feature detection, context priors, reconnect reset semantics and an explicit quality-evidence hierarchy.
+
+The global macro denominator remains 80 pending deduplication; B depth cannot game the completion score.
