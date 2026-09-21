@@ -10,6 +10,8 @@ object MobileAssistEvidenceSamplingPolicy {
 
     fun valid(): Boolean =
         sampleDelaysMs.size == MAX_SAMPLES_PER_ACTION &&
-            sampleDelaysMs.zipWithNext().all { (a, b) -> b > a } &&
+            sampleDelaysMs.indices.drop(1).all { index ->
+                sampleDelaysMs[index] > sampleDelaysMs[index - 1]
+            } &&
             sampleDelaysMs.last() <= 65_000L
 }
