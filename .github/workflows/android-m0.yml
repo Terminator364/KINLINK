@@ -56,16 +56,16 @@ jobs:
         run: gradle :app:testDebugUnitTest --stacktrace
       - name: Android lint
         run: gradle :app:lintDebug --stacktrace
-      - name: Build CI debug APK
-        run: gradle :app:assembleDebug --stacktrace
+      - name: Build unsigned release-like candidate APK
+        run: gradle :app:assembleCandidate --stacktrace
       - name: SHA-256
         run: |
-          sha256sum app/build/outputs/apk/debug/app-debug.apk | tee app/build/outputs/apk/debug/KINLINK-debug.apk.sha256
-          cat > app/build/outputs/apk/debug/KINLINK-build-manifest.json <<EOF
+          sha256sum app/build/outputs/apk/candidate/app-candidate-unsigned.apk | tee app/build/outputs/apk/candidate/KINLINK-candidate-unsigned.apk.sha256
+          cat > app/build/outputs/apk/candidate/KINLINK-build-manifest.json <<EOF
           {
             "product": "KINLINK",
             "version": "0.7.0",
-            "variant": "debug-ci",
+            "variant": "candidate-unsigned",
             "commit": "${GITHUB_SHA}",
             "built_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "verification": "CI build and unit tests passed; stable-sign promotion and field verification pending"
@@ -75,7 +75,7 @@ jobs:
         with:
           name: KINLINK-0.7.0-ci-build
           path: |
-            app/build/outputs/apk/debug/app-debug.apk
-            app/build/outputs/apk/debug/KINLINK-debug.apk.sha256
-            app/build/outputs/apk/debug/KINLINK-build-manifest.json
+            app/build/outputs/apk/candidate/app-candidate-unsigned.apk
+            app/build/outputs/apk/candidate/KINLINK-candidate-unsigned.apk.sha256
+            app/build/outputs/apk/candidate/KINLINK-build-manifest.json
           retention-days: 7
