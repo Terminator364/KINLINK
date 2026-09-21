@@ -457,3 +457,16 @@ require(
     "getOrDefault(tuning.mobileAssistMaxActionsPerHour)" in MOBILE_ASSIST,
     "candidate contract: Mobile Assist action-history failure can bypass profile cap",
 )
+
+BUILD_MANIFEST_WRITER = ROOT / "tools/release/write_build_manifest.py"
+require(BUILD_MANIFEST_WRITER.exists(), "candidate contract: build-manifest writer missing")
+writer_text = BUILD_MANIFEST_WRITER.read_text(encoding="utf-8")
+require(
+    "versionCode" in writer_text and "versionName" in writer_text and "readback mismatch" in writer_text,
+    "candidate contract: release provenance is not derived/read back from Gradle version",
+)
+workflow_text = (ROOT / ".github/workflows/android-m0.yml").read_text(encoding="utf-8")
+require(
+    "write_build_manifest.py" in workflow_text and '"version": "0.7.3-dev"' not in workflow_text,
+    "candidate contract: workflow still contains stale hard-coded release version metadata",
+)

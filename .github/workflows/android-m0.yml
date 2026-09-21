@@ -111,23 +111,12 @@ jobs:
           set -euo pipefail
           APK="app/build/outputs/apk/candidate/app-candidate-unsigned.apk"
           sha256sum "$APK" | tee app/build/outputs/apk/candidate/KINLINK-candidate-unsigned.apk.sha256
-          EXPECTED_CODE="$(sed -nE 's/^[[:space:]]*versionCode = ([0-9]+).*/\\1/p' app/build.gradle.kts | head -n1)"
-          EXPECTED_NAME="$(sed -nE 's/^[[:space:]]*versionName = "([^"]+)".*/\\1/p' app/build.gradle.kts | head -n1)"
-          test -n "$EXPECTED_CODE"
-          test -n "$EXPECTED_NAME"
-          cat > app/build/outputs/apk/candidate/KINLINK-build-manifest.json <<EOF
-          {
-            "product": "KINLINK",
-            "version": "$EXPECTED_NAME",
-            "versionCode": $EXPECTED_CODE,
-            "variant": "candidate-unsigned",
-            "commit": "${GITHUB_SHA}",
-            "built_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "verification": "CI build, unit tests, Android lint, safety fences and rendered responsive UI matrix passed; stable-sign promotion and field verification pending"
-          }
-          EOF
-          grep -F "\"version\": \"$EXPECTED_NAME\"" app/build/outputs/apk/candidate/KINLINK-build-manifest.json
-          grep -F "\"versionCode\": $EXPECTED_CODE" app/build/outputs/apk/candidate/KINLINK-build-manifest.json
+          python tools/release/write_build_manifest.py \
+            --output app/build/outputs/apk/candidate/KINLINK-build-manifest.json \
+            --commit "${GITHUB_SHA}" \
+            --built-at-utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          python -m json.tool app/build/outputs/apk/candidate/KINLINK-build-manifest.json
+
       - uses: actions/upload-artifact@v4
         with:
           name: KINLINK-0.8.0-dev-ci-build
