@@ -31,6 +31,9 @@ class KinlinkObserverService : Service() {
     private val mobileAssistEvidenceHandler by lazy {
         android.os.Handler(android.os.Looper.getMainLooper())
     }
+    private val mobileAssistEvidenceResourceGuard by lazy {
+        DeviceResourceGuard(this)
+    }
     private val mobileAssistEvidenceGeneration = AtomicLong(0L)
     private val mobileAssistRelapseGeneration = AtomicLong(0L)
     private val interruptionTracker = ConnectivityInterruptionTracker()
@@ -273,6 +276,17 @@ class KinlinkObserverService : Service() {
         for (delayMs in MobileAssistEvidenceSamplingPolicy.sampleDelaysMs) {
             mobileAssistEvidenceHandler.postDelayed({
                 if (generation != mobileAssistEvidenceGeneration.get()) return@postDelayed
+                if (mobileAssistEvidenceResourceGuard.snapshot().constrained) {
+                    runCatching {
+                        ledger.appendAction(
+                            "MOBILE_ASSIST_EVIDENCE_RESOURCE_ABORT",
+                            false,
+                            "Preuve post-action interrompue pour protéger batterie/RAM/température."
+                        )
+                    }
+                    mobileAssistEvidenceGeneration.incrementAndGet()
+                    return@postDelayed
+                }
                 val cm = getSystemService(ConnectivityManager::class.java)
                 val network = cm.activeNetwork ?: return@postDelayed
                 val truth = ConnectivityTruthEngine.reduce(
@@ -344,6 +358,17 @@ class KinlinkObserverService : Service() {
         val generation = mobileAssistRelapseGeneration.incrementAndGet()
         mobileAssistEvidenceHandler.postDelayed({
             if (generation != mobileAssistRelapseGeneration.get()) {
+                return@postDelayed
+            }
+            if (mobileAssistEvidenceResourceGuard.snapshot().constrained) {
+                runCatching {
+                    ledger.appendAction(
+                        "MOBILE_ASSIST_RELAPSE_RESOURCE_ABORT",
+                        false,
+                        "Recheck de rechute annulé pour protéger batterie/RAM/température."
+                    )
+                }
+                mobileAssistRelapseGeneration.incrementAndGet()
                 return@postDelayed
             }
             val cm = getSystemService(ConnectivityManager::class.java)
