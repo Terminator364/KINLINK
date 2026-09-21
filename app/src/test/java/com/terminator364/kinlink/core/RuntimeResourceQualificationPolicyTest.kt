@@ -68,6 +68,33 @@ class RuntimeResourceQualificationPolicyTest {
         assertTrue(a.reasons.contains("BACKGROUND_CHURN_OVER_LIMIT"))
     }
 
+    @Test fun onePointDropAtThirtyMinutesIsQuantizationTolerated() {
+        val a = RuntimeResourceQualificationPolicy.evaluate(
+            RuntimeResourceEvidence(
+                durationMillis = 30L * 60L * 1000L,
+                pssDeltaMiB = 2,
+                batteryPercentPerHour = 2.0,
+                backgroundChurnEvents = 20,
+                batteryDeltaPercent = 1
+            )
+        )
+        assertEquals(RuntimeResourceVerdict.PASS, a.verdict)
+    }
+
+    @Test fun twoPointDropAtThirtyMinutesStillBlocks() {
+        val a = RuntimeResourceQualificationPolicy.evaluate(
+            RuntimeResourceEvidence(
+                durationMillis = 30L * 60L * 1000L,
+                pssDeltaMiB = 2,
+                batteryPercentPerHour = 4.0,
+                backgroundChurnEvents = 20,
+                batteryDeltaPercent = 2
+            )
+        )
+        assertEquals(RuntimeResourceVerdict.BLOCKED, a.verdict)
+        assertTrue(a.reasons.contains("BATTERY_RATE_OVER_LIMIT"))
+    }
+
     @Test fun chargingOrCoarseBatteryEvidenceCannotProducePass() {
         val a = RuntimeResourceQualificationPolicy.evaluate(
             RuntimeResourceEvidence(
