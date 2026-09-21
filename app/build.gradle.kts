@@ -20,6 +20,7 @@ android {
         targetSdk = 37
         versionCode = 11
         versionName = "0.7.3-dev"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -63,4 +64,8 @@ tasks.matching { it.name == "validateSigningRelease" }.configureEach {
 dependencies {
     implementation("androidx.core:core:1.16.0")
     testImplementation("junit:junit:4.13.2")
+
+    androidTestImplementation("androidx.test:core:1.7.0")
+    androidTestImplementation("androidx.test:runner:1.7.0")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
 }
