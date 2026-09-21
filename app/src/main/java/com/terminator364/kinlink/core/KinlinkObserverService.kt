@@ -32,6 +32,7 @@ class KinlinkObserverService : Service() {
         android.os.Handler(android.os.Looper.getMainLooper())
     }
     private val mobileAssistEvidenceGeneration = AtomicLong(0L)
+    private val mobileAssistRelapseGeneration = AtomicLong(0L)
     private val interruptionTracker = ConnectivityInterruptionTracker()
     private val degradedQualityEpisodeTracker = DegradedQualityEpisodeTracker()
     private val mobileDegradedQualityEpisodeTracker =
@@ -211,7 +212,9 @@ class KinlinkObserverService : Service() {
                         "${evidence.summary} baseline=${evidence.baseline.name}; current=${evidence.current.name}"
                     )
                 }
-                recordMobileAssistEvidence(truth)
+                recordMobileAssistEvidence(truth)?.let { evidence ->
+                    handleMobileAssistEvidence(evidence, truth)
+                }
                 interruptionTracker.observe(truth)?.let { interruption ->
                     ledger.appendAction(
                         "INTERRUPTION_${interruption.severity.name}",
@@ -279,15 +282,21 @@ class KinlinkObserverService : Service() {
                     budgetState = runCatching { mobileBudget.sample().state }
                         .getOrDefault(BudgetState.BALANCE_UNKNOWN)
                 )
-                if (recordMobileAssistEvidence(truth)) {
-                    mobileAssistEvidenceGeneration.incrementAndGet()
+                val evidence = recordMobileAssistEvidence(truth)
+                if (evidence != null) {
+                    handleMobileAssistEvidence(evidence, truth)
+                    if (evidence.result != MobileAssistEvidenceResult.INCONCLUSIVE) {
+                        mobileAssistEvidenceGeneration.incrementAndGet()
+                    }
                 }
             }, delayMs)
         }
     }
 
-    private fun recordMobileAssistEvidence(truth: NetworkTruth): Boolean {
-        val evidence = mobileAssistEvidenceTracker.observe(truth) ?: return false
+    private fun recordMobileAssistEvidence(
+        truth: NetworkTruth
+    ): MobileAssistEvidence? {
+        val evidence = mobileAssistEvidenceTracker.observe(truth) ?: return null
         runCatching {
             ledger.appendAction(
                 "MOBILE_ASSIST_EVIDENCE_${evidence.result.name}",
@@ -296,7 +305,60 @@ class KinlinkObserverService : Service() {
                 "${evidence.summary} baseline=${evidence.baseline.name}/${evidence.baselineScore}; current=${evidence.current.name}/${evidence.currentScore}; elapsedMs=${evidence.elapsedMillis}; transport=CELLULAR"
             )
         }
-        return evidence.result != MobileAssistEvidenceResult.INCONCLUSIVE
+        return evidence
+    }
+
+    private fun handleMobileAssistEvidence(
+        evidence: MobileAssistEvidence,
+        truth: NetworkTruth
+    ) {
+        if (evidence.result == MobileAssistEvidenceResult.SUSTAINED_BETTER) {
+            scheduleMobileAssistRelapseRecheck()
+            return
+        }
+        if (
+            MobileAssistRelapseGuardPolicy.shouldReevaluate(evidence.result) &&
+            truth.transport == Transport.CELLULAR
+        ) {
+            runCatching {
+                ledger.appendAction(
+                    "MOBILE_ASSIST_CONTINUOUS_REEVALUATION",
+                    true,
+                    "Rechute après amélioration soutenue : réévaluation bornée après garde-fous."
+                )
+            }
+            mobileAssist?.onTruth(
+                truth,
+                recoveryModeStore.current()
+            )
+        }
+    }
+
+    private fun scheduleMobileAssistRelapseRecheck() {
+        val generation = mobileAssistRelapseGeneration.incrementAndGet()
+        mobileAssistEvidenceHandler.postDelayed({
+            if (generation != mobileAssistRelapseGeneration.get()) {
+                return@postDelayed
+            }
+            val cm = getSystemService(ConnectivityManager::class.java)
+            val network = cm.activeNetwork ?: return@postDelayed
+            val truth = ConnectivityTruthEngine.reduce(
+                cm.getNetworkCapabilities(network),
+                cm.getLinkProperties(network)
+            ).copy(
+                budgetState = runCatching { mobileBudget.sample().state }
+                    .getOrDefault(BudgetState.BALANCE_UNKNOWN)
+            )
+            recordMobileAssistEvidence(truth)?.let { evidence ->
+                if (
+                    MobileAssistRelapseGuardPolicy.shouldReevaluate(
+                        evidence.result
+                    )
+                ) {
+                    handleMobileAssistEvidence(evidence, truth)
+                }
+            }
+        }, MobileAssistRelapseGuardPolicy.RECHECK_DELAY_MS)
     }
 
     private fun scheduleRuntimeBudgetCheckpoint() {
@@ -509,6 +571,7 @@ class KinlinkObserverService : Service() {
     override fun onDestroy() {
         runtimeBudgetHandler.removeCallbacks(runtimeBudgetCheckpointRunnable)
         mobileAssistEvidenceGeneration.incrementAndGet()
+        mobileAssistRelapseGeneration.incrementAndGet()
         mobileAssistEvidenceHandler.removeCallbacksAndMessages(null)
         if (powerReceiverRegistered) {
             runCatching { unregisterReceiver(powerStateReceiver) }
