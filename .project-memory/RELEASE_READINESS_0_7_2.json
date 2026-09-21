@@ -1,0 +1,48 @@
+{
+  "schema": "kinlink.release_readiness/2",
+  "version": "0.7.2",
+  "versionCode": 10,
+  "source_commit": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
+  "source_branch": "dev/0.7.2-continuous-improvement",
+  "field_candidate_allowed": true,
+  "promotion_allowed": false,
+  "gates": {
+    "MACHINE": {
+      "status": "PASS",
+      "evidence": "design-lint 35610708971 + 35610716886 PASS; Android candidate 35610708876 PASS on exact head"
+    },
+    "MIGRATION": {
+      "status": "PASS",
+      "evidence": "design-lint exact head includes telemetry migration and candidate-contract checks"
+    },
+    "SIGNER_CONTINUITY": {
+      "status": "PASS",
+      "evidence": "signed APK a67537... verifies APK Signature Scheme v3 with canonical cert 2a2280..."
+    },
+    "DRIVE_READBACK": {
+      "status": "PASS",
+      "evidence": "Drive file 1pBf... re-materialized; SHA-256 exact match a67537..."
+    },
+    "FIELD_HANDOFF": {
+      "status": "PENDING",
+      "evidence": "requires target-phone versionCode 10 install + Wi-Fi/mobile return proof"
+    },
+    "RESOURCE_QUALIFICATION": {
+      "status": "PENDING",
+      "evidence": "requires >=30 min target-phone v10 resource qualification"
+    },
+    "CONTINUOUS_EVIDENCE_FIELD": {
+      "status": "PENDING",
+      "evidence": "requires real target-phone Mobile Assist evidence/relapse receipts; no causal throughput claim"
+    }
+  },
+  "artifact": {
+    "id": 10643704115,
+    "zip_sha256": "ad2fee91b3d51fa5c2528767dbe004d92366ee8ae46bb9450a35f11a86f7f18b",
+    "unsigned_apk_sha256": "d961ea42c09a6509a228f4bfe9b55b197598efaea2f942ef649e8c8983925779",
+    "signed_apk_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
+    "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
+    "drive_file_id": "1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU"
+  },
+  "truth_boundary": "Mobile Assist L1 continuous-care evidence is correlation/observability, not proof of carrier throughput causality. Strong stabilizer remains separately gated."
+}
