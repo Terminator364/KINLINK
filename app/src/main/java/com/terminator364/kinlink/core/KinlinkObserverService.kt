@@ -24,6 +24,8 @@ class KinlinkObserverService : Service() {
     private val handoffAudit = NetworkHandoffAudit()
     private val handoffOutcomeTracker = HandoffOutcomeTracker()
     private val recoveryEffectivenessTracker = RecoveryEffectivenessTracker()
+    private val mobileAssistEffectivenessTracker =
+        RecoveryEffectivenessTracker(Transport.CELLULAR)
     private val interruptionTracker = ConnectivityInterruptionTracker()
     private val degradedQualityEpisodeTracker = DegradedQualityEpisodeTracker()
     private val problemTransitionTracker = PassiveProblemTransitionTracker()
@@ -134,7 +136,9 @@ class KinlinkObserverService : Service() {
             recovery = AutopilotRecoveryController(this, ledger) { baseline ->
                 recoveryEffectivenessTracker.start(baseline)
             }
-            mobileAssist = MobileAssistController(this, ledger)
+            mobileAssist = MobileAssistController(this, ledger) { baseline ->
+                mobileAssistEffectivenessTracker.start(baseline)
+            }
         } else if (!coreRuntimeReady) {
             runCatching {
                 ledger.appendAction(
@@ -196,6 +200,13 @@ class KinlinkObserverService : Service() {
                         evidence.result == RecoveryEffectiveness.IMPROVED ||
                             evidence.result == RecoveryEffectiveness.UNCHANGED,
                         "${evidence.summary} baseline=${evidence.baseline.name}; current=${evidence.current.name}"
+                    )
+                }
+                mobileAssistEffectivenessTracker.observe(truth)?.let { evidence ->
+                    ledger.appendAction(
+                        "MOBILE_ASSIST_OUTCOME_${evidence.result.name}",
+                        evidence.result == RecoveryEffectiveness.IMPROVED,
+                        "${evidence.summary} baseline=${evidence.baseline.name}; current=${evidence.current.name}; transport=CELLULAR"
                     )
                 }
                 interruptionTracker.observe(truth)?.let { interruption ->
