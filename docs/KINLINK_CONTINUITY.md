@@ -20,11 +20,15 @@ When this command is used in another KINLINK conversation/workspace:
 7. Preserve fail-open/mobile-observation-only invariants and CI fences.
 8. Prefer large coherent batches over micro-RCs.
 9. Communication protocol is mandatory for every substantial KINLINKGO tranche (current cadence: 25 minutes):
-   - send a Gmail start-of-tranche message first;
+   - send the Gmail start-of-tranche message first and apply the Gmail label `KINLINK`;
    - execute one coherent 25-minute tranche, not micro-betas;
-   - send the complete end-of-tranche report by Gmail first;
-   - in the ChatGPT app, respond only with a short instruction to check Gmail plus Kinshasa date/time;
-   - do not duplicate the technical report in the app unless Gmail delivery fails.
+   - intermediate user feedback does not interrupt or restart the active tranche;
+   - the only permitted early stop is a true human gate objectively required to continue;
+   - send the complete end-of-tranche report by Gmail before any ChatGPT-app response and apply label `KINLINK`;
+   - only after the end mail is sent, the ChatGPT app response is the short instruction to check Gmail plus Kinshasa date/time;
+   - do not duplicate the technical report in the app unless Gmail delivery fails;
+   - never attach installation APKs to Gmail; use the KINLINK Drive delivery tree.
+   - canonical machine-readable protocol: `.project-memory/COMMUNICATION_PROTOCOL.json`.
 
 ## Current durable state
 
