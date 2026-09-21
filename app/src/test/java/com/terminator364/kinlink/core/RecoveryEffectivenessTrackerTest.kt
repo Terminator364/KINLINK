@@ -45,4 +45,36 @@ class RecoveryEffectivenessTrackerTest {
             )?.result
         )
     }
+    @Test fun cellularTrackerMeasuresTwoValidatedMobileObservations() {
+        fun mobile(down: Int, up: Int) = NetworkTruth(
+            transport = Transport.CELLULAR,
+            internetState = InternetState.VALIDATED,
+            downstreamKbps = down,
+            upstreamKbps = up
+        )
+        val tracker = RecoveryEffectivenessTracker(Transport.CELLULAR)
+        tracker.start(mobile(700, 180))
+        assertNull(tracker.observe(mobile(2_000, 700)))
+        assertEquals(
+            RecoveryEffectiveness.IMPROVED,
+            tracker.observe(mobile(20_000, 5_000))?.result
+        )
+    }
+
+    @Test fun cellularTrackerRejectsWifiHandoffAsInconclusive() {
+        val tracker = RecoveryEffectivenessTracker(Transport.CELLULAR)
+        tracker.start(
+            NetworkTruth(
+                transport = Transport.CELLULAR,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 700,
+                upstreamKbps = 180
+            )
+        )
+        assertEquals(
+            RecoveryEffectiveness.INCONCLUSIVE,
+            tracker.observe(wifi(20_000, 5_000))?.result
+        )
+    }
+
 }
