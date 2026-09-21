@@ -32,4 +32,44 @@ class PassiveRadioDiagnosisTest {
         )
         assertEquals(PassiveProblemCause.CONGESTION_SUSPECT, a.cause)
     }
+    @Test fun constrainedCellularIsClassifiedSeparately() {
+        val a = PassiveProblemClassifier.classify(
+            NetworkTruth(
+                transport = Transport.CELLULAR,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 700,
+                upstreamKbps = 200,
+                androidNotCongested = true
+            )
+        )
+        assertEquals(PassiveProblemCause.MOBILE_LOW_CAPACITY, a.cause)
+    }
+
+    @Test fun congestedCellularHasPriorityOverGenericMobileLowCapacity() {
+        val a = PassiveProblemClassifier.classify(
+            NetworkTruth(
+                transport = Transport.CELLULAR,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 2_000,
+                upstreamKbps = 700,
+                androidNotCongested = false
+            )
+        )
+        assertEquals(PassiveProblemCause.MOBILE_CONGESTION_SUSPECT, a.cause)
+    }
+
+    @Test fun suspendedCellularIsNeverMistakenForCongestion() {
+        val a = PassiveProblemClassifier.classify(
+            NetworkTruth(
+                transport = Transport.CELLULAR,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 700,
+                upstreamKbps = 200,
+                androidNotCongested = false,
+                androidNotSuspended = false
+            )
+        )
+        assertEquals(PassiveProblemCause.MOBILE_NETWORK_SUSPENDED, a.cause)
+    }
+
 }
