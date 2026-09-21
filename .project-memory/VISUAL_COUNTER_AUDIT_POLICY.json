@@ -38,5 +38,19 @@
     "verdict": "REJECT_NEAR_FINAL",
     "findings_count": 8,
     "successor_required": "0.8.0 integrated truth + control"
+  },
+  "latest_ci_audit": {
+    "source": "GitHub Actions run 35652449928",
+    "exact_head": "c6fb86ec8ef075f7e0cbdfd9cf0f04b8954088f1",
+    "screenshot_count": 45,
+    "inspected_count": 45,
+    "verdict": "PASS_LAYOUT_AND_TRUTH_WITH_NONBLOCKING_SEMANTIC_FINDINGS",
+    "findings": [
+      "primary history used technical stall(s) Android wording",
+      "offline control card reused generic Qualité sous surveillance title",
+      "platform capability/readiness absent from technical details"
+    ],
+    "remediation_head": "b54020291f866042103ad0f63cae3645977638d1",
+    "field_release_authorized": false
   }
 }
