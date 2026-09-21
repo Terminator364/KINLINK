@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_1_MOBILE_ASSIST_REOPENED_BEFORE_FIELD_DELIVERY",
-  "status": "ENGINEERING_ACTIVE_NO_HUMAN_GATE",
+  "phase": "KINLINK_0_7_1_MOBILE_ASSIST_FIELD_CANDIDATE_READY",
+  "status": "HUMAN_GATE_ONE_IN_PLACE_INSTALL_REQUIRED",
   "candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7
@@ -9,7 +9,7 @@
   "p0_mobile_handoff": {
     "status": "MACHINE_HARDENED",
     "original_incident_causality": "UNPROVEN",
-    "cellular_behavior": "OBSERVATION_ONLY",
+    "cellular_behavior": "MOBILE_ASSIST_LEVEL_1_ZERO_PROBE_ANDROID_ROUTING_CONTROL_RETAINED",
     "network_ownership_apis": "FORBIDDEN_BY_CI",
     "post_handoff_quiet_period_ms": 5000,
     "recovery_deadline_ms": 5000
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "integrate Mobile Assist L1 into 0.7.1 before any field delivery; rerun exact-head CI/design-lint/counter-audit; rebuild/re-sign only after mobile assist batch is green; old signed 0.7.1 artifact db2f7327... is superseded-before-delivery and must never be installed",
+  "next_uncommitted_action": "user installs exact Drive field candidate 0.7.1 Mobile Assist in-place over installed 0.7.0; after install collect versionCode 9 self-test + handoff + >=30m resource evidence; do not replace canonical RC3 until Stage B PASS",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -82,7 +82,7 @@
     "versionCode": 9,
     "promotion": "NO_INSTALL_UNTIL_CONSOLIDATED_SUCCESSOR_FULLY_PROVEN",
     "base": "4153720cde8c6bd0004b8e69baeadf5254735abe",
-    "objective": "close CA-001..CA-004 without micro-beta chain",
+    "objective": "field-qualify consolidated 0.7.1 Mobile Assist candidate before canonical promotion",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -172,20 +172,26 @@
       "CA-008 outer wall-clock timeout/disconnect around each Wi-Fi HTTP attempt",
       "CA-009 stale non-default NetworkCallback rejection",
       "cross-policy critical scenario matrix",
-      "requirements traceability matrix distinguishes current proof from gated future architecture"
+      "requirements traceability matrix distinguishes current proof from gated future architecture",
+      "Mobile Assist Level 1 cellular passive diagnosis",
+      "bounded zero-probe Android bandwidth metric refresh",
+      "mobile cooldown/hourly/resource/budget/weak-radio/anti-repeat gates",
+      "manual Android connectivity-panel fallback",
+      "mobile slow-link episode history and diagnostics",
+      "mobile effectiveness evidence with bounded attribution window"
     ],
-    "last_full_pass": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
-    "head": "18b18df13ed8af5d298e56cad860e805ba851424"
+    "last_full_pass": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
+    "head": "a15a784ab51ae048e37ae31c998092ad2cd3f03c"
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
+    "code_head": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
     "design_lint": "PASS",
-    "design_lint_run": 35590793645,
+    "design_lint_run": 35594766801,
     "android_ci": "PASS",
-    "android_ci_run": 35590793691,
+    "android_ci_run": 35594766821,
     "full_machine_verdict": "PASS",
-    "latest_full_pass": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5"
+    "latest_full_pass": "a15a784ab51ae048e37ae31c998092ad2cd3f03c"
   },
   "continuity": {
     "command": "KINLINKGO",
@@ -222,7 +228,7 @@
       ],
       "result": "ONE_CONSOLIDATED_SIGNED_FIELD_CANDIDATE",
       "canonical_replacement": false,
-      "status": "INVALIDATED_FOR_V8_REPLACEMENT"
+      "status": "PASS_FIELD_CANDIDATE_READY"
     },
     "stage_b_canonical_promotion": {
       "required": [
@@ -233,7 +239,7 @@
         "RESOURCE_QUALIFICATION"
       ],
       "result": "CANONICAL_PROMOTION",
-      "status": "BLOCKED_COUNTER_AUDIT"
+      "status": "PENDING_TARGET_DEVICE_HANDOFF_AND_RESOURCE_EVIDENCE"
     }
   },
   "preliminary_signed_candidate": {
@@ -319,18 +325,25 @@
   "final_0_7_1_candidate": {
     "version": "0.7.1",
     "versionCode": 9,
-    "source_commit": "9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5",
-    "artifact_id": 10634896108,
-    "artifact_zip_sha256": "96b903ba823196ef119bb77975b8bc6ad307b96206492960a7bd1c344c93d315",
-    "unsigned_apk_sha256": "25ff61529a7bc009543fe39edad05bd356b4ec4664be9da591af45721c34feff",
-    "signed_apk_sha256": "db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329",
-    "signed_size_bytes": 336843,
+    "source_commit": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
+    "design_lint_run": 35594766801,
+    "android_ci_run": 35594766821,
+    "artifact_id": 10636385308,
+    "artifact_zip_sha256": "07b3e0c5110bc866b0fce53b9ab1abb3784b72b8db2dda068d000ffe50921175",
+    "unsigned_apk_sha256": "f4b3f3c42d2f8d90a4ecfddac4ff580fb7afdce8e8bfb7ef9f39d373f5a68507",
+    "signed_apk_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
+    "signed_size_bytes": 357323,
     "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
-    "stage_a": "SUPERSEDED_BEFORE_DELIVERY",
-    "drive_staging": "CANCELLED",
+    "signature": "APK_SIGNATURE_SCHEME_V3_PASS",
+    "signers": 1,
+    "drive_file_id": "1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1",
+    "drive_readback_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
+    "drive_readback_status": "PASS",
+    "stage_a": "PASS",
+    "stage_b": "PENDING_TARGET_DEVICE",
     "installed": false,
     "canonical": false,
-    "superseded_reason": "mobile-assist requirement restored from broader KINLINK product contract before field delivery"
+    "human_gate": "ONE_IN_PLACE_UPDATE_FROM_0_7_0"
   },
   "canonical_drive_baseline": {
     "version": "0.6.0-rc3",
