@@ -1,0 +1,96 @@
+{
+  "schema": "kinlink.product_completion_scorecard/1",
+  "measured_against": "docs/REQUIREMENTS_TRACEABILITY.md at 0.7.x baseline",
+  "measured_at_local": "2026-09-21T18:36:00+01:00",
+  "methodology": {
+    "mechanical_traceability": "count rows exactly as listed; PROVEN-like rows count only as proven, not equal effort/value",
+    "user_value_weighting": {
+      "proven": 1,
+      "integrated_pending": 0.5,
+      "partial": 0.25,
+      "gated_future": 0
+    },
+    "warning": "Percentages are planning metrics, not claims that all requirements have equal difficulty or user value."
+  },
+  "all_traceability_rows": {
+    "total": 45,
+    "proven_like": 32,
+    "proven_like_percent": 71.1,
+    "field_pending": 1,
+    "integrated_pending": 4,
+    "partial": 3,
+    "gated_future": 5,
+    "interpretation": "Safety/hardening rows dominate; 71.1% must not be presented as total product completion."
+  },
+  "user_facing_plus_larger_architecture": {
+    "total_rows": 21,
+    "proven": 9,
+    "integrated_pending": 4,
+    "partial": 3,
+    "gated_future": 5,
+    "weighted_points": 11.75,
+    "weighted_percent": 56,
+    "interpretation": "Best current concrete estimate of broad user-visible/architecture maturity before 0.8 earns fresh proof."
+  },
+  "improvement_capability_subset": {
+    "items": [
+      {
+        "name": "automatic Wi-Fi recovery",
+        "maturity": 1
+      },
+      {
+        "name": "manual Wi-Fi assistance",
+        "maturity": 1
+      },
+      {
+        "name": "mobile passive diagnosis",
+        "maturity": 0.5
+      },
+      {
+        "name": "mobile metric refresh",
+        "maturity": 0.5
+      },
+      {
+        "name": "manual Android recovery bridge",
+        "maturity": 0.5
+      },
+      {
+        "name": "mobile effectiveness/anti-repeat",
+        "maturity": 0.5
+      },
+      {
+        "name": "strong VpnService/TUN stabilizer",
+        "maturity": 0
+      },
+      {
+        "name": "independent network data plane",
+        "maturity": 0
+      }
+    ],
+    "weighted_points": 4,
+    "total_points": 8,
+    "weighted_percent": 50,
+    "interpretation": "Current mobile path mostly observes/re-evaluates and cannot truthfully be sold as a throughput booster. Strong causal stabilization remains unbuilt/gated."
+  },
+  "installed_field_truth": {
+    "version": "0.7.3-dev",
+    "versionCode": 11,
+    "status": "INSTALLED_BUT_FIELD_COUNTER_AUDIT_REJECTS_NEAR_FINAL_CLAIM",
+    "known_blockers": [
+      "user-facing 100/100 and 97/100 pseudo-quality contradict perceived bad connection",
+      "COMFORTABLE label overstates Android estimates",
+      "Mobile Assist shows no confirmed benefit x3 yet UI still reads as improvement-oriented",
+      "Conservateur wraps badly on target device",
+      "mobile data dialog is visually oversized and too verbose",
+      "MiB terminology is not user-friendly; MB/GB requested",
+      "raw internal enums leak into technical UI",
+      "control-loop card repeats protection text and gives before/now deltas that can be misread as causal gain"
+    ]
+  },
+  "active_successor": {
+    "release_line": "0.8.0 integrated truth + control",
+    "branch": "dev/0.8.0-integrated-truth-and-control",
+    "micro_beta_policy": "FORBIDDEN",
+    "rule": "Do not ask for another install until a coherent integrated batch closes machine, visual, truthfulness, signing and Drive gates."
+  }
+}

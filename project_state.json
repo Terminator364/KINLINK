@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_3_FIELD_CANDIDATE_READY_SINGLE_INSTALL_SURFACE",
-  "status": "FIELD_INSTALL_READY_AFTER_DELIVERY_SECURITY_REPAIR",
+  "phase": "KINLINK_0_7_3_INSTALLED_FIELD_COUNTER_AUDIT_0_8_INTEGRATED_ACTIVE",
+  "status": "0_7_3_FIELD_VISUAL_AND_TRUTH_REJECTED_0_8_ENGINEERING_ACTIVE",
   "candidate": {
     "version": "0.7.3-dev",
     "versionCode": 11
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "SINGLE_HUMAN_INSTALL_SURFACE_READY",
-  "next_uncommitted_action": "install only KINLINK/INSTALLER/KINLINK_INSTALL_NOW.apk in place over 0.7.2; then verify v11 startup/UI/telemetry before canonical promotion",
+  "next_uncommitted_action": "finish 0.8 integrated exact-head CI and rendered visual proof; quantify requirement coverage honestly; no new phone install until integrated gates close",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -68,21 +68,13 @@
     "hero classifier surfaces validated-but-constrained Wi-Fi as degraded"
   ],
   "installed_field_baseline": {
-    "version": "0.7.2",
-    "versionCode": 10,
-    "signed_apk_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
+    "version": "0.7.3-dev",
+    "versionCode": 11,
     "installed": true,
     "usable": true,
-    "canonical": false,
     "near_final_candidate": false,
-    "invalidation": "P0_RESPONSIVE_HEADER_LAYOUT_FROM_TARGET_PHONE_SCREENSHOTS",
-    "observed_field_facts": {
-      "current_mobile_quality_score": 97,
-      "mobile_low_quality_episodes_24h": 22,
-      "mobile_low_quality_cumulative_ms_24h": 138043,
-      "interruptions_24h": 0,
-      "screenshots_confirm_version": "0.7.2"
-    }
+    "invalidation": "TARGET_DEVICE_VISUAL_TRUTHFULNESS_COUNTER_AUDIT",
+    "source_commit": "2aeac4cf801e60986c33347676e12310790d1d98"
   },
   "development_line": {
     "version": "0.7.1",
@@ -216,7 +208,9 @@
       ".project-memory/COMMUNICATION_STATE_MACHINE.json",
       ".project-memory/ACTIVE_TRANCHE.json",
       ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl",
-      ".project-memory/DELIVERY_SECURITY_POLICY.json"
+      ".project-memory/DELIVERY_SECURITY_POLICY.json",
+      ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
+      ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json"
     ],
     "repository": "Terminator364/KINLINK",
     "branch": "main",
@@ -463,5 +457,23 @@
     "last_incident": "old versionCode7 rollback was exposed as KINLINK_LATEST while versionCode10 was installed; Android rejected downgrade with generic invalid-package UI",
     "remediation": "old installer folder renamed; new installer contains only exact v11 candidate; readback hash and signer verified",
     "platform_security_controls": "never bypass; checkpoint and resume"
-  }
+  },
+  "active_integrated_successor": {
+    "version": "0.8.0-dev",
+    "versionCode": 12,
+    "branch": "dev/0.8.0-integrated-truth-and-control",
+    "status": "ENGINEERING_AND_FRESH_CI_IN_PROGRESS",
+    "micro_beta_chain": false,
+    "objectives": [
+      "truthful user-experience model",
+      "no user-facing pseudo-quality score",
+      "history and user report override optimistic framework estimates",
+      "mobile anti-repeat escalates to Android system controls on user request",
+      "human MB/GB data presentation",
+      "compact responsive controls/dialogs",
+      "fresh field visual counter-audit before delivery"
+    ]
+  },
+  "product_completion_scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
+  "visual_counter_audit_policy": ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json"
 }

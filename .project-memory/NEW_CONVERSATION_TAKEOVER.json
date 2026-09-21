@@ -19,13 +19,17 @@
     ".project-memory/ACTIVE_TRANCHE.json",
     ".project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl",
     ".project-memory/FIELD_CANDIDATE_FREEZE.json",
-    ".project-memory/DELIVERY_SECURITY_POLICY.json"
+    ".project-memory/DELIVERY_SECURITY_POLICY.json",
+    ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
+    ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json"
   ],
   "takeover_algorithm": [
     "DO_NOT_ASK_USER_TO_RECONSTRUCT_PRIOR_CHAT",
     "READ_DURABLE_STATE_BEFORE_EXPLAINING_ANYTHING",
     "RECONCILE_ANY_UNCLOSED_TRANCHE_BEFORE_NEW_WORK",
     "LOAD_AND_ENFORCE_DELIVERY_SECURITY_POLICY",
+    "LOAD_PRODUCT_COMPLETION_SCORECARD_AND_VISUAL_COUNTER_AUDIT_POLICY",
+    "AUTO_COUNTER_AUDIT_TARGET_SCREENSHOTS_BEFORE_WAITING_FOR_USER_DEFECT_LIST",
     "VERIFY_SINGLE_HUMAN_INSTALL_SURFACE_BEFORE_ANY_INSTALL_INSTRUCTION",
     "SEND_GMAIL_START_AND_REQUIRE_PROVIDER_ACK_BEFORE_SUBSTANTIVE_WORK",
     "PERSIST_START_RECEIPT",
@@ -45,14 +49,11 @@
     "apk_delivery": "Drive KINLINK INSTALLER only; never Gmail attachment"
   },
   "product_truth": {
-    "installed_field_build": "0.7.2/versionCode10 installed and usable",
-    "authorized_field_candidate": "0.7.3-dev/versionCode11 exact signed field candidate",
-    "candidate_head": "2aeac4cf801e60986c33347676e12310790d1d98",
-    "installer_drive_file_id": "1dj2j2zhLmUPb63NVIaMx0jElpNdb04ky",
-    "installer_file": "KINLINK/INSTALLER/KINLINK_INSTALL_NOW.apk",
-    "installer_sha256": "d268542a4e6d4a4a5869deddd71bf0aec32c46386d2193cf96da6b825e68877d",
-    "signer_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
-    "drive_readback": "PASS",
-    "rollback": "0.6.0-rc3/versionCode7 isolated under ROLLBACK_CANONICAL_DO_NOT_INSTALL; never offer as update over v10+"
+    "installed_field_build": "0.7.3-dev/versionCode11 installed but rejected as near-final by target visual/truthfulness counter-audit",
+    "active_integrated_successor": "0.8.0-dev/versionCode12 on dev/0.8.0-integrated-truth-and-control",
+    "completion_scorecard": "56.0% weighted user-facing+architecture maturity at current baseline; 71.1% mechanical PROVEN rows is safety-heavy and must not be misrepresented as total completion",
+    "improvement_capability": "50.0% weighted subset; strong causal mobile stabilizer remains gated/unbuilt",
+    "micro_beta_policy": "Do not deliver 0.7.4 micro-patch chain; next install only after coherent 0.8 integrated gates",
+    "next_action": "continue 0.8 integrated work, exact-head CI, visual truth audit, then signing/Drive; no premature install"
   }
 }

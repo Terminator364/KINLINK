@@ -1,0 +1,42 @@
+{
+  "schema": "kinlink.visual_counter_audit_policy/1",
+  "project": "KINLINK",
+  "priority": "P0_FIELD_UX",
+  "trigger": "ANY_TARGET_DEVICE_SCREENSHOT_SET_AFTER_INSTALL_OR_SIGNIFICANT_UI_CHANGE",
+  "automatic_behavior": [
+    "review screenshots before waiting for user to enumerate defects",
+    "compare visible claims against telemetry/evidence semantics",
+    "reject misleading quality/benefit labels even if layout fits",
+    "check text wrapping at actual target font scale",
+    "check primary task hierarchy and jargon leakage",
+    "check dialogs and all profile/data controls",
+    "persist findings before proposing promotion"
+  ],
+  "release_blockers": [
+    "one-character or awkward word wrapping in controls",
+    "pseudo-precision quality score unsupported by user-experience evidence",
+    "claim of improvement without causal or sustained evidence",
+    "internal enum leakage in primary UX",
+    "unreadable/oversized modal dialog",
+    "non-human data units where MB/GB are expected",
+    "duplicated control/status text that obscures the primary action"
+  ],
+  "required_target_views": [
+    "home top",
+    "current state card",
+    "control loop",
+    "autopilot modes",
+    "mobile data dialog",
+    "technical details expanded",
+    "Wi-Fi state",
+    "mobile state",
+    "resource-protection state"
+  ],
+  "current_audit": {
+    "source": "target-phone screenshots supplied 2026-09-21",
+    "version": "0.7.3-dev/v11",
+    "verdict": "REJECT_NEAR_FINAL",
+    "findings_count": 8,
+    "successor_required": "0.8.0 integrated truth + control"
+  }
+}
