@@ -40,17 +40,15 @@
     "successor_required": "0.8.0 integrated truth + control"
   },
   "latest_ci_audit": {
-    "source": "GitHub Actions run 35652449928",
-    "exact_head": "c6fb86ec8ef075f7e0cbdfd9cf0f04b8954088f1",
+    "source": "GitHub Actions run 35656916207",
+    "exact_head": "b54020291f866042103ad0f63cae3645977638d1",
     "screenshot_count": 45,
     "inspected_count": 45,
-    "verdict": "PASS_LAYOUT_AND_TRUTH_WITH_NONBLOCKING_SEMANTIC_FINDINGS",
+    "verdict": "PASS_UI_AND_TRUTH_RELEASE_METADATA_FIX_REQUIRED",
     "findings": [
-      "primary history used technical stall(s) Android wording",
-      "offline control card reused generic Qualité sous surveillance title",
-      "platform capability/readiness absent from technical details"
+      "visual/semantic findings from c6fb are resolved",
+      "CI build-manifest JSON still labels candidate version 0.7.3-dev instead of 0.8.0-dev"
     ],
-    "remediation_head": "b54020291f866042103ad0f63cae3645977638d1",
     "field_release_authorized": false
   }
 }
