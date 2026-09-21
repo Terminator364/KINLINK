@@ -630,8 +630,6 @@ class MainActivity : Activity() {
                 append("Mobile lent validé 24 h : ${reliability.mobileLowQualityEpisodeCount} épisode(s)")
                 append(" · cumul ${reliability.mobileLowQualityCumulativeMillis} ms")
                 append(" · max ${reliability.mobileLowQualityLongestMillis} ms\n")
-                append(" · cumul ${reliability.lowQualityCumulativeMillis} ms")
-                append(" · max ${reliability.lowQualityLongestMillis} ms\n")
                 reliability.dominantCause?.let { cause ->
                     append("Cause dominante 24 h : $cause\n")
                 }
