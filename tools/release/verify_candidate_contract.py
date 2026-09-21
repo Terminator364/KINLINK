@@ -259,3 +259,10 @@ require(
     EVIDENCE_TRACKER.count("@Synchronized") >= 2,
     "candidate contract: Mobile Assist evidence state is not serialized across callbacks and one-shot samples",
 )
+
+require(
+    "AtomicLong(0L)" in SERVICE
+    and "mobileAssistEvidenceGeneration.incrementAndGet()" in SERVICE
+    and "mobileAssistEvidenceGeneration.get()" in SERVICE,
+    "candidate contract: Mobile Assist one-shot generation fence is not thread-safe",
+)
