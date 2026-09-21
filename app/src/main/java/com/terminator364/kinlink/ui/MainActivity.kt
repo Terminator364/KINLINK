@@ -539,44 +539,36 @@ class MainActivity : Activity() {
 
         val assessment = FieldCandidateQualificationPolicy.evaluate(
             FieldCandidateQualificationEvidence(
-                coreSelfTestPasses = ledger.countSuccessfulActions(
-                    QualificationReceiptNames.coreSelfTest(installedVersionCode)
+                coreSelfTestPasses = ledger.countSuccessfulExactAction(QualificationReceiptNames.coreSelfTest(installedVersionCode)
                 ),
-                observerSelfTestPasses = ledger.countSuccessfulActions(
-                    QualificationReceiptNames.observerSelfTest(installedVersionCode)
+                observerSelfTestPasses = ledger.countSuccessfulExactAction(QualificationReceiptNames.observerSelfTest(installedVersionCode)
                 ),
-                mobileValidatedHandoffs = ledger.countSuccessfulActions(
-                    QualificationReceiptNames.handoffOutcome(
+                mobileValidatedHandoffs = ledger.countSuccessfulExactAction(QualificationReceiptNames.handoffOutcome(
                         HandoffOutcome.MOBILE_VALIDATED,
                         installedVersionCode
                     )
                 ),
-                cellularToWifiReturns = ledger.countSuccessfulActions(
-                    QualificationReceiptNames.handoff(
+                cellularToWifiReturns = ledger.countSuccessfulExactAction(QualificationReceiptNames.handoff(
                         HandoffKind.CELLULAR_TO_WIFI,
                         installedVersionCode
                     )
                 ),
-                runtimeResourcePasses = ledger.countSuccessfulActions(
-                    QualificationReceiptNames.resourceGate(
+                runtimeResourcePasses = ledger.countSuccessfulExactAction(QualificationReceiptNames.resourceGate(
                         RuntimeResourceVerdict.PASS,
                         installedVersionCode
                     )
                 ),
-                runtimeResourceBlocks = ledger.countActions(
-                    QualificationReceiptNames.resourceGate(
+                runtimeResourceBlocks = ledger.countExactAction(QualificationReceiptNames.resourceGate(
                         RuntimeResourceVerdict.BLOCKED,
                         installedVersionCode
                     )
                 ),
-                latestRuntimeResourcePassMillis = ledger.latestActionTimestamp(
-                    QualificationReceiptNames.resourceGate(
+                latestRuntimeResourcePassMillis = ledger.latestExactActionTimestamp(QualificationReceiptNames.resourceGate(
                         RuntimeResourceVerdict.PASS,
                         installedVersionCode
                     )
                 ),
-                latestRuntimeResourceBlockMillis = ledger.latestActionTimestamp(
-                    QualificationReceiptNames.resourceGate(
+                latestRuntimeResourceBlockMillis = ledger.latestExactActionTimestamp(QualificationReceiptNames.resourceGate(
                         RuntimeResourceVerdict.BLOCKED,
                         installedVersionCode
                     )
