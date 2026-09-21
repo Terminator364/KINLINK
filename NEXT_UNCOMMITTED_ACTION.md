@@ -2,19 +2,59 @@
 
 Resume with `KINLINKGO`.
 
-Before substantive work: load ACTIVE_TRANCHE, communication protocol/state machine, delivery ledger and DELIVERY_SECURITY_POLICY; Gmail START provider ACK must be durable. A CLOSED tranche cannot be reused. Final ChatGPT closeout is forbidden until Gmail END provider ACK + durable END_ACK.
+## Communication gate
 
-Installed target: 0.7.2 / versionCode 10.
-Authorized candidate: 0.7.3-dev / versionCode 11.
+Before substantive work:
+1. load ACTIVE_TRANCHE, COMMUNICATION_PROTOCOL, COMMUNICATION_STATE_MACHINE and COMMUNICATION_DELIVERY_LEDGER;
+2. reconcile any unclosed prior tranche;
+3. send Gmail START and persist provider ACK;
+4. never reuse a CLOSED tranche;
+5. before final app closeout: checkpoint -> CLOSE_INTENT -> Gmail END -> provider ACK -> durable END_ACK/CLOSED.
 
-Only human install path:
-`KINLINK/INSTALLER/KINLINK_INSTALL_NOW.apk`
+Platform/security controls are never bypassed. A hold causes a durable checkpoint and later proof-based resume.
 
-Drive file ID: `1dj2j2zhLmUPb63NVIaMx0jElpNdb04ky`
-SHA-256: `d268542a4e6d4a4a5869deddd71bf0aec32c46386d2193cf96da6b825e68877d`
-Signer: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
-Drive readback PASS. Version monotonicity 11 > 10 PASS.
+## Installed field truth
 
-Old rollback is isolated in `ROLLBACK_CANONICAL_DO_NOT_INSTALL` and must never be used as a normal update source.
+Installed on target:
+- KINLINK 0.7.3-dev / versionCode 11;
+- source: `2aeac4cf801e60986c33347676e12310790d1d98`;
+- installation succeeded;
+- **rejected as near-final** by target-device visual/truthfulness counter-audit.
 
-Exact next human gate: install `KINLINK_INSTALL_NOW.apk` in place. Do NOT uninstall 0.7.2 first. Then verify versionCode11 + startup/UI + telemetry/receipts. No canonical promotion before field gates pass.
+Do not ask the user to reinstall 0.7.3.
+
+## Completion truth
+
+Read `.project-memory/PRODUCT_COMPLETION_SCORECARD.json`.
+
+Current honest planning metrics:
+- 71.1% mechanical PROVEN-like traceability rows — safety-heavy, NOT total completion;
+- 56.0% weighted broad user-facing + architecture maturity;
+- 50.0% weighted improvement-capability maturity.
+
+Strong causal mobile stabilization remains gated/unbuilt.
+
+## Active integrated successor
+
+- line: **0.8.0 integrated truth + control**;
+- versionCode: 12;
+- branch: `dev/0.8.0-integrated-truth-and-control`;
+- current exact head must be read from GitHub, never guessed;
+- micro-beta chain: FORBIDDEN.
+
+Integrated objectives:
+- remove user-facing pseudo-quality scores;
+- user report + recent reliability override optimistic Android estimates;
+- Android bandwidth values remain technical estimates, not experienced speed;
+- only show before/now/delta as improvement when sustained benefit evidence is confirmed;
+- repeated ineffective mobile refreshes/manual problem report escalate to Android's connectivity controls instead of pretending to boost throughput;
+- human decimal MB/GB UI;
+- compact responsive controls and data dialog;
+- auto visual counter-audit on target screenshots;
+- fresh CI/render/sign/readback proof for the entire integrated batch.
+
+## Exact next action
+
+Poll exact-head 0.8 design-lint + Android CI. Fix only evidence-backed failures. If machine gates pass, fetch and manually inspect the complete rendered screenshot matrix. Do not sign/stage/install until the visual/truthfulness audit also passes.
+
+No new phone installation is requested at this checkpoint.

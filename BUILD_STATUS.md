@@ -26,3 +26,21 @@ Repair:
 
 ## Current gate
 One in-place install of `KINLINK/INSTALLER/KINLINK_INSTALL_NOW.apk`. Do not uninstall 0.7.2 first. Canonical promotion remains blocked until target-device field verification passes.
+
+
+## 0.8 integrated successor — ACTIVE
+
+0.7.3/v11 is installed but field-counter-audit rejected its near-final claim.
+
+0.8.0-dev/v12 branch:
+`dev/0.8.0-integrated-truth-and-control`
+
+This is a coherent successor line, not a micro-beta. No user install until its entire integrated batch passes fresh CI, rendered visual/truthfulness audit, signing and Drive readback.
+
+Main corrections under qualification:
+- no user-facing passive 100/100 pseudo-quality;
+- user-reported bad experience and unstable history override optimistic framework estimates;
+- MB/GB mobile data UI;
+- compact profile/data controls;
+- causal-benefit wording fence;
+- repeated ineffective Mobile Assist escalation rather than repeated metric-refresh theatre.

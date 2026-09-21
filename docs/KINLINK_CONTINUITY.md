@@ -48,3 +48,36 @@ It contains 0.6.0-rc3/versionCode7 and is not a normal update source.
 
 ## Current next gate
 One in-place install of `KINLINK_INSTALL_NOW.apk` over 0.7.2. Do not uninstall first. Then verify v11 startup/UI and field telemetry before canonical promotion.
+
+
+## 0.8 integrated successor — field truth
+
+The installed 0.7.3-dev / versionCode 11 is a **field baseline, not a near-final release**. Target-phone screenshots invalidated its user-facing truth model.
+
+Canonical 0.7.3 field findings:
+- Android passive estimates produced misleading 100/100 and 97/100 user-facing scores;
+- “Confortable” could contradict the user's real experience;
+- 24 h instability could coexist with optimistic current labels;
+- before/now deltas could look like causal KINLINK improvement while evidence said no confirmed benefit;
+- “Conservateur” wrapped badly;
+- mobile data dialog was oversized/verbose;
+- MiB was too technical for the normal human UI;
+- technical enums leaked into the UI.
+
+Successor line:
+- version: 0.8.0-dev / versionCode 12;
+- branch: dev/0.8.0-integrated-truth-and-control;
+- policy: **no micro-beta chain**;
+- next install only after one coherent integrated batch closes exact-head CI, rendered/target-like visual audit, truthfulness gates, signing and Drive readback.
+
+Completion scorecard:
+- 45 traceability rows total;
+- 32/45 PROVEN-like = 71.1%, but safety/hardening rows dominate and this MUST NOT be called total product completion;
+- broad user-facing + architecture weighted maturity = 56.0%;
+- improvement-capability weighted maturity = 50.0%;
+- strong causal mobile stabilizer remains gated/unbuilt.
+
+Mandatory future takeover:
+- read .project-memory/PRODUCT_COMPLETION_SCORECARD.json;
+- read .project-memory/VISUAL_COUNTER_AUDIT_POLICY.json;
+- automatically counter-audit target screenshots before waiting for the user to enumerate defects.
