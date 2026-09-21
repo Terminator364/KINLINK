@@ -2,13 +2,13 @@
   "project": "KINLINK",
   "line": "0.7.0",
   "versionCode": 8,
-  "code_head": "f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3",
+  "code_head": "6b5c31d7c16d916c0d5768fd0284823165d3c210",
   "latest_full_machine_pass": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab",
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
       "status": "PENDING",
-      "evidence": "post-sign field-qualification hardening landed through f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3; fresh candidate CI required before delivery"
+      "evidence": "final tranche app head 6b5c31d7c16d916c0d5768fd0284823165d3c210 under candidate CI; previous 9a4a0c5 machine pass is superseded before delivery"
     },
     "MIGRATION": {
       "status": "PASS",
@@ -82,5 +82,19 @@
     "delivered": false,
     "installed": false,
     "superseded_by_head": "f87e7d5c8749d9bb47b1bdec088739b1fbeb85a3"
+  },
+  "field_qualification_model": {
+    "evidence_scope": "RUNNING_VERSION_ONLY",
+    "current_version_code": 8,
+    "pass_receipt": "FIELD_CANDIDATE_QUALIFIED_V8",
+    "blocked_receipt": "FIELD_CANDIDATE_BLOCKED_V8",
+    "requires": [
+      "SELF_TEST_CORE_V8 PASS",
+      "SELF_TEST_OBSERVER_CALLBACK_V8 PASS",
+      "HANDOFF_OUTCOME_MOBILE_VALIDATED_V8 PASS",
+      "HANDOFF_CELLULAR_TO_WIFI_V8 PASS",
+      "RUNTIME_RESOURCE_GATE_PASS_V8"
+    ],
+    "resource_block_is_terminal_for_candidate": true
   }
 }
