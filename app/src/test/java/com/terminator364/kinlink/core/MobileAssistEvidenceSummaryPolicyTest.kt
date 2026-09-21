@@ -49,4 +49,29 @@ class MobileAssistEvidenceSummaryPolicyTest {
         assertTrue(s.label.contains("rechute=1"))
         assertTrue(s.label.contains("sans mieux=1"))
     }
+    @Test fun lateRelapseSupersedesItsEarlierSustainedEvent() {
+        val s = MobileAssistEvidenceSummaryPolicy.summarize(
+            mapOf(
+                "SUSTAINED_BETTER" to 1,
+                "RELAPSED_AFTER_SUSTAINED" to 1
+            )
+        )
+        assertEquals(MobileAssistEvidenceTrend.RELAPSING, s.trend)
+        assertEquals(1, s.evaluatedActions)
+        assertTrue(s.label.contains("rechute"))
+    }
+
+    @Test fun oneHoldingImprovementAndOneLateRelapseRemainMixed() {
+        val s = MobileAssistEvidenceSummaryPolicy.summarize(
+            mapOf(
+                "SUSTAINED_BETTER" to 2,
+                "RELAPSED_AFTER_SUSTAINED" to 1
+            )
+        )
+        assertEquals(MobileAssistEvidenceTrend.MIXED, s.trend)
+        assertEquals(2, s.evaluatedActions)
+        assertTrue(s.label.contains("mieux=1"))
+        assertTrue(s.label.contains("rechute=1"))
+    }
+
 }
