@@ -1,5 +1,5 @@
 {
-  "schema": "kinlink.communication_state_machine/4",
+  "schema": "kinlink.communication_state_machine/5",
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
@@ -22,6 +22,7 @@
   ],
   "owners": [
     "PRIMARY_ASSISTANT",
+    "INTERRUPTION_RECOVERY",
     "SHADOW_BACKUP",
     "HARD_GUARD"
   ],
@@ -46,6 +47,10 @@
     {
       "window": "after Gmail END send before GitHub receipt",
       "recovery": "search same Gmail thread/delivery key; persist ACK; do not resend"
+    },
+    {
+      "window": "user/tool interruption after START or intermediate deliverable before normal END",
+      "recovery": "reconcile active tranche first; close it exactly once if close intent is required; if the mission continues, create a NEW tranche and send a NEW START before more substantive work"
     }
   ],
   "security_invariants": [
@@ -53,7 +58,9 @@
     "new work cannot reuse a CLOSED tranche",
     "platform/security controls are never bypassed; interruption becomes a durable checkpoint",
     "human APK delivery exposes one authorized install file only",
-    "rollback APKs are not present in the normal human install surface"
+    "rollback APKs are not present in the normal human install surface",
+    "an intermediate PDF/report/artifact email never counts as END unless it is explicitly the END transition",
+    "a forced close caused by interruption does not mean the mission is complete; continued mission requires a fresh START tranche"
   ],
   "backup_earliest_offset_minutes": 26,
   "hard_guard_offset_minutes": 29
