@@ -78,9 +78,9 @@ class KinlinkObserverService : Service() {
             packageManager.getPackageInfo(packageName, 0).longVersionCode
         }.getOrDefault(-1L)
         fieldQualificationReceiptWritten =
-            ledger.countActions(QualificationReceiptNames.fieldQualified(runningVersionCode)) > 0
+            ledger.countExactAction(QualificationReceiptNames.fieldQualified(runningVersionCode)) > 0
         fieldQualificationBlockedWritten =
-            ledger.countActions(QualificationReceiptNames.fieldBlocked(runningVersionCode)) > 0
+            ledger.countExactAction(QualificationReceiptNames.fieldBlocked(runningVersionCode)) > 0
         if (runningVersionCode >= 8L) {
             currentFieldQualificationVerdict = evaluateFieldCandidateQualification().verdict
         }
@@ -332,47 +332,41 @@ class KinlinkObserverService : Service() {
         FieldCandidateQualificationPolicy.evaluate(
             FieldCandidateQualificationEvidence(
                 coreSelfTestPasses =
-                    ledger.countSuccessfulActions(QualificationReceiptNames.coreSelfTest(runningVersionCode)),
+                    ledger.countSuccessfulExactAction(QualificationReceiptNames.coreSelfTest(runningVersionCode)),
                 observerSelfTestPasses =
-                    ledger.countSuccessfulActions(QualificationReceiptNames.observerSelfTest(runningVersionCode)),
+                    ledger.countSuccessfulExactAction(QualificationReceiptNames.observerSelfTest(runningVersionCode)),
                 mobileValidatedHandoffs =
-                    ledger.countSuccessfulActions(
-                        QualificationReceiptNames.handoffOutcome(
+                    ledger.countSuccessfulExactAction(QualificationReceiptNames.handoffOutcome(
                             HandoffOutcome.MOBILE_VALIDATED,
                             runningVersionCode
                         )
                     ),
                 cellularToWifiReturns =
-                    ledger.countSuccessfulActions(
-                        QualificationReceiptNames.handoff(
+                    ledger.countSuccessfulExactAction(QualificationReceiptNames.handoff(
                             HandoffKind.CELLULAR_TO_WIFI,
                             runningVersionCode
                         )
                     ),
                 runtimeResourcePasses =
-                    ledger.countSuccessfulActions(
-                        QualificationReceiptNames.resourceGate(
+                    ledger.countSuccessfulExactAction(QualificationReceiptNames.resourceGate(
                             RuntimeResourceVerdict.PASS,
                             runningVersionCode
                         )
                     ),
                 runtimeResourceBlocks =
-                    ledger.countActions(
-                        QualificationReceiptNames.resourceGate(
+                    ledger.countExactAction(QualificationReceiptNames.resourceGate(
                             RuntimeResourceVerdict.BLOCKED,
                             runningVersionCode
                         )
                     ),
                 latestRuntimeResourcePassMillis =
-                    ledger.latestActionTimestamp(
-                        QualificationReceiptNames.resourceGate(
+                    ledger.latestExactActionTimestamp(QualificationReceiptNames.resourceGate(
                             RuntimeResourceVerdict.PASS,
                             runningVersionCode
                         )
                     ),
                 latestRuntimeResourceBlockMillis =
-                    ledger.latestActionTimestamp(
-                        QualificationReceiptNames.resourceGate(
+                    ledger.latestExactActionTimestamp(QualificationReceiptNames.resourceGate(
                             RuntimeResourceVerdict.BLOCKED,
                             runningVersionCode
                         )
