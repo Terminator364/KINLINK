@@ -7,13 +7,13 @@
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
   "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSE_INTENT_PERSISTED",
-  "status": "CLOSING",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "gmail_start_message_id": "1a0c5461a0d6ad3e",
   "gmail_start_thread_id": "1a0c5461a0d6ad3e",
-  "gmail_end_message_id": null,
-  "gmail_end_thread_id": null,
-  "end_mail_verified": false,
+  "gmail_end_message_id": "1a0c55a8a7e671db",
+  "gmail_end_thread_id": "1a0c5461a0d6ad3e",
+  "end_mail_verified": true,
   "gmail_label": "KINLINK",
   "close_intent_persisted": true,
   "close_owner": "PRIMARY_ASSISTANT",
@@ -78,5 +78,8 @@
       "hero maxLines removed",
       "render matrix expanded toward data dialog and technical details"
     ]
-  }
+  },
+  "closed_state": true,
+  "closed_at_provider_ts": "2026-09-21T19:04:00",
+  "closed_at_local": "2026-09-21T20:04:00+01:00"
 }
