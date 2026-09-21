@@ -2,36 +2,50 @@
 
 Resume with `KINLINKGO`.
 
-## Mandatory memory before scope or completion claims
+Mandatory first step: reconcile communication state. If K25-09 is not CLOSED, finish its END/ACK before any product mutation.
 
-Read, in this order:
-1. `.project-memory/PRECONCEPTION_BASELINE_A.json`
-2. `docs/FULL_PRODUCT_SPEC_A_B_C.md`
-3. `.project-memory/FULL_REQUIREMENTS_LEDGER.json`
-4. `.project-memory/PRODUCT_EVOLUTION_C.json`
-5. `.project-memory/PRODUCT_COMPLETION_SCORECARD.json`
-6. current project/communication/delivery state.
+## Canonical scope
 
-Do not use recent REQUIREMENTS_TRACEABILITY alone as “the cahier des charges”.
+Load A + B + C, not recent traceability alone.
 
-Current full A+B+C macro maturity: **44.8% across 80 deduplicated macro capabilities**. The prior 56% subset metric is superseded.
+- A: recovered original preconception anchor `c565b6f1164d327caaa17e1de47d1cf48ed3c885`
+- B: depth B3, B31-B80 in `docs/B_EXPANSION_V3.md` + `.project-memory/B_EXPANSION_LEDGER.json`
+- C: `.project-memory/PRODUCT_EVOLUTION_C.json`
+- macro denominator: 80
+- conservative macro maturity: 44.8%
+- B-depth items: 50; they do not change the macro denominator without explicit deduplication review.
 
-## Active successor
+Memory/continuity reads must also include:
+- `.project-memory/MEMORY_POLICY_V2.json`
+- `.project-memory/PROJECT_CHRONICLE.jsonl`
+- `.project-memory/SUPERSESSION_LEDGER.json`
+- `.project-memory/DEAD_END_REGISTRY.json`
+- `.project-memory/COMMUNICATION_WATCHDOG_POLICY.json`
+- `.project-memory/CANONICAL_CONTEXT_PACK.json`
 
-- 0.8.0-dev / versionCode 12
+## Communication watchdog
+
+Exactly one automation: **KINLINK Comms Watchdog**.
+It repairs stale/missed END closure idempotently. A WORKING tranche older than 35 minutes is treated as interrupted, closed from durable facts only, and never auto-reopened into an orphan START. Foreground work must send a fresh START.
+
+## Active 0.8 successor
+
 - branch: `dev/0.8.0-integrated-truth-and-control`
-- machine CI run 35634654534: PASS
-- manual visual counter-audit of rendered proof: REQUIRED
-- no field install yet
-- no micro-beta chain
+- exact head: `c6fb86ec8ef075f7e0cbdfd9cf0f04b8954088f1`
+- design-lint run 35652449660: PASS
+- Android run 35652449928: IN PROGRESS at close intent
+- previous c8eb Android run 35651559235: PASS
+- manual visual audit rejected one proof artifact: `technical-details-start` still captured the top page because the scroll ran before expanded layout settled.
+- c6fb fixes that by waiting for layout, scrolling to the actual detail body, and asserting it lands near the viewport top.
+- 45 screenshots expected.
 
-## Exact next engineering work
+## Exact next engineering action
 
-1. integrate Android native ConnectivityDiagnosticsManager events into privacy-safe KINLINK evidence;
-2. let platform data stalls influence recent experience truth without generating KINLINK traffic;
-3. expand rendered UI proof to include Mobile Data dialog and expanded technical details;
-4. fix any visual/semantic finding (including large-font hero truncation if confirmed);
-5. rerun exact-head CI;
-6. only after full visual/truth audit: sign, Drive stage/readback and one coherent field update.
+1. poll Android run 35652449928;
+2. if PASS, fetch `KINLINK-0.8.0-responsive-ui-proof`;
+3. manually counter-audit all 45 screenshots, especially xl-font mobile-data dialog and technical-details-start/bottom;
+4. reject any clipping, overlap, misleading quality language, raw enum leakage, or proof screenshot that does not show what it claims;
+5. if clean, continue major A+B+C implementation blocks (not a micro-beta);
+6. no field install/sign/Drive promotion until a coherent integrated batch is ready.
 
-Communication: Gmail START ACK before substantive work; Gmail END ACK + durable END_ACK before final app response.
+Communication: Gmail START provider ACK before substantive work; Gmail END provider ACK + durable CLOSED before final app closeout.

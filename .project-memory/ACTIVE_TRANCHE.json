@@ -6,9 +6,9 @@
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
-  "work_state": "WORKING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "ACTIVE",
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSE_INTENT_PERSISTED",
+  "status": "CLOSING",
   "gmail_start_message_id": "1a0c5a147dbf6e83",
   "gmail_start_thread_id": "1a0c5a147dbf6e83",
   "gmail_label": "KINLINK",
@@ -39,5 +39,43 @@
     "current_head": "37055626084349e0829325d4c28492c3617d5ea4",
     "android_run": 35649559817
   },
-  "next_atomic_action": "poll Android run 35649559817 and inspect proof if PASS"
+  "next_atomic_action": "poll Android run 35652449928 exact head c6fb86ec8ef075f7e0cbdfd9cf0f04b8954088f1; inspect 45-shot proof if PASS; no install",
+  "close_intent_persisted": true,
+  "close_owner": "PRIMARY_ASSISTANT",
+  "no_more_product_mutations": true,
+  "last_durable_checkpoint": {
+    "automation": {
+      "name": "KINLINK Comms Watchdog",
+      "cardinality": 1,
+      "cadence": "HOURLY condition_watch",
+      "stale_work_threshold_minutes": 35,
+      "auto_open_new_start": false,
+      "purpose": "reconcile missed END/ACK/CLOSED without duplicate sends or orphan START loops"
+    },
+    "memory": {
+      "b_depth": "B31-B80",
+      "b_depth_count": 50,
+      "macro_count": 80,
+      "macro_maturity_percent": 44.8,
+      "memory_policy": ".project-memory/MEMORY_POLICY_V2.json",
+      "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",
+      "supersession": ".project-memory/SUPERSESSION_LEDGER.json",
+      "dead_end_registry": ".project-memory/DEAD_END_REGISTRY.json",
+      "main_design_lint_latest": "PASS"
+    },
+    "product_0_8": {
+      "exact_head": "c6fb86ec8ef075f7e0cbdfd9cf0f04b8954088f1",
+      "design_lint_run": 35652449660,
+      "design_lint": "PASS",
+      "android_run": 35652449928,
+      "android_status": "IN_PROGRESS_AT_CLOSE_INTENT",
+      "prior_c8eb_android_run": 35651559235,
+      "prior_c8eb_android_status": "PASS",
+      "manual_counter_audit_finding": "technical-details-start screenshot still showed top of page because scroll occurred before expanded layout settled",
+      "fix_committed": true,
+      "current_gate": "45-shot rerun pending",
+      "observer_callback_race_hardening": "implemented and prior c8eb run passed",
+      "install_requested": false
+    }
+  }
 }
