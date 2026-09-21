@@ -54,10 +54,6 @@ class KinlinkObserverService : Service() {
         }
 
         ledger = TelemetryLedger(this)
-        fieldQualificationReceiptWritten =
-            ledger.countActions("FIELD_CANDIDATE_QUALIFIED") > 0
-        fieldQualificationBlockedWritten =
-            ledger.countActions("FIELD_CANDIDATE_BLOCKED") > 0
         mobileBudget = MobileBudgetTracker(this)
         recoveryModeStore = RecoveryModeStore(this)
         postUpdateSelfTestStore = PostUpdateSelfTestStore(this)
@@ -70,6 +66,10 @@ class KinlinkObserverService : Service() {
         runningVersionCode = runCatching {
             packageManager.getPackageInfo(packageName, 0).longVersionCode
         }.getOrDefault(-1L)
+        fieldQualificationReceiptWritten =
+            ledger.countActions("FIELD_CANDIDATE_QUALIFIED_V$runningVersionCode") > 0
+        fieldQualificationBlockedWritten =
+            ledger.countActions("FIELD_CANDIDATE_BLOCKED_V$runningVersionCode") > 0
 
         if (postUpdateSelfTestStore.needsCoreTest(runningVersionCode)) {
             val modeReadable = runCatching { recoveryModeStore.current() }.isSuccess
@@ -81,7 +81,7 @@ class KinlinkObserverService : Service() {
             coreRuntimeReady = coreSelfTest.pass
             runCatching {
                 ledger.appendAction(
-                    "SELF_TEST_CORE",
+                    "SELF_TEST_CORE_V$runningVersionCode",
                     coreSelfTest.pass,
                     coreSelfTest.summary
                 )
@@ -138,7 +138,7 @@ class KinlinkObserverService : Service() {
                 if (postUpdateSelfTestStore.needsObserverTest(runningVersionCode)) {
                     val observerSelfTest = RuntimeSelfTestPolicy.observerCallback(true)
                     ledger.appendAction(
-                        "SELF_TEST_OBSERVER_CALLBACK",
+                        "SELF_TEST_OBSERVER_CALLBACK_V$runningVersionCode",
                         observerSelfTest.pass,
                         observerSelfTest.summary
                     )
@@ -152,14 +152,14 @@ class KinlinkObserverService : Service() {
                     recovery?.onTransportTransition()
                     handoffOutcomeTracker.onTransition(transition)
                     ledger.appendAction(
-                        "HANDOFF_${transition.kind.name}",
+                        "HANDOFF_${transition.kind.name}_V$runningVersionCode",
                         true,
                         transition.summary + " Fenêtre calme 5 s avant toute récupération."
                     )
                 }
                 handoffOutcomeTracker.observe(truth)?.let { outcome ->
                     ledger.appendAction(
-                        "HANDOFF_OUTCOME_${outcome.outcome.name}",
+                        "HANDOFF_OUTCOME_${outcome.outcome.name}_V$runningVersionCode",
                         outcome.outcome != HandoffOutcome.MOBILE_PRESENT_UNVALIDATED,
                         outcome.summary
                     )
@@ -241,7 +241,7 @@ class KinlinkObserverService : Service() {
                 "durationMs=${evidence.durationMillis}; pssStartMiB=${evidence.startPssMiB}; pssEndMiB=${evidence.endPssMiB}; pssDeltaMiB=${evidence.pssDeltaMiB}; batteryDelta=${evidence.batteryDeltaPercent ?: -1}; batteryPctPerHour=$rate; callbackEvents=$runtimeCallbackEvents"
             )
             ledger.appendAction(
-                "RUNTIME_RESOURCE_GATE_${resourceAssessment.verdict.name}",
+                "RUNTIME_RESOURCE_GATE_${resourceAssessment.verdict.name}_V$runningVersionCode",
                 resourceAssessment.verdict == RuntimeResourceVerdict.PASS,
                 "reasons=${resourceAssessment.reasons.sorted().joinToString(",")}; callbackEvents=$runtimeCallbackEvents"
             )
@@ -255,34 +255,40 @@ class KinlinkObserverService : Service() {
 
         val assessment = FieldCandidateQualificationPolicy.evaluate(
             FieldCandidateQualificationEvidence(
-                coreSelfTestPasses = ledger.countSuccessfulActions("SELF_TEST_CORE"),
-                observerSelfTestPasses = ledger.countSuccessfulActions("SELF_TEST_OBSERVER_CALLBACK"),
+                coreSelfTestPasses =
+                    ledger.countSuccessfulActions("SELF_TEST_CORE_V$runningVersionCode"),
+                observerSelfTestPasses =
+                    ledger.countSuccessfulActions("SELF_TEST_OBSERVER_CALLBACK_V$runningVersionCode"),
                 mobileValidatedHandoffs =
-                    ledger.countSuccessfulActions("HANDOFF_OUTCOME_MOBILE_VALIDATED"),
-                cellularToWifiReturns = ledger.countSuccessfulActions("HANDOFF_CELLULAR_TO_WIFI"),
+                    ledger.countSuccessfulActions("HANDOFF_OUTCOME_MOBILE_VALIDATED_V$runningVersionCode"),
+                cellularToWifiReturns =
+                    ledger.countSuccessfulActions("HANDOFF_CELLULAR_TO_WIFI_V$runningVersionCode"),
                 runtimeResourcePasses =
-                    ledger.countSuccessfulActions("RUNTIME_RESOURCE_GATE_PASS"),
-                runtimeResourceBlocks = ledger.countActions("RUNTIME_RESOURCE_GATE_BLOCKED")
+                    ledger.countSuccessfulActions("RUNTIME_RESOURCE_GATE_PASS_V$runningVersionCode"),
+                runtimeResourceBlocks =
+                    ledger.countActions("RUNTIME_RESOURCE_GATE_BLOCKED_V$runningVersionCode")
             )
         )
 
         when (assessment.verdict) {
             FieldCandidateQualificationVerdict.PASS -> {
                 ledger.appendAction(
-                    "FIELD_CANDIDATE_QUALIFIED",
+                    "FIELD_CANDIDATE_QUALIFIED_V$runningVersionCode",
                     true,
                     "0.7 field evidence complete: self-tests, validated mobile handoff, Wi-Fi return and runtime resource PASS."
                 )
                 fieldQualificationReceiptWritten = true
+                updateNotificationFor(latestTruth)
             }
             FieldCandidateQualificationVerdict.BLOCKED -> {
                 if (!fieldQualificationBlockedWritten) {
                     ledger.appendAction(
-                        "FIELD_CANDIDATE_BLOCKED",
+                        "FIELD_CANDIDATE_BLOCKED_V$runningVersionCode",
                         false,
                         "0.7 field qualification blocked: ${assessment.missing.sorted().joinToString(",")}."
                     )
                     fieldQualificationBlockedWritten = true
+                    updateNotificationFor(latestTruth)
                 }
             }
             FieldCandidateQualificationVerdict.PENDING -> Unit
@@ -333,7 +339,11 @@ class KinlinkObserverService : Service() {
         passiveProblem: PassiveProblemAssessment = PassiveProblemClassifier.classify(truth)
     ) {
         val observationOnly = recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY
-        val text = if (observationOnly) {
+        val text = if (fieldQualificationReceiptWritten) {
+            "KINLINK 0.7 · qualification terrain complète"
+        } else if (fieldQualificationBlockedWritten) {
+            "KINLINK 0.7 · qualification bloquée · voir diagnostic"
+        } else if (observationOnly) {
             "Mode sûr · observation uniquement · Android garde le contrôle"
         } else when (truth.transport) {
             Transport.CELLULAR -> "Données mobiles · Android contrôle · KINLINK observe seulement"
