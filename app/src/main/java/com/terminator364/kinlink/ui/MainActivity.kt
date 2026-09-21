@@ -39,6 +39,7 @@ import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.NetworkObserver
 import com.terminator364.kinlink.core.PassiveLinkQuality
 import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
+import com.terminator364.kinlink.core.PassiveQualityScorePolicy
 import com.terminator364.kinlink.core.PassiveProblemClassifier
 import com.terminator364.kinlink.core.PassiveGuidancePolicy
 import com.terminator364.kinlink.core.RecoveryBlockReason
@@ -244,7 +245,7 @@ class MainActivity : Activity() {
         heroDetailText.text = if (observationOnly) {
             "${transportLabel(truth)} · surveillance passive · Android garde le contrôle"
         } else {
-            "${transportLabel(truth)} · qualité $qualityLabel · surveillance continue"
+            "${transportLabel(truth)} · indice passif ${passiveScore.score}/100 · $qualityLabel"
         }
 
         transportText.text = "Réseau · ${transportLabel(truth)}"
@@ -320,6 +321,7 @@ class MainActivity : Activity() {
             append("Autopilot : ${adaptiveDecision.intent.name}\n")
             append("Capacité Android : ↓${truth.downstreamKbps} kbps / ↑${truth.upstreamKbps} kbps\n")
             append("Qualité passive : ${passiveQuality.quality.name} · ${passiveQuality.summary}\n")
+            append("Indice passif : ${passiveScore.score}/100 · ${passiveScore.summary}\n")
             append("Cause passive : ${passiveProblem.cause.name} · confiance ${passiveProblem.confidence}%\n")
             append("Cause passive détail : ${passiveProblem.summary}\n")
             append("Santé de session : ${sessionHealth.health.name} · ${sessionHealth.summary}\n")
