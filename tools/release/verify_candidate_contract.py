@@ -138,10 +138,15 @@ require(
 
 require(
     "DefaultNetworkCallbackAcceptancePolicy" in OBSERVER
-    and "callbackMatchesActive = network != null && network == activeNow" in OBSERVER
-    and "acceptStable(" in OBSERVER
-    and "callbackMatchedAfterReduction = network != null && network == cm.activeNetwork" in OBSERVER,
-    "candidate contract: NetworkCallback active-default identity is not fenced before and after reduction",
+    and "snapshotReady(" in OBSERVER
+    and "callbackCapabilities" in OBSERVER
+    and "callbackLinkProperties" in OBSERVER,
+    "candidate contract: NetworkCallback stable callback-snapshot fence missing",
+)
+require(
+    "getNetworkCapabilities" not in OBSERVER
+    and "getLinkProperties" not in OBSERVER,
+    "candidate contract: NetworkObserver reintroduced synchronous property queries inside callback flow",
 )
 require(
     "shouldCancelPendingLoss(" in OBSERVER
