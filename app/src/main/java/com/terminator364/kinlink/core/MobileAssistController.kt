@@ -7,7 +7,8 @@ import com.terminator364.kinlink.data.TelemetryLedger
 
 class MobileAssistController(
     context: Context,
-    private val ledger: TelemetryLedger
+    private val ledger: TelemetryLedger,
+    private val onRefreshAccepted: (NetworkTruth) -> Unit = {}
 ) {
     private val cm = context.getSystemService(ConnectivityManager::class.java)
     private val resourceGuard = DeviceResourceGuard(context)
@@ -25,6 +26,11 @@ class MobileAssistController(
             ledger.latestActionTimestamp(ACTION_PREFIX)
         }.getOrNull()
         val sinceLast = last?.let { (nowWallMs - it).coerceAtLeast(0L) } ?: Long.MAX_VALUE
+        val recentIneffective =
+            runCatching {
+                ledger.countActionsSince(OUTCOME_UNCHANGED, since) +
+                    ledger.countActionsSince(OUTCOME_DEGRADED, since)
+            }.getOrDefault(2)
 
         val decision = MobileAssistPolicy.decide(
             truth = truth,
@@ -33,7 +39,8 @@ class MobileAssistController(
                 resourceGuard.snapshot().constrained
             }.getOrDefault(true),
             recentActions = recent,
-            millisSinceLastAction = sinceLast
+            millisSinceLastAction = sinceLast,
+            recentIneffectiveOutcomes = recentIneffective
         )
 
         if (decision.action != MobileAssistAction.REFRESH_LINK_METRICS) {
@@ -56,7 +63,7 @@ class MobileAssistController(
         if (!stillCellular || !stillValidated || !stillNotSuspended) {
             runCatching {
                 ledger.appendAction(
-                    "${ACTION_PREFIX}ABORT_STALE",
+                    "${ACTION_PREFIX}AUTO_ABORT_STALE",
                     false,
                     "Réseau mobile changé/suspendu avant le rafraîchissement; aucune action appliquée."
                 )
@@ -73,13 +80,17 @@ class MobileAssistController(
 
         runCatching {
             ledger.appendAction(
-                "${ACTION_PREFIX}REFRESH_METRICS",
+                "${ACTION_PREFIX}AUTO_REFRESH_METRICS",
                 refreshed,
                 if (refreshed)
                     "Rafraîchissement passif des métriques Android demandé; aucun speedtest/probe mobile."
                 else
                     "Android n’a pas accepté le rafraîchissement des métriques; aucune autre action."
             )
+        }
+
+        if (refreshed) {
+            runCatching { onRefreshAccepted(truth) }
         }
 
         return decision.copy(
@@ -91,6 +102,8 @@ class MobileAssistController(
     }
 
     companion object {
-        const val ACTION_PREFIX = "MOBILE_ASSIST_"
+        const val ACTION_PREFIX = "MOBILE_ASSIST_ACTION_"
+        const val OUTCOME_UNCHANGED = "MOBILE_ASSIST_OUTCOME_UNCHANGED"
+        const val OUTCOME_DEGRADED = "MOBILE_ASSIST_OUTCOME_DEGRADED"
     }
 }
