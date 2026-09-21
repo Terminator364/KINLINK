@@ -7,73 +7,53 @@ Resume with exactly:
 `KINLINKGO`
 
 Before substantial product work:
-1. reload `.project-memory/ACTIVE_TRANCHE.json` and `.project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl`;
-2. if ACTIVE_TRANCHE is CLOSED, open a NEW tranche and persist Gmail START ACK before product mutations;
-3. never reuse a previously CLOSED tranche for new work;
-4. before any final ChatGPT app reply: checkpoint product state, persist CLOSE_INTENT, send Gmail END, verify provider ACK, persist END_ACKNOWLEDGED;
-5. final app reply is forbidden while delivery_state is not CLOSED / END_ACKNOWLEDGED.
+1. reload `.project-memory/ACTIVE_TRANCHE.json`, `.project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl`, and `.project-memory/FIELD_CANDIDATE_FREEZE.json`;
+2. if ACTIVE_TRANCHE is CLOSED, open a NEW tranche and persist Gmail START ACK before product work;
+3. never reuse a CLOSED tranche;
+4. before any final ChatGPT app reply: checkpoint -> CLOSE_INTENT -> Gmail END -> provider ACK -> persist END_ACKNOWLEDGED;
+5. final app closeout response is forbidden until END_ACKNOWLEDGED is durable.
 
-The app chat may contain progress updates while work is active, but not a final/closeout answer.
+## Communication incident remediation
 
-## Communication incident fixed
+The prior missing-END incident was caused by starting new substantial work while ACTIVE_TRANCHE still referenced an already CLOSED tranche.
 
-The previous session sent Gmail START message `1a0c4b5a1a669b91` but produced a final ChatGPT reply without Gmail END.
-Root cause: new work had started while durable `ACTIVE_TRANCHE` still referenced the already-closed tranche `KINLINK-2026-09-21-1631-K25-02`.
+Schema v4 now enforces:
+- a new durable tranche for new work;
+- closeout priority over further product mutation;
+- a final-response END_ACK gate.
 
-Remediation now persisted:
-- ACTIVE_TRANCHE schema v4;
-- mandatory new-tranche gate;
-- final-response END_ACK gate;
-- closeout priority over additional product work;
-- incident recorded in communication ledger.
+## Frozen field candidate
 
-Current active recovery tranche:
-- tranche: `KINLINK-2026-09-21-COMM-RECOVERY-K25-03`
-- delivery key: `K25-20260921-COMMRECOVERY-03`
-- Gmail START ACK: `1a0c4cf26258ae7d`
+Installed phone:
+- KINLINK 0.7.2 / versionCode 10.
 
-## Product state
-
-Installed target phone:
-- KINLINK 0.7.2 / versionCode 10;
-- usable, but P0 UX-invalid as near-final because target-phone screenshots showed responsive header compression.
-
-Current engineering line:
+Frozen successor:
+- app versionName: `0.7.3-dev`
+- field label: `0.7.3 final-like`
+- versionCode: 11
+- source head: `2aeac4cf801e60986c33347676e12310790d1d98`
 - branch: `dev/0.7.3-final-like-ui-control`
-- exact head: `c98aaf23ed2818392d7330efb8785eca36befd2a`
-- current Android run: `35625701977`
-- design-lint: PASS
-- unit tests: PASS
-- Android lint: PASS
-- unsigned candidate build: PASS
-- candidate package identity/unsigned fence: PASS
-- rendered responsive matrix: IN_PROGRESS at checkpoint
+- design-lint run `35626585191`: PASS
+- Android run `35626585156`: PASS
+- 36/36 rendered screenshots: assertions PASS + manual visual review PASS
+- unsigned APK SHA-256: `b8c8f3e82f9b5503b8c91edf9b30d171586ce901bc75e71f77127be7d1296b78`
+- signed APK SHA-256: `d268542a4e6d4a4a5869deddd71bf0aec32c46386d2193cf96da6b825e68877d`
+- canonical signer SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+- Drive FIELD_CANDIDATE file id: `1NvwAVPKHMXzK801X6xE9t2wDj1GIBtIB`
+- Drive readback SHA-256: exact match / PASS
+- canonical INSTALLER: untouched.
 
-## Responsive qualification already established
+0.7.2 staging history is archived under:
+`KINLINK/FIELD_CANDIDATE/INSTALLED_SUPERSEDED_0.7.2`.
 
-The matrix covers:
-- 3 screen/font configurations;
-- 6 representative KINLINK states;
-- top + bottom captures = 36 expected screenshots;
-- clipping/ellipsis detection;
-- suspicious narrow-column detection;
-- sibling overlap detection;
-- 48dp tap-target checks;
-- collapsed technical details;
-- safe-mode state;
-- deterministic resource-constrained state.
+## Exact next human gate
 
-Previous test assertions passed across the 3 configurations. Remaining work is preserving and visually inspecting the screenshot evidence. Screenshot persistence was moved to `/data/local/tmp/KINLINK-ui-proof` at exact head `c98aaf23...`.
+Perform ONE in-place Android update using the exact 0.7.3 field candidate from Drive.
 
-## Exact next technical action
+Rules:
+- do NOT uninstall 0.7.2 first;
+- do NOT install any CI/debug/unsigned APK;
+- do NOT replace canonical INSTALLER yet;
+- after installation, verify versionCode 11 + signer continuity + startup/UI + field telemetry/receipts before any canonical promotion.
 
-1. Poll Android run `35625701977`.
-2. If FAIL: inspect exact preserved test/report artifact and correct only the proven failure.
-3. If PASS: fetch candidate + responsive proof artifacts.
-4. Inspect all 36 PNGs visually, not merely CI status.
-5. Reject any clipping, overlap, one-character columns, absurd whitespace or broken controls.
-6. Only if visual proof is clean: freeze exact candidate, canonical sign, stage Drive FIELD_CANDIDATE and read back hash.
-7. Only then request one in-place phone update.
-8. At tranche close: Gmail END -> provider ACK -> persist END_ACKNOWLEDGED -> short app reply only.
-
-No phone installation is requested at this checkpoint.
+No further production mutation is allowed while this candidate freeze remains active unless the freeze is explicitly invalidated first.
