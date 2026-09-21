@@ -39,6 +39,9 @@ data class DiagnosticSummary(
     val coreSelfTestPasses: Int = 0,
     val observerSelfTestPasses: Int = 0,
     val runtimeBudgetSessions: Int = 0,
+    val runtimeResourcePasses: Int = 0,
+    val runtimeResourceInconclusive: Int = 0,
+    val runtimeResourceBlocked: Int = 0,
     val recoveryActionDurationTotalMillis: Long = 0L,
     val recoveryActionDurationMaxMillis: Long = 0L,
     val recoveryActionDurationSamples: Int = 0,
@@ -125,6 +128,9 @@ object DiagnosticReportBuilder {
         appendLine("- Core self-test PASS receipts: ${summary.coreSelfTestPasses}")
         appendLine("- Observer callback self-test PASS receipts: ${summary.observerSelfTestPasses}")
         appendLine("- Completed runtime budget sessions: ${summary.runtimeBudgetSessions}")
+        appendLine("- Runtime resource PASS receipts: ${summary.runtimeResourcePasses}")
+        appendLine("- Runtime resource INCONCLUSIVE receipts: ${summary.runtimeResourceInconclusive}")
+        appendLine("- Runtime resource BLOCKED receipts: ${summary.runtimeResourceBlocked}")
         appendLine()
 
         appendLine("Recent stability")
@@ -149,7 +155,10 @@ object DiagnosticReportBuilder {
         val recentBurden = RecentReliabilityPolicy.classify(
             summary.recent24hInterruptionCount,
             summary.recent24hInterruptionMillis,
-            summary.recent24hLongestInterruptionMillis
+            summary.recent24hLongestInterruptionMillis,
+            summary.recent24hLowQualityEpisodeCount,
+            summary.recent24hLowQualityMillis,
+            summary.recent24hLowQualityLongestMillis
         )
         appendLine("Recent interruption burden")
         appendLine("- 24h qualitative burden: ${recentBurden.name}")
