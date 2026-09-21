@@ -1,14 +1,14 @@
 {
   "project": "KINLINK",
-  "line": "0.7.0-dev",
+  "line": "0.7.0",
   "versionCode": 8,
-  "code_head": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
+  "code_head": "5cc9e4a52d67447fceba1831eb999aa31ca1c3ce",
   "latest_full_machine_pass": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
-      "status": "PASS",
-      "evidence": "android-next-dev run 35548684588 PASS + design-lint run 35548684614 PASS on e1e2e7169d6a13f5fce8b808574cc63ed9fe915d"
+      "status": "PENDING",
+      "evidence": "0.7.0 version identity frozen at 5cc9e4a52d67447fceba1831eb999aa31ca1c3ce; fresh candidate CI required"
     },
     "MIGRATION": {
       "status": "PASS",
@@ -36,8 +36,8 @@
     "no routing/network ownership APIs",
     "VPN/TUN remains disabled"
   ],
-  "field_candidate_allowed": true,
-  "machine_artifact": {
+  "field_candidate_allowed": false,
+  "previous_machine_artifact": {
     "workflow_run": 35548684588,
     "artifact_id": 10617836246,
     "artifact_name": "KINLINK-next-dev-ci-build",
