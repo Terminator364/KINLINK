@@ -1,0 +1,88 @@
+{
+  "schema": "kinlink.communication_state_machine/1",
+  "cadence_minutes": 25,
+  "useful_work_minutes": 22,
+  "closeout_reserve_minutes": 3,
+  "work_states": [
+    "IDLE",
+    "WORKING",
+    "CHECKPOINTED",
+    "HUMAN_GATE",
+    "FAILED_SAFE"
+  ],
+  "delivery_states": [
+    "NONE",
+    "START_SEND_PENDING",
+    "START_ACKNOWLEDGED",
+    "END_SEND_PENDING",
+    "END_ACKNOWLEDGED",
+    "CLOSED",
+    "RECOVERY_REQUIRED"
+  ],
+  "invariants": [
+    "Substantive work requires delivery_state=START_ACKNOWLEDGED",
+    "At minute 22 or earlier, enter closeout and start no new product mutation",
+    "ChatGPT app end output requires delivery_state=CLOSED and end_mail_verified=true",
+    "If START was acknowledged and END is not acknowledged, interruption => RECOVERY_REQUIRED",
+    "RECOVERY_REQUIRED must be repaired before any new tranche starts",
+    "Work completion and user-message delivery are separate facts",
+    "Provider acknowledgement, not send intent, proves Gmail delivery",
+    "A watchdog recovery may report latest durable state but may not invent uncheckpointed work"
+  ],
+  "normal_transitions": [
+    [
+      "NONE",
+      "START_SEND_PENDING"
+    ],
+    [
+      "START_SEND_PENDING",
+      "START_ACKNOWLEDGED"
+    ],
+    [
+      "START_ACKNOWLEDGED",
+      "END_SEND_PENDING"
+    ],
+    [
+      "END_SEND_PENDING",
+      "END_ACKNOWLEDGED"
+    ],
+    [
+      "END_ACKNOWLEDGED",
+      "CLOSED"
+    ]
+  ],
+  "interruption_transitions": [
+    [
+      "START_ACKNOWLEDGED",
+      "RECOVERY_REQUIRED"
+    ],
+    [
+      "END_SEND_PENDING",
+      "RECOVERY_REQUIRED"
+    ],
+    [
+      "RECOVERY_REQUIRED",
+      "END_SEND_PENDING"
+    ],
+    [
+      "RECOVERY_REQUIRED",
+      "END_ACKNOWLEDGED"
+    ],
+    [
+      "END_ACKNOWLEDGED",
+      "CLOSED"
+    ]
+  ],
+  "watchdogs": {
+    "closeout": {
+      "arm_at_tranche_start": true,
+      "trigger_offset_minutes": 22,
+      "behavior": "If not CLOSED, stop mutations and execute closeout from latest durable checkpoint"
+    },
+    "hard_end_guard": {
+      "arm_at_tranche_start": true,
+      "trigger_offset_minutes": 25,
+      "behavior": "If not CLOSED, repair missing END before any further work"
+    }
+  }
+}
