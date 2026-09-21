@@ -1,16 +1,16 @@
 {
   "schema": "kinlink.active_tranche/6",
   "project": "KINLINK",
-  "tranche_id": "KINLINK-2026-09-21-2242-K25-11",
-  "delivery_key": "K25-20260921-2242-11",
+  "tranche_id": "KINLINK-2026-09-21-2327-K25-12",
+  "delivery_key": "K25-20260921-2327-12",
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
-  "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSED",
-  "status": "CLOSED",
-  "gmail_start_message_id": "1a0c5eb379553ab2",
-  "gmail_start_thread_id": "1a0c5eb379553ab2",
+  "work_state": "WORKING",
+  "delivery_state": "START_ACKNOWLEDGED",
+  "status": "ACTIVE",
+  "gmail_start_message_id": "1a0c61541332ee94",
+  "gmail_start_thread_id": "1a0c61541332ee94",
   "gmail_label": "KINLINK",
   "communication_guard": {
     "final_app_reply_requires_end_ack_persisted": true,
@@ -18,80 +18,27 @@
     "communication_priority": "P0",
     "platform_security_bypass_forbidden": true,
     "watchdog_name": "KINLINK Comms Watchdog",
-    "watchdog_single_automation": true
+    "watchdog_single_automation": true,
+    "missed_end_is_p0_fault": true
   },
   "objectives": [
-    "VERIFY_AND_HARDEN_CONTINUITY_SYNC",
-    "CREATE_HASHED_RESUME_CAPSULE",
-    "POLL_EXACT_0_8_HEAD_62A910",
-    "VERIFY_RELEASE_PROVENANCE_0_8_0_DEV_V12",
-    "CONTINUE_W1_W2_AS_LARGE_INTERNAL_BLOCKS",
-    "DEEPEN_B_ONLY_WHEN_EVIDENCE_ADDS_REAL_VALUE",
+    "RECALIBRATE_COMMUNICATION_CLOSEOUT",
+    "VERIFY_WATCHDOG_MATCHES_25_MINUTE_PROTOCOL",
+    "VERIFY_A_B_C_CONTINUITY_SYNC",
+    "POLL_ANDROID_RUN_35660447857",
+    "CONTINUE_W2_LARGE_BLOCKS",
     "NO_MICRO_BETA_NO_INSTALL"
   ],
   "starting_truth": {
-    "prior_tranche": "K25-10 CLOSED with Gmail END ACK",
+    "repaired_prior_tranche": "K25-11 CLOSED after missing END repair",
     "full_spec_macro_capabilities": 80,
-    "full_spec_maturity_percent": 44.8,
-    "b_depth": "B31-B90 canonical",
-    "integrated_program": "W0-W6 canonical",
+    "full_spec_maturity_percent": 45.1,
+    "b_depth": "B31-B100",
+    "integrated_program": "W2 active",
     "installed": "0.7.3-dev/versionCode11 baseline",
     "active_successor": "0.8.0-dev/versionCode12",
-    "current_head": "62a910a698286896af90d22551366f728ee0c4e7",
-    "design_lint_run": 35657955571,
-    "android_run": 35657955186
+    "current_head": "f2a6393abc77f38e695e1516191a6069d59fab77",
+    "android_run": 35660447857
   },
-  "next_atomic_action": "poll Android run 35660447857 exact head f2a6393abc77f38e695e1516191a6069d59fab77; if PASS continue W2 usage-source reconciliation/UI under B5; no install",
-  "close_intent_persisted": true,
-  "close_owner": "PRIMARY_ASSISTANT",
-  "no_more_product_mutations": true,
-  "last_durable_checkpoint": {
-    "continuity": {
-      "resume_capsule": ".project-memory/RESUME_CAPSULE.json",
-      "pinned_stable_blobs": 18,
-      "cold_takeover_verifier": "tools/release/verify_cold_takeover.py",
-      "latest_main_design_lint_run": 35660826359,
-      "latest_main_design_lint_status": "PASS",
-      "score_sync_incident": "resume-capsule correctly caught integrated-program maturity drift after K014 score advance; fixed and repinned",
-      "drive_master_updated": true
-    },
-    "full_spec": {
-      "macro_capabilities": 80,
-      "maturity_percent": 45.1,
-      "previous_percent": 44.8,
-      "stage_change": "K014 PARTIAL -> IMPLEMENTED_UNQUALIFIED",
-      "b_depth": "B31-B100",
-      "b_depth_count": 70,
-      "active_wave": "W2_CONTEXT_AND_MOBILE_VAULT_CORE"
-    },
-    "product_0_8": {
-      "proven_visual_head": "b54020291f866042103ad0f63cae3645977638d1",
-      "visual_proof": "45/45 manual audit PASS UI/truth",
-      "proven_provenance_head": "e633db6f6441f563256deb04890bbc28267d08b8",
-      "proven_provenance_run": 35658883177,
-      "provenance_manifest": "0.8.0-dev/versionCode12 exact commit readback PASS",
-      "w2_policy_head": "3b12df65ed64538159ca13eee752c3d8d762e3ad",
-      "w2_policy_run": 35659643216,
-      "w2_policy_status": "PASS",
-      "active_head": "f2a6393abc77f38e695e1516191a6069d59fab77",
-      "active_change": "versioned local Mobile Vault plan/reserve store, no legacy daily-threshold semantic migration, privacy-safe",
-      "design_lint_run": 35660447844,
-      "design_lint_status": "PASS",
-      "android_run": 35660447857,
-      "android_status": "IN_PROGRESS_AT_CLOSE_INTENT",
-      "install_requested": false
-    },
-    "communication": {
-      "start_message_id": "1a0c5eb379553ab2",
-      "watchdog": "KINLINK Comms Watchdog",
-      "protocol": "v5"
-    }
-  },
-  "gmail_end_message_id": "1a0c614a3bda272e",
-  "gmail_end_thread_id": "1a0c5eb379553ab2",
-  "end_mail_verified": true,
-  "closed_state": true,
-  "closed_at_provider_ts": "2026-09-21T22:27:16",
-  "closed_at_local": "2026-09-21T23:26:34+01:00",
-  "recovery_reason": "MISSED_END_AFTER_CLOSE_INTENT_REPAIRED"
+  "next_atomic_action": "recalibrate watchdog/policy around 25-minute close deadline, then poll run 35660447857 and continue W2 if PASS"
 }
