@@ -24,6 +24,9 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Verify canonical signer continuity contract
+        run: python tools/release/verify_signer_contract.py
+
       - name: Require selected durable readiness stage
         run: |
           if [ "${{ inputs.stage }}" = "field_candidate" ]; then
