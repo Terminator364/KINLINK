@@ -3,7 +3,7 @@
   "version": "0.7.2",
   "versionCode": 10,
   "source_commit": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
-  "source_branch": "dev/0.7.2-continuous-improvement",
+  "source_branch": "release/0.7.2-field-candidate",
   "field_candidate_allowed": true,
   "promotion_allowed": false,
   "gates": {
@@ -44,5 +44,6 @@
     "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
     "drive_file_id": "1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU"
   },
-  "truth_boundary": "Mobile Assist L1 continuous-care evidence is correlation/observability, not proof of carrier throughput causality. Strong stabilizer remains separately gated."
+  "truth_boundary": "Mobile Assist L1 continuous-care evidence is correlation/observability, not proof of carrier throughput causality. Strong stabilizer remains separately gated.",
+  "development_origin_branch": "dev/0.7.2-continuous-improvement"
 }
