@@ -9,6 +9,7 @@ GRADLE = (ROOT / "app/build.gradle.kts").read_text(encoding="utf-8")
 ACTIVE = (SRC / "com/terminator364/kinlink/core/ActiveRecoveryPolicy.kt").read_text(encoding="utf-8")
 AUTO = (SRC / "com/terminator364/kinlink/core/AutopilotRecoveryController.kt").read_text(encoding="utf-8")
 PROBE = (SRC / "com/terminator364/kinlink/core/WifiDoctorProbe.kt").read_text(encoding="utf-8")
+SERVICE = (SRC / "com/terminator364/kinlink/core/KinlinkObserverService.kt").read_text(encoding="utf-8")
 OPT = (SRC / "com/terminator364/kinlink/core/WifiOptimizer.kt").read_text(encoding="utf-8")
 LEDGER = (SRC / "com/terminator364/kinlink/data/TelemetryLedger.kt").read_text(encoding="utf-8")
 
@@ -97,3 +98,12 @@ print("version: 0.7.1 / code 9")
 print(f"probe_timeout_bound_ms: {worst_case}")
 print(f"recovery_deadline_ms: {deadline_ms}")
 print(f"test_files: {len(tests)}")
+
+require(
+    re.search(
+        r"if\s*\(fieldQualificationReceiptWritten\)\s*\{\s*currentFieldQualificationVerdict\s*=\s*FieldCandidateQualificationVerdict\.PASS\s*return",
+        SERVICE,
+        re.S,
+    ) is None,
+    "candidate contract: historical qualified receipt can still force a stale PASS verdict",
+)
