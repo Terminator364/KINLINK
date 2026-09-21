@@ -44,3 +44,27 @@ Human-readable summary generated locally:
 - mobile budget incidents
 - battery/thermal impact estimate
 - unresolved clusters
+
+
+## 0.7.1 structured diagnostic core bundle
+
+The user-initiated diagnostic export now produces a local ZIP bundle instead of only one TXT file.
+
+Current entries:
+- `manifest.json`
+- `summary.json`
+- `recent_actions.jsonl`
+- `report.txt`
+
+Privacy contract:
+- no SSID;
+- no SIM identifier;
+- no raw IP address;
+- no raw gateway/interface name;
+- no payload;
+- no password/token;
+- only topology booleans, aggregate state and bounded KINLINK receipts.
+
+The export remains local and user-initiated. It performs no background upload and selects no recipient automatically.
+
+This is a meaningful subset of the larger canonical diagnostic ZIP design. Remaining future entries such as failure clusters, carrier wallet, energy summary and crash history are not falsely claimed implemented yet.
