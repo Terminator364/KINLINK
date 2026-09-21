@@ -58,6 +58,36 @@ jobs:
         run: gradle :app:lintDebug --stacktrace
       - name: Build unsigned release-like candidate APK
         run: gradle :app:assembleCandidate --stacktrace
+      - name: Candidate package identity and unsigned fence
+        run: |
+          set -euo pipefail
+          APK="app/build/outputs/apk/candidate/app-candidate-unsigned.apk"
+          test -f "$APK"
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          test -n "$BUILD_TOOLS"
+          test -x "$BUILD_TOOLS/aapt"
+          test -x "$BUILD_TOOLS/apksigner"
+
+          BADGING="$("$BUILD_TOOLS/aapt" dump badging "$APK" | head -n 1)"
+          echo "$BADGING"
+          echo "$BADGING" | grep -F "package: name='com.terminator364.kinlink'"
+          echo "$BADGING" | grep -F "versionCode='8'"
+          echo "$BADGING" | grep -F "versionName='0.7.0'"
+
+          set +e
+          VERIFY_OUTPUT="$("$BUILD_TOOLS/apksigner" verify --verbose "$APK" 2>&1)"
+          VERIFY_RC=$?
+          set -e
+          if [ "$VERIFY_RC" -eq 0 ]; then
+            echo "Candidate APK is unexpectedly signed. Public CI must emit an unsigned artifact."
+            exit 1
+          fi
+          if ! printf '%s\n' "$VERIFY_OUTPUT" | grep -Eqi 'DOES NOT VERIFY|No signatures'; then
+            echo "Could not prove the candidate is merely unsigned; refusing artifact."
+            printf '%s\n' "$VERIFY_OUTPUT"
+            exit 1
+          fi
+          echo "Candidate identity PASS and unsigned fence PASS."
       - name: SHA-256
         run: |
           sha256sum app/build/outputs/apk/candidate/app-candidate-unsigned.apk | tee app/build/outputs/apk/candidate/KINLINK-candidate-unsigned.apk.sha256
