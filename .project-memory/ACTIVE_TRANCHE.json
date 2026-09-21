@@ -1,0 +1,21 @@
+{
+  "project": "KINLINK",
+  "tranche_id": "KINLINK-2026-09-21-25M-FINALIZATION",
+  "cadence_minutes": 25,
+  "status": "RUNNING",
+  "gmail_start_message_id": "1a0c3d50150b0db9",
+  "gmail_label": "KINLINK",
+  "end_mail_required_before_app_reply": true,
+  "human_gate_exception_only": true,
+  "goal": "viable consolidated 0.7.1 close to user final expectation",
+  "current_exact_machine_pass_head": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
+  "current_exact_machine_pass_runs": {
+    "design_lint": 35594766801,
+    "android_candidate": 35594766821
+  },
+  "notes": [
+    "No APK by Gmail",
+    "No new install until exact signed Drive-staged candidate is ready",
+    "Intermediate user feedback must not erase the end-mail obligation"
+  ]
+}
