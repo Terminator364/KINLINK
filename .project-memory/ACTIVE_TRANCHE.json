@@ -6,9 +6,9 @@
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
-  "work_state": "WORKING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "ACTIVE",
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSE_INTENT_PERSISTED",
+  "status": "CLOSING",
   "gmail_start_message_id": "1a0c568a9e6e9a39",
   "gmail_start_thread_id": "1a0c568a9e6e9a39",
   "gmail_label": "KINLINK",
@@ -34,5 +34,14 @@
     "current_android_run": 35641697122,
     "current_android_failure": "HARNESS_ORDERING_NOT_PRODUCT_REGRESSION"
   },
-  "next_atomic_action": "create and mail full A-Z doctrine PDF, then deepen B and harden memory/continuity before continuing 0.8"
+  "next_atomic_action": "send Gmail END for K25-07 now; verify provider ACK; persist CLOSED; only then open K25-08 if work continues",
+  "close_intent_persisted": true,
+  "close_owner": "INTERRUPTION_RECOVERY",
+  "no_more_product_mutations": true,
+  "interruption_recovery": {
+    "detected_at_local": "2026-09-21T20:43:14+01:00",
+    "root_cause": "A user message arrived while tranche K25-07 was still ACTIVE after START+PDF, before END had been emitted. The assistant turn was interrupted before normal closeout.",
+    "required_order": "END_PREVIOUS_FIRST_THEN_OPTIONAL_NEW_START",
+    "protocol_gap": "A mid-tranche user interruption can preempt normal closeout; next-turn reconciliation must close the open tranche before any new START or product work."
+  }
 }
