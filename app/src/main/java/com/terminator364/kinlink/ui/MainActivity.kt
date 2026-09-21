@@ -487,6 +487,12 @@ class MainActivity : Activity() {
             }
 
             MobileAssistManualAction.REFRESH_LINK_METRICS -> {
+                val baselineQuality =
+                    PassiveLinkQualityPolicy.assess(latestTruth).quality
+                val baselineScore =
+                    PassiveQualityScorePolicy.score(latestTruth).score
+                val baselineObservedAt = latestTruth.observedAtMillis
+
                 val refreshed = runCatching {
                     cm.requestBandwidthUpdate(requireNotNull(network))
                 }.getOrDefault(false)
@@ -507,6 +513,18 @@ class MainActivity : Activity() {
                         this,
                         Intent(this, KinlinkObserverService::class.java).apply {
                             action = KinlinkObserverService.ACTION_TRACK_MANUAL_MOBILE_ASSIST
+                            putExtra(
+                                KinlinkObserverService.EXTRA_BASELINE_QUALITY,
+                                baselineQuality.name
+                            )
+                            putExtra(
+                                KinlinkObserverService.EXTRA_BASELINE_SCORE,
+                                baselineScore
+                            )
+                            putExtra(
+                                KinlinkObserverService.EXTRA_BASELINE_OBSERVED_AT,
+                                baselineObservedAt
+                            )
                         }
                     )
                 }
