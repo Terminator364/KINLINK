@@ -1,85 +1,41 @@
 {
   "schema": "kinlink.active_tranche/6",
   "project": "KINLINK",
-  "tranche_id": "KINLINK-2026-09-21-2327-K25-12",
-  "delivery_key": "K25-20260921-2327-12",
+  "tranche_id": "KINLINK-2026-09-21-2354-K25-13",
+  "delivery_key": "K25-20260921-2354-13",
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
-  "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSED",
-  "status": "CLOSED",
-  "gmail_start_message_id": "1a0c61541332ee94",
-  "gmail_start_thread_id": "1a0c61541332ee94",
-  "gmail_end_message_id": "1a0c62cf5f2cde54",
-  "gmail_end_thread_id": "1a0c61541332ee94",
+  "work_state": "WORKING",
+  "delivery_state": "START_ACKNOWLEDGED",
+  "status": "ACTIVE",
+  "gmail_start_message_id": "1a0c62d897216980",
+  "gmail_start_thread_id": "1a0c62d897216980",
   "gmail_label": "KINLINK",
   "communication_guard": {
     "final_app_reply_requires_end_ack_persisted": true,
     "closed_tranche_reuse_forbidden": true,
     "communication_priority": "P0",
-    "platform_security_bypass_forbidden": true,
-    "watchdog_name": "KINLINK Comms Watchdog",
-    "watchdog_single_automation": true,
-    "missed_end_is_p0_fault": true
+    "missed_end_is_p0_fault": true,
+    "watchdog_name": "KINLINK Comms Watchdog"
   },
   "objectives": [
-    "RECALIBRATE_COMMUNICATION_CLOSEOUT",
-    "VERIFY_WATCHDOG_MATCHES_25_MINUTE_PROTOCOL",
-    "VERIFY_A_B_C_CONTINUITY_SYNC",
-    "POLL_ANDROID_RUN_35660447857",
-    "CONTINUE_W2_LARGE_BLOCKS",
+    "POLL_ANDROID_35664821258",
+    "AUDIT_45_RENDERED_SCREENSHOTS",
+    "REASSESS_K017_K068_ONLY_ON_EVIDENCE",
+    "CONTINUE_W2_LARGE_BLOCK",
+    "SYNC_A_B_C_CONTINUITY",
     "NO_MICRO_BETA_NO_INSTALL"
   ],
   "starting_truth": {
-    "repaired_prior_tranche": "K25-11 CLOSED after missing END repair",
-    "full_spec_macro_capabilities": 80,
-    "full_spec_maturity_percent": 45.1,
+    "prior_tranche": "K25-12 CLOSED with Gmail END ACK",
+    "macro_capabilities": 80,
+    "maturity_percent": 45.1,
     "b_depth": "B31-B100",
-    "integrated_program": "W2 active",
-    "installed": "0.7.3-dev/versionCode11 baseline",
-    "active_successor": "0.8.0-dev/versionCode12",
-    "current_head": "f2a6393abc77f38e695e1516191a6069d59fab77",
-    "android_run": 35660447857
+    "active_wave": "W2",
+    "active_head": "7d589ddd6038adcb7c318f2b00dc1cf03faaa355",
+    "design_lint_run": 35664821268,
+    "android_run": 35664821258
   },
-  "next_atomic_action": "poll Android 35664821258 exact head 7d589ddd6038adcb7c318f2b00dc1cf03faaa355; inspect all 45 renders if PASS; no install",
-  "close_owner": "PRIMARY_ASSISTANT",
-  "close_mode": "INTERRUPTION_RECOVERY",
-  "interruption_recovery": true,
-  "end_mail_verified": true,
-  "closed_state": true,
-  "foreground_resume_requires_fresh_start": true,
-  "no_more_product_mutations": true,
-  "closed_at_local": "2026-09-21T23:52:00+01:00",
-  "close_intent_persisted": true,
-  "last_durable_checkpoint": {
-    "communication": {
-      "missed_end_K25_11": "REPAIRED",
-      "protocol": "v5 P0 close-intent obligation",
-      "watchdog_threshold_minutes": 28,
-      "watchdog_updated": true,
-      "main_continuity_design_lint": "PASS before this close checkpoint"
-    },
-    "full_spec": {
-      "macro_capabilities": 80,
-      "maturity_percent": 45.1,
-      "b_depth": "B31-B100",
-      "active_wave": "W2"
-    },
-    "w2": {
-      "prior_store_head": "f2a6393abc77f38e695e1516191a6069d59fab77",
-      "prior_store_android": "PASS",
-      "reconciliation_head": "6f043ab21a4d619d9d6fd3b4c1d9ca98d2edab5c",
-      "reconciliation_android_run": 35663934505,
-      "reconciliation_android": "PASS",
-      "visual_audit": "45/45 inspected; REJECT due XL Mobile Vault EFFACER clipping",
-      "remediation_head": "7d589ddd6038adcb7c318f2b00dc1cf03faaa355",
-      "design_lint_run": 35664821268,
-      "design_lint": "PASS",
-      "android_run": 35664821258,
-      "android": "IN_PROGRESS_AT_CLOSE_INTENT"
-    },
-    "install_requested": false
-  },
-  "closed_at_provider_ts": "2026-09-21T22:53:50"
+  "next_atomic_action": "poll Android 35664821258; if PASS inspect all 45 renders with XL Mobile Vault focus"
 }
