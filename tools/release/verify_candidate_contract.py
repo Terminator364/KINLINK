@@ -20,8 +20,8 @@ def require(ok: bool, message: str) -> None:
     if not ok:
         raise SystemExit(message)
 
-require('versionCode = 11' in GRADLE, "candidate contract: versionCode 11 missing")
-require('versionName = "0.7.3-dev"' in GRADLE, "candidate contract: versionName 0.7.3-dev missing")
+require('versionCode = 12' in GRADLE, "candidate contract: versionCode 12 missing")
+require('versionName = "0.8.0-dev"' in GRADLE, "candidate contract: versionName 0.8.0-dev missing")
 require(
     'transport != Transport.WIFI -> RecoveryBlockReason.NON_WIFI' in ACTIVE,
     "candidate contract: central non-Wi-Fi active-recovery block missing",
@@ -121,7 +121,7 @@ tests = list((ROOT / "app/src/test").rglob("*Test.kt"))
 require(len(tests) >= 64, f"candidate contract: regression suite unexpectedly shrank to {len(tests)} tests")
 
 print("candidate-contract: PASS")
-print("version: 0.7.3-dev / code 11")
+print("version: 0.8.0-dev / code 12")
 print(f"probe_socket_envelope_ms: {socket_envelope}")
 print(f"probe_hard_envelope_ms: {hard_envelope}")
 print(f"recovery_deadline_ms: {deadline_ms}")
@@ -273,12 +273,13 @@ require(
 )
 
 LAYOUT = (ROOT / "app/src/main/res/layout/activity_main.xml").read_text(encoding="utf-8")
+USER_EXPERIENCE = (SRC / "com/terminator364/kinlink/core/UserExperienceTruthPolicy.kt").read_text(encoding="utf-8")
 require(
     'android:id="@+id/qualityProgress"' in LAYOUT
-    and 'android:max="100"' in LAYOUT
-    and "qualityProgress.progress = passiveScore.score" in MAIN_ACTIVITY
-    and "Qualité passive" in MAIN_ACTIVITY,
-    "candidate contract: compact quality meter is missing or detached from passive score",
+    and 'android:visibility="gone"' in LAYOUT.split('android:id="@+id/qualityProgress"', 1)[1][:500]
+    and "UserExperienceTruthPolicy.assess(" in MAIN_ACTIVITY
+    and "ACCESS_AVAILABLE_QUALITY_UNVERIFIED" in USER_EXPERIENCE,
+    "candidate contract: user-facing quality truth policy is missing or pseudo-score is visible",
 )
 
 RELAPSE_GUARD = (SRC / "com/terminator364/kinlink/core/MobileAssistRelapseGuardPolicy.kt").read_text(encoding="utf-8")
@@ -307,9 +308,11 @@ require(
     "candidate contract: proof-card refresh is not package-scoped/non-exported",
 )
 require(
-    '"Qualité · " + passiveScore.score + "/100 · " + qualityLabel' in MAIN_ACTIVITY
-    and 'Indice passif : ${passiveScore.score}/100' in MAIN_ACTIVITY,
-    "candidate contract: passive numeric score is missing from cockpit or technical detail",
+    '"Qualité · " + passiveScore.score' not in MAIN_ACTIVITY
+    and "Expérience · " in MAIN_ACTIVITY
+    and 'Indice technique interne : ${passiveScore.score}/100' in MAIN_ACTIVITY
+    and "ne prouve pas la qualité ressentie" in MAIN_ACTIVITY,
+    "candidate contract: Android passive score leaked back into user-facing quality claims",
 )
 
 EVIDENCE_SUMMARY = (SRC / "com/terminator364/kinlink/core/MobileAssistEvidenceSummaryPolicy.kt").read_text(encoding="utf-8")
@@ -385,9 +388,10 @@ require(
     "candidate contract: proof cockpit is not bound to latest durable evidence",
 )
 require(
-    "Maintenant bon" in MAIN_ACTIVITY
-    and "24 h " in MAIN_ACTIVITY,
-    "candidate contract: current state and historical burden are not distinguished",
+    "reliabilityHumanLabel(" in MAIN_ACTIVITY
+    and "Historique 24 h" in MAIN_ACTIVITY
+    and "aucun gain causal confirmé" in MAIN_ACTIVITY,
+    "candidate contract: current truth, historical burden, and improvement proof are not distinguished",
 )
 
 PROFILE_TUNING = (SRC / "com/terminator364/kinlink/core/AutopilotProfileControlPolicy.kt").read_text(encoding="utf-8")
