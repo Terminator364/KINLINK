@@ -253,6 +253,20 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             if (cursor.moveToFirst()) cursor.getLong(0) else null
         }
 
+    fun latestActionReceipt(actionPrefix: String): ActionReceipt? =
+        readableDatabase.rawQuery(
+            "SELECT ts_wall_ms, action, success, summary FROM action_receipts WHERE action LIKE ? ORDER BY ts_wall_ms DESC LIMIT 1",
+            arrayOf("$actionPrefix%")
+        ).use { cursor ->
+            if (!cursor.moveToFirst()) return@use null
+            ActionReceipt(
+                tsWallMs = cursor.getLong(0),
+                action = cursor.getString(1),
+                success = cursor.getInt(2) != 0,
+                summary = cursor.getString(3)
+            )
+        }
+
     private fun pruneNetworkEvents(nowWallMs: Long = System.currentTimeMillis()) {
         writableDatabase.execSQL(
             "DELETE FROM network_events WHERE ts_wall_ms < ?",
