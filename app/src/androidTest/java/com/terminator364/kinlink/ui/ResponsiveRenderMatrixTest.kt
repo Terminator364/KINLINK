@@ -178,12 +178,19 @@ class ResponsiveRenderMatrixTest {
 
         scenario.onActivity { activity ->
             activity.findViewById<View>(R.id.technicalToggle).performClick()
-            val detail = activity.findViewById<View>(R.id.detailText)
+            val detail = activity.findViewById<TextView>(R.id.detailText)
             assertTrue("technical details did not expand", detail.visibility == View.VISIBLE)
+            assertTrue("technical details are empty", detail.text.toString().length > 120)
+            val root = activity.findViewById<ScrollView>(R.id.rootScroll)
+            root.scrollTo(0, detail.top)
+        }
+        instrumentation.waitForIdleSync()
+        capture("technical-details-start")
+        scenario.onActivity { activity ->
             activity.findViewById<ScrollView>(R.id.rootScroll).fullScroll(View.FOCUS_DOWN)
         }
         instrumentation.waitForIdleSync()
-        capture("technical-details")
+        capture("technical-details-bottom")
         scenario.onActivity { activity ->
             activity.findViewById<View>(R.id.technicalToggle).performClick()
             activity.findViewById<ScrollView>(R.id.rootScroll).fullScroll(View.FOCUS_UP)
