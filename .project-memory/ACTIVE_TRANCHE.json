@@ -5,7 +5,7 @@
   "primary_work_budget_minutes": 22,
   "closeout_reserve_minutes": 3,
   "max_mutation_groups_before_forced_closeout": 12,
-  "mutation_groups_used": 4,
+  "mutation_groups_used": 5,
   "status": "CLOSED",
   "forced_closeout_entered": true,
   "gmail_start_message_id": "1a0c40fc5bc4a549",
