@@ -35,8 +35,8 @@ When this command is used in another KINLINK conversation/workspace:
 - Development line: `0.7.0-dev`, versionCode 8.
 - Promotion of DEV: FORBIDDEN until consolidated RC gate.
 - Telemetry schema: v5.
-- Latest full machine PASS code head: `71111619ada624bdf717e869323ac309bd07c7de`.
-- Current functional code head under Android CI qualification: `50df92a0fb1131e1b9b136fd7fc25ad6739f406b`.
+- Latest full machine PASS code head: `4153720cde8c6bd0004b8e69baeadf5254735abe`.
+- Final consolidated field-candidate code head: `4153720cde8c6bd0004b8e69baeadf5254735abe`.
 
 ## 0.7.0-dev integrated scope
 
@@ -56,12 +56,11 @@ Includes, among other items:
 
 ## Next durable action
 
-Continue the large 0.7.0-dev batch with:
-1. finish Android CI qualification of `50df92a0fb1131e1b9b136fd7fc25ad6739f406b`;
-2. close Stage A: MACHINE + MIGRATION + SIGNER_CONTINUITY;
-3. only then produce one consolidated signed field candidate, without replacing RC3;
-4. collect FIELD_HANDOFF + >=30-minute RESOURCE_QUALIFICATION on that candidate;
-5. promote canonically only when all five gates are PASS; no micro-beta chain.
+1. deliver/install only the exact final signed 0.7.0 APK SHA-256 `cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc` over RC3;
+2. never uninstall RC3 merely to force the update;
+3. collect versionCode 8 FIELD_HANDOFF + >=30-minute RESOURCE_QUALIFICATION evidence automatically;
+4. old RC3 evidence cannot qualify v8;
+5. canonical RC3 remains Drive-canonical until Stage B passes.
 
 ## Exact short code to give the user
 
