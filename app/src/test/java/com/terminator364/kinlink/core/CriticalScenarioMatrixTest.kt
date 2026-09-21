@@ -23,6 +23,88 @@ class CriticalScenarioMatrixTest {
             recentSafetyAborts = 0
         )
 
+    @Test fun exhaustiveNonWifiMatrixNeverAuthorizesAutomaticRecovery() {
+        val nonWifi = Transport.values().filter { it != Transport.WIFI }
+        var checked = 0
+        for (transport in nonWifi) {
+            for (internet in InternetState.values()) {
+                for (lan in LanState.values()) {
+                    val truth = NetworkTruth(
+                        transport = transport,
+                        internetState = internet,
+                        lanState = lan,
+                        metered = true
+                    )
+                    assertEquals(
+                        "transport=$transport internet=$internet lan=$lan",
+                        AutomaticRecoveryAction.NONE,
+                        decide(truth, instabilityScore = 100).action
+                    )
+                    checked += 1
+                }
+            }
+        }
+        assertTrue(checked >= 100)
+    }
+
+    @Test fun exhaustiveMeteredWifiMatrixNeverAuthorizesConfirmationProbe() {
+        var checked = 0
+        for (internet in InternetState.values()) {
+            for (lan in LanState.values()) {
+                val truth = NetworkTruth(
+                    transport = Transport.WIFI,
+                    internetState = internet,
+                    lanState = lan,
+                    metered = true
+                )
+                assertTrue(
+                    "internet=$internet lan=$lan",
+                    decide(truth, instabilityScore = 100).action !=
+                        AutomaticRecoveryAction.CONFIRM_WIFI
+                )
+                checked += 1
+            }
+        }
+        assertTrue(checked >= 20)
+    }
+
+    @Test fun resourcePressureMatrixSuppressesEveryAutomaticRecoveryIntent() {
+        var checked = 0
+        for (internet in InternetState.values()) {
+            for (lan in LanState.values()) {
+                val truth = NetworkTruth(
+                    transport = Transport.WIFI,
+                    internetState = internet,
+                    lanState = lan,
+                    metered = false
+                )
+                assertEquals(
+                    "internet=$internet lan=$lan",
+                    AutomaticRecoveryAction.NONE,
+                    decide(
+                        truth,
+                        instabilityScore = 100,
+                        resourceConstrained = true
+                    ).action
+                )
+                checked += 1
+            }
+        }
+        assertTrue(checked >= 20)
+    }
+
+    @Test fun observationOnlyCentralGateRejectsEveryTransport() {
+        for (transport in Transport.values()) {
+            assertFalse(
+                "transport=$transport",
+                ActiveRecoveryPolicy.allowed(
+                    RecoveryMode.OBSERVATION_ONLY,
+                    transport
+                )
+            )
+        }
+    }
+
     @Test fun cellularIsObservationOnlyAcrossCentralAndAutopilotGates() {
         val truth = NetworkTruth(
             transport = Transport.CELLULAR,
