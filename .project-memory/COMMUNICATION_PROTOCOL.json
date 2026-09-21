@@ -1,12 +1,12 @@
 {
-  "schema": "kinlink.communication_protocol/5",
+  "schema": "kinlink.communication_protocol/6",
   "project": "KINLINK",
   "cadence_minutes": 25,
-  "primary_work_budget_minutes": 22,
-  "closeout_reserve_minutes": 3,
+  "primary_work_budget_minutes": 20,
+  "closeout_reserve_minutes": 5,
   "normal_close_owner": "PRIMARY_ASSISTANT",
-  "backup_earliest_offset_minutes": 26,
-  "hard_guard_offset_minutes": 29,
+  "backup_earliest_offset_minutes": 25,
+  "hard_guard_offset_minutes": 25,
   "gmail_label": "KINLINK",
   "rule_priority": "P0_COMMUNICATION_CONTINUITY_THEN_DELIVERY_SECURITY_THEN_PRODUCT",
   "start_sequence": [
@@ -82,10 +82,11 @@
     "idempotency": "Search/verify provider message IDs before replaying START or END."
   },
   "close_intent_must_complete": {
-    "rule": "Once CLOSE_INTENT is durable, the same foreground worker must attempt Gmail END immediately; it must not perform further product mutations or return a normal app reply first.",
+    "rule": "Once forced_stop_new_mutations_local is reached OR CLOSE_INTENT is durable, the foreground worker must stop product mutations and attempt Gmail END immediately; no normal reply first.",
     "missed_end_class": "P0_COMMUNICATION_FAULT",
     "recovery": "verify provider thread before replay, then exactly-one END + ACK + CLOSED",
-    "deadline_minutes": 25
+    "deadline_minutes": 25,
+    "foreground_reserve_minutes": 5
   },
   "foreground_handoff": {
     "rule": "A tool/user/automation interruption after CLOSE_INTENT does not cancel the END obligation. Reconcile and close old tranche first. If continuation is authorized and no human/security gate exists, open a fresh START and actually continue work.",
@@ -116,6 +117,25 @@
     ],
     "start_keyword": "CONTINUER",
     "orphan_start_forbidden": true,
-    "human_gate_rule": "if true human/security/platform gate, close normally and do not auto-restart"
+    "human_gate_rule": "if true human/security/platform gate, close normally and do not auto-restart",
+    "hourly_platform_limit": true,
+    "guarantee": "FAILOVER_ONLY_NOT_25_MIN_GUARANTEE",
+    "blind_window": "Because condition-watch cadence cannot exceed hourly, an active tranche can cross its 25-minute deadline after a healthy watchdog run and remain unobserved until the next hourly run."
+  },
+  "foreground_deadline": {
+    "total_tranche_minutes": 25,
+    "useful_work_minutes": 20,
+    "hard_close_reserve_minutes": 5,
+    "required_active_fields": [
+      "start_provider_ts",
+      "start_local",
+      "forced_stop_new_mutations_local",
+      "close_deadline_local"
+    ],
+    "time_check_rule": "CHECK_TIME_BEFORE_EVERY_MAJOR_MUTATION_BATCH_AND_AFTER_AT_MOST_3_TOOL_BATCHES",
+    "at_forced_stop": "STOP_NEW_PRODUCT_MUTATIONS_PERSIST_CLOSE_INTENT_SEND_GMAIL_END_NOW",
+    "at_or_after_deadline": "P0_MISSED_END_RECONCILE_GMAIL_THEN_SEND_EXACTLY_ONE_END_BEFORE_ANY_OTHER_WORK_OR_NORMAL_REPLY",
+    "tool_error_rule": "If Gmail send errors without provider message_id, read/search provider state before retry; never assume send failed or succeeded.",
+    "rationale": "Repeated missed END events show 3-minute reserve was too narrow for connector/readback retries. Keep 25-minute total but reserve 5 minutes."
   }
 }

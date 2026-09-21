@@ -1,5 +1,5 @@
 {
-  "schema": "kinlink.communication_watchdog_policy/1",
+  "schema": "kinlink.communication_watchdog_policy/2",
   "project": "KINLINK",
   "name": "KINLINK Continuity & Comms",
   "cardinality": 1,
@@ -13,7 +13,8 @@
     ".project-memory/COMMUNICATION_STATE_MACHINE.json",
     "project_state.json",
     "NEXT_UNCOMMITTED_ACTION.md",
-    "Gmail thread/provider message IDs"
+    "Gmail thread/provider message IDs",
+    ".project-memory/RESUME_CAPSULE.json"
   ],
   "reconciliation_order": [
     "READ_DURABLE_TRANCHE_STATE",
@@ -36,13 +37,15 @@
     "Recovered END emails use normal human French and explain completed work, current truth, remaining work and exact next action.",
     "After repairing an interrupted tranche, auto-resume is user-authorized only when no human/security/platform gate exists.",
     "A failover START is legal only if the same automation immediately performs at least one real bounded next action.",
-    "The automation must not leave an orphan START; before its run ends it checkpoints and closes unless a real foreground worker owns the tranche."
+    "The automation must not leave an orphan START; before its run ends it checkpoints and closes unless a real foreground worker owns the tranche.",
+    "If Gmail send returns an error without a provider message_id, re-read the START thread/SENT before retrying.",
+    "The watchdog never claims minute-25 precision; it records actual provider timestamps."
   ],
   "idempotency": "Provider message_id/thread_id plus delivery_key are reconciliation keys.",
-  "limitation": "Hourly watchdog cannot guarantee sub-hour repair; primary in-turn protocol remains the first line of defense.",
-  "stale_work_threshold_minutes": 28,
+  "limitation": "Platform automation frequency is capped at hourly. This watchdog is a failover/reconciliation layer and cannot guarantee a 25-minute END. Foreground deadline enforcement is primary.",
+  "stale_work_threshold_minutes": 25,
   "stale_work_recovery": {
-    "condition": "START_ACKNOWLEDGED/WORKING with no END and START age >= 28 minutes unless durable state proves an intentional active extension",
+    "condition": "START_ACKNOWLEDGED/WORKING with no END and now >= close_deadline_local; if legacy tranche lacks deadline, fall back to START age >=25 minutes.",
     "action": "persist interruption close intent from durable facts only, send/verify exactly one END, persist CLOSED",
     "invent_unproved_work": false
   },
@@ -54,15 +57,16 @@
   },
   "close_intent_priority": {
     "immediate": true,
-    "rule": "CLOSE_INTENT_PERSISTED/END_SEND_PENDING/no_more_product_mutations/status=CLOSING with no durable END ACK is a P0 missed-END fault independent of age.",
+    "rule": "CLOSE_INTENT_PERSISTED/END_SEND_PENDING/no_more_product_mutations/status=CLOSING OR now>=close_deadline_local with no durable END ACK is a P0 missed-END fault.",
     "repair": "verify START thread and existing END first; then persist ACK or send exactly one truthful END; provider readback; persist CLOSED"
   },
   "primary_protocol_deadline": {
-    "work_minutes": 22,
-    "close_reserve_minutes": 3,
+    "work_minutes": 20,
+    "close_reserve_minutes": 5,
     "expected_end_by_minutes": 25,
-    "breach_after_minutes": 28,
-    "note": "Automation is hourly and cannot guarantee minute-25 delivery; the foreground protocol remains primary."
+    "breach_after_minutes": 25,
+    "max_possible_post_deadline_detection_lag_minutes": 60,
+    "note": "An hourly run can occur just before the tranche crosses its deadline; the next fallback check can therefore be nearly one hour later."
   },
   "email_style": {
     "language": "fr",

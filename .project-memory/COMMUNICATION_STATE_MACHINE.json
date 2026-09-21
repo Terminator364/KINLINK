@@ -1,8 +1,8 @@
 {
-  "schema": "kinlink.communication_state_machine/5",
+  "schema": "kinlink.communication_state_machine/6",
   "cadence_minutes": 25,
-  "useful_work_minutes": 22,
-  "normal_close_reserve_minutes": 3,
+  "useful_work_minutes": 20,
+  "normal_close_reserve_minutes": 5,
   "work_states": [
     "IDLE",
     "WORKING",
@@ -66,8 +66,17 @@
     "rollback APKs are not present in the normal human install surface",
     "an intermediate PDF/report/artifact email never counts as END unless it is explicitly the END transition",
     "a forced close caused by interruption does not end the mission; user-authorized failover may open a new START only with immediate real work and no human/security gate",
-    "automation-generated END/START emails must remain human-readable and explanatory, not machine-status prose"
+    "automation-generated END/START emails must remain human-readable and explanatory, not machine-status prose",
+    "active foreground tranche must persist its close deadline at START; deadline is part of the durable state, not an implicit timer",
+    "foreground time is checked before each major mutation batch and after at most three tool batches",
+    "hourly automation is failover only and cannot be represented as a 25-minute guarantee"
   ],
-  "backup_earliest_offset_minutes": 26,
-  "hard_guard_offset_minutes": 29
+  "backup_earliest_offset_minutes": 25,
+  "hard_guard_offset_minutes": 25,
+  "required_deadline_fields": [
+    "start_provider_ts",
+    "start_local",
+    "forced_stop_new_mutations_local",
+    "close_deadline_local"
+  ]
 }
