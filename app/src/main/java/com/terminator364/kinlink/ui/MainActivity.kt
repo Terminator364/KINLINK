@@ -15,6 +15,7 @@ import android.text.InputType
 import android.view.View
 import android.view.WindowInsets
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -81,6 +82,8 @@ class MainActivity : Activity() {
     private lateinit var internetText: TextView
     private lateinit var mobileText: TextView
     private lateinit var mobileBudgetText: TextView
+    private lateinit var qualityScoreText: TextView
+    private lateinit var qualityProgress: ProgressBar
     private lateinit var reliabilityText: TextView
     private lateinit var detailText: TextView
     private lateinit var heroDetailText: TextView
@@ -125,6 +128,8 @@ class MainActivity : Activity() {
         internetText = findViewById(R.id.internetText)
         mobileText = findViewById(R.id.mobileText)
         mobileBudgetText = findViewById(R.id.mobileBudgetText)
+        qualityScoreText = findViewById(R.id.qualityScoreText)
+        qualityProgress = findViewById(R.id.qualityProgress)
         reliabilityText = findViewById(R.id.reliabilityText)
         detailText = findViewById(R.id.detailText)
         heroDetailText = findViewById(R.id.heroDetailText)
@@ -613,6 +618,8 @@ class MainActivity : Activity() {
                 else -> "Mobile · protégé · aucune prise de contrôle"
             }
         }
+        qualityScoreText.text = "Qualité passive · ${passiveScore.score}/100"
+        qualityProgress.progress = passiveScore.score
         mobileBudgetText.text = mobileBudgetLabel(budget)
 
         val reliability = latestReliability
