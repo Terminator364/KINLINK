@@ -190,3 +190,8 @@ require(
     and "OBSERVATION_ONLY" in MOBILE_POLICY,
     "candidate contract: Mobile Assist fail-open/resource/safe-mode gates missing",
 )
+require(
+    "MobileRadioQuality.WEAK" in MOBILE_POLICY
+    and "MobileAssistBlockReason.WEAK_SIGNAL" in MOBILE_POLICY,
+    "candidate contract: weak cellular radio no-op fence missing",
+)
