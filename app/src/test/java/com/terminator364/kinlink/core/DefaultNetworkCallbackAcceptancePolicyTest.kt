@@ -47,4 +47,17 @@ class DefaultNetworkCallbackAcceptancePolicyTest {
         )
     }
 
+    @Test fun onlyCurrentDefaultCallbackCancelsPendingLossSettle() {
+        assertTrue(
+            DefaultNetworkCallbackAcceptancePolicy.shouldCancelPendingLoss(
+                callbackMatchesActive = true
+            )
+        )
+        assertFalse(
+            DefaultNetworkCallbackAcceptancePolicy.shouldCancelPendingLoss(
+                callbackMatchesActive = false
+            )
+        )
+    }
+
 }
