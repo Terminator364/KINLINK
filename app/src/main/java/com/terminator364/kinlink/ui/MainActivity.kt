@@ -32,6 +32,8 @@ import com.terminator364.kinlink.core.MobileBudgetSnapshot
 import com.terminator364.kinlink.core.MobileBudgetTracker
 import com.terminator364.kinlink.core.MobileAssistController
 import com.terminator364.kinlink.core.MobileAssistManualPolicy
+import com.terminator364.kinlink.core.MobileAssistManualAction
+import com.terminator364.kinlink.core.MobileAssistManualBlockReason
 import com.terminator364.kinlink.core.MobileAssistPolicy
 import com.terminator364.kinlink.core.MobileVault
 import com.terminator364.kinlink.core.NetworkObserver
@@ -375,25 +377,16 @@ class MainActivity : Activity() {
     }
 
     private fun optimizeMobile() {
-        if (recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY) {
-            adviceTitleText.text = "Mode sûr actif"
-            adviceText.text = "Mobile Assist reste passif tant que le mode sûr est actif."
-            return
-        }
-        if (latestTruth.transport != com.terminator364.kinlink.core.Transport.CELLULAR) {
-            adviceTitleText.text = "Données mobiles non actives"
-            adviceText.text = "Mobile Assist s’active lorsque le transport courant est cellulaire."
-            return
-        }
-        if (
-            latestTruth.budgetState == BudgetState.BUNDLE_LOW ||
-            latestTruth.budgetState == BudgetState.BUNDLE_EXHAUSTED ||
-            latestTruth.budgetState == BudgetState.BUNDLE_EXPIRED
-        ) {
-            adviceTitleText.text = "Protection du forfait active"
-            adviceText.text = "KINLINK bloque l’assistance mobile active lorsque le budget est faible, épuisé ou expiré."
-            return
-        }
+        val cm = getSystemService(ConnectivityManager::class.java)
+        val network = cm.activeNetwork
+        val caps = network?.let(cm::getNetworkCapabilities)
+        val activeCellular =
+            network != null &&
+                caps?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
+        val validated =
+            caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
+        val notSuspended =
+            caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED) == true
 
         val nowWall = System.currentTimeMillis()
         val lastAction = runCatching {
@@ -410,88 +403,92 @@ class MainActivity : Activity() {
         val resourceConstrained = runCatching {
             DeviceResourceGuard(this).snapshot().constrained
         }.getOrDefault(true)
-        if (!MobileAssistManualPolicy.allowed(
-                millisSinceLastAction = sinceLast,
-                recentActions = recentActions,
-                resourceConstrained = resourceConstrained
-            )
-        ) {
-            adviceTitleText.text = "Mobile Assist · protection active"
-            adviceText.text = when {
-                resourceConstrained ->
-                    "Batterie, mémoire ou température : KINLINK reste passif pour protéger le téléphone."
-                recentActions >= MobileAssistPolicy.MAX_ACTIONS_PER_HOUR ->
-                    "Plafond horaire Mobile Assist atteint. KINLINK évite les actions répétées."
-                else ->
-                    "Une action mobile vient déjà d’être lancée. KINLINK évite les répétitions inutiles pendant 30 secondes."
-            }
-            return
-        }
+        val budgetProtected =
+            latestTruth.budgetState == BudgetState.BUNDLE_LOW ||
+                latestTruth.budgetState == BudgetState.BUNDLE_EXHAUSTED ||
+                latestTruth.budgetState == BudgetState.BUNDLE_EXPIRED
 
-        val cm = getSystemService(ConnectivityManager::class.java)
-        val network = cm.activeNetwork
-        val caps = network?.let(cm::getNetworkCapabilities)
-        val activeCellular =
-            network != null &&
-                caps?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
+        val decision = MobileAssistManualPolicy.decide(
+            isCellular = activeCellular,
+            validated = validated,
+            notSuspended = notSuspended,
+            observationOnly =
+                recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY,
+            budgetProtected = budgetProtected,
+            resourceConstrained = resourceConstrained,
+            recentActions = recentActions,
+            millisSinceLastAction = sinceLast
+        )
 
-        if (!activeCellular) {
-            adviceTitleText.text = "État mobile changé"
-            adviceText.text = "Android a changé de réseau avant l’action. KINLINK n’a rien forcé."
-            return
-        }
+        when (decision.action) {
+            MobileAssistManualAction.OPEN_SYSTEM_CONNECTIVITY_PANEL -> {
+                val opened = runCatching {
+                    startActivity(Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY))
+                }.recoverCatching {
+                    startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
+                }.isSuccess
 
-        val validated =
-            caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
-        val notSuspended =
-            caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED) == true
-
-        if (!validated || !notSuspended) {
-            val opened = runCatching {
-                startActivity(Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY))
-            }.recoverCatching {
-                startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
-            }.isSuccess
-
-            runCatching {
-                ledger.appendAction(
-                    "MOBILE_ASSIST_ACTION_MANUAL_SYSTEM_PANEL",
-                    opened,
-                    if (opened)
-                        "Panneau Android ouvert par action utilisateur; aucun probe mobile lancé."
-                    else
-                        "Impossible d’ouvrir le panneau Android; aucune autre action appliquée."
-                )
-            }
-            adviceTitleText.text = "Mobile Assist · contrôle Android"
-            adviceText.text = if (opened)
-                "Internet mobile n’est pas validé. KINLINK a ouvert le contrôle Android, sans speedtest ni bascule forcée."
-            else
-                "Internet mobile n’est pas validé. KINLINK n’a lancé aucun trafic de test."
-            return
-        }
-
-        val refreshed = runCatching {
-            cm.requestBandwidthUpdate(requireNotNull(network))
-        }.getOrDefault(false)
-
-        runCatching {
-            ledger.appendAction(
-                "MOBILE_ASSIST_ACTION_MANUAL_REFRESH_METRICS",
-                refreshed,
-                if (refreshed)
-                    "Rafraîchissement métrique Android demandé manuellement; aucun probe/speedtest mobile."
+                runCatching {
+                    ledger.appendAction(
+                        "MOBILE_ASSIST_ACTION_MANUAL_SYSTEM_PANEL",
+                        opened,
+                        if (opened)
+                            "Panneau Android ouvert par action utilisateur; aucun probe mobile lancé."
+                        else
+                            "Impossible d’ouvrir le panneau Android; aucune autre action appliquée."
+                    )
+                }
+                adviceTitleText.text = "Mobile Assist · contrôle Android"
+                adviceText.text = if (opened)
+                    "Android ne confirme pas une liaison mobile utilisable. Le contrôle système est ouvert sans speedtest ni bascule forcée."
                 else
-                    "Android n’a pas accepté le rafraîchissement; aucune action supplémentaire."
-            )
-        }
+                    "KINLINK n’a lancé aucun trafic de test et n’a rien forcé."
+            }
 
-        val quality = PassiveLinkQualityPolicy.assess(latestTruth)
-        adviceTitleText.text = "Mobile Assist · données mobiles"
-        adviceText.text = if (refreshed)
-            "Métriques Android rafraîchies sans speedtest. Qualité passive : ${quality.quality.name}. Android garde le routage."
-        else
-            "Aucune action forcée. Qualité passive : ${quality.quality.name}. Android garde le routage."
+            MobileAssistManualAction.REFRESH_LINK_METRICS -> {
+                val refreshed = runCatching {
+                    cm.requestBandwidthUpdate(requireNotNull(network))
+                }.getOrDefault(false)
+
+                runCatching {
+                    ledger.appendAction(
+                        "MOBILE_ASSIST_ACTION_MANUAL_REFRESH_METRICS",
+                        refreshed,
+                        if (refreshed)
+                            "Rafraîchissement métrique Android demandé manuellement; aucun probe/speedtest mobile."
+                        else
+                            "Android n’a pas accepté le rafraîchissement; aucune action supplémentaire."
+                    )
+                }
+
+                val quality = PassiveLinkQualityPolicy.assess(latestTruth)
+                adviceTitleText.text = "Mobile Assist · données mobiles"
+                adviceText.text = if (refreshed)
+                    "Métriques Android rafraîchies sans speedtest. Qualité passive : ${quality.quality.name}. Android garde le routage."
+                else
+                    "Aucune action forcée. Qualité passive : ${quality.quality.name}. Android garde le routage."
+            }
+
+            MobileAssistManualAction.NONE -> {
+                adviceTitleText.text = "Mobile Assist · protection active"
+                adviceText.text = when (decision.blockReason) {
+                    MobileAssistManualBlockReason.NOT_CELLULAR ->
+                        "Les données mobiles ne sont pas le transport actif."
+                    MobileAssistManualBlockReason.COOLDOWN ->
+                        "Une action mobile vient déjà d’être lancée. Pause anti-répétition de 30 secondes."
+                    MobileAssistManualBlockReason.HOURLY_CAP ->
+                        "Plafond horaire Mobile Assist atteint. KINLINK évite les actions répétées."
+                    MobileAssistManualBlockReason.OBSERVATION_ONLY ->
+                        "Mode sûr actif : aucun rafraîchissement mobile n’est exécuté."
+                    MobileAssistManualBlockReason.RESOURCE_CONSTRAINED ->
+                        "Batterie, mémoire ou température : KINLINK reste passif pour protéger le téléphone."
+                    MobileAssistManualBlockReason.BUDGET_PROTECTED ->
+                        "Protection du forfait active : KINLINK ne demande pas de travail radio supplémentaire."
+                    MobileAssistManualBlockReason.NONE ->
+                        "Aucune action mobile nécessaire."
+                }
+            }
+        }
     }
 
     private fun exportDiagnostic() {
