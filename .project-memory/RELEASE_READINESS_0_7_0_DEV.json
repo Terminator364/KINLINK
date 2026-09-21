@@ -7,8 +7,8 @@
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
-      "status": "PASS",
-      "evidence": "android-0.7-candidate run 35550539216 PASS + design-lint run 35550539365 PASS on 4153720cde8c6bd0004b8e69baeadf5254735abe; all safety fences, unit tests, Android lint, candidate identity/unsigned fence and artifact upload passed"
+      "status": "BLOCKED",
+      "evidence": "post-install counter-audit invalidated prior machine proof for canonical promotion: CA-001 hard 5s deadline bound violated by 2x(1600ms connect+1600ms read) probe upper bound; CA-002/003 resource-gate liveness defects; see docs/COUNTER_AUDIT_0_7_0_FIELD_CANDIDATE.md"
     },
     "MIGRATION": {
       "status": "PASS",
@@ -36,7 +36,7 @@
     "no routing/network ownership APIs",
     "VPN/TUN remains disabled"
   ],
-  "field_candidate_allowed": true,
+  "field_candidate_allowed": false,
   "previous_machine_artifact": {
     "workflow_run": 35548684588,
     "artifact_id": 10617836246,
@@ -78,9 +78,9 @@
     "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
     "apk_signature_v3": true,
     "signers": 1,
-    "status": "READY_FOR_FIELD",
-    "delivered": false,
-    "installed": false,
+    "status": "INSTALLED_BUT_PROMOTION_INVALIDATED_BY_COUNTER_AUDIT",
+    "delivered": true,
+    "installed": true,
     "canonical_promotion": false,
     "next_required": [
       "FIELD_HANDOFF",
@@ -100,5 +100,16 @@
       "RUNTIME_RESOURCE_GATE_PASS_V8"
     ],
     "resource_block_is_terminal_for_candidate": true
+  },
+  "counter_audit": {
+    "status": "BLOCKING",
+    "document": "docs/COUNTER_AUDIT_0_7_0_FIELD_CANDIDATE.md",
+    "findings": [
+      "CA-001",
+      "CA-002",
+      "CA-003",
+      "CA-004"
+    ],
+    "replacement_requires_new_version_code": true
   }
 }
