@@ -11,6 +11,9 @@ enum class PassiveProblemCause {
     WEAK_WIFI_SIGNAL,
     CONGESTION_SUSPECT,
     LOW_CAPACITY,
+    MOBILE_NETWORK_SUSPENDED,
+    MOBILE_CONGESTION_SUSPECT,
+    MOBILE_LOW_CAPACITY,
     FLAPPING,
     WAN_UNVALIDATED,
     MOBILE_UNVALIDATED,
@@ -70,6 +73,39 @@ object PassiveProblemClassifier {
                 PassiveProblemCause.DNS_CONFIGURATION_SUSPECT,
                 "Wi-Fi local présent, Internet non validé et aucun serveur DNS exposé par Android.",
                 70
+            )
+
+        truth.transport == Transport.CELLULAR &&
+            !truth.androidNotSuspended ->
+            PassiveProblemAssessment(
+                PassiveProblemCause.MOBILE_NETWORK_SUSPENDED,
+                "Android signale le réseau mobile comme suspendu ou momentanément indisponible.",
+                88
+            )
+
+        truth.transport == Transport.CELLULAR &&
+            truth.internetState == InternetState.VALIDATED &&
+            !truth.androidNotCongested &&
+            (
+                PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.CONSTRAINED ||
+                PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.LIMITED
+            ) ->
+            PassiveProblemAssessment(
+                PassiveProblemCause.MOBILE_CONGESTION_SUSPECT,
+                "Internet mobile est validé, mais Android expose une capacité limitée et ne confirme pas l’état non congestionné.",
+                70
+            )
+
+        truth.transport == Transport.CELLULAR &&
+            truth.internetState == InternetState.VALIDATED &&
+            (
+                PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.CONSTRAINED ||
+                PassiveLinkQualityPolicy.assess(truth).quality == PassiveLinkQuality.LIMITED
+            ) ->
+            PassiveProblemAssessment(
+                PassiveProblemCause.MOBILE_LOW_CAPACITY,
+                "Internet mobile validé mais capacité passive Android limitée.",
+                75
             )
 
         truth.transport == Transport.WIFI &&
