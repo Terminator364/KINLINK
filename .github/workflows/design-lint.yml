@@ -37,6 +37,8 @@ jobs:
         run: python tools/release/verify_release_readiness.py --audit
       - name: Active 0.7.1 readiness ledger consistency
         run: python tools/release/verify_release_readiness.py --ledger .project-memory/RELEASE_READINESS_0_7_1_DEV.json --audit
+      - name: 0.7.1 candidate contract counter-audit
+        run: python tools/release/verify_candidate_contract.py
       - name: Release evidence hash integrity
         run: python tools/release/verify_release_evidence_integrity.py
       - name: Installed field-candidate app freeze
