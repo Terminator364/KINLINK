@@ -118,3 +118,21 @@ Integrated after the previous deep-diagnostics checkpoint:
 
 Canonical 0.6.0-rc3 remains untouched.
 Current code head: `00e4df0d3869daaab777d2b159a1c8228d9b2c7c`; CI is running at tranche checkpoint time.
+
+
+## 0.7.0 final consolidated field candidate
+
+Stage A is PASS.
+
+- source commit: `4153720cde8c6bd0004b8e69baeadf5254735abe`
+- Android candidate CI: run `35550539216` PASS
+- design-lint: run `35550539365` PASS
+- final signed APK SHA-256: `cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc`
+- signer certificate SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+- v3 signature: PASS
+- signers: 1
+- version-scoped field evidence: enabled
+- charging-safe resource qualification: enabled
+- automatic field QUALIFIED/BLOCKED receipts: enabled
+
+Canonical 0.6.0-rc3 remains unchanged. Stage B requires target-phone FIELD_HANDOFF + RESOURCE_QUALIFICATION on this exact 0.7.0 artifact.
