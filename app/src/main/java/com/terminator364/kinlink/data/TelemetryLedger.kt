@@ -10,6 +10,12 @@ import com.terminator364.kinlink.core.PassiveLinkQualityPolicy
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.StabilityAssessment
 import com.terminator364.kinlink.core.TelemetryRetentionPolicy
+import com.terminator364.kinlink.core.RuntimeResourceVerdict
+import com.terminator364.kinlink.core.HandoffKind
+import com.terminator364.kinlink.core.HandoffOutcome
+import com.terminator364.kinlink.core.QualificationReceiptNames
+import com.terminator364.kinlink.core.FieldCandidateQualificationEvidence
+import com.terminator364.kinlink.core.FieldCandidateQualificationPolicy
 import java.util.UUID
 
 data class StabilityWindow(
@@ -416,7 +422,11 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         )
     }
 
-    fun diagnosticSummary(currentTruth: NetworkTruth, recoveryMode: String = "UNKNOWN"): DiagnosticSummary {
+    fun diagnosticSummary(
+        currentTruth: NetworkTruth,
+        recoveryMode: String = "UNKNOWN",
+        runningVersionCode: Long? = null
+    ): DiagnosticSummary {
         val weekStartMillis = System.currentTimeMillis() - 7L * 24L * 60L * 60L * 1000L
         val weeklyEvents = readableDatabase.rawQuery(
             "SELECT COUNT(*) FROM network_events WHERE ts_wall_ms >= ?",
@@ -456,6 +466,44 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
         val causes24h = actionCountsByPrefixSince("PASSIVE_CAUSE_", now - 24L * 60L * 60L * 1000L)
         val recoveryDurations = actionDurationStats("AUTO_RECOVERY")
         val stability = stabilityWindow(now)
+        val fieldAssessment = runningVersionCode?.takeIf { it >= 8L }?.let { version ->
+            FieldCandidateQualificationPolicy.evaluate(
+                FieldCandidateQualificationEvidence(
+                    coreSelfTestPasses =
+                        countSuccessfulActions(QualificationReceiptNames.coreSelfTest(version)),
+                    observerSelfTestPasses =
+                        countSuccessfulActions(QualificationReceiptNames.observerSelfTest(version)),
+                    mobileValidatedHandoffs =
+                        countSuccessfulActions(
+                            QualificationReceiptNames.handoffOutcome(
+                                HandoffOutcome.MOBILE_VALIDATED,
+                                version
+                            )
+                        ),
+                    cellularToWifiReturns =
+                        countSuccessfulActions(
+                            QualificationReceiptNames.handoff(
+                                HandoffKind.CELLULAR_TO_WIFI,
+                                version
+                            )
+                        ),
+                    runtimeResourcePasses =
+                        countSuccessfulActions(
+                            QualificationReceiptNames.resourceGate(
+                                RuntimeResourceVerdict.PASS,
+                                version
+                            )
+                        ),
+                    runtimeResourceBlocks =
+                        countActions(
+                            QualificationReceiptNames.resourceGate(
+                                RuntimeResourceVerdict.BLOCKED,
+                                version
+                            )
+                        )
+                )
+            )
+        }
         return DiagnosticSummary(
             generatedAtMillis = System.currentTimeMillis(),
             totalEvents = recentCount(),
@@ -508,9 +556,19 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             runtimeResourcePasses = countActions("RUNTIME_RESOURCE_GATE_PASS"),
             runtimeResourceInconclusive = countActions("RUNTIME_RESOURCE_GATE_INCONCLUSIVE"),
             runtimeResourceBlocked = countActions("RUNTIME_RESOURCE_GATE_BLOCKED"),
-            fieldCandidateQualifiedReceipts = countSuccessfulActions("FIELD_CANDIDATE_QUALIFIED"),
-            fieldCandidateBlockedReceipts = countActions("FIELD_CANDIDATE_BLOCKED"),
-            cellularToWifiReturns = countSuccessfulActions("HANDOFF_CELLULAR_TO_WIFI")
+            fieldCandidateQualifiedReceipts = runningVersionCode?.let {
+                countSuccessfulActions(QualificationReceiptNames.fieldQualified(it))
+            } ?: 0,
+            fieldCandidateBlockedReceipts = runningVersionCode?.let {
+                countActions(QualificationReceiptNames.fieldBlocked(it))
+            } ?: 0,
+            cellularToWifiReturns = runningVersionCode?.let {
+                countSuccessfulActions(
+                    QualificationReceiptNames.handoff(HandoffKind.CELLULAR_TO_WIFI, it)
+                )
+            } ?: 0,
+            currentFieldQualificationVerdict = fieldAssessment?.verdict?.name ?: "NOT_APPLICABLE",
+            currentFieldQualificationMissing = fieldAssessment?.missing ?: emptySet()
         )
     }
 }
