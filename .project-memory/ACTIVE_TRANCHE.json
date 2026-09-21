@@ -6,18 +6,18 @@
   "closeout_reserve_minutes": 3,
   "max_mutation_groups_before_forced_closeout": 12,
   "mutation_groups_used": 9,
-  "status": "RUNNING",
-  "forced_closeout_entered": false,
+  "status": "CLOSED_RECOVERY",
+  "forced_closeout_entered": true,
   "gmail_start_message_id": "1a0c442003db93d7",
-  "gmail_end_message_id": null,
-  "end_mail_verified": false,
+  "gmail_end_message_id": "1a0c44df623a4f24",
+  "end_mail_verified": true,
   "gmail_label": "KINLINK",
   "end_mail_required_before_app_reply": true,
   "system_interruption_guard": true,
   "goal": "harden BCP-inspired communication/continuity and advance exact-head-passing 0.7.2 toward a final-like field candidate",
   "technical_branch": "dev/0.7.2-continuous-improvement",
   "installed_field_build": "0.7.1/versionCode9 installed and frozen",
-  "delivery_state": "START_ACKNOWLEDGED",
+  "delivery_state": "END_ACKNOWLEDGED",
   "next_atomic_action": "read Android candidate run 35610708876 for frozen head cc48c1d...; if PASS, next tranche may supersede installed 0.7.1 through explicit state transition, reconcile main, requalify, sign, Drive-readback, then request at most one 0.7.2 install",
   "notes": [
     "22 min useful work + 3 min forced closeout",
@@ -66,5 +66,10 @@
       "closeout watchdog armed at 22 minutes",
       "hard end guard armed at 25 minutes"
     ]
-  }
+  },
+  "close_owner": "BACKUP_SENTINEL",
+  "close_mode": "RECOVERY",
+  "recovery_reason": "primary normal-close path did not persist END before backup sentinel fired",
+  "no_more_technical_mutations": true,
+  "closed_at_local": "2026-09-21T15:10:39+01:00"
 }
