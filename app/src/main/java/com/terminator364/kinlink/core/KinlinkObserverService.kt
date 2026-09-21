@@ -37,6 +37,7 @@ class KinlinkObserverService : Service() {
     private val mobileDegradedQualityEpisodeTracker =
         MobileDegradedQualityEpisodeTracker()
     private val problemTransitionTracker = PassiveProblemTransitionTracker()
+    @Volatile
     private var latestTruth = NetworkTruth()
     private lateinit var postUpdateSelfTestStore: PostUpdateSelfTestStore
     private var runningVersionCode: Long = -1L
