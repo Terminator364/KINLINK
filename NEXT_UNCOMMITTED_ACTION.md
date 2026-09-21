@@ -1,33 +1,61 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Stable canonical baseline
-0.6.0-rc3 / versionCode 7 remains installed and Drive-canonical. Do not uninstall it merely to force an update.
+## Current user/device truth
+- Phone currently runs KINLINK 0.7.0 / versionCode 8.
+- Installed signed hash: `cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc`.
+- 0.7.0 may remain installed and usable.
+- Its canonical promotion was invalidated by post-install counter-audit findings.
+- **Do not ask the user to install another APK yet.**
 
-## Final consolidated field candidate
-- Version: 0.7.0
-- versionCode: 8
-- Source commit: `4153720cde8c6bd0004b8e69baeadf5254735abe`
-- Android candidate CI run: `35550539216` — PASS
-- design-lint run: `35550539365` — PASS
-- Final signed APK SHA-256: `cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc`
-- Signer certificate SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
-- APK Signature Scheme v3: PASS
-- Signers: 1
-- Stage A: PASS
-- Canonical promotion: FORBIDDEN until Stage B
+## Canonical rollback/delivery truth
+- Drive `KINLINK/INSTALLER/KINLINK_LATEST.apk` remains the canonical 0.6.0-rc3 rollback/stable artifact.
+- Future noncanonical successor delivery belongs in `KINLINK/FIELD_CANDIDATE`.
+- Never distribute APKs by Gmail.
 
-## Important
-The earlier signed artifact `aed0643...` was superseded before delivery and must never be installed.
+## Active consolidated successor
+- Version: 0.7.1
+- versionCode: 9
+- Purpose: close the full post-install counter-audit in one successor; no micro-beta chain.
+- Last full exact-head machine PASS before current hardening: `a8e4b1a6510ee3bf06d1143253b08437e745cab4`
+  - Android run 35575247146 PASS
+  - design-lint run 35575247175 PASS
 
-## Next human gate
-1. Install ONLY the exact final signed 0.7.0 candidate over RC3.
-2. Do not uninstall RC3 first. If Android rejects the in-place update, stop and preserve RC3.
-3. Open KINLINK once after update.
-4. Keep the phone off the charger for a clean resource window; if it was charging, unplugging automatically resets a fresh 30-minute baseline.
-5. Produce one Wi-Fi -> validated cellular handoff and one cellular -> Wi-Fi return.
-6. KINLINK version-scoped receipts decide QUALIFIED/BLOCKED automatically; old RC3 evidence cannot qualify v8.
-7. Export diagnostic only when promotion evidence must be transferred.
-8. Do not replace Drive canonical RC3 until FIELD_HANDOFF + RESOURCE_QUALIFICATION PASS on this exact hash.
+## Counter-audit repair scope
+- CA-001 hard recovery deadline — repaired
+- CA-002 battery quantization false-block risk — repaired
+- CA-003 bounded resource retry — repaired
+- CA-004 historical BLOCKED UI truthfulness — repaired
+- CA-005 irreplaceable receipt retention — repaired
+- CA-006 cross-version prefix receipt matching — repaired, exact SQL equality
+- CA-007 historical QUALIFIED forcing stale PASS — repaired, live verdict is revocable
+- CA-008 DNS/socket wall-clock deadline proof — repaired with outer timeout/disconnect
+- CA-009 stale old-default callbacks contaminating handoff evidence — repaired
+
+Additional hardening:
+- cross-policy critical scenario matrix;
+- candidate-contract static counter-audit;
+- requirements traceability matrix separating current proof from later gated architecture;
+- mandatory 25-minute Gmail-first/Gmail-last protocol persisted.
+
+## Next durable engineering action
+1. obtain full Android CI + design-lint PASS on the newest exact head containing CA-006..CA-009;
+2. download the exact 0.7.1 unsigned release-like CI artifact;
+3. verify artifact ZIP digest, APK SHA-256, package/version and build-manifest commit;
+4. perform a second counter-audit against the exact artifact/source head;
+5. stable-sign exactly that artifact with the canonical signer certificate;
+6. verify signed APK + signer fingerprint + byte/readback evidence;
+7. place exactly one successor in Drive `KINLINK/FIELD_CANDIDATE`;
+8. only then open the next real human gate: one in-place 0.7.1 install;
+9. target phone must then produce v9 handoff + resource evidence before any canonical Drive promotion.
+
+## Communication protocol
+- Gmail start first.
+- Work one coherent 25-minute tranche.
+- Intermediate feedback does not interrupt/restart the tranche.
+- Stop early only for a true human gate objectively required to continue.
+- Gmail complete end report before any app response.
+- App response only: check Gmail + Kinshasa date/time.
+- Gmail label: `KINLINK`.
 
 ## Resume command
 `KINLINKGO`
