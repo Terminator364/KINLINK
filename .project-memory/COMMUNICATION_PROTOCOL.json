@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "cadence_minutes": 25,
+  "cadence_minutes": 30,
   "start_sequence": [
     "SEND_GMAIL_START",
     "APPLY_GMAIL_LABEL_KINLINK",
