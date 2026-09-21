@@ -393,3 +393,20 @@ Release rule for 0.7.1:
 ## Mobile resilience reference
 
 Detailed Level 1 / Level 2 contracts are maintained in `docs/MOBILE_RESILIENCE.md`.
+
+
+## Delivery security and continuity v1
+
+A technically valid APK is not deliverable unless the human installation path is also safe.
+
+Mandatory invariants:
+- normal user-facing folder: `KINLINK/INSTALLER`;
+- exactly one authorized APK: `KINLINK_INSTALL_NOW.apk`;
+- rollback/canonical historical APKs live outside that path under `ROLLBACK_CANONICAL_DO_NOT_INSTALL`;
+- exposed installer must match package `com.terminator364.kinlink`, have versionCode strictly greater than the known installed version, canonical signer, exact signed SHA-256 and exact Drive readback;
+- a rollback APK must never be named or presented as “LATEST” in the normal install path;
+- private signing material never enters public GitHub, Gmail or a human delivery folder;
+- platform/security controls are never bypassed: on a hold, persist a durable checkpoint, stop blocked/risky operations, and resume from proof after the control clears;
+- Gmail START provider ACK precedes substantive work and Gmail END provider ACK + durable END_ACK precedes final ChatGPT closeout.
+
+Incident learned 2026-09-21: a valid but older canonical rollback (versionCode 7) remained exposed as `INSTALLER/KINLINK_LATEST.apk` while versionCode 10 was installed. Android rejected the downgrade with a generic invalid-package message. This is now a P0 delivery-security regression class.
