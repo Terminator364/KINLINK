@@ -18,6 +18,62 @@ class MobileAssistController(
         mode: RecoveryMode,
         nowWallMs: Long = System.currentTimeMillis()
     ): MobileAssistDecision {
+        if (truth.transport != Transport.CELLULAR) {
+            return MobileAssistDecision(
+                MobileAssistAction.NONE,
+                MobileAssistBlockReason.NOT_CELLULAR,
+                "Mobile Assist inactif hors données mobiles."
+            )
+        }
+        if (mode == RecoveryMode.OBSERVATION_ONLY) {
+            return MobileAssistDecision(
+                MobileAssistAction.NONE,
+                MobileAssistBlockReason.OBSERVATION_ONLY,
+                "Mode sûr : aucune action mobile active."
+            )
+        }
+        if (!truth.androidNotSuspended) {
+            return MobileAssistDecision(
+                MobileAssistAction.NONE,
+                MobileAssistBlockReason.NETWORK_SUSPENDED,
+                "Android signale le réseau mobile suspendu."
+            )
+        }
+        if (
+            MobileRadioQualityPolicy.assess(truth).quality ==
+                MobileRadioQuality.WEAK
+        ) {
+            return MobileAssistDecision(
+                MobileAssistAction.NONE,
+                MobileAssistBlockReason.WEAK_SIGNAL,
+                "Signal radio faible : aucun refresh inutile."
+            )
+        }
+        if (
+            truth.budgetState == BudgetState.BUNDLE_LOW ||
+            truth.budgetState == BudgetState.BUNDLE_EXHAUSTED ||
+            truth.budgetState == BudgetState.BUNDLE_EXPIRED
+        ) {
+            return MobileAssistDecision(
+                MobileAssistAction.NONE,
+                MobileAssistBlockReason.BUDGET_PROTECTED,
+                "Protection du forfait active."
+            )
+        }
+
+        val passiveQuality = PassiveLinkQualityPolicy.assess(truth).quality
+        val healthyValidated =
+            truth.internetState == InternetState.VALIDATED &&
+                truth.androidNotCongested &&
+                passiveQuality == PassiveLinkQuality.COMFORTABLE
+        if (healthyValidated) {
+            return MobileAssistDecision(
+                MobileAssistAction.NONE,
+                MobileAssistBlockReason.HEALTHY_OR_UNKNOWN,
+                "Liaison mobile utilisable : aucune dépense CPU/DB inutile."
+            )
+        }
+
         val since = nowWallMs - MobileAssistPolicy.HOURLY_WINDOW_MS
         val recent = runCatching {
             ledger.countActionsSince(ACTION_PREFIX, since)
