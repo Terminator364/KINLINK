@@ -1,6 +1,6 @@
 {
   "project": "KINLINK",
-  "phase": "POST_FIELD_0_7_0_DEV_RELEASE_READINESS_HARDENING",
+  "phase": "POST_FIELD_0_7_0_DEV_RELEASE_READINESS_RESOURCE_AUTOMATION",
   "status": "ACTIVE",
   "candidate": {
     "version": "0.6.0-rc3",
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "qualify code head c8999e902e92af51e34c95349073135df4de6ecc; migration fix + release-readiness gate added; Android CI in progress; after PASS promote full-machine checkpoint and continue target-device resource evidence without replacing RC3",
+  "next_uncommitted_action": "read Android CI for functional head 6c18244535e01405bd642e778dc0e94366bd62df; if PASS record as latest full machine pass; then continue release-readiness with target-device >=30m resource evidence before signed promotion",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -76,7 +76,7 @@
     "version": "0.7.0-dev",
     "versionCode": 8,
     "promotion": "FORBIDDEN_UNTIL_CONSOLIDATED_RC_GATE",
-    "head": "c8999e902e92af51e34c95349073135df4de6ecc",
+    "head": "6c18244535e01405bd642e778dc0e94366bd62df",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -135,17 +135,25 @@
       "historically exact telemetry migration schemas",
       "migration execution errors no longer silently swallowed",
       "central signed-candidate release readiness gate",
-      "all five readiness gates individually mandatory by regression tests"
+      "all five readiness gates individually mandatory by regression tests",
+      "diagnostic summary now populates 24h slow-link, incident and manual-diagnosis evidence",
+      "runtime resource PASS/INCONCLUSIVE/BLOCKED receipts exposed in diagnostics",
+      "slow-link burden included in diagnostic reliability classification",
+      "callback churn qualification normalized by session duration",
+      "one-shot 30-minute resource checkpoint independent of network callbacks",
+      "shutdown fallback captures missed qualifying resource checkpoint",
+      "durable release-readiness ledger and consistency verifier",
+      "Gmail-first long-tranche communication protocol persisted"
     ],
-    "last_full_pass": "1b404fa59aba02746f68291f21f8b8a5e533544f"
+    "last_full_pass": "c8999e902e92af51e34c95349073135df4de6ecc"
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "c8999e902e92af51e34c95349073135df4de6ecc",
-    "design_lint": "QUEUED",
+    "code_head": "6c18244535e01405bd642e778dc0e94366bd62df",
+    "design_lint": "PASS",
     "android_ci": "IN_PROGRESS",
     "full_machine_verdict": "PENDING",
-    "latest_full_pass": "1b404fa59aba02746f68291f21f8b8a5e533544f"
+    "latest_full_pass": "c8999e902e92af51e34c95349073135df4de6ecc"
   },
   "continuity": {
     "command": "KINLINKGO",
@@ -159,5 +167,12 @@
     "repository": "Terminator364/KINLINK",
     "branch": "main",
     "rule": "resume_from_latest_durable_main_without_restart"
+  },
+  "communication_protocol": {
+    "tranche_style": "LONG_8_10_MIN_COHERENT",
+    "start": "SEND_GMAIL_FIRST",
+    "end": "SEND_COMPLETE_GMAIL_REPORT_FIRST",
+    "app_response": "ONLY_CHECK_GMAIL_PLUS_KINSHASA_DATE_TIME",
+    "duplicate_report_in_app": false
   }
 }
