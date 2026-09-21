@@ -5,7 +5,7 @@
   "primary_work_budget_minutes": 22,
   "closeout_reserve_minutes": 3,
   "max_mutation_groups_before_forced_closeout": 12,
-  "mutation_groups_used": 6,
+  "mutation_groups_used": 9,
   "status": "RUNNING",
   "forced_closeout_entered": false,
   "gmail_start_message_id": "1a0c442003db93d7",
@@ -18,7 +18,7 @@
   "technical_branch": "dev/0.7.2-continuous-improvement",
   "installed_field_build": "0.7.1/versionCode9 installed and frozen",
   "delivery_state": "START_ACKNOWLEDGED",
-  "next_atomic_action": "wait/read exact-head Android CI for ab6e0a9d...; if PASS perform final P0/P1 counter-audit and freeze candidate identity; if FAIL patch only exact failure",
+  "next_atomic_action": "read Android candidate run 35610708876 for frozen head cc48c1d...; if PASS, next tranche may supersede installed 0.7.1 through explicit state transition, reconcile main, requalify, sign, Drive-readback, then request at most one 0.7.2 install",
   "notes": [
     "22 min useful work + 3 min forced closeout",
     "No APK by Gmail",
@@ -35,31 +35,36 @@
   },
   "last_durable_checkpoint": {
     "dev_branch": "dev/0.7.2-continuous-improvement",
-    "dev_head": "ab6e0a9d5f95410c685c649b8fae440a92effdac",
+    "dev_head": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
+    "version": "0.7.2",
+    "versionCode": 10,
+    "candidate_identity_frozen": true,
     "push_design_lint": {
-      "run": 35609948316,
+      "run": 35610708971,
       "status": "PASS"
     },
-    "pr_design_lint": {
-      "run": 35609948586,
-      "status": "PASS"
+    "android_candidate": {
+      "run": 35610708876,
+      "status": "PENDING"
     },
-    "android_ci": {
-      "run": 35609947110,
-      "status": "IN_PROGRESS"
+    "previous_full_machine_pass": {
+      "head": "d1b8c021f4ccd73829d716d9bbb8fc866817f69f",
+      "design_lint": "PASS",
+      "android_ci": "PASS"
     },
-    "important_fixes": [
-      "manual Mobile Assist proof baseline captured before requestBandwidthUpdate",
-      "manual baseline timestamp uses SystemClock.elapsedRealtime at action time",
-      "new Mobile Assist action cancels stale relapse recheck generation",
-      "large-font cockpit no longer clips proof at five lines",
-      "paired controls use wrap_content height"
+    "important_audit_fixes": [
+      "manual proof uses current active-network pre-action baseline",
+      "manual proof timestamp uses action-time elapsed clock",
+      "stale five-minute relapse callbacks canceled on new assist",
+      "late relapse supersedes its earlier sustained-success event in proof summary",
+      "large-font cockpit preserves full continuous-care evidence"
     ],
     "communication": [
-      "BCP-inspired work/delivery state machine persisted",
-      "delivery ledger created",
-      "closeout watchdog armed at +22m",
-      "hard end guard armed at +25m"
+      "BCP-style work_state and delivery_state separated",
+      "communication state machine persisted",
+      "delivery ledger persisted",
+      "closeout watchdog armed at 22 minutes",
+      "hard end guard armed at 25 minutes"
     ]
   }
 }
