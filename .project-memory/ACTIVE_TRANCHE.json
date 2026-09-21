@@ -1,16 +1,16 @@
 {
   "schema": "kinlink.active_tranche/6",
   "project": "KINLINK",
-  "tranche_id": "KINLINK-2026-09-21-2121-K25-09",
-  "delivery_key": "K25-20260921-2121-09",
+  "tranche_id": "KINLINK-2026-09-21-2215-K25-10",
+  "delivery_key": "K25-20260921-2215-10",
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
-  "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSED",
-  "status": "CLOSED",
-  "gmail_start_message_id": "1a0c5a147dbf6e83",
-  "gmail_start_thread_id": "1a0c5a147dbf6e83",
+  "work_state": "WORKING",
+  "delivery_state": "START_ACKNOWLEDGED",
+  "status": "ACTIVE",
+  "gmail_start_message_id": "1a0c5d33a336882e",
+  "gmail_start_thread_id": "1a0c5d33a336882e",
   "gmail_label": "KINLINK",
   "communication_guard": {
     "final_app_reply_requires_end_ack_persisted": true,
@@ -21,67 +21,23 @@
     "watchdog_single_automation": true
   },
   "objectives": [
-    "POLL_EXACT_HEAD_ANDROID_RUN",
+    "POLL_0_8_ANDROID_RUN_35652449928",
     "INSPECT_45_SCREENSHOT_PROOF_IF_PASS",
-    "FIX_VISUAL_OR_SEMANTIC_FINDINGS",
-    "DEEPEN_B_BEYOND_B60_WITHOUT_SCORE_GAMING",
-    "HARDEN_MEMORY_RECOVERY_TESTS",
-    "CONTINUE_INTEGRATED_0_8_NO_MICRO_BETA"
+    "FIX_ONLY_EVIDENCE_BACKED_FINDINGS",
+    "CONTINUE_INTEGRATED_A_B_C",
+    "DEEPEN_B_WITHOUT_DENOMINATOR_GAMING",
+    "HARDEN_MEMORY_WHEN_NEW_FAILURE_MODE_IS_FOUND",
+    "NO_MICRO_BETA_NO_PHONE_INSTALL"
   ],
   "starting_truth": {
-    "prior_tranche": "K25-08 CLOSED with Gmail END ACK",
+    "prior_tranche": "K25-09 CLOSED with Gmail END ACK",
     "full_spec_macro_capabilities": 80,
     "full_spec_maturity_percent": 44.8,
-    "b_depth": "B31-B60 canonical",
-    "memory_v2": "canonical",
+    "b_depth": "B31-B80 canonical",
     "installed": "0.7.3-dev/versionCode11 baseline",
     "active_successor": "0.8.0-dev/versionCode12",
-    "current_head": "37055626084349e0829325d4c28492c3617d5ea4",
-    "android_run": 35649559817
+    "current_head": "c6fb86ec8ef075f7e0cbdfd9cf0f04b8954088f1",
+    "android_run": 35652449928
   },
-  "next_atomic_action": "poll Android run 35652449928 exact head c6fb86ec8ef075f7e0cbdfd9cf0f04b8954088f1; inspect 45-shot proof if PASS; no install",
-  "close_intent_persisted": true,
-  "close_owner": "PRIMARY_ASSISTANT",
-  "no_more_product_mutations": true,
-  "last_durable_checkpoint": {
-    "automation": {
-      "name": "KINLINK Comms Watchdog",
-      "cardinality": 1,
-      "cadence": "HOURLY condition_watch",
-      "stale_work_threshold_minutes": 35,
-      "auto_open_new_start": false,
-      "purpose": "reconcile missed END/ACK/CLOSED without duplicate sends or orphan START loops"
-    },
-    "memory": {
-      "b_depth": "B31-B80",
-      "b_depth_count": 50,
-      "macro_count": 80,
-      "macro_maturity_percent": 44.8,
-      "memory_policy": ".project-memory/MEMORY_POLICY_V2.json",
-      "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",
-      "supersession": ".project-memory/SUPERSESSION_LEDGER.json",
-      "dead_end_registry": ".project-memory/DEAD_END_REGISTRY.json",
-      "main_design_lint_latest": "PASS"
-    },
-    "product_0_8": {
-      "exact_head": "c6fb86ec8ef075f7e0cbdfd9cf0f04b8954088f1",
-      "design_lint_run": 35652449660,
-      "design_lint": "PASS",
-      "android_run": 35652449928,
-      "android_status": "IN_PROGRESS_AT_CLOSE_INTENT",
-      "prior_c8eb_android_run": 35651559235,
-      "prior_c8eb_android_status": "PASS",
-      "manual_counter_audit_finding": "technical-details-start screenshot still showed top of page because scroll occurred before expanded layout settled",
-      "fix_committed": true,
-      "current_gate": "45-shot rerun pending",
-      "observer_callback_race_hardening": "implemented and prior c8eb run passed",
-      "install_requested": false
-    }
-  },
-  "gmail_end_message_id": "1a0c5b473caaa367",
-  "gmail_end_thread_id": "1a0c5a147dbf6e83",
-  "end_mail_verified": true,
-  "closed_state": true,
-  "closed_at_provider_ts": "2026-09-21T20:42:12",
-  "closed_at_local": "2026-09-21T21:41:00+01:00"
+  "next_atomic_action": "poll Android run 35652449928; if PASS fetch and inspect 45-shot proof before any product mutation"
 }
