@@ -30,9 +30,9 @@ jobs:
       - name: Require selected durable readiness stage
         run: |
           if [ "${{ inputs.stage }}" = "field_candidate" ]; then
-            python tools/release/verify_release_readiness.py --require-field-candidate
+            python tools/release/verify_release_readiness.py --ledger .project-memory/RELEASE_READINESS_0_7_1_DEV.json --require-field-candidate
           else
-            python tools/release/verify_release_readiness.py --require-promotion
+            python tools/release/verify_release_readiness.py --ledger .project-memory/RELEASE_READINESS_0_7_1_DEV.json --require-promotion
           fi
 
       - uses: actions/setup-java@v4
@@ -77,14 +77,17 @@ jobs:
             exit 1
           fi
 
+      - name: Candidate contract counter-audit
+        run: python tools/release/verify_candidate_contract.py
+
       - name: Unit tests
         run: gradle :app:testDebugUnitTest --stacktrace
 
       - name: Android lint
         run: gradle :app:lintDebug --stacktrace
 
-      - name: Build eligibility artifact
-        run: gradle :app:assembleDebug --stacktrace
+      - name: Build release-like eligibility artifact
+        run: gradle :app:assembleCandidate --stacktrace
 
       - name: Record eligibility head
         run: |
