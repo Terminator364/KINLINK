@@ -26,6 +26,8 @@ import com.terminator364.kinlink.core.AutopilotProfile
 import com.terminator364.kinlink.core.AutopilotProfileStore
 import com.terminator364.kinlink.core.BudgetState
 import com.terminator364.kinlink.core.ConnectivityStateClassifier
+import com.terminator364.kinlink.core.CockpitPrimaryAction
+import com.terminator364.kinlink.core.CockpitPrimaryActionPolicy
 import com.terminator364.kinlink.core.DeviceResourceGuard
 import com.terminator364.kinlink.core.KinlinkObserverService
 import com.terminator364.kinlink.core.MobileBudgetSnapshot
@@ -275,10 +277,25 @@ class MainActivity : Activity() {
             "24 h · ${burden.name.lowercase().replaceFirstChar { it.uppercase() }} · coupures=${reliability.interruptionCount} · Wi‑Fi lent=${reliability.lowQualityEpisodeCount} · mobile lent=${reliability.mobileLowQualityEpisodeCount}"
         }
 
-        wifiDoctorButton.visibility =
-            if (truth.transport == com.terminator364.kinlink.core.Transport.WIFI) View.VISIBLE else View.GONE
-        mobileAssistButton.visibility =
-            if (truth.transport == com.terminator364.kinlink.core.Transport.CELLULAR) View.VISIBLE else View.GONE
+        when (
+            CockpitPrimaryActionPolicy.select(
+                truth.transport,
+                recoveryModeStore.current()
+            )
+        ) {
+            CockpitPrimaryAction.WIFI_ASSIST -> {
+                wifiDoctorButton.visibility = View.VISIBLE
+                mobileAssistButton.visibility = View.GONE
+            }
+            CockpitPrimaryAction.MOBILE_ASSIST -> {
+                wifiDoctorButton.visibility = View.GONE
+                mobileAssistButton.visibility = View.VISIBLE
+            }
+            CockpitPrimaryAction.NONE -> {
+                wifiDoctorButton.visibility = View.GONE
+                mobileAssistButton.visibility = View.GONE
+            }
+        }
 
         if (observationOnly) {
             adviceTitleText.text = "Pilotage continu · pause sûre"
