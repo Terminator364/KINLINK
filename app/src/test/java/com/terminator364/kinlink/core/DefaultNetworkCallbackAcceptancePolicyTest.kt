@@ -13,4 +13,38 @@ class DefaultNetworkCallbackAcceptancePolicyTest {
     @Test fun explicitRefreshWithoutCallbackNetworkMayReadCurrentDefault() {
         assertTrue(DefaultNetworkCallbackAcceptancePolicy.accept(false, false))
     }
+    @Test fun callbackMustRemainDefaultAcrossReductionWindow() {
+        assertTrue(
+            DefaultNetworkCallbackAcceptancePolicy.acceptStable(
+                callbackNetworkPresent = true,
+                callbackMatchedBeforeReduction = true,
+                callbackMatchedAfterReduction = true
+            )
+        )
+        assertFalse(
+            DefaultNetworkCallbackAcceptancePolicy.acceptStable(
+                callbackNetworkPresent = true,
+                callbackMatchedBeforeReduction = true,
+                callbackMatchedAfterReduction = false
+            )
+        )
+        assertFalse(
+            DefaultNetworkCallbackAcceptancePolicy.acceptStable(
+                callbackNetworkPresent = true,
+                callbackMatchedBeforeReduction = false,
+                callbackMatchedAfterReduction = true
+            )
+        )
+    }
+
+    @Test fun currentDefaultRefreshWithoutCallbackNetworkRemainsAllowed() {
+        assertTrue(
+            DefaultNetworkCallbackAcceptancePolicy.acceptStable(
+                callbackNetworkPresent = false,
+                callbackMatchedBeforeReduction = false,
+                callbackMatchedAfterReduction = false
+            )
+        )
+    }
+
 }
