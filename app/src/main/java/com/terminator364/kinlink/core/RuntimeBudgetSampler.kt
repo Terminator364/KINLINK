@@ -8,7 +8,8 @@ import android.os.SystemClock
 data class RuntimeBudgetSnapshot(
     val elapsedMillis: Long,
     val processPssMiB: Int,
-    val batteryPercent: Int?
+    val batteryPercent: Int?,
+    val isCharging: Boolean?
 )
 
 data class RuntimeBudgetEvidence(
@@ -23,7 +24,12 @@ data class RuntimeBudgetEvidence(
 object RuntimeBudgetPolicy {
     fun evidence(start: RuntimeBudgetSnapshot, end: RuntimeBudgetSnapshot): RuntimeBudgetEvidence {
         val duration = (end.elapsedMillis - start.elapsedMillis).coerceAtLeast(0L)
-        val batteryDelta = if (start.batteryPercent != null && end.batteryPercent != null) {
+        val batteryDelta = if (
+            start.isCharging == false &&
+            end.isCharging == false &&
+            start.batteryPercent != null &&
+            end.batteryPercent != null
+        ) {
             if (end.batteryPercent > start.batteryPercent) null
             else start.batteryPercent - end.batteryPercent
         } else null
@@ -50,13 +56,15 @@ class RuntimeBudgetSampler(context: Context) {
             batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
                 .takeIf { it in 0..100 }
         }.getOrNull()
+        val charging = runCatching { batteryManager.isCharging }.getOrNull()
 
         return RuntimeBudgetSnapshot(
             elapsedMillis = SystemClock.elapsedRealtime(),
             processPssMiB = (Debug.getPss() / 1024L)
                 .coerceIn(0L, Int.MAX_VALUE.toLong())
                 .toInt(),
-            batteryPercent = battery
+            batteryPercent = battery,
+            isCharging = charging
         )
     }
 }
