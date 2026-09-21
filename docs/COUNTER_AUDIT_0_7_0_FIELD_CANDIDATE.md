@@ -217,3 +217,20 @@ Repair integrated:
 - pure continuation-policy tests cover all same-network/Wi-Fi combinations;
 - candidate-contract CI requires the post-diagnostic handoff fence.
 
+
+
+### CA-011 — per-attempt diagnostic executors could accumulate blocked helper threads
+
+The HTTP and DNS diagnostic paths previously created a fresh single-thread executor for each probe attempt. Even with wall-clock timeouts and cancellation, some platform DNS/socket operations may not honor interruption immediately.
+
+On a pathological network this could accumulate helper threads across repeated diagnostics/recovery attempts, conflicting with the 4 GB / high-RAM-pressure operating target and the fail-open resource contract.
+
+**Verdict: blocking resource-boundedness defect for the consolidated successor.**
+
+Repair integrated:
+- HTTP and DNS diagnostics now share one bounded executor;
+- maximum concurrent helper attempts is 2;
+- a saturated executor rejects new diagnostic work immediately instead of creating more threads;
+- workers are daemonized and expire after a short idle keep-alive;
+- existing per-attempt wall-clock timeouts and connection disconnect remain in force;
+- regression tests and candidate-contract CI fence the concurrency bound.
