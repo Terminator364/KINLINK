@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_1_STAGE_A_PASS_DRIVE_STAGING_PENDING",
-  "status": "ENGINEERING_ACTIVE_NO_HUMAN_GATE_YET",
+  "phase": "KINLINK_0_7_1_MOBILE_ASSIST_REOPENED_BEFORE_FIELD_DELIVERY",
+  "status": "ENGINEERING_ACTIVE_NO_HUMAN_GATE",
   "candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "stage exact signed 0.7.1 APK SHA-256 db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329 into Drive KINLINK/FIELD_CANDIDATE, perform Drive readback hash verification and clean obsolete candidate artifact; only then open one human in-place install gate",
+  "next_uncommitted_action": "integrate Mobile Assist L1 into 0.7.1 before any field delivery; rerun exact-head CI/design-lint/counter-audit; rebuild/re-sign only after mobile assist batch is green; old signed 0.7.1 artifact db2f7327... is superseded-before-delivery and must never be installed",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -326,15 +326,32 @@
     "signed_apk_sha256": "db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329",
     "signed_size_bytes": 336843,
     "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
-    "stage_a": "PASS",
-    "drive_staging": "PENDING_INTERNAL_FILE_BRIDGE",
+    "stage_a": "SUPERSEDED_BEFORE_DELIVERY",
+    "drive_staging": "CANCELLED",
     "installed": false,
-    "canonical": false
+    "canonical": false,
+    "superseded_reason": "mobile-assist requirement restored from broader KINLINK product contract before field delivery"
   },
   "canonical_drive_baseline": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
     "signed_apk_sha256": "4fb4ac36765b6d3728194bf7884f3c98afff625f4a5bc0637b825db0703a700c",
     "role": "ROLLBACK_AND_CANONICAL_INSTALLER_UNTIL_STAGE_B_PASS"
+  },
+  "mobile_assist_program": {
+    "goal": "improve cellular resilience without hidden paid traffic or privileged Android routing control",
+    "level_1_current_release": [
+      "passive cellular quality/cause diagnosis",
+      "bounded zero-probe Android metric refresh when cellular is validated but degraded",
+      "strict cooldown/hourly cap",
+      "resource/budget/suspended-network suppression",
+      "user-initiated system connectivity panel for conditions a normal app cannot reset directly",
+      "privacy-safe receipts and diagnostics"
+    ],
+    "level_2_strong_stabilizer": {
+      "status": "GATED_FUTURE",
+      "mechanism": "optional VpnService/TUN data plane",
+      "rule": "must prove measurable benefit plus RAM/battery/latency/DNS/watchdog/rollback before enablement"
+    }
   }
 }
