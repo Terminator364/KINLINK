@@ -31,6 +31,7 @@ jobs:
           test -f docs/ARCHITECTURE.md
           test -f docs/FAIL_OPEN_AND_RECOVERY.md
           test -f docs/TELEMETRY_AND_DIAGNOSTICS.md
+          test -f docs/REQUIREMENTS_TRACEABILITY.md
       - name: Execute telemetry migration simulation
         run: python tools/release/verify_telemetry_migrations.py
       - name: Historical 0.7.0 readiness ledger consistency
