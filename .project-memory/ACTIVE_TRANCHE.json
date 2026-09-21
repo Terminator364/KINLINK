@@ -2,7 +2,7 @@
   "project": "KINLINK",
   "tranche_id": "KINLINK-2026-09-21-25M-FINALIZATION",
   "cadence_minutes": 25,
-  "status": "END_MAIL_PENDING",
+  "status": "CLOSED_TRUE_HUMAN_GATE",
   "gmail_start_message_id": "1a0c3d50150b0db9",
   "gmail_label": "KINLINK",
   "end_mail_required_before_app_reply": true,
@@ -29,5 +29,9 @@
     "drive_readback": "PASS",
     "next_gate": "ONE_IN_PLACE_0_7_1_INSTALL"
   },
-  "gmail_end_message_id": null
+  "gmail_end_message_id": "1a0c3de49c81719c",
+  "end_mail_verified": true,
+  "next_gate": "ONE_IN_PLACE_0_7_1_INSTALL_FROM_DRIVE",
+  "drive_candidate_file_id": "1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1",
+  "drive_readback_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae"
 }
