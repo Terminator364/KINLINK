@@ -3,7 +3,10 @@ package com.terminator364.kinlink.ui
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.provider.Settings
@@ -116,6 +119,19 @@ class MainActivity : Activity() {
     private var cachedAssistEvidenceLabel: String =
         "Preuve 24 h · aucune action Mobile Assist évaluée"
 
+    private var evidenceReceiverRegistered = false
+    private val evidenceUpdatedReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (
+                intent?.action ==
+                    KinlinkObserverService.ACTION_MOBILE_ASSIST_EVIDENCE_UPDATED
+            ) {
+                lastAssistEvidenceRefreshElapsed = 0L
+                render(latestTruth)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ContextCompat.startForegroundService(this, Intent(this, KinlinkObserverService::class.java))
@@ -150,6 +166,15 @@ class MainActivity : Activity() {
         }
 
         installSystemBarInsets()
+        ContextCompat.registerReceiver(
+            this,
+            evidenceUpdatedReceiver,
+            IntentFilter(
+                KinlinkObserverService.ACTION_MOBILE_ASSIST_EVIDENCE_UPDATED
+            ),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+        evidenceReceiverRegistered = true
 
         ledger = TelemetryLedger(this)
         mobileBudget = MobileBudgetTracker(this)
@@ -219,6 +244,10 @@ class MainActivity : Activity() {
     }
 
     override fun onDestroy() {
+        if (evidenceReceiverRegistered) {
+            runCatching { unregisterReceiver(evidenceUpdatedReceiver) }
+            evidenceReceiverRegistered = false
+        }
         ledger.close()
         super.onDestroy()
     }
