@@ -128,3 +128,22 @@ Implemented:
 - CA-005: irreplaceable version self-test and terminal qualification receipts survive normal ledger pruning.
 
 The installed 0.7.0 remains usable while 0.7.1 is engineered. It is not canonically promoted.
+
+
+### CA-006 — version-scoped qualification receipts used prefix SQL matching
+
+The durable ledger helpers historically used `LIKE '<prefix>%'` for action counts and latest timestamps. That is correct for aggregate families, but unsafe for exact version-scoped receipts.
+
+Example:
+- query for `..._V9`
+- could also match a future `..._V90`
+
+This cannot corrupt the current v9 candidate today, but it violates proof-carrying version isolation and could allow future cross-version qualification contamination.
+
+**Verdict: blocking genericity defect for the consolidated successor.**
+
+Repair integrated:
+- added exact-action SQL helpers using `action = ?`;
+- all `QualificationReceiptNames` evidence lookups in the service, cockpit and diagnostic qualification path now use exact matching;
+- candidate-contract CI rejects any regression back to prefix matching for version-scoped qualification receipts.
+
