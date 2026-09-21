@@ -39,7 +39,7 @@ When this command is used in another KINLINK conversation/workspace:
 - No micro-beta chain: do not request another install until 0.7.1 is fully audited, machine-green, stable-signed and Drive-staged.
 - Telemetry schema remains v5.
 - Last fully green exact successor head before newest hardening: `a8e4b1a6510ee3bf06d1143253b08437e745cab4`.
-- Current counter-audit repairs extend through CA-009.
+- Current counter-audit repairs extend through CA-011.
 - Drive delivery folders:
   - INSTALLER = canonical promoted build only;
   - FIELD_CANDIDATE = one exact noncanonical candidate;
@@ -65,7 +65,7 @@ Includes, among other items:
 
 ## Next durable action
 
-1. Finish exact-head Android CI + design-lint for the full 0.7.1 CA-001..CA-009 batch.
+1. Finish exact-head Android CI + design-lint for the full 0.7.1 CA-001..CA-011 batch.
 2. Download and read back the exact unsigned 0.7.1 CI artifact.
 3. Run second counter-audit on that exact source/artifact identity.
 4. Stable-sign exactly that artifact with the canonical KINLINK certificate.
