@@ -1,53 +1,40 @@
 {
   "schema": "kinlink.active_tranche/6",
   "project": "KINLINK",
-  "tranche_id": "KINLINK-2026-09-21-2019-K25-07",
-  "delivery_key": "K25-20260921-2019-07",
+  "tranche_id": "KINLINK-2026-09-21-2049-K25-08",
+  "delivery_key": "K25-20260921-2049-08",
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
-  "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSED",
-  "status": "CLOSED",
-  "gmail_start_message_id": "1a0c568a9e6e9a39",
-  "gmail_start_thread_id": "1a0c568a9e6e9a39",
+  "work_state": "WORKING",
+  "delivery_state": "START_ACKNOWLEDGED",
+  "status": "ACTIVE",
+  "gmail_start_message_id": "1a0c58438ce7c050",
+  "gmail_start_thread_id": "1a0c58438ce7c050",
   "gmail_label": "KINLINK",
   "communication_guard": {
     "final_app_reply_requires_end_ack_persisted": true,
     "closed_tranche_reuse_forbidden": true,
     "communication_priority": "P0",
-    "platform_security_bypass_forbidden": true
+    "platform_security_bypass_forbidden": true,
+    "interruption_resume_rule": "IF_MISSION_CONTINUES_AFTER_FORCED_CLOSE_OPEN_NEW_START_BEFORE_WORK"
   },
   "objectives": [
-    "DEEPEN_B_BEYOND_EXISTING_B1_B8",
-    "CREATE_AND_EMAIL_FULL_A_TO_Z_SPEC_MEMORY_DOCTRINE_PDF",
-    "HARDEN_PROJECT_MEMORY_SYSTEM",
-    "CONTINUE_INTEGRATED_0_8_ENGINEERING",
-    "KEEP_FULL_A_PLUS_B_PLUS_C_AS_CANONICAL_SCOPE"
+    "DEEPEN_B_SUBSTANTIALLY",
+    "HARDEN_PROJECT_MEMORY_ARCHITECTURE",
+    "INTEGRATE_A_B_C_WITH_0_8_ENGINEERING",
+    "FIX_RENDER_HARNESS_AND_REQUALIFY",
+    "NO_MICRO_BETA"
   ],
   "starting_truth": {
+    "prior_tranche": "K25-07 CLOSED after PDF and interruption recovery",
+    "pdf_sent_message_id": "1a0c57e2be7f8d76",
     "full_spec_macro_capabilities": 80,
     "full_spec_maturity_percent": 44.8,
-    "installed": "0.7.3-dev/versionCode11 field baseline",
     "active_successor": "0.8.0-dev/versionCode12",
-    "current_0_8_head": "1571f268eb914a8847b3f61c3ea15f6b7f40a64a",
+    "current_head": "1571f268eb914a8847b3f61c3ea15f6b7f40a64a",
     "current_android_run": 35641697122,
-    "current_android_failure": "HARNESS_ORDERING_NOT_PRODUCT_REGRESSION"
+    "current_failure": "render-matrix harness ordering"
   },
-  "next_atomic_action": "send Gmail END for K25-07 now; verify provider ACK; persist CLOSED; only then open K25-08 if work continues",
-  "close_intent_persisted": true,
-  "close_owner": "INTERRUPTION_RECOVERY",
-  "no_more_product_mutations": true,
-  "interruption_recovery": {
-    "detected_at_local": "2026-09-21T20:43:14+01:00",
-    "root_cause": "A user message arrived while tranche K25-07 was still ACTIVE after START+PDF, before END had been emitted. The assistant turn was interrupted before normal closeout.",
-    "required_order": "END_PREVIOUS_FIRST_THEN_OPTIONAL_NEW_START",
-    "protocol_gap": "A mid-tranche user interruption can preempt normal closeout; next-turn reconciliation must close the open tranche before any new START or product work."
-  },
-  "gmail_end_message_id": "1a0c57f6eb4b960a",
-  "gmail_end_thread_id": "1a0c568a9e6e9a39",
-  "end_mail_verified": true,
-  "closed_state": true,
-  "closed_at_provider_ts": "2026-09-21T19:44:18",
-  "closed_at_local": "2026-09-21T20:44:18+01:00"
+  "next_atomic_action": "deepen B and memory doctrine, then fix harness ordering and rerun exact-head 0.8 CI"
 }
