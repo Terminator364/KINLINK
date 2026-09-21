@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
   "phase": "KINLINK_FULL_A_B_C_W1_PLATFORM_CAPABILITY_AND_CONTINUITY_SYNC_ACTIVE",
-  "status": "0_8_E633_DETERMINISTIC_PROVENANCE_REQUALIFYING",
+  "status": "0_8_W1_PROVENANCE_PASS_W2_MOBILE_VAULT_CORE_REQUALIFYING",
   "candidate": {
     "version": "0.7.3-dev",
     "versionCode": 11
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "SINGLE_HUMAN_INSTALL_SURFACE_READY",
-  "next_uncommitted_action": "poll exact Android run 35658883177 for head e633db6f6441f563256deb04890bbc28267d08b8; if PASS download build artifact and prove manifest says 0.8.0-dev/versionCode12/commit e633; then continue W1 toward W2 without phone install",
+  "next_uncommitted_action": "poll exact Android run 35659643216 for head 3b12df65ed64538159ca13eee752c3d8d762e3ad; if PASS promote W2 Mobile Vault core to machine-proven subrequirement evidence and continue W2 context/store/UI integration; no phone install",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -227,7 +227,9 @@
       "project_state.json",
       "NEXT_UNCOMMITTED_ACTION.md",
       "BUILD_STATUS.md"
-    ]
+    ],
+    "latest_cold_takeover_design_lint_run": 35659344414,
+    "latest_cold_takeover_design_lint_status": "PASS"
   },
   "communication_protocol": {
     "version": 5,
@@ -502,10 +504,10 @@
     "last_fully_audited_head": "b54020291f866042103ad0f63cae3645977638d1",
     "last_fully_audited_android_run": 35656916207,
     "last_fully_audited_status": "PASS_45_OF_45_UI_AND_TRUTH",
-    "latest_head": "e633db6f6441f563256deb04890bbc28267d08b8",
-    "latest_change": "deterministic Python Gradle-version parser writes release manifest and performs JSON readback",
-    "latest_design_lint_run": 35658883138,
-    "latest_android_run": 35658883177,
+    "latest_head": "3b12df65ed64538159ca13eee752c3d8d762e3ad",
+    "latest_change": "W2 Mobile Vault core: explicit normal/protected-reserve/rescue/critical envelopes with fail-safe unknown/expired/exhausted behavior",
+    "latest_design_lint_run": 35659643320,
+    "latest_android_run": 35659643216,
     "latest_ci_status": "IN_PROGRESS_AT_CLOSE_INTENT",
     "provenance_incident_head": "62a910a698286896af90d22551366f728ee0c4e7",
     "provenance_incident_run": 35657955186,
@@ -513,7 +515,18 @@
     "provenance_incident": "KINLINK-build-manifest.json contained literal \\\\1 for version/versionCode because shell sed backreference escaping was wrong; CI had compared the same bad extracted value and therefore did not detect it",
     "latest_design_lint_status": "PASS",
     "latest_android_status": "IN_PROGRESS",
-    "active_wave": "W1_PLATFORM_DIAGNOSTICS_AND_CAPABILITY_DISCOVERY"
+    "active_wave": "W1_PLATFORM_DIAGNOSTICS_AND_CAPABILITY_DISCOVERY",
+    "provenance_fix_head": "e633db6f6441f563256deb04890bbc28267d08b8",
+    "provenance_fix_android_run": 35658883177,
+    "provenance_fix_status": "PASS_ARTIFACT_READBACK_CONFIRMED",
+    "provenance_fix_manifest": {
+      "version": "0.8.0-dev",
+      "versionCode": 12,
+      "commit": "e633db6f6441f563256deb04890bbc28267d08b8",
+      "unsigned_apk_sha256": "8b81f3ec51e6f558ebe5c1a41904b47fe65aef2c0cd1ee4e0d21d372837fa1ff"
+    },
+    "w2_started": true,
+    "w2_first_block": "MobilePlanVaultPolicy"
   },
   "product_completion_scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
   "visual_counter_audit_policy": ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json",

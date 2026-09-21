@@ -2,48 +2,63 @@
 
 Resume with `KINLINKGO`.
 
-## 0. First — deterministic continuity
+## Deterministic continuity first
 
-Before product work:
-1. load and verify `.project-memory/RESUME_CAPSULE.json`;
-2. read `.project-memory/ACTIVE_TRANCHE.json` and `.project-memory/COMMUNICATION_DELIVERY_LEDGER.jsonl` fresh;
-3. reconcile any unclosed tranche;
-4. load A+B+C, scorecard, B-depth, dead-end registry and W0-W6 program;
-5. only then send a new Gmail START if substantive work will continue.
+1. verify `.project-memory/RESUME_CAPSULE.json`;
+2. read ACTIVE_TRANCHE + communication ledger fresh;
+3. reconcile START/CLOSE/END;
+4. load A+B+C, B4 B31-B90, 80-macro scorecard, dead-end registry and W0-W6 plan;
+5. read project_state/BUILD_STATUS/NEXT fresh;
+6. send Gmail START before substantive continuation.
 
-Do not reconstruct from chat memory or a stale context summary.
+Latest continuity simulation:
+- main design-lint `35659344414`: PASS
+- cold takeover verifier: PASS
+- communication protocol: v5
+- one watchdog; never auto-opens orphan START
 
-## Canonical A+B+C
+## Canonical scope
 
-- A anchor: `c565b6f1164d327caaa17e1de47d1cf48ed3c885`
-- B: **B4 / B31-B90 / 60 subrequirements**
-- C: append-only field/product evolution
-- macro denominator: **80**
-- conservative maturity: **44.8%**
-- integrated program: **W0-W6**
-- active wave: **W1**
+- A anchor `c565b6f1164d327caaa17e1de47d1cf48ed3c885`
+- B4: **B31-B90**
+- C: append-only
+- 80 macro capabilities
+- 44.8% conservative maturity
+- program W0-W6
 - no micro-beta/user reinstall chain
 
-## Active 0.8 line
+## Proven 0.8 foundation
 
-- branch: `dev/0.8.0-integrated-truth-and-control`
-- last fully audited head: `b54020291f866042103ad0f63cae3645977638d1`
-- 45/45 rendered screenshots manually inspected: PASS UI/truth
-- head `62a910a698286896af90d22551366f728ee0c4e7` passed CI but **failed artifact provenance readback** because generated JSON contained literal `\\1` for version/versionCode
-- current exact head: `e633db6f6441f563256deb04890bbc28267d08b8`
-- design-lint run `35658883138`: PASS
-- Android run `35658883177`: IN PROGRESS at this checkpoint
+- b540: 45/45 UI screenshots manually counter-audited, UI/truth PASS
+- e633: deterministic release-provenance parser PASS
+- e633 artifact readback proves 0.8.0-dev / versionCode12 / exact commit
 
-## Exact next engineering action
+## Active exact head
 
-1. poll Android run `35658883177`;
-2. if PASS, download `KINLINK-0.8.0-dev-ci-build`;
-3. independently read `KINLINK-build-manifest.json`;
-4. require exactly:
-   - version `0.8.0-dev`
-   - versionCode `12`
-   - commit `e633db6f6441f563256deb04890bbc28267d08b8`
-5. if provenance passes, continue W1 and begin W2 Context + Mobile Vault core as one integrated internal stream;
-6. no field sign/Drive/install yet.
+`3b12df65ed64538159ca13eee752c3d8d762e3ad`
 
-Communication: Gmail START provider ACK before substantive work; Gmail END provider ACK + durable CLOSED before final app closeout.
+Runs:
+- design-lint `35659643320`: PASS
+- Android `35659643216`: IN PROGRESS at this checkpoint
+
+W2 first executable block:
+- `MobilePlanVaultPolicy.kt`
+- total plan / normal / protected reserve / rescue / critical-interactive envelopes
+- fail-safe UNKNOWN on missing usage
+- EXPIRED/EXHAUSTED hard stop
+- autonomous normal mobile action only in NORMAL zone
+
+## Exact next action
+
+1. poll Android run `35659643216`;
+2. if PASS, record W2 Mobile Vault core as machine-proven evidence;
+3. continue W2 as one integrated stream:
+   - persisted plan/cycle configuration;
+   - privacy-safe usage source reconciliation;
+   - optional NetworkStats lane;
+   - multi-SIM isolation;
+   - Mobile Vault UI;
+   - policy integration;
+4. then continue toward W3/W4 without requesting a phone micro-update.
+
+Gmail START ACK before work; Gmail END ACK + durable CLOSED before app closeout.

@@ -1,6 +1,6 @@
 {
   "schema": "kinlink.canonical_context_pack/2",
-  "generated_at": "2026-09-21T22:50:00+01:00",
+  "generated_at": "2026-09-21T22:56:00+01:00",
   "project": "KINLINK",
   "immutable_A": {
     "preconception_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
@@ -33,17 +33,25 @@
   "active_engineering": {
     "successor": "0.8.0-dev/versionCode12",
     "branch": "dev/0.8.0-integrated-truth-and-control",
-    "active_wave": "W1_PLATFORM_DIAGNOSTICS_AND_CAPABILITY_DISCOVERY",
+    "active_wave": "W2_CONTEXT_AND_MOBILE_VAULT_STARTED",
     "last_fully_audited_head": "b54020291f866042103ad0f63cae3645977638d1",
     "last_fully_audited_run": 35656916207,
-    "latest_head": "e633db6f6441f563256deb04890bbc28267d08b8",
-    "latest_design_lint_run": 35658883138,
+    "latest_head": "3b12df65ed64538159ca13eee752c3d8d762e3ad",
+    "latest_design_lint_run": 35659643320,
     "latest_design_lint_status": "PASS",
-    "latest_android_run": 35658883177,
+    "latest_android_run": 35659643216,
     "latest_android_status": "IN_PROGRESS",
     "provenance_incident_head": "62a910a698286896af90d22551366f728ee0c4e7",
     "provenance_incident": "artifact manifest literal backreference values; fixed by deterministic Python parser",
-    "install_requested": false
+    "install_requested": false,
+    "provenance_fix": {
+      "head": "e633db6f6441f563256deb04890bbc28267d08b8",
+      "android_run": 35658883177,
+      "status": "PASS_ARTIFACT_READBACK",
+      "version": "0.8.0-dev",
+      "versionCode": 12,
+      "unsigned_apk_sha256": "8b81f3ec51e6f558ebe5c1a41904b47fe65aef2c0cd1ee4e0d21d372837fa1ff"
+    }
   },
   "communication": {
     "current_tranche": "KINLINK-2026-09-21-2242-K25-11",
@@ -54,7 +62,7 @@
     "watchdog_cadence": "HOURLY",
     "watchdog_policy": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json"
   },
-  "next_action": "Poll e633 Android run, independently read release manifest, then continue W1→W2; no phone install.",
+  "next_action": "Poll 3b12 Android run; if PASS continue W2 store/source reconciliation/UI integration; no phone install.",
   "memory": {
     "policy": ".project-memory/MEMORY_POLICY_V2.json",
     "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",
