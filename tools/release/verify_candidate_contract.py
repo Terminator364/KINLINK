@@ -12,6 +12,8 @@ PROBE = (SRC / "com/terminator364/kinlink/core/WifiDoctorProbe.kt").read_text(en
 SERVICE = (SRC / "com/terminator364/kinlink/core/KinlinkObserverService.kt").read_text(encoding="utf-8")
 OBSERVER = (SRC / "com/terminator364/kinlink/core/NetworkObserver.kt").read_text(encoding="utf-8")
 OPT = (SRC / "com/terminator364/kinlink/core/WifiOptimizer.kt").read_text(encoding="utf-8")
+MOBILE_ASSIST = (SRC / "com/terminator364/kinlink/core/MobileAssistController.kt").read_text(encoding="utf-8")
+MOBILE_POLICY = (SRC / "com/terminator364/kinlink/core/MobileAssistPolicy.kt").read_text(encoding="utf-8")
 LEDGER = (SRC / "com/terminator364/kinlink/data/TelemetryLedger.kt").read_text(encoding="utf-8")
 
 def require(ok: bool, message: str) -> None:
@@ -152,4 +154,39 @@ require(
     and "sameActiveNetwork = activeAfterDiagnostics == network" in OPT
     and "WifiOptimizationAction.HANDOFF_ABORTED" in OPT,
     "candidate contract: manual Wi-Fi optimization can continue after active-network handoff",
+)
+require(
+    "requestBandwidthUpdate(network)" in MOBILE_ASSIST
+    and "NetworkCapabilities.TRANSPORT_CELLULAR" in MOBILE_ASSIST,
+    "candidate contract: Mobile Assist cellular metric refresh path missing",
+)
+for token in [
+    "openConnection(",
+    "getAllByName(",
+    "Socket(",
+    "HttpURLConnection",
+    "requestNetwork(",
+    "bindProcessToNetwork",
+    "reportNetworkConnectivity",
+]:
+    require(
+        token not in MOBILE_ASSIST,
+        f"candidate contract: Mobile Assist may emit hidden network traffic or seize routing: {token}",
+    )
+require(
+    "COOLDOWN_MS = 5L * 60L * 1000L" in MOBILE_POLICY
+    and "MAX_ACTIONS_PER_HOUR = 6" in MOBILE_POLICY,
+    "candidate contract: Mobile Assist cooldown/hourly cap missing",
+)
+require(
+    "BudgetState.BUNDLE_LOW" in MOBILE_POLICY
+    and "BudgetState.BUNDLE_EXHAUSTED" in MOBILE_POLICY
+    and "BudgetState.BUNDLE_EXPIRED" in MOBILE_POLICY,
+    "candidate contract: Mobile Assist does not protect paid-data budget states",
+)
+require(
+    "NETWORK_SUSPENDED" in MOBILE_POLICY
+    and "resourceConstrained" in MOBILE_POLICY
+    and "OBSERVATION_ONLY" in MOBILE_POLICY,
+    "candidate contract: Mobile Assist fail-open/resource/safe-mode gates missing",
 )
