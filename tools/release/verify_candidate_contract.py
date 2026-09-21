@@ -254,3 +254,8 @@ require(
     and "MOBILE_ASSIST_EVIDENCE_MANUAL_WINDOW_STARTED" in SERVICE,
     "candidate contract: manual Mobile Assist is detached from the proof loop",
 )
+
+require(
+    EVIDENCE_TRACKER.count("@Synchronized") >= 2,
+    "candidate contract: Mobile Assist evidence state is not serialized across callbacks and one-shot samples",
+)
