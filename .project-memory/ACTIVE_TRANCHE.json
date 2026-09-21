@@ -2,10 +2,10 @@
   "project": "KINLINK",
   "tranche_id": "KINLINK-2026-09-21-25M-WATCHDOG-AND-FINALIZATION",
   "cadence_minutes": 25,
-  "primary_work_budget_minutes": 20,
-  "closeout_reserve_minutes": 5,
+  "primary_work_budget_minutes": 22,
+  "closeout_reserve_minutes": 3,
   "max_mutation_groups_before_forced_closeout": 12,
-  "mutation_groups_used": 10,
+  "mutation_groups_used": 3,
   "status": "CLOSED",
   "forced_closeout_entered": true,
   "gmail_start_message_id": "1a0c40fc5bc4a549",
@@ -43,5 +43,30 @@
   "close_verdict": "COMMUNICATION_WATCHDOG_PERSISTED_AND_0_7_2_EXACT_HEAD_MACHINE_PASS",
   "closed_dev_head": "d529533b5c7ef8c72b73e9e4ab6fb4cf22cc046a",
   "closed_design_lint_run": 35604679827,
-  "closed_android_run": 35604679752
+  "closed_android_run": 35604679752,
+  "delivery_state": "WORKING",
+  "start_provider_ack": true,
+  "watchdogs": {
+    "closeout_watchdog_armed": true,
+    "hard_end_guard_armed": true,
+    "purpose": "independent recovery path if the main assistant turn is interrupted before Gmail END"
+  },
+  "bcp_comparison": {
+    "inspected": [
+      "BCP API_PROJECT_CONTINUITY.md",
+      "OFFLINE_MISSION_SENTINEL_AND_RESUME_ARCHITECTURE",
+      "TELEGRAM_PROGRESS_RELAY_AND_UPDATE_ARCHITECTURE",
+      "CONVERSATION_DELIVERY_LEDGER_AND_TELEGRAM_INBOX_R23",
+      "DUAL_CONVERSATION_CONTINUITY",
+      "GIT_WRITER_LEASE_AND_BRANCH_PROTOCOL"
+    ],
+    "imported": [
+      "provider-acknowledged START/END handshake",
+      "one-shot END watchdog",
+      "hard recovery guard",
+      "delivery state distinct from work state",
+      "durable next atomic action",
+      "no user ping required to close a tranche"
+    ]
+  }
 }
