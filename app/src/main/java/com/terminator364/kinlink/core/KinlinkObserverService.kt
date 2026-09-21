@@ -38,6 +38,8 @@ class KinlinkObserverService : Service() {
     private var runtimeResourceQualificationAttempts = 0
     private var fieldQualificationReceiptWritten = false
     private var fieldQualificationBlockedWritten = false
+    private var currentFieldQualificationVerdict =
+        FieldCandidateQualificationVerdict.PENDING
     private val runtimeBudgetHandler by lazy { android.os.Handler(android.os.Looper.getMainLooper()) }
     private val runtimeBudgetCheckpointRunnable = Runnable { maybeRecordRuntimeBudgetCheckpoint() }
     private var powerReceiverRegistered = false
@@ -79,6 +81,9 @@ class KinlinkObserverService : Service() {
             ledger.countActions(QualificationReceiptNames.fieldQualified(runningVersionCode)) > 0
         fieldQualificationBlockedWritten =
             ledger.countActions(QualificationReceiptNames.fieldBlocked(runningVersionCode)) > 0
+        if (runningVersionCode >= 8L) {
+            currentFieldQualificationVerdict = evaluateFieldCandidateQualification().verdict
+        }
         scheduleRuntimeBudgetCheckpoint()
         ContextCompat.registerReceiver(
             this,
@@ -323,33 +328,67 @@ class KinlinkObserverService : Service() {
         }
     }
 
-    private fun maybeRecordFieldCandidateQualification() {
-        if (runningVersionCode < 8L || fieldQualificationReceiptWritten) return
-
-        val assessment = FieldCandidateQualificationPolicy.evaluate(
+    private fun evaluateFieldCandidateQualification(): FieldCandidateQualificationAssessment =
+        FieldCandidateQualificationPolicy.evaluate(
             FieldCandidateQualificationEvidence(
                 coreSelfTestPasses =
                     ledger.countSuccessfulActions(QualificationReceiptNames.coreSelfTest(runningVersionCode)),
                 observerSelfTestPasses =
                     ledger.countSuccessfulActions(QualificationReceiptNames.observerSelfTest(runningVersionCode)),
                 mobileValidatedHandoffs =
-                    ledger.countSuccessfulActions(QualificationReceiptNames.handoffOutcome(HandoffOutcome.MOBILE_VALIDATED, runningVersionCode)),
+                    ledger.countSuccessfulActions(
+                        QualificationReceiptNames.handoffOutcome(
+                            HandoffOutcome.MOBILE_VALIDATED,
+                            runningVersionCode
+                        )
+                    ),
                 cellularToWifiReturns =
-                    ledger.countSuccessfulActions(QualificationReceiptNames.handoff(HandoffKind.CELLULAR_TO_WIFI, runningVersionCode)),
+                    ledger.countSuccessfulActions(
+                        QualificationReceiptNames.handoff(
+                            HandoffKind.CELLULAR_TO_WIFI,
+                            runningVersionCode
+                        )
+                    ),
                 runtimeResourcePasses =
-                    ledger.countSuccessfulActions(QualificationReceiptNames.resourceGate(RuntimeResourceVerdict.PASS, runningVersionCode)),
+                    ledger.countSuccessfulActions(
+                        QualificationReceiptNames.resourceGate(
+                            RuntimeResourceVerdict.PASS,
+                            runningVersionCode
+                        )
+                    ),
                 runtimeResourceBlocks =
-                    ledger.countActions(QualificationReceiptNames.resourceGate(RuntimeResourceVerdict.BLOCKED, runningVersionCode)),
+                    ledger.countActions(
+                        QualificationReceiptNames.resourceGate(
+                            RuntimeResourceVerdict.BLOCKED,
+                            runningVersionCode
+                        )
+                    ),
                 latestRuntimeResourcePassMillis =
                     ledger.latestActionTimestamp(
-                        QualificationReceiptNames.resourceGate(RuntimeResourceVerdict.PASS, runningVersionCode)
+                        QualificationReceiptNames.resourceGate(
+                            RuntimeResourceVerdict.PASS,
+                            runningVersionCode
+                        )
                     ),
                 latestRuntimeResourceBlockMillis =
                     ledger.latestActionTimestamp(
-                        QualificationReceiptNames.resourceGate(RuntimeResourceVerdict.BLOCKED, runningVersionCode)
+                        QualificationReceiptNames.resourceGate(
+                            RuntimeResourceVerdict.BLOCKED,
+                            runningVersionCode
+                        )
                     )
             )
         )
+
+    private fun maybeRecordFieldCandidateQualification() {
+        if (runningVersionCode < 8L) return
+        if (fieldQualificationReceiptWritten) {
+            currentFieldQualificationVerdict = FieldCandidateQualificationVerdict.PASS
+            return
+        }
+
+        val assessment = evaluateFieldCandidateQualification()
+        currentFieldQualificationVerdict = assessment.verdict
 
         when (assessment.verdict) {
             FieldCandidateQualificationVerdict.PASS -> {
@@ -432,10 +471,14 @@ class KinlinkObserverService : Service() {
         passiveProblem: PassiveProblemAssessment = PassiveProblemClassifier.classify(truth)
     ) {
         val observationOnly = recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY
-        val text = if (fieldQualificationReceiptWritten) {
-            "KINLINK 0.7 · qualification terrain complète"
-        } else if (fieldQualificationBlockedWritten) {
-            "KINLINK 0.7 · qualification bloquée · voir diagnostic"
+        val text = if (
+            currentFieldQualificationVerdict == FieldCandidateQualificationVerdict.PASS
+        ) {
+            "KINLINK $runningVersionCode · qualification terrain complète"
+        } else if (
+            currentFieldQualificationVerdict == FieldCandidateQualificationVerdict.BLOCKED
+        ) {
+            "KINLINK $runningVersionCode · qualification bloquée · voir diagnostic"
         } else if (observationOnly) {
             "Mode sûr · observation uniquement · Android garde le contrôle"
         } else when (truth.transport) {
