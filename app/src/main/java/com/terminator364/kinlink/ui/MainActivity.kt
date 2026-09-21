@@ -748,7 +748,11 @@ class MainActivity : Activity() {
             if (it > 0) "+" + it else it.toString()
         } ?: "—"
         maintainedText.text = controlPanel.maintenance
-        evidenceText.text = controlPanel.evidence
+        evidenceText.text =
+            if (resourceConstrained)
+                "Protection · " + resourceGuardReason(resourceSnapshot)
+            else
+                controlPanel.evidence
 
         val reliability = latestReliability
         reliabilityText.text = if (reliability == null) {
