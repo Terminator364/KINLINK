@@ -1,61 +1,71 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Current user/device truth
-- Phone currently runs KINLINK 0.7.0 / versionCode 8.
-- Installed signed hash: `cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc`.
-- 0.7.0 may remain installed and usable.
-- Its canonical promotion was invalidated by post-install counter-audit findings.
-- **Do not ask the user to install another APK yet.**
+## Current phone
+- Installed: KINLINK 0.7.0 / versionCode 8.
+- It may remain in use.
+- Its canonical promotion was invalidated by post-install counter-audit.
 
-## Canonical rollback/delivery truth
-- Drive `KINLINK/INSTALLER/KINLINK_LATEST.apk` remains the canonical 0.6.0-rc3 rollback/stable artifact.
-- Future noncanonical successor delivery belongs in `KINLINK/FIELD_CANDIDATE`.
-- Never distribute APKs by Gmail.
-
-## Active consolidated successor
+## Consolidated successor — Stage A PASS
 - Version: 0.7.1
 - versionCode: 9
-- Purpose: close the full post-install counter-audit in one successor; no micro-beta chain.
-- Last full exact-head machine PASS before current hardening: `a8e4b1a6510ee3bf06d1143253b08437e745cab4`
-  - Android run 35575247146 PASS
-  - design-lint run 35575247175 PASS
+- Exact source/audit head: `9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5`
+- Android CI run: `35590793691` — PASS
+- design-lint run: `35590793645` — PASS
+- Artifact ID: `10634896108`
+- Artifact ZIP SHA-256: `96b903ba823196ef119bb77975b8bc6ad307b96206492960a7bd1c344c93d315`
+- Unsigned APK SHA-256: `25ff61529a7bc009543fe39edad05bd356b4ec4664be9da591af45721c34feff`
+- Signed APK SHA-256: `db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329`
+- Signed size: 336843 bytes
+- Canonical signer SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+- APK Signature Scheme v3: PASS
+- Signers: 1
+- Stage A: PASS
+- Stage B: PENDING target-phone evidence
 
-## Counter-audit repair scope
-- CA-001 hard recovery deadline — repaired
-- CA-002 battery quantization false-block risk — repaired
-- CA-003 bounded resource retry — repaired
-- CA-004 historical BLOCKED UI truthfulness — repaired
-- CA-005 irreplaceable receipt retention — repaired
-- CA-006 cross-version prefix receipt matching — repaired, exact SQL equality
-- CA-007 historical QUALIFIED forcing stale PASS — repaired, live verdict is revocable
-- CA-008 DNS/socket wall-clock deadline proof — repaired with outer timeout/disconnect
-- CA-009 stale old-default callbacks contaminating handoff evidence — repaired
+## Counter-audit closed machine-side
+CA-001 through CA-013 are integrated and machine-tested.
 
-Additional hardening:
-- cross-policy critical scenario matrix;
-- candidate-contract static counter-audit;
-- requirements traceability matrix separating current proof from later gated architecture;
-- mandatory 25-minute Gmail-first/Gmail-last protocol persisted.
+Key latest additions:
+- exact version-scoped qualification SQL;
+- current verdict cannot be forced by historical QUALIFIED/BLOCKED receipts;
+- automatic HTTP outer wall-clock deadline;
+- stale default-network callbacks fenced before/after reduction;
+- stale callbacks cannot suppress delayed offline settling;
+- stale manual Wi-Fi work aborts after handoff;
+- DNS/HTTP helper threads are globally bounded;
+- structured privacy-safe diagnostic ZIP core bundle;
+- exhaustive P0 transport/resource scenario sweep;
+- notification visibility request without blocking service;
+- qualification receipts protected against pruning.
 
-## Next durable engineering action
-1. obtain full Android CI + design-lint PASS on the newest exact head containing CA-006..CA-009;
-2. download the exact 0.7.1 unsigned release-like CI artifact;
-3. verify artifact ZIP digest, APK SHA-256, package/version and build-manifest commit;
-4. perform a second counter-audit against the exact artifact/source head;
-5. stable-sign exactly that artifact with the canonical signer certificate;
-6. verify signed APK + signer fingerprint + byte/readback evidence;
-7. place exactly one successor in Drive `KINLINK/FIELD_CANDIDATE`;
-8. only then open the next real human gate: one in-place 0.7.1 install;
-9. target phone must then produce v9 handoff + resource evidence before any canonical Drive promotion.
+## Immediate internal action — no human gate yet
+1. stage the exact signed 0.7.1 APK into Drive `KINLINK/FIELD_CANDIDATE`;
+2. read it back from Drive and require SHA-256 `db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329`;
+3. verify FIELD_CANDIDATE contains the current successor cleanly and remove obsolete delivery accumulation;
+4. update Drive master/receipt;
+5. only then ask for ONE in-place 0.7.1 install.
+
+Current blocker is an internal file-handoff/session bridge for Drive upload, not a user action and not a reason to request another APK/install cycle.
+
+## After one 0.7.1 install
+Collect versionCode 9 evidence:
+- core self-test;
+- observer callback self-test;
+- Wi-Fi -> validated cellular;
+- cellular -> Wi-Fi return;
+- resource qualification >=30 minutes.
+
+Canonical INSTALLER replacement remains forbidden until Stage B PASS.
 
 ## Communication protocol
 - Gmail start first.
-- Work one coherent 25-minute tranche.
-- Intermediate feedback does not interrupt/restart the tranche.
-- Stop early only for a true human gate objectively required to continue.
-- Gmail complete end report before any app response.
-- App response only: check Gmail + Kinshasa date/time.
-- Gmail label: `KINLINK`.
+- Work coherent 25-minute tranche.
+- Intermediate feedback is queued/integrated without breaking tranche.
+- Stop early only for true human gate.
+- Gmail complete end report first and require returned Gmail message ID.
+- Only then app message: check Gmail + Kinshasa date/time.
+- Gmail label: KINLINK.
+- APK never by Gmail.
 
 ## Resume command
 `KINLINKGO`
