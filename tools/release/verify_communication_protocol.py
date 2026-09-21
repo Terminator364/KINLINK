@@ -15,12 +15,19 @@ def main() -> int:
 
     require(data.get("project") == "KINLINK", "communication protocol: project mismatch")
     require(data.get("cadence_minutes") == 25, "communication protocol: cadence must be 25 minutes")
-    require(data.get("primary_work_budget_minutes") == 20,
-            "communication protocol: 20-minute primary work budget missing")
-    require(data.get("closeout_reserve_minutes") == 5,
-            "communication protocol: 5-minute closeout reserve missing")
+    require(data.get("primary_work_budget_minutes") == 22,
+            "communication protocol: 22-minute primary work budget missing")
+    require(data.get("closeout_reserve_minutes") == 3,
+            "communication protocol: 3-minute closeout reserve missing")
     require(data.get("max_mutation_groups_before_forced_closeout") == 12,
             "communication protocol: mutation budget missing")
+    imported = data.get("bcp_imported_principles", [])
+    require(
+        "GMAIL_START_PROVIDER_ACK_BEFORE_SUBSTANTIVE_WORK" in imported
+        and "ONE_SHOT_END_WATCHDOG_ARMED_AT_TRANCHE_START" in imported
+        and "NO_CHATGPT_POINTER_BEFORE_PROVIDER_ACK_END" in imported,
+        "communication protocol: BCP provider-ack/watchdog principles missing",
+    )
     require(
         data.get("start_sequence", [])[0] == "REPAIR_ANY_UNCLOSED_PRIOR_TRANCHE",
         "communication protocol: prior unclosed tranche repair is not first",
@@ -43,6 +50,12 @@ def main() -> int:
             "communication protocol: feedback must not bypass end mail")
     require(data.get("gmail_label") == "KINLINK",
             "communication protocol: Gmail label mismatch")
+    states = data.get("delivery_state_machine", [])
+    require(
+        states[:3] == ["START_REQUIRED", "START_PROVIDER_ACKED", "WORKING"]
+        and states[-2:] == ["END_PROVIDER_ACKED", "CLOSED"],
+        "communication protocol: delivery state machine incomplete",
+    )
     require("NEVER_GMAIL_ATTACHMENT" in data.get("apk_delivery", ""),
             "communication protocol: APK email ban missing")
 
@@ -52,8 +65,8 @@ def main() -> int:
             "communication protocol: active tranche start Gmail message ID missing")
     require(active.get("end_mail_required_before_app_reply") is True,
             "communication protocol: active tranche end-mail fence missing")
-    require(active.get("closeout_reserve_minutes") == 5,
-            "communication protocol: active tranche closeout reserve missing")
+    require(active.get("closeout_reserve_minutes") == 3,
+            "communication protocol: active tranche 3-minute closeout reserve missing")
     require(active.get("max_mutation_groups_before_forced_closeout") == 12,
             "communication protocol: active tranche mutation budget missing")
 
