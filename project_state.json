@@ -232,7 +232,7 @@
     "ci_run": 35550539216,
     "artifact_id": 10618495983,
     "artifact_zip_sha256": "0deb11a13ba4ee2b8f15d96865741af3be42483d707e2814dabe5bef22717c09",
-    "unsigned_apk_sha256": "3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb",
+    "unsigned_apk_sha256": "3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb8",
     "signed_apk_sha256": "cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc",
     "size_bytes": 320260,
     "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
