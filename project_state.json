@@ -178,7 +178,8 @@
     "rule": "resume_from_latest_durable_main_without_restart"
   },
   "communication_protocol": {
-    "tranche_style": "LONG_8_10_MIN_COHERENT",
+    "tranche_style": "LONG_25_MIN_COHERENT",
+    "target_minutes": 25,
     "start": "SEND_GMAIL_FIRST",
     "end": "SEND_COMPLETE_GMAIL_REPORT_FIRST",
     "app_response": "ONLY_CHECK_GMAIL_PLUS_KINSHASA_DATE_TIME",
