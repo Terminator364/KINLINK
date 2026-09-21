@@ -57,3 +57,23 @@ Target-phone in-place update and field behavior.
 
 - Android lint must pass
 - manifest must not request CHANGE_NETWORK_STATE, CHANGE_WIFI_STATE, MODIFY_PHONE_STATE or WRITE_SETTINGS
+
+
+## 0.7.0-dev consolidated signed-candidate gate
+
+Promotion is blocked unless all five readiness gates are PASS in the durable release-readiness ledger:
+
+- MACHINE
+- MIGRATION
+- SIGNER_CONTINUITY
+- FIELD_HANDOFF
+- RESOURCE_QUALIFICATION
+
+The ledger is stored at:
+`.project-memory/RELEASE_READINESS_0_7_0_DEV.json`
+
+`tools/release/verify_release_readiness.py --audit` verifies ledger consistency during design-lint.
+
+`tools/release/verify_release_readiness.py --require-ready` is the promotion fence: it must fail while any mandatory gate is PENDING or BLOCKED.
+
+Resource qualification is not satisfied by a short session, by charging/inconclusive battery evidence, or by a raw callback count that ignores session duration.
