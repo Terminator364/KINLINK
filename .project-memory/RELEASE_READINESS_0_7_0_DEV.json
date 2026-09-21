@@ -2,13 +2,13 @@
   "project": "KINLINK",
   "line": "0.7.0-dev",
   "versionCode": 8,
-  "code_head": "3ddab9f6ebf9ccfee778fc428f99ccdb8def5b52",
-  "latest_full_machine_pass": "c8999e902e92af51e34c95349073135df4de6ecc",
+  "code_head": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
+  "latest_full_machine_pass": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
-      "status": "PENDING",
-      "evidence": "current two-stage readiness head under CI; last full machine PASS c8999e9"
+      "status": "PASS",
+      "evidence": "android-next-dev run 35548684588 PASS + design-lint run 35548684614 PASS on e1e2e7169d6a13f5fce8b808574cc63ed9fe915d"
     },
     "MIGRATION": {
       "status": "PASS",
@@ -36,5 +36,16 @@
     "no routing/network ownership APIs",
     "VPN/TUN remains disabled"
   ],
-  "field_candidate_allowed": false
+  "field_candidate_allowed": true,
+  "machine_artifact": {
+    "workflow_run": 35548684588,
+    "artifact_id": 10617836246,
+    "artifact_name": "KINLINK-next-dev-ci-build",
+    "artifact_zip_digest": "sha256:b326eb507213ec161c7e23712ce7db05cf2674b1b11bdeda89e1d97c337ec03e",
+    "apk_sha256": "c2802d7d6d993f3fae963a307328de313d71f0015fdd5ac44298dff535b8591b",
+    "apk_size_bytes": 6755428,
+    "manifest_commit": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
+    "manifest_version": "0.7.0-dev",
+    "local_readback_hash_match": true
+  }
 }
