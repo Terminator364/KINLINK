@@ -27,13 +27,15 @@ class MobileAssistPolicyTest {
         mode: RecoveryMode = RecoveryMode.AUTOMATIC,
         constrained: Boolean = false,
         recent: Int = 0,
-        sinceLast: Long = Long.MAX_VALUE
+        sinceLast: Long = Long.MAX_VALUE,
+        ineffective: Int = 0
     ) = MobileAssistPolicy.decide(
         truth,
         mode,
         constrained,
         recent,
-        sinceLast
+        sinceLast,
+        ineffective
     )
 
     @Test fun healthyValidatedCellularIsLeftAlone() {
@@ -108,6 +110,16 @@ class MobileAssistPolicyTest {
             decide(
                 cellular(down = 600),
                 recent = MobileAssistPolicy.MAX_ACTIONS_PER_HOUR
+            ).blockReason
+        )
+    }
+
+    @Test fun repeatedIneffectiveAssistTriggersAntiRepeatPause() {
+        assertEquals(
+            MobileAssistBlockReason.INEFFECTIVE_RECENTLY,
+            decide(
+                cellular(down = 600, up = 200),
+                ineffective = 2
             ).blockReason
         )
     }
