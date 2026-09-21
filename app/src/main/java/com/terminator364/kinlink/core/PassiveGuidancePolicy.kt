@@ -76,6 +76,12 @@ object PassiveGuidancePolicy {
                 "Android signale momentanément les données mobiles comme suspendues. KINLINK n’envoie aucun probe payant et attend la reprise."
             )
 
+        PassiveProblemCause.MOBILE_WEAK_SIGNAL ->
+            PassiveGuidance(
+                "Signal mobile faible",
+                "La couverture radio mobile paraît faible. KINLINK évite les refresh inutiles : changer légèrement de position ou laisser Android reselectionner le réseau est plus pertinent."
+            )
+
         PassiveProblemCause.MOBILE_CONGESTION_SUSPECT ->
             PassiveGuidance(
                 "Congestion mobile possible",
