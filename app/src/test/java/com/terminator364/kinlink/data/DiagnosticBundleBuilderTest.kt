@@ -26,8 +26,11 @@ class DiagnosticBundleBuilderTest {
             totalEvents = 2,
             currentTruth = truth,
             stateCounts = mapOf("WIFI_VALIDATED" to 2),
+            recent24hMobileLowQualityEpisodeCount = 2,
+            recent24hMobileLowQualityMillis = 4_000L,
             recentActions = listOf(
-                ActionReceipt(100L, "TEST_ACTION", true, "privacy-safe")
+                ActionReceipt(100L, "TEST_ACTION", true, "privacy-safe"),
+                ActionReceipt(101L, "MOBILE_ASSIST_ACTION_AUTO_REFRESH_METRICS", true, "zero-probe")
             )
         )
 
@@ -48,6 +51,8 @@ class DiagnosticBundleBuilderTest {
                 assertFalse(text.contains("192.168.77.1"))
                 assertTrue(text.contains("\"ipv4_address_present\":true"))
                 assertTrue(text.contains("TEST_ACTION"))
+                assertTrue(text.contains("\"recent24h_mobile_low_quality_episodes\":2"))
+                assertTrue(text.contains("\"mobile_assist_actions\":1"))
             }
         } finally {
             file.delete()
