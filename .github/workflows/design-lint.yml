@@ -33,8 +33,10 @@ jobs:
           test -f docs/TELEMETRY_AND_DIAGNOSTICS.md
       - name: Execute telemetry migration simulation
         run: python tools/release/verify_telemetry_migrations.py
-      - name: Release-readiness ledger consistency
+      - name: Historical 0.7.0 readiness ledger consistency
         run: python tools/release/verify_release_readiness.py --audit
+      - name: Active 0.7.1 readiness ledger consistency
+        run: python tools/release/verify_release_readiness.py --ledger .project-memory/RELEASE_READINESS_0_7_1_DEV.json --audit
       - name: Release evidence hash integrity
         run: python tools/release/verify_release_evidence_integrity.py
       - name: Installed field-candidate app freeze
