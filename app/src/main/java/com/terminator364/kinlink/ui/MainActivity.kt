@@ -418,7 +418,7 @@ class MainActivity : Activity() {
 
             runCatching {
                 ledger.appendAction(
-                    "MOBILE_ASSIST_MANUAL_SYSTEM_PANEL",
+                    "MOBILE_ASSIST_ACTION_MANUAL_SYSTEM_PANEL",
                     opened,
                     if (opened)
                         "Panneau Android ouvert par action utilisateur; aucun probe mobile lancé."
@@ -440,7 +440,7 @@ class MainActivity : Activity() {
 
         runCatching {
             ledger.appendAction(
-                "MOBILE_ASSIST_MANUAL_REFRESH_METRICS",
+                "MOBILE_ASSIST_ACTION_MANUAL_REFRESH_METRICS",
                 refreshed,
                 if (refreshed)
                     "Rafraîchissement métrique Android demandé manuellement; aucun probe/speedtest mobile."
