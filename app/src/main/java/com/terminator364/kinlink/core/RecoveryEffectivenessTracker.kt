@@ -18,15 +18,33 @@ class RecoveryEffectivenessTracker(
     private val expectedTransport: Transport = Transport.WIFI
 ) {
     private var baseline: PassiveLinkQuality? = null
+    private var baselineStartedAtMillis: Long? = null
     private var remainingObservations = 0
 
     fun start(truth: NetworkTruth) {
         baseline = PassiveLinkQualityPolicy.assess(truth).quality
+        baselineStartedAtMillis = truth.observedAtMillis
         remainingObservations = 2
     }
 
     fun observe(truth: NetworkTruth): RecoveryEffectivenessEvidence? {
         val start = baseline ?: return null
+        val startedAt = baselineStartedAtMillis
+        val ageMillis = startedAt?.let { truth.observedAtMillis - it }
+        if (
+            startedAt == null ||
+            ageMillis == null ||
+            ageMillis < 0L ||
+            ageMillis > MAX_EFFECT_WINDOW_MS
+        ) {
+            clear()
+            return RecoveryEffectivenessEvidence(
+                RecoveryEffectiveness.INCONCLUSIVE,
+                start,
+                PassiveLinkQualityPolicy.assess(truth).quality,
+                "Résultat inconclusif : fenêtre de preuve dépassée ou horloge incohérente."
+            )
+        }
 
         if (truth.transport != expectedTransport || truth.internetState != InternetState.VALIDATED) {
             clear()
@@ -76,6 +94,11 @@ class RecoveryEffectivenessTracker(
 
     private fun clear() {
         baseline = null
+        baselineStartedAtMillis = null
         remainingObservations = 0
+    }
+
+    companion object {
+        const val MAX_EFFECT_WINDOW_MS = 2L * 60L * 1000L
     }
 }
