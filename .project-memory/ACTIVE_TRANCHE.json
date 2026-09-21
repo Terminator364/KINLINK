@@ -7,11 +7,11 @@
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
   "normal_close_owner": "PRIMARY_ASSISTANT",
-  "work_state": "WORKING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "ACTIVE",
-  "close_intent_persisted": false,
-  "close_owner": null,
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSE_INTENT_PERSISTED",
+  "status": "CLOSING",
+  "close_intent_persisted": true,
+  "close_owner": "PRIMARY_ASSISTANT",
   "gmail_start_message_id": "1a0c4989f24d2ccf",
   "gmail_start_thread_id": "1a0c4989f24d2ccf",
   "gmail_end_message_id": null,
@@ -19,17 +19,22 @@
   "end_mail_verified": false,
   "gmail_label": "KINLINK",
   "forced_closeout_entered": false,
-  "no_more_product_mutations": false,
-  "next_atomic_action": "final counter-audit exact 0.7.3 head; close responsive/emulator UI proof gap before freeze/sign/Drive delivery",
+  "no_more_product_mutations": true,
+  "next_atomic_action": "poll exact-head Android run 35621729452 for eb499e6; if PASS inspect 36 responsive screenshots/artifacts before freeze/sign/Drive; if FAIL classify harness-vs-UI and correct only proven defect",
   "technical_branch": "dev/0.7.3-final-like-ui-control",
   "last_durable_checkpoint": {
     "installed": "0.7.2/versionCode10 P0 UX-invalid",
-    "dev_head": "6ef270d83461628aa8a6a6356b0d56dece6f0ca1",
-    "design_lint_run": 35616879792,
+    "dev_head": "eb499e6dc0fef2983785f7b68cb50000ce31e7c6",
+    "design_lint_run": 35621729438,
     "design_lint_status": "PASS",
-    "android_run": 35616879783,
-    "android_status": "PASS",
-    "counter_audit": "STATIC_XML_GATE_INSUFFICIENT_FOR_RENDERED_RESPONSIVE_PROOF"
+    "android_run": 35621729452,
+    "android_status": "PENDING_AT_CLOSE_INTENT",
+    "rendered_ui_gate": "36_SCREENSHOT_MATRIX_INTEGRATED_NOT_YET_PROVEN",
+    "harness_history": [
+      "run 35620573204 failed before UI test: /bin/sh rejected pipefail",
+      "run 35621149033 failed before UI test: emulator runner split multiline function block",
+      "versioned bash harness now called as one command"
+    ]
   },
   "closed_state": false
 }
