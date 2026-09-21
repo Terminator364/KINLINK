@@ -269,9 +269,29 @@ class KinlinkObserverService : Service() {
         observer.start()
     }
 
-    private fun startMobileAssistEvidenceWindow(baseline: NetworkTruth) {
+    private data class ManualEvidenceBaseline(
+        val quality: PassiveLinkQuality,
+        val score: Int,
+        val observedAtMillis: Long
+    )
+
+    private fun startMobileAssistEvidenceWindow(
+        baseline: NetworkTruth,
+        manualBaseline: ManualEvidenceBaseline? = null
+    ) {
+        // A newer Mobile Assist action invalidates any older five-minute relapse
+        // callback so old evidence can never mutate a new proof window.
+        mobileAssistRelapseGeneration.incrementAndGet()
         val generation = mobileAssistEvidenceGeneration.incrementAndGet()
-        mobileAssistEvidenceTracker.start(baseline)
+        if (manualBaseline == null) {
+            mobileAssistEvidenceTracker.start(baseline)
+        } else {
+            mobileAssistEvidenceTracker.startBaseline(
+                quality = manualBaseline.quality,
+                score = manualBaseline.score,
+                observedAtMillis = manualBaseline.observedAtMillis
+            )
+        }
 
         for (delayMs in MobileAssistEvidenceSamplingPolicy.sampleDelaysMs) {
             mobileAssistEvidenceHandler.postDelayed({
@@ -587,12 +607,28 @@ class KinlinkObserverService : Service() {
             latestTruth.transport == Transport.CELLULAR &&
             latestTruth.internetState == InternetState.VALIDATED
         ) {
-            startMobileAssistEvidenceWindow(latestTruth)
+            val quality = runCatching {
+                PassiveLinkQuality.valueOf(
+                    intent.getStringExtra(EXTRA_BASELINE_QUALITY).orEmpty()
+                )
+            }.getOrDefault(PassiveLinkQuality.UNKNOWN)
+            val score = intent.getIntExtra(
+                EXTRA_BASELINE_SCORE,
+                PassiveQualityScorePolicy.score(latestTruth).score
+            )
+            val observedAt = intent.getLongExtra(
+                EXTRA_BASELINE_OBSERVED_AT,
+                latestTruth.observedAtMillis
+            )
+            startMobileAssistEvidenceWindow(
+                latestTruth,
+                ManualEvidenceBaseline(quality, score, observedAt)
+            )
             runCatching {
                 ledger.appendAction(
                     "MOBILE_ASSIST_EVIDENCE_MANUAL_WINDOW_STARTED",
                     true,
-                    "Fenêtre de preuve passive démarrée après action utilisateur; aucun probe mobile."
+                    "Fenêtre de preuve passive démarrée depuis la baseline pré-action capturée; aucun probe mobile."
                 )
             }
         }
@@ -699,6 +735,9 @@ class KinlinkObserverService : Service() {
         private const val CHANNEL_ID = "kinlink_observer"
         private const val NOTIFICATION_ID = 114
         const val ACTION_REFRESH_MODE = "com.terminator364.kinlink.REFRESH_RECOVERY_MODE"
+        const val EXTRA_BASELINE_QUALITY = "baseline_quality"
+        const val EXTRA_BASELINE_SCORE = "baseline_score"
+        const val EXTRA_BASELINE_OBSERVED_AT = "baseline_observed_at"
         const val ACTION_TRACK_MANUAL_MOBILE_ASSIST =
             "com.terminator364.kinlink.TRACK_MANUAL_MOBILE_ASSIST"
         const val ACTION_MOBILE_ASSIST_EVIDENCE_UPDATED =
