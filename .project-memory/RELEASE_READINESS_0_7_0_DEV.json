@@ -1,0 +1,38 @@
+{
+  "project": "KINLINK",
+  "line": "0.7.0-dev",
+  "versionCode": 8,
+  "code_head": "b34dacc780ab2e931b1b698b6cbf81129054d937",
+  "latest_full_machine_pass": "c8999e902e92af51e34c95349073135df4de6ecc",
+  "promotion_allowed": false,
+  "gates": {
+    "MACHINE": {
+      "status": "PENDING",
+      "evidence": "design-lint PASS on b34dacc; Android CI still in progress"
+    },
+    "MIGRATION": {
+      "status": "PASS",
+      "evidence": "contiguous v1-v5 plan + historical schema boundary tests + SQL failures not swallowed; machine-PASS at c8999e9"
+    },
+    "SIGNER_CONTINUITY": {
+      "status": "PENDING",
+      "evidence": "RC3 signer identity pinned; next candidate not yet signed/read back"
+    },
+    "FIELD_HANDOFF": {
+      "status": "PENDING",
+      "evidence": "RC3 bidirectional handoff PASS; 0.7.0-dev not yet field-qualified"
+    },
+    "RESOURCE_QUALIFICATION": {
+      "status": "PENDING",
+      "evidence": "one-shot >=30m automatic resource checkpoint integrated; target-device PASS receipt not yet collected"
+    }
+  },
+  "invariants": [
+    "RC3 remains canonical rollback field build until all gates pass",
+    "no DEV APK promotion",
+    "no automatic cellular probe",
+    "no automatic metered Wi-Fi probe",
+    "no routing/network ownership APIs",
+    "VPN/TUN remains disabled"
+  ]
+}
