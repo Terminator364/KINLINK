@@ -6,9 +6,9 @@
   "cadence_minutes": 25,
   "useful_work_minutes": 22,
   "normal_close_reserve_minutes": 3,
-  "work_state": "WORKING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "ACTIVE",
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSE_INTENT_PERSISTED",
+  "status": "CLOSING",
   "gmail_start_message_id": "1a0c58438ce7c050",
   "gmail_start_thread_id": "1a0c58438ce7c050",
   "gmail_label": "KINLINK",
@@ -36,5 +36,53 @@
     "current_android_run": 35641697122,
     "current_failure": "render-matrix harness ordering"
   },
-  "next_atomic_action": "deepen B and memory doctrine, then fix harness ordering and rerun exact-head 0.8 CI"
+  "next_atomic_action": "poll Android run 35649559817 for exact 0.8 head 37055626084349e0829325d4c28492c3617d5ea4; inspect 45-shot proof if PASS; no install",
+  "close_intent_persisted": true,
+  "close_owner": "PRIMARY_ASSISTANT",
+  "no_more_product_mutations": true,
+  "last_durable_checkpoint": {
+    "communication": {
+      "prior_tranche_reconciled": "K25-07 CLOSED",
+      "current_start_message_id": "1a0c58438ce7c050",
+      "protocol": "v5",
+      "state_machine": "v5",
+      "interruption_resume_rule": "END_PREVIOUS_THEN_NEW_START_IF_MISSION_CONTINUES",
+      "main_design_lint_run": 35648287560,
+      "main_design_lint_status": "PASS"
+    },
+    "pdf": {
+      "sent": true,
+      "message_id": "1a0c57e2be7f8d76",
+      "filename": "KINLINK_CAHIER_DES_CHARGES_ET_MEMOIRE_A_B_C_2026-09-21.pdf",
+      "pages": 16,
+      "note": "sent after the original K25-07 START; K25-08 START explicitly referenced the already delivered PDF"
+    },
+    "b_expansion": {
+      "version": "B2",
+      "added": "B31-B60",
+      "count": 30,
+      "canonical_doc": "docs/B_EXPANSION_V2.md",
+      "ledger": ".project-memory/B_EXPANSION_LEDGER.json",
+      "critical_correction": "ConnectivityDiagnostics callbacks cannot be assumed in Lite Observer; useful callback delivery requires eligible connectivity-provider role"
+    },
+    "memory_v2": {
+      "policy": ".project-memory/MEMORY_POLICY_V2.json",
+      "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",
+      "context_pack": ".project-memory/CANONICAL_CONTEXT_PACK.json",
+      "supersession": ".project-memory/SUPERSESSION_LEDGER.json",
+      "verifier": "tools/release/verify_memory_integrity.py",
+      "doctrine": "MEMORY_IS_PROVENANCE_AND_RECOVERY_INFRASTRUCTURE_NOT_A_CHAT_SUMMARY"
+    },
+    "product_0_8": {
+      "exact_head": "37055626084349e0829325d4c28492c3617d5ea4",
+      "design_lint_run": 35649559871,
+      "design_lint_status": "PASS",
+      "android_run": 35649559817,
+      "android_status": "PENDING_AT_CLOSE_INTENT",
+      "prior_run_35647686642": "PASS_WITH_42_SCREENSHOTS",
+      "new_gate": "45 screenshots including mobile dialog + technical detail start/bottom",
+      "humanized_technical_details": true,
+      "no_install": true
+    }
+  }
 }
