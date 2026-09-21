@@ -37,6 +37,9 @@ class ResponsiveRenderMatrixTest {
     @Before
     fun resetMode() {
         RecoveryModeStore(targetContext).set(RecoveryMode.AUTOMATIC)
+        runShell("pm grant com.terminator364.kinlink android.permission.POST_NOTIFICATIONS")
+        runShell("am force-stop com.google.android.apps.nexuslauncher")
+        runShell("am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS")
     }
 
     @After
@@ -143,12 +146,14 @@ class ResponsiveRenderMatrixTest {
         scenario.onActivity { activity ->
             assertResponsive(activity, stateName)
         }
+        assertKinlinkOwnsForeground(stateName, "top")
         capture("${stateName}-top")
 
         scenario.onActivity { activity ->
             activity.findViewById<ScrollView>(R.id.rootScroll).fullScroll(View.FOCUS_DOWN)
         }
         instrumentation.waitForIdleSync()
+        assertKinlinkOwnsForeground(stateName, "bottom")
         capture("${stateName}-bottom")
 
         scenario.onActivity { activity ->
@@ -277,6 +282,19 @@ class ResponsiveRenderMatrixTest {
                 walkVisible(view.getChildAt(i), block)
             }
         }
+    }
+
+    private fun assertKinlinkOwnsForeground(stateName: String, viewport: String) {
+        val focus = runShell("dumpsys window windows | grep -E 'mCurrentFocus|mFocusedApp'")
+        assertTrue(
+            "${stateName}/${viewport}: foreign system overlay or lost foreground: $focus",
+            focus.contains("com.terminator364.kinlink")
+        )
+        assertFalse(
+            "${stateName}/${viewport}: ANR dialog visible: $focus",
+            focus.contains("isn't responding", ignoreCase = true) ||
+                focus.contains("Application Not Responding", ignoreCase = true)
+        )
     }
 
     private fun capture(name: String) {

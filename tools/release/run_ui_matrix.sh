@@ -38,6 +38,8 @@ run_matrix() {
   adb shell wm size "$size"
   adb shell settings put system font_scale "$font"
   adb shell rm -rf "$APP_PROOF/$name" || true
+  adb shell am force-stop com.google.android.apps.nexuslauncher || true
+  adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null 2>&1 || true
   adb shell am force-stop com.terminator364.kinlink || true
 
   set +e
