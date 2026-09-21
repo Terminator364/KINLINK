@@ -43,13 +43,25 @@ class RuntimeResourceQualificationPolicyTest {
         assertTrue(a.reasons.contains("PSS_GROWTH_OVER_LIMIT"))
     }
 
-    @Test fun excessiveBackgroundChurnBlocks() {
+    @Test fun churnBudgetScalesWithSessionDuration() {
         val a = RuntimeResourceQualificationPolicy.evaluate(
             RuntimeResourceEvidence(
                 durationMillis = 60L * 60L * 1000L,
                 pssDeltaMiB = 2,
                 batteryPercentPerHour = 0.8,
                 backgroundChurnEvents = 121
+            )
+        )
+        assertEquals(RuntimeResourceVerdict.PASS, a.verdict)
+    }
+
+    @Test fun excessiveBackgroundChurnRateBlocks() {
+        val a = RuntimeResourceQualificationPolicy.evaluate(
+            RuntimeResourceEvidence(
+                durationMillis = 60L * 60L * 1000L,
+                pssDeltaMiB = 2,
+                batteryPercentPerHour = 0.8,
+                backgroundChurnEvents = 241
             )
         )
         assertEquals(RuntimeResourceVerdict.BLOCKED, a.verdict)
