@@ -3,7 +3,7 @@
   "version": "0.7.2",
   "versionCode": 10,
   "source_commit": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
-  "source_branch": "dev/0.7.2-continuous-improvement",
+  "source_branch": "release/0.7.2-field-candidate",
   "signed_apk_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
   "drive_file_id": "1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU",
   "drive_readback_status": "PASS",
@@ -14,5 +14,7 @@
     ".github/workflows/android-m0.yml",
     "tools/release/verify_candidate_contract.py"
   ],
-  "rule": "0.7.2 is frozen as the single next field candidate. Any product/code identity change creates a new candidate and must not inherit this CI/signing/readback proof."
+  "rule": "0.7.2 is frozen as the single next field candidate. Any product/code identity change creates a new candidate and must not inherit this CI/signing/readback proof.",
+  "development_origin_branch": "dev/0.7.2-continuous-improvement",
+  "immutable_branch": true
 }
