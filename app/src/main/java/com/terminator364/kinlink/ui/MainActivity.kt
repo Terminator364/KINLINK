@@ -716,10 +716,16 @@ class MainActivity : Activity() {
                     reliability.mobileLowQualityLongestMillis
                 )
             )
-            "24 h · ${burden.name.lowercase().replaceFirstChar { it.uppercase() }}" +
-                " · coupures=${reliability.interruptionCount}" +
-                " · Wi‑Fi lent=${reliability.lowQualityEpisodeCount}" +
-                " · mobile lent=${reliability.mobileLowQualityEpisodeCount}"
+            val nowLabel =
+                if (passiveScore.score >= 75 && truth.internetState.name == "VALIDATED")
+                    "Maintenant bon"
+                else
+                    "Maintenant à surveiller"
+            nowLabel +
+                " · 24 h " + burden.name.lowercase() +
+                " · coupures=" + reliability.interruptionCount +
+                " · Wi‑Fi lent=" + reliability.lowQualityEpisodeCount +
+                " · mobile lent=" + reliability.mobileLowQualityEpisodeCount
         }
 
         when (
@@ -743,16 +749,11 @@ class MainActivity : Activity() {
         }
 
         if (observationOnly) {
-            adviceTitleText.text = "Pilotage continu · pause sûre"
+            adviceTitleText.text = controlPanel.title
             adviceText.text =
-                "Observation et preuve uniquement. Aucune action active tant que le mode sûr reste ON."
+                "Observation uniquement. La boucle reste visible mais toute action active est suspendue."
         } else {
-            adviceTitleText.text = when (sessionHealth.health.name) {
-                "HEALTHY" -> "Pilotage continu · stable"
-                "WATCH" -> "Pilotage continu · surveillance"
-                "DEGRADED" -> "Pilotage continu · dégradation détectée"
-                else -> "Pilotage continu · protection"
-            }
+            adviceTitleText.text = controlPanel.title
 
             val handling = when (truth.transport) {
                 com.terminator364.kinlink.core.Transport.CELLULAR ->
@@ -769,7 +770,7 @@ class MainActivity : Activity() {
                     }
                 else -> passiveGuidance.message
             }
-            adviceText.text = handling + "\n" + mobileAssistEvidenceLabel()
+            adviceText.text = handling + "\nMode " + profileLabel(currentProfile) + " · " + mobileAssistEvidenceLabel()
         }
 
         detailText.text = buildString {
