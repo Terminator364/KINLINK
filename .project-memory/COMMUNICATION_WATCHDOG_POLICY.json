@@ -32,8 +32,19 @@
     "Never bypass platform/security controls.",
     "Healthy state produces no notification.",
     "Notify only after a real repair or unresolved fault requiring human action.",
-    "Watchdog repairs communication state; it does not silently invent product work progress."
+    "Watchdog repairs communication state; it does not silently invent product work progress.",
+    "After watchdog closure, no fresh START is opened automatically because the watchdog performs no product work."
   ],
   "idempotency": "Provider message_id/thread_id plus delivery_key are reconciliation keys.",
-  "limitation": "Hourly watchdog cannot guarantee sub-hour repair; primary in-turn protocol remains the first line of defense."
+  "limitation": "Hourly watchdog cannot guarantee sub-hour repair; primary in-turn protocol remains the first line of defense.",
+  "stale_work_threshold_minutes": 35,
+  "stale_work_recovery": {
+    "condition": "START_ACKNOWLEDGED/WORKING with no END and START age > 35 minutes",
+    "action": "persist interruption close intent from durable facts only, send/verify exactly one END, persist CLOSED",
+    "invent_unproved_work": false
+  },
+  "foreground_resume": {
+    "auto_open_new_start": false,
+    "rule": "Watchdog never opens an orphan START. It leaves NEXT_UNCOMMITTED_ACTION intact; the next foreground worker must open a fresh START before substantive work."
+  }
 }
