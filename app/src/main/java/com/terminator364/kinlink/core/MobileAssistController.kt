@@ -16,6 +16,7 @@ class MobileAssistController(
     fun onTruth(
         truth: NetworkTruth,
         mode: RecoveryMode,
+        profile: AutopilotProfile = AutopilotProfile.BALANCED,
         nowWallMs: Long = System.currentTimeMillis()
     ): MobileAssistDecision {
         if (truth.transport != Transport.CELLULAR) {
@@ -96,7 +97,8 @@ class MobileAssistController(
             }.getOrDefault(true),
             recentActions = recent,
             millisSinceLastAction = sinceLast,
-            recentIneffectiveOutcomes = recentIneffective
+            recentIneffectiveOutcomes = recentIneffective,
+            profile = profile
         )
 
         if (decision.action != MobileAssistAction.REFRESH_LINK_METRICS) {
