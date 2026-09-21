@@ -7,6 +7,19 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class PlatformDiagnosticPolicyTest {
+    @Test fun liteObserverCannotAssumeConnectivityDiagnosticsCallbacks() {
+        assertFalse(
+            PlatformDiagnosticPolicy.registrationAllowed(
+                PlatformDiagnosticsEligibility.LITE_OBSERVER_INELIGIBLE
+            )
+        )
+        assertTrue(
+            PlatformDiagnosticPolicy.registrationAllowed(
+                PlatformDiagnosticsEligibility.ELIGIBLE_CONNECTIVITY_PROVIDER
+            )
+        )
+    }
+
     @Test fun healthyValidatedReportIsNotPersistedAsNoise() {
         assertFalse(
             PlatformDiagnosticPolicy.shouldPersistConnectivityReport(
