@@ -2,6 +2,14 @@ name: consolidated-release-readiness
 
 on:
   workflow_dispatch:
+    inputs:
+      stage:
+        description: 'Readiness stage to verify'
+        required: true
+        type: choice
+        options:
+          - field_candidate
+          - canonical_promotion
 
 permissions:
   contents: read
@@ -16,8 +24,13 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Require durable readiness ledger PASS
-        run: python tools/release/verify_release_readiness.py --require-ready
+      - name: Require selected durable readiness stage
+        run: |
+          if [ "${{ inputs.stage }}" = "field_candidate" ]; then
+            python tools/release/verify_release_readiness.py --require-field-candidate
+          else
+            python tools/release/verify_release_readiness.py --require-promotion
+          fi
 
       - uses: actions/setup-java@v4
         with:
@@ -72,5 +85,6 @@ jobs:
 
       - name: Record eligibility head
         run: |
-          echo "KINLINK signed-candidate eligibility gate PASS at ${GITHUB_SHA}"
+          echo "KINLINK readiness gate PASS at ${GITHUB_SHA}"
+          echo "stage=${{ inputs.stage }}"
           echo "This workflow does not sign, install, or promote an APK."
