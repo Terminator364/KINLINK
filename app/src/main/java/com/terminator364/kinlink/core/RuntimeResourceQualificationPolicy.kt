@@ -10,13 +10,15 @@ data class RuntimeResourceEvidence(
     val durationMillis: Long,
     val pssDeltaMiB: Int,
     val batteryPercentPerHour: Double?,
-    val backgroundChurnEvents: Int
+    val backgroundChurnEvents: Int,
+    val batteryDeltaPercent: Int? = null
 )
 
 data class RuntimeResourceLimits(
     val minimumQualifiedDurationMillis: Long = 30L * 60L * 1000L,
     val maxPositivePssDeltaMiB: Int = 24,
     val maxBatteryPercentPerHour: Double = 1.5,
+    val batteryQuantizationTolerancePercent: Int = 1,
     val maxBackgroundChurnEventsPer30Min: Int = 120
 )
 
@@ -39,7 +41,14 @@ object RuntimeResourceQualificationPolicy {
             reasons += "PSS_GROWTH_OVER_LIMIT"
         }
         val battery = evidence.batteryPercentPerHour
-        if (battery != null && battery > limits.maxBatteryPercentPerHour) {
+        val batteryDelta = evidence.batteryDeltaPercent
+        val batteryBeyondQuantization =
+            batteryDelta == null || batteryDelta > limits.batteryQuantizationTolerancePercent
+        if (
+            battery != null &&
+            battery > limits.maxBatteryPercentPerHour &&
+            batteryBeyondQuantization
+        ) {
             reasons += "BATTERY_RATE_OVER_LIMIT"
         }
         val churnWindowMillis = 30L * 60L * 1000L
