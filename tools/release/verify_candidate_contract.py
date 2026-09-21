@@ -332,3 +332,20 @@ require(
     and "countActionsSince(EVIDENCE_RELAPSED, since)" not in MOBILE_ASSIST,
     "candidate contract: late RELAPSED_AFTER_SUSTAINED may be miscounted as an ineffective early relapse",
 )
+
+require(
+    "EXTRA_BASELINE_QUALITY" in SERVICE
+    and "EXTRA_BASELINE_SCORE" in SERVICE
+    and "EXTRA_BASELINE_OBSERVED_AT" in SERVICE
+    and "startBaseline(" in EVIDENCE_TRACKER
+    and "baselineQuality.name" in MAIN_ACTIVITY
+    and "baselineScore" in MAIN_ACTIVITY
+    and "baselineObservedAt" in MAIN_ACTIVITY,
+    "candidate contract: manual Mobile Assist proof does not preserve the pre-action baseline",
+)
+
+require(
+    "new Mobile Assist action invalidates any older five-minute relapse" in SERVICE
+    and "mobileAssistRelapseGeneration.incrementAndGet()" in SERVICE,
+    "candidate contract: a stale relapse callback can survive into a newer proof window",
+)
