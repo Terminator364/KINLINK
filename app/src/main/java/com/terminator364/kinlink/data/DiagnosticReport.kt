@@ -8,6 +8,8 @@ import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.ActionDurationPolicy
 import com.terminator364.kinlink.core.RecentReliabilityPolicy
 import com.terminator364.kinlink.core.LongitudinalRadioEvidencePolicy
+import com.terminator364.kinlink.core.FieldCandidateQualificationPolicy
+import com.terminator364.kinlink.core.FieldCandidateQualificationEvidence
 
 /** Privacy-safe diagnostic summary: no SSID, SIM identifier, IP address, gateway or payload. */
 data class DiagnosticSummary(
@@ -42,6 +44,9 @@ data class DiagnosticSummary(
     val runtimeResourcePasses: Int = 0,
     val runtimeResourceInconclusive: Int = 0,
     val runtimeResourceBlocked: Int = 0,
+    val fieldCandidateQualifiedReceipts: Int = 0,
+    val fieldCandidateBlockedReceipts: Int = 0,
+    val cellularToWifiReturns: Int = 0,
     val recoveryActionDurationTotalMillis: Long = 0L,
     val recoveryActionDurationMaxMillis: Long = 0L,
     val recoveryActionDurationSamples: Int = 0,
@@ -131,6 +136,20 @@ object DiagnosticReportBuilder {
         appendLine("- Runtime resource PASS receipts: ${summary.runtimeResourcePasses}")
         appendLine("- Runtime resource INCONCLUSIVE receipts: ${summary.runtimeResourceInconclusive}")
         appendLine("- Runtime resource BLOCKED receipts: ${summary.runtimeResourceBlocked}")
+        val fieldQualification = FieldCandidateQualificationPolicy.evaluate(
+            FieldCandidateQualificationEvidence(
+                coreSelfTestPasses = summary.coreSelfTestPasses,
+                observerSelfTestPasses = summary.observerSelfTestPasses,
+                mobileValidatedHandoffs = summary.mobileValidatedOutcomes,
+                cellularToWifiReturns = summary.cellularToWifiReturns,
+                runtimeResourcePasses = summary.runtimeResourcePasses,
+                runtimeResourceBlocks = summary.runtimeResourceBlocked
+            )
+        )
+        appendLine("- 0.7 field qualification: ${fieldQualification.verdict.name}")
+        appendLine("- 0.7 field qualification missing: ${if (fieldQualification.missing.isEmpty()) "none" else fieldQualification.missing.sorted().joinToString(",")}")
+        appendLine("- FIELD_CANDIDATE_QUALIFIED receipts: ${summary.fieldCandidateQualifiedReceipts}")
+        appendLine("- FIELD_CANDIDATE_BLOCKED receipts: ${summary.fieldCandidateBlockedReceipts}")
         appendLine()
 
         appendLine("Recent stability")
