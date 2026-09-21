@@ -107,3 +107,18 @@ The 0.7.2 dev confirmation path is intentionally bounded:
 - Android moderate thermal pressure suspends active assistance.
 
 This is designed to make continuous care event-driven rather than continuously busy.
+
+
+## One post-improvement relapse recheck
+
+After `SUSTAINED_BETTER`, KINLINK schedules at most one best-effort local framework read five minutes later.
+
+Rules:
+- Handler-based only; no exact alarm, WorkManager or repeating poll;
+- does not wake a sleeping device by contract;
+- no HTTP/DNS/speedtest;
+- if quality has returned near the original baseline, the result becomes `RELAPSED_AFTER_SUSTAINED`;
+- only then may Mobile Assist run its normal policy again;
+- the normal 5-minute cooldown, hourly cap, resource gate, budget gate, weak-radio gate and anti-repeat logic still decide whether any action is allowed.
+
+This closes an important control-loop gap: KINLINK can now verify that an improvement held, keep a bounded relapse watch, and re-evaluate a later deterioration instead of treating one good instant as permanent success.
