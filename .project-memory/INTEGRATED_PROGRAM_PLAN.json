@@ -3,7 +3,7 @@
   "project": "KINLINK",
   "doctrine": "ONE_COHERENT_FIELD_DELIVERY_AFTER_LARGE_INTERNAL_WAVES",
   "macro_denominator": 80,
-  "current_maturity_percent": 45.1,
+  "current_maturity_percent": 46,
   "rules": [
     "Internal commits/CI iterations are allowed; user-facing micro-beta installation chain is forbidden.",
     "Each wave must improve multiple related capabilities and close evidence gates before the next wave depends on it.",
@@ -90,7 +90,15 @@
         "multi-SIM-safe data accounting",
         "cost-aware policy inputs"
       ],
-      "exit_gate": "local-only persistence + migration + privacy + zero-paid-probe gates"
+      "exit_gate": "local-only persistence + migration + privacy + zero-paid-probe gates",
+      "proven_now": [
+        "Mobile Vault economic envelopes",
+        "durable plan total/expiry/reserve store",
+        "usage reconciliation with aggregate-vs-plan attribution",
+        "reset/reboot-safe aggregate counter generations",
+        "Mobile Vault form/UI responsive across narrow/medium/XL"
+      ],
+      "next_block": "optional capability-gated NetworkStatsManager/per-subscription-safe evidence, then full Mobile Vault product surface"
     },
     {
       "id": "W3",
