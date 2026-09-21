@@ -18,6 +18,7 @@ import android.text.InputType
 import android.view.View
 import android.view.WindowInsets
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
@@ -39,6 +40,18 @@ import com.terminator364.kinlink.core.DeviceResourceGuard
 import com.terminator364.kinlink.core.KinlinkObserverService
 import com.terminator364.kinlink.core.MobileBudgetSnapshot
 import com.terminator364.kinlink.core.MobileBudgetTracker
+import com.terminator364.kinlink.core.MobilePlanConfig
+import com.terminator364.kinlink.core.MobilePlanUsageSource
+import com.terminator364.kinlink.core.MobilePlanVaultPolicy
+import com.terminator364.kinlink.core.MobilePlanVaultStore
+import com.terminator364.kinlink.core.MobileUsageAttributionScope
+import com.terminator364.kinlink.core.MobileUsageEvidenceStore
+import com.terminator364.kinlink.core.MobileUsageObservation
+import com.terminator364.kinlink.core.MobileUsageReconciliationPolicy
+import com.terminator364.kinlink.core.MobileUsageResolutionStatus
+import com.terminator364.kinlink.core.MobileVaultAssessment
+import com.terminator364.kinlink.core.MobileVaultFormPolicy
+import com.terminator364.kinlink.core.MobileVaultZone
 import com.terminator364.kinlink.core.MobileAssistController
 import com.terminator364.kinlink.core.MobileAssistEvidenceSummaryPolicy
 import com.terminator364.kinlink.core.MobileAssistManualPolicy
@@ -86,6 +99,8 @@ class MainActivity : Activity() {
     private lateinit var observer: NetworkObserver
     private lateinit var ledger: TelemetryLedger
     private lateinit var mobileBudget: MobileBudgetTracker
+    private lateinit var mobilePlanVaultStore: MobilePlanVaultStore
+    private lateinit var mobileUsageEvidenceStore: MobileUsageEvidenceStore
     private lateinit var profileStore: AutopilotProfileStore
     private lateinit var recoveryModeStore: RecoveryModeStore
 
@@ -206,6 +221,8 @@ class MainActivity : Activity() {
             ledger.latestActionReceipt("USER_INCIDENT_MARKER")?.tsWallMs
         }.getOrNull()
         mobileBudget = MobileBudgetTracker(this)
+        mobilePlanVaultStore = MobilePlanVaultStore(this)
+        mobileUsageEvidenceStore = MobileUsageEvidenceStore(this)
         profileStore = AutopilotProfileStore(this)
         recoveryModeStore = RecoveryModeStore(this)
         refreshFieldQualificationLabel(force = true)
@@ -252,7 +269,9 @@ class MainActivity : Activity() {
 
         observer = NetworkObserver(this) { rawTruth ->
             val budget = mobileBudget.sample()
-            val enrichedTruth = rawTruth.copy(budgetState = budget.state)
+            val enrichedTruth = rawTruth.copy(
+                budgetState = effectiveBudgetState(budget)
+            )
             val stability = runCatching { ledger.stabilityWindow() }.getOrNull()
             val reliability = runCatching { ledger.recentReliabilityWindow() }.getOrNull()
 
@@ -410,31 +429,171 @@ class MainActivity : Activity() {
     }
 
     private fun configureMobileBudget() {
-        val input = EditText(this).apply {
-            inputType = InputType.TYPE_CLASS_NUMBER
-            hint = "500 MB (0 = sans limite)"
-            mobileBudget.configuredDailyLimitMB()?.let { setText(it.toString()) }
+        val current = mobilePlanVaultStore.read()?.config
+        val evidence = mobileUsageEvidenceStore.read()
+
+        fun field(hint: String, value: String = "") = EditText(this).apply {
+            inputType = InputType.TYPE_CLASS_TEXT
+            this.hint = hint
+            if (value.isNotBlank()) setText(value)
+            minHeight = 48
         }
 
-        AlertDialog.Builder(this)
-            .setTitle("Limite data mobile")
-            .setMessage(
-                "Limite quotidienne en MB. 0 = sans limite. " +
-                    "Le compteur Android est global au téléphone, pas ton solde opérateur."
+        val totalInput = field(
+            "Taille du forfait · ex. 5 GB",
+            MobileVaultFormPolicy.formatEditable(current?.totalBytes)
+        )
+        val usedInput = field(
+            "Déjà consommé · optionnel",
+            MobileVaultFormPolicy.formatEditable(
+                evidence?.userReconciledUsedBytes
             )
-            .setView(input)
-            .setPositiveButton("Enregistrer") { _, _ ->
-                val value = input.text.toString().trim().toIntOrNull()
-                mobileBudget.setDailyLimitMB(value?.takeIf { it > 0 })
+        )
+        val reserveInput = field(
+            "Réserve protégée · ex. 500 MB",
+            MobileVaultFormPolicy.formatEditable(
+                current?.protectedReserveBytes
+            )
+        )
+        val rescueInput = field(
+            "Réserve secours · ex. 200 MB",
+            MobileVaultFormPolicy.formatEditable(
+                current?.rescueAllowanceBytes
+            )
+        )
+        val criticalInput = field(
+            "Réserve critique · ex. 100 MB",
+            MobileVaultFormPolicy.formatEditable(
+                current?.criticalInteractiveAllowanceBytes
+            )
+        )
+        val expiryInput = field(
+            "Expiration · AAAA-MM-JJ · optionnel",
+            MobileVaultFormPolicy.formatInclusiveExpiryDate(
+                current?.expiryAtEpochMillis
+            )
+        )
+
+        val form = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            val pad = (16 * resources.displayMetrics.density).toInt()
+            setPadding(pad, pad / 2, pad, pad / 2)
+            addView(totalInput)
+            addView(usedInput)
+            addView(reserveInput)
+            addView(rescueInput)
+            addView(criticalInput)
+            addView(expiryInput)
+        }
+        val scroll = ScrollView(this).apply { addView(form) }
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Mobile Vault · forfait")
+            .setMessage(
+                "MB ou GB acceptés. Les réserves sont protégées. " +
+                    "La consommation saisie reste locale au téléphone."
+            )
+            .setView(scroll)
+            .setPositiveButton("Enregistrer", null)
+            .setNeutralButton("Effacer", null)
+            .setNegativeButton("Annuler", null)
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val total = MobileVaultFormPolicy.parseDecimalBytes(
+                    totalInput.text.toString()
+                )
+                val usedText = usedInput.text.toString().trim()
+                val used = if (usedText.isBlank()) null
+                    else MobileVaultFormPolicy.parseDecimalBytes(usedText)
+                val reserve = MobileVaultFormPolicy.parseDecimalBytes(
+                    reserveInput.text.toString()
+                ) ?: 0L
+                val rescue = MobileVaultFormPolicy.parseDecimalBytes(
+                    rescueInput.text.toString()
+                ) ?: 0L
+                val critical = MobileVaultFormPolicy.parseDecimalBytes(
+                    criticalInput.text.toString()
+                ) ?: 0L
+                val expiryText = expiryInput.text.toString().trim()
+                val expiry = if (expiryText.isBlank()) null
+                    else MobileVaultFormPolicy.parseInclusiveExpiryDate(
+                        expiryText
+                    )
+
+                if (total == null || total <= 0L) {
+                    totalInput.error = "Indique la taille du forfait en MB ou GB."
+                    return@setOnClickListener
+                }
+                if (usedText.isNotBlank() && used == null) {
+                    usedInput.error = "Format attendu : 500 MB ou 1.5 GB."
+                    return@setOnClickListener
+                }
+                if (expiryText.isNotBlank() && expiry == null) {
+                    expiryInput.error = "Date attendue : AAAA-MM-JJ."
+                    return@setOnClickListener
+                }
+
+                val config = MobilePlanConfig(
+                    totalBytes = total,
+                    expiryAtEpochMillis = expiry,
+                    protectedReserveBytes = reserve,
+                    rescueAllowanceBytes = rescue,
+                    criticalInteractiveAllowanceBytes = critical
+                )
+                if (!MobilePlanVaultPolicy.valid(config)) {
+                    reserveInput.error =
+                        "La somme des réserves doit rester inférieure au forfait."
+                    return@setOnClickListener
+                }
+                val saved = mobilePlanVaultStore.write(config)
+                val usageSaved = if (used == null) {
+                    mobileUsageEvidenceStore.clearUserReconciled()
+                } else {
+                    mobileUsageEvidenceStore.writeUserReconciled(used)
+                }
+                if (!saved || !usageSaved) {
+                    Toast.makeText(
+                        this,
+                        "Impossible d’enregistrer le Mobile Vault",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
+                runCatching {
+                    ledger.appendAction(
+                        "MOBILE_VAULT_PLAN_SAVED",
+                        true,
+                        "Plan local enregistré; aucune donnée opérateur privilégiée."
+                    )
+                }
+                dialog.dismiss()
                 refreshBudgetUi()
             }
-            .setNegativeButton("Annuler", null)
-            .show()
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+                mobilePlanVaultStore.clear()
+                mobileUsageEvidenceStore.clearUserReconciled()
+                runCatching {
+                    ledger.appendAction(
+                        "MOBILE_VAULT_PLAN_CLEARED",
+                        true,
+                        "Plan local supprimé par l’utilisateur."
+                    )
+                }
+                dialog.dismiss()
+                refreshBudgetUi()
+            }
+        }
+        dialog.show()
     }
+
     private fun refreshBudgetUi() {
         val snapshot = mobileBudget.sample()
         latestBudget = snapshot
-        val enriched = latestTruth.copy(budgetState = snapshot.state)
+        val enriched = latestTruth.copy(
+            budgetState = effectiveBudgetState(snapshot)
+        )
         render(enriched, snapshot, latestStability)
     }
 
@@ -990,7 +1149,86 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun currentMobileVaultAssessment(): MobileVaultAssessment? {
+        val stored = mobilePlanVaultStore.read() ?: return null
+        val evidence = mobileUsageEvidenceStore.read()
+        val observations = buildList {
+            val userBytes = evidence?.userReconciledUsedBytes
+            val userAt = evidence?.userReconciledObservedAtEpochMillis
+            if (userBytes != null && userAt != null) {
+                add(
+                    MobileUsageObservation(
+                        usedBytes = userBytes,
+                        source = MobilePlanUsageSource.USER_RECONCILED,
+                        attributionScope = MobileUsageAttributionScope.PLAN_EXACT,
+                        observedAtEpochMillis = userAt,
+                        confidencePercent = 100
+                    )
+                )
+            }
+            evidence?.aggregateCounterState?.let {
+                add(
+                    MobileUsageObservation(
+                        usedBytes = it.provenCycleBytes,
+                        source = MobilePlanUsageSource.ANDROID_DEVICE_WIDE_COUNTER,
+                        attributionScope = MobileUsageAttributionScope.DEVICE_MOBILE_AGGREGATE,
+                        observedAtEpochMillis = stored.updatedAtEpochMillis,
+                        confidencePercent = 70
+                    )
+                )
+            }
+        }
+        val resolution = MobileUsageReconciliationPolicy.reconcile(
+            observations,
+            System.currentTimeMillis(),
+            maxAgeMillis = 31L * 24L * 60L * 60L * 1000L
+        )
+        return MobilePlanVaultPolicy.evaluate(
+            stored.config,
+            resolution.usage,
+            System.currentTimeMillis()
+        )
+    }
+
+    private fun effectiveBudgetState(snapshot: MobileBudgetSnapshot): BudgetState {
+        val plan = currentMobileVaultAssessment() ?: return snapshot.state
+        return when (plan.zone) {
+            MobileVaultZone.NORMAL -> {
+                if (snapshot.state == BudgetState.BUNDLE_EXHAUSTED ||
+                    snapshot.state == BudgetState.BUNDLE_LOW
+                ) snapshot.state else BudgetState.BUNDLE_OK
+            }
+            MobileVaultZone.PROTECTED_RESERVE,
+            MobileVaultZone.RESCUE_ONLY,
+            MobileVaultZone.CRITICAL_INTERACTIVE_ONLY -> BudgetState.BUNDLE_LOW
+            MobileVaultZone.EXHAUSTED -> BudgetState.BUNDLE_EXHAUSTED
+            MobileVaultZone.EXPIRED -> BudgetState.BUNDLE_EXPIRED
+            MobileVaultZone.UNKNOWN -> BudgetState.BALANCE_UNKNOWN
+        }
+    }
+
+    private fun mobileVaultLabel(assessment: MobileVaultAssessment): String {
+        val remaining = assessment.remainingBytes?.let(::formatMobileBytes)
+        return when (assessment.zone) {
+            MobileVaultZone.NORMAL ->
+                "Mobile Vault · ${remaining ?: "solde inconnu"} restant(s) · zone normale"
+            MobileVaultZone.PROTECTED_RESERVE ->
+                "Mobile Vault · réserve protégée · ${remaining ?: "reste inconnu"}"
+            MobileVaultZone.RESCUE_ONLY ->
+                "Mobile Vault · secours uniquement · ${remaining ?: "reste inconnu"}"
+            MobileVaultZone.CRITICAL_INTERACTIVE_ONLY ->
+                "Mobile Vault · réserve critique · ${remaining ?: "reste inconnu"}"
+            MobileVaultZone.EXHAUSTED ->
+                "Mobile Vault · forfait épuisé"
+            MobileVaultZone.EXPIRED ->
+                "Mobile Vault · forfait expiré"
+            MobileVaultZone.UNKNOWN ->
+                "Mobile Vault · forfait configuré · consommation à réconcilier"
+        }
+    }
+
     private fun mobileBudgetLabel(snapshot: MobileBudgetSnapshot): String {
+        currentMobileVaultAssessment()?.let { return mobileVaultLabel(it) }
         if (!snapshot.supported) {
             return "Données mobiles · compteur Android indisponible"
         }
