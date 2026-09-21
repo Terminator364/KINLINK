@@ -26,7 +26,7 @@ These limits are qualification gates, not guarantees for every device or radio c
 - battery percentage/hour only when the session lasts at least 30 minutes
 
 Short sessions are explicitly INCONCLUSIVE for hourly battery rate.
-Sessions where battery percentage increases (charging or measurement discontinuity) are also INCONCLUSIVE rather than being reported as 0%/h.
+Sessions where Android reports charging are explicitly INCONCLUSIVE, even when battery percentage stays flat at 100%. Sessions where battery percentage increases are also INCONCLUSIVE rather than being reported as 0%/h.
 
 ## Battery attribution caveat
 
@@ -78,3 +78,19 @@ Before the next consolidated signed candidate:
 3. no repeated unexplained PSS growth may be present;
 4. no evidence may exceed the configured resource limits without an explicit BLOCKED verdict;
 5. strong VPN/TUN recovery remains disabled regardless of ordinary resource results until its separate qualification completes.
+
+
+## Charging and automatic clean baseline
+
+The target-device battery gate must never treat a plugged-in flat battery as proof of low drain.
+
+0.7.0 therefore samples Android charging state at both resource-window endpoints. Battery-rate evidence is usable only when both endpoints are explicitly not charging.
+
+If Android broadcasts ACTION_POWER_DISCONNECTED while the observer service is running, KINLINK automatically:
+- resets the runtime resource baseline;
+- resets callback-churn counting for the new resource window;
+- cancels the obsolete delayed checkpoint;
+- schedules one new bounded 30-minute checkpoint;
+- records a local version-scoped baseline-reset receipt.
+
+No network probe is launched by this reset.
