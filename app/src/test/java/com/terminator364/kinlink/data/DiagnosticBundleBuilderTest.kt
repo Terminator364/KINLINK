@@ -52,7 +52,7 @@ class DiagnosticBundleBuilderTest {
                 assertTrue(text.contains("\"ipv4_address_present\":true"))
                 assertTrue(text.contains("TEST_ACTION"))
                 assertTrue(text.contains("\"recent24h_mobile_low_quality_episodes\":2"))
-                assertTrue(text.contains("\"mobile_assist_actions\":1"))
+                assertTrue(text.contains("\"recent_mobile_assist_actions\":1"))
             }
         } finally {
             file.delete()
