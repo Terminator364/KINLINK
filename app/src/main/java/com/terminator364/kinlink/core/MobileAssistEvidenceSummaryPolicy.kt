@@ -24,8 +24,16 @@ object MobileAssistEvidenceSummaryPolicy {
         val inconclusive = counts["INCONCLUSIVE"] ?: 0
 
         val relapses = earlyRelapse + lateRelapse
+
+        // A late relapse is a later state of a previously recorded
+        // SUSTAINED_BETTER event, not a second independent action.
+        val sustainedStillHolding = (sustained - lateRelapse).coerceAtLeast(0)
         val evaluated =
-            sustained + relapses + noBetter + metricsOnly + inconclusive
+            sustainedStillHolding +
+                relapses +
+                noBetter +
+                metricsOnly +
+                inconclusive
 
         if (evaluated == 0) {
             return MobileAssistEvidenceSummary(
@@ -35,15 +43,15 @@ object MobileAssistEvidenceSummaryPolicy {
             )
         }
 
-        if (sustained > 0 && relapses == 0 && noBetter == 0) {
+        if (sustainedStillHolding > 0 && relapses == 0 && noBetter == 0) {
             return MobileAssistEvidenceSummary(
                 MobileAssistEvidenceTrend.SUSTAINED_BETTER,
-                "Preuve 24 h · mieux durable corrélé ×$sustained",
+                "Preuve 24 h · mieux durable corrélé ×$sustainedStillHolding",
                 evaluated
             )
         }
 
-        if (relapses > 0 && sustained == 0 && noBetter == 0) {
+        if (relapses > 0 && sustainedStillHolding == 0 && noBetter == 0) {
             return MobileAssistEvidenceSummary(
                 MobileAssistEvidenceTrend.RELAPSING,
                 "Preuve 24 h · amélioration transitoire / rechute ×$relapses",
@@ -51,7 +59,7 @@ object MobileAssistEvidenceSummaryPolicy {
             )
         }
 
-        if (noBetter > 0 && sustained == 0 && relapses == 0) {
+        if (noBetter > 0 && sustainedStillHolding == 0 && relapses == 0) {
             return MobileAssistEvidenceSummary(
                 MobileAssistEvidenceTrend.NO_CONFIRMED_BENEFIT,
                 "Preuve 24 h · aucun mieux confirmé ×$noBetter",
@@ -61,7 +69,7 @@ object MobileAssistEvidenceSummaryPolicy {
 
         return MobileAssistEvidenceSummary(
             MobileAssistEvidenceTrend.MIXED,
-            "Preuve 24 h · mieux=$sustained · rechute=$relapses · sans mieux=$noBetter",
+            "Preuve 24 h · mieux=$sustainedStillHolding · rechute=$relapses · sans mieux=$noBetter",
             evaluated
         )
     }
