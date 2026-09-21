@@ -2,7 +2,7 @@
 set -euo pipefail
 
 mkdir -p build/ui-proof
-APP_PROOF="/sdcard/Download/KINLINK-ui-proof"
+APP_PROOF="/data/local/tmp/KINLINK-ui-proof"
 
 archive_test_evidence() {
   local name="$1"

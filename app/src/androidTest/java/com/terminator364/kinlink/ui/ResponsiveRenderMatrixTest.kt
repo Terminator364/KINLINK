@@ -280,12 +280,13 @@ class ResponsiveRenderMatrixTest {
     }
 
     private fun capture(name: String) {
-        val dir = "/sdcard/Download/KINLINK-ui-proof/${matrixId}"
-        val path = "$dir/${matrixId}-${name}.png"
-        val output = runShell(
-            "mkdir -p $dir && screencap -p $path && test -s $path && echo CAPTURE_OK"
-        )
-        assertTrue("Screenshot persistence failed for $path", output.contains("CAPTURE_OK"))
+        val dir = "/data/local/tmp/KINLINK-ui-proof/${matrixId}"
+        val fileName = "${matrixId}-${name}.png"
+        val path = "$dir/$fileName"
+        runShell("mkdir -p $dir")
+        runShell("screencap -p $path")
+        val listing = runShell("ls -l $path")
+        assertTrue("Screenshot persistence failed for $path", listing.contains(fileName))
     }
 
     private fun runShell(command: String): String {
