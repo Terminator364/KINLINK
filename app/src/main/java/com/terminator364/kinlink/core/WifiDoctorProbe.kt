@@ -5,7 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.concurrent.Executors
+import java.util.concurrent.Callable
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicReference
@@ -138,10 +138,9 @@ class WifiDoctorProbe(private val context: Context) {
         network: android.net.Network,
         endpoint: Endpoint
     ): EndpointAttempt {
-        val executor = Executors.newSingleThreadExecutor()
         val connectionRef = AtomicReference<HttpURLConnection?>(null)
         val started = System.nanoTime()
-        val future = executor.submit<EndpointAttempt> {
+        val future = BoundedProbeExecutor.submit(Callable<EndpointAttempt> {
             var connection: HttpURLConnection? = null
             try {
                 connection =
@@ -168,7 +167,11 @@ class WifiDoctorProbe(private val context: Context) {
                 connectionRef.compareAndSet(connection, null)
                 runCatching { connection?.disconnect() }
             }
-        }
+        }) ?: return EndpointAttempt(
+            code = null,
+            elapsedMillis = elapsedMillisSince(started),
+            failure = "probe-capacity-busy"
+        )
 
         return try {
             future.get(
@@ -191,8 +194,6 @@ class WifiDoctorProbe(private val context: Context) {
                 elapsedMillis = elapsedMillisSince(started),
                 failure = t.javaClass.simpleName
             )
-        } finally {
-            executor.shutdownNow()
         }
     }
 
