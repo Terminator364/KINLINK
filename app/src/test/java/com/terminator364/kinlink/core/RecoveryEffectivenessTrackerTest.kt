@@ -77,4 +77,51 @@ class RecoveryEffectivenessTrackerTest {
         )
     }
 
+    @Test fun staleEffectivenessEvidenceExpiresInsteadOfBeingMisattributed() {
+        val tracker = RecoveryEffectivenessTracker(Transport.CELLULAR)
+        tracker.start(
+            NetworkTruth(
+                transport = Transport.CELLULAR,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 700,
+                upstreamKbps = 180,
+                observedAtMillis = 1_000L
+            )
+        )
+        val evidence = tracker.observe(
+            NetworkTruth(
+                transport = Transport.CELLULAR,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 20_000,
+                upstreamKbps = 5_000,
+                observedAtMillis =
+                    1_000L + RecoveryEffectivenessTracker.MAX_EFFECT_WINDOW_MS + 1L
+            )
+        )
+        assertEquals(RecoveryEffectiveness.INCONCLUSIVE, evidence?.result)
+    }
+
+    @Test fun backwardClockDoesNotCreateFalseImprovement() {
+        val tracker = RecoveryEffectivenessTracker(Transport.CELLULAR)
+        tracker.start(
+            NetworkTruth(
+                transport = Transport.CELLULAR,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 700,
+                upstreamKbps = 180,
+                observedAtMillis = 10_000L
+            )
+        )
+        val evidence = tracker.observe(
+            NetworkTruth(
+                transport = Transport.CELLULAR,
+                internetState = InternetState.VALIDATED,
+                downstreamKbps = 20_000,
+                upstreamKbps = 5_000,
+                observedAtMillis = 9_000L
+            )
+        )
+        assertEquals(RecoveryEffectiveness.INCONCLUSIVE, evidence?.result)
+    }
+
 }
