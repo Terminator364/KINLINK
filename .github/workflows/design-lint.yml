@@ -37,6 +37,27 @@ jobs:
         run: python tools/release/verify_release_readiness.py --audit
       - name: Release evidence hash integrity
         run: python tools/release/verify_release_evidence_integrity.py
+      - name: Installed field-candidate app freeze
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib, subprocess, sys
+          p = pathlib.Path(".project-memory/FIELD_CANDIDATE_FREEZE.json")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          if not data.get("active"):
+              print("field-candidate-freeze: INACTIVE")
+              raise SystemExit(0)
+          base = data["source_commit"]
+          paths = data["protected_paths"]
+          subprocess.run(["git","fetch","--no-tags","--depth=1","origin",base], check=True)
+          proc = subprocess.run(["git","diff","--quiet",base,"HEAD","--",*paths])
+          if proc.returncode != 0:
+              print("Installed field candidate invalidated: protected app surface changed.")
+              subprocess.run(["git","diff","--name-only",base,"HEAD","--",*paths], check=False)
+              raise SystemExit(1)
+          print("field-candidate-freeze: PASS")
+          print("sealed source:", base)
+          PY
       - name: Canonical signer continuity contract
         run: python tools/release/verify_signer_contract.py
       - name: Public-repo private signing material fence
