@@ -1,0 +1,86 @@
+{
+  "schema": "kinlink.dead_end_registry/1",
+  "project": "KINLINK",
+  "rule": "A disproven premise remains searchable until explicit supersession evidence changes its scope. Future work must consult this registry before reintroducing a rejected assumption.",
+  "entries": [
+    {
+      "id": "DEAD-001",
+      "premise": "ConnectivityDiagnosticsManager callback registration means Lite Observer will receive useful connectivity/data-stall callbacks.",
+      "verdict": "DISPROVEN_FOR_LITE_OBSERVER",
+      "evidence": [
+        "Android ConnectivityDiagnosticsManager eligibility documentation",
+        "docs/B_EXPANSION_V2.md"
+      ],
+      "safe_alternative": "Use NetworkCallback/NetworkCapabilities/LinkProperties in Lite mode; activate ConnectivityDiagnostics only when KINLINK actually qualifies as a connectivity provider.",
+      "supersession_condition": "Android platform contract changes or KINLINK operates as an eligible active VPN/carrier/Wi-Fi provider and target-device proof confirms callback delivery."
+    },
+    {
+      "id": "DEAD-002",
+      "premise": "Android link bandwidth estimate can be shown as experienced connection quality or a 100/100 user score.",
+      "verdict": "DISPROVEN",
+      "evidence": [
+        "field screenshots/user report",
+        "UserExperienceTruthPolicy",
+        "docs/B_EXPANSION_V3.md"
+      ],
+      "safe_alternative": "Treat framework bandwidth as a technical prior; prioritize user incident, interruptions, stalls and sustained local history.",
+      "supersession_condition": "Never supersede as a general rule; only a separate measured QoE metric with explicit semantics may be added."
+    },
+    {
+      "id": "DEAD-003",
+      "premise": "requestBandwidthUpdate improves throughput.",
+      "verdict": "DISPROVEN_AS_CAUSAL_CLAIM",
+      "evidence": [
+        "Mobile Assist evidence policy",
+        "0.7.3 field counter-audit"
+      ],
+      "safe_alternative": "Describe it only as Android metric refresh; any later improvement is correlational until stronger causal evidence exists.",
+      "supersession_condition": "A different active intervention with controlled before/after evidence proves causal benefit."
+    },
+    {
+      "id": "DEAD-004",
+      "premise": "Static XML/layout checks are sufficient responsive UI proof.",
+      "verdict": "DISPROVEN",
+      "evidence": [
+        "0.7.3 narrow-header regression",
+        "rendered 42/45 screenshot matrices"
+      ],
+      "safe_alternative": "Require rendered emulator matrix plus semantic/manual visual counter-audit and target-device evidence for field promotion.",
+      "supersession_condition": "None; static checks may complement but not replace rendered proof."
+    },
+    {
+      "id": "DEAD-005",
+      "premise": "A recent release traceability table is the full KINLINK cahier des charges.",
+      "verdict": "DISPROVEN",
+      "evidence": [
+        "preconception anchor c565b6f1164d327caaa17e1de47d1cf48ed3c885",
+        "FULL_REQUIREMENTS_LEDGER",
+        "44.8% scorecard"
+      ],
+      "safe_alternative": "Always load immutable A + deep B + append-only C before scope/progress decisions.",
+      "supersession_condition": "Only an explicit, user-authorized product rescope can change the full ambition."
+    },
+    {
+      "id": "DEAD-006",
+      "premise": "Gmail send API success or an intermediate PDF message is enough to consider communication complete.",
+      "verdict": "DISPROVEN",
+      "evidence": [
+        "K25-07/K25-08 interruption incidents",
+        "COMMUNICATION_PROTOCOL v5",
+        "watchdog policy"
+      ],
+      "safe_alternative": "Explicit START/END transitions, provider ACK/readback, durable ledger and CLOSED state.",
+      "supersession_condition": "Only a new communication protocol with equivalent or stronger provider-ack proof."
+    },
+    {
+      "id": "DEAD-007",
+      "premise": "After a watchdog closes an interrupted tranche it should automatically open another START even though no product worker is running.",
+      "verdict": "REJECTED_TO_AVOID_ORPHAN_LOOP",
+      "evidence": [
+        "KINLINK Comms Watchdog design review"
+      ],
+      "safe_alternative": "Watchdog closes stale tranche and leaves NEXT_UNCOMMITTED_ACTION; foreground worker opens a fresh START before substantive work.",
+      "supersession_condition": "A future automation is explicitly authorized to execute substantive product work after START."
+    }
+  ]
+}

@@ -45,6 +45,7 @@ for s in sup["entries"]:
 required_memory=[
     ".project-memory/MEMORY_POLICY_V2.json",
     ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json",
+    ".project-memory/DEAD_END_REGISTRY.json",
     ".project-memory/PROJECT_CHRONICLE.jsonl",
     ".project-memory/CANONICAL_CONTEXT_PACK.json",
     ".project-memory/SUPERSESSION_LEDGER.json",
@@ -69,5 +70,13 @@ req(watch.get("name")=="KINLINK Comms Watchdog","watchdog name drift")
 req(watch.get("cadence")=="HOURLY","watchdog cadence drift")
 req(watch.get("stale_work_threshold_minutes")==35,"watchdog stale-work threshold drift")
 req(watch.get("foreground_resume",{}).get("auto_open_new_start") is False,"watchdog must not create orphan START loops")
+dead=load(".project-memory/DEAD_END_REGISTRY.json")
+req(dead.get("schema")=="kinlink.dead_end_registry/1","dead-end registry schema")
+req(len(dead.get("entries",[]))>=7,"dead-end registry unexpectedly small")
+dead_ids=[x["id"] for x in dead["entries"]]
+req(len(dead_ids)==len(set(dead_ids)),"duplicate dead-end ids")
+for e in dead["entries"]:
+    for key in ["premise","verdict","evidence","safe_alternative","supersession_condition"]:
+        req(key in e,f"dead-end entry missing {key}")
 req(pack.get("communication",{}).get("watchdog_cardinality")==1,"context pack watchdog cardinality stale")
 print(f"memory-integrity: PASS | chronicle={len(chron)} | B-depth={len(ids)} | macros={score['result']['macro_capabilities']} | maturity={score['result']['overall_percent']}%")

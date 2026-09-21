@@ -397,10 +397,14 @@
       "parent_macro_ids": [
         "K055"
       ],
-      "stage": "DESIGN_ONLY",
+      "stage": "MACHINE_PROVEN",
       "design": "Persist disproven approaches, platform restrictions and failed assumptions so future conversations do not rediscover the same dead end.",
       "acceptance": "Each entry records premise, evidence, scope, date, supersession condition and safe alternative.",
-      "source": "internal:memory-doctrine"
+      "source": "internal:memory-doctrine",
+      "evidence": [
+        ".project-memory/DEAD_END_REGISTRY.json",
+        "tools/release/verify_memory_integrity.py"
+      ]
     },
     {
       "id": "B61",

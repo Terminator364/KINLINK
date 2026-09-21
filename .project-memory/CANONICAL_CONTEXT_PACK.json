@@ -45,5 +45,11 @@
     "watchdog_cadence": "HOURLY",
     "watchdog_policy": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json"
   },
-  "next_action": "Wait for exact-head 0.8 CI after harness/eligibility fixes; inspect rendered proof; continue large integrated A+B+C blocks; no phone install."
+  "next_action": "Wait for exact-head 0.8 CI after harness/eligibility fixes; inspect rendered proof; continue large integrated A+B+C blocks; no phone install.",
+  "memory": {
+    "policy": ".project-memory/MEMORY_POLICY_V2.json",
+    "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",
+    "supersession": ".project-memory/SUPERSESSION_LEDGER.json",
+    "dead_end_registry": ".project-memory/DEAD_END_REGISTRY.json"
+  }
 }

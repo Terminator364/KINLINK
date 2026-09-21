@@ -36,7 +36,8 @@
       ".project-memory/PROJECT_CHRONICLE.jsonl",
       ".project-memory/CANONICAL_CONTEXT_PACK.json",
       ".project-memory/SUPERSESSION_LEDGER.json",
-      ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json"
+      ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json",
+      ".project-memory/DEAD_END_REGISTRY.json"
     ]
   },
   "full_completion_contract": {
