@@ -20,6 +20,7 @@ class KinlinkObserverService : Service() {
     private lateinit var mobileBudget: MobileBudgetTracker
     private lateinit var recoveryModeStore: RecoveryModeStore
     private var recovery: AutopilotRecoveryController? = null
+    private var mobileAssist: MobileAssistController? = null
     private val handoffAudit = NetworkHandoffAudit()
     private val handoffOutcomeTracker = HandoffOutcomeTracker()
     private val recoveryEffectivenessTracker = RecoveryEffectivenessTracker()
@@ -54,11 +55,11 @@ class KinlinkObserverService : Service() {
     override fun onCreate() {
         super.onCreate()
         createChannel()
-        lastNotificationText = "Résilience Wi-Fi active · données mobiles protégées"
+        lastNotificationText = "KINLINK Autopilot · Wi-Fi + Mobile Assist"
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.stat_sys_warning)
             .setContentTitle("KINLINK Autopilot")
-            .setContentText("Résilience Wi-Fi active · données mobiles protégées")
+            .setContentText("KINLINK Autopilot · Wi-Fi + Mobile Assist")
             .setOngoing(true)
             .build()
 
@@ -133,6 +134,7 @@ class KinlinkObserverService : Service() {
             recovery = AutopilotRecoveryController(this, ledger) { baseline ->
                 recoveryEffectivenessTracker.start(baseline)
             }
+            mobileAssist = MobileAssistController(this, ledger)
         } else if (!coreRuntimeReady) {
             runCatching {
                 ledger.appendAction(
@@ -226,7 +228,11 @@ class KinlinkObserverService : Service() {
                     )
                 }
                 updateNotificationFor(truth, passiveProblem)
-                if (ActiveRecoveryPolicy.allowed(recoveryModeStore.current(), truth.transport)) {
+                val recoveryMode = recoveryModeStore.current()
+                if (truth.transport == Transport.CELLULAR) {
+                    mobileAssist?.onTruth(truth, recoveryMode)
+                }
+                if (ActiveRecoveryPolicy.allowed(recoveryMode, truth.transport)) {
                     recovery?.onTruth(truth, stability.assessment.score)
                 }
                 maybeRecordFieldCandidateQualification()
@@ -477,7 +483,18 @@ class KinlinkObserverService : Service() {
         } else if (observationOnly) {
             "Mode sûr · observation uniquement · Android garde le contrôle"
         } else when (truth.transport) {
-            Transport.CELLULAR -> "Données mobiles · Android contrôle · KINLINK observe seulement"
+            Transport.CELLULAR -> when (passiveProblem.cause) {
+                PassiveProblemCause.MOBILE_NETWORK_SUSPENDED ->
+                    "Mobile Assist · réseau suspendu · aucune action coûteuse"
+                PassiveProblemCause.MOBILE_CONGESTION_SUSPECT ->
+                    "Mobile Assist · congestion possible · zéro speedtest"
+                PassiveProblemCause.MOBILE_LOW_CAPACITY ->
+                    "Mobile Assist · capacité limitée · optimisation légère"
+                PassiveProblemCause.MOBILE_UNVALIDATED ->
+                    "Mobile Assist · Internet non confirmé · Android garde le contrôle"
+                else ->
+                    "Mobile Assist · données mobiles actives · Android garde le routage"
+            }
             Transport.WIFI -> when (passiveProblem.cause) {
                 PassiveProblemCause.LOW_CAPACITY -> "Wi-Fi connecté mais capacité limitée · surveillance passive"
                 PassiveProblemCause.CAPTIVE_PORTAL -> "Wi-Fi · connexion au portail requise"
