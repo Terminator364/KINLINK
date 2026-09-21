@@ -31,6 +31,8 @@ class KinlinkObserverService : Service() {
     private var coreRuntimeReady = true
     private var runtimeBudgetCheckpointWritten = false
     private var runtimeCallbackEvents = 0
+    private var fieldQualificationReceiptWritten = false
+    private var fieldQualificationBlockedWritten = false
     private val runtimeBudgetHandler by lazy { android.os.Handler(android.os.Looper.getMainLooper()) }
     private val runtimeBudgetCheckpointRunnable = Runnable { maybeRecordRuntimeBudgetCheckpoint() }
 
@@ -52,6 +54,10 @@ class KinlinkObserverService : Service() {
         }
 
         ledger = TelemetryLedger(this)
+        fieldQualificationReceiptWritten =
+            ledger.countActions("FIELD_CANDIDATE_QUALIFIED") > 0
+        fieldQualificationBlockedWritten =
+            ledger.countActions("FIELD_CANDIDATE_BLOCKED") > 0
         mobileBudget = MobileBudgetTracker(this)
         recoveryModeStore = RecoveryModeStore(this)
         postUpdateSelfTestStore = PostUpdateSelfTestStore(this)
@@ -199,6 +205,7 @@ class KinlinkObserverService : Service() {
                 if (ActiveRecoveryPolicy.allowed(recoveryModeStore.current(), truth.transport)) {
                     recovery?.onTruth(truth, stability.assessment.score)
                 }
+                maybeRecordFieldCandidateQualification()
             }
         }
         observer.start()
@@ -240,6 +247,46 @@ class KinlinkObserverService : Service() {
             )
         }
         runtimeBudgetCheckpointWritten = true
+        maybeRecordFieldCandidateQualification()
+    }
+
+    private fun maybeRecordFieldCandidateQualification() {
+        if (runningVersionCode < 8L || fieldQualificationReceiptWritten) return
+
+        val assessment = FieldCandidateQualificationPolicy.evaluate(
+            FieldCandidateQualificationEvidence(
+                coreSelfTestPasses = ledger.countSuccessfulActions("SELF_TEST_CORE"),
+                observerSelfTestPasses = ledger.countSuccessfulActions("SELF_TEST_OBSERVER_CALLBACK"),
+                mobileValidatedHandoffs =
+                    ledger.countSuccessfulActions("HANDOFF_OUTCOME_MOBILE_VALIDATED"),
+                cellularToWifiReturns = ledger.countSuccessfulActions("HANDOFF_CELLULAR_TO_WIFI"),
+                runtimeResourcePasses =
+                    ledger.countSuccessfulActions("RUNTIME_RESOURCE_GATE_PASS"),
+                runtimeResourceBlocks = ledger.countActions("RUNTIME_RESOURCE_GATE_BLOCKED")
+            )
+        )
+
+        when (assessment.verdict) {
+            FieldCandidateQualificationVerdict.PASS -> {
+                ledger.appendAction(
+                    "FIELD_CANDIDATE_QUALIFIED",
+                    true,
+                    "0.7 field evidence complete: self-tests, validated mobile handoff, Wi-Fi return and runtime resource PASS."
+                )
+                fieldQualificationReceiptWritten = true
+            }
+            FieldCandidateQualificationVerdict.BLOCKED -> {
+                if (!fieldQualificationBlockedWritten) {
+                    ledger.appendAction(
+                        "FIELD_CANDIDATE_BLOCKED",
+                        false,
+                        "0.7 field qualification blocked: ${assessment.missing.sorted().joinToString(",")}."
+                    )
+                    fieldQualificationBlockedWritten = true
+                }
+            }
+            FieldCandidateQualificationVerdict.PENDING -> Unit
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
