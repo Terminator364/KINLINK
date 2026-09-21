@@ -5,9 +5,9 @@
   "primary_work_budget_minutes": 20,
   "closeout_reserve_minutes": 5,
   "max_mutation_groups_before_forced_closeout": 12,
-  "mutation_groups_used": 1,
-  "status": "RUNNING",
-  "forced_closeout_entered": false,
+  "mutation_groups_used": 10,
+  "status": "FORCED_CLOSEOUT_RESERVE",
+  "forced_closeout_entered": true,
   "gmail_start_message_id": "1a0c40fc5bc4a549",
   "gmail_end_message_id": null,
   "end_mail_verified": false,
@@ -23,5 +23,8 @@
     "No app reply before verified Gmail end",
     "At reserve boundary stop technical mutations even if work remains",
     "If interrupted, next session must send missing end mail before any new work"
-  ]
+  ],
+  "no_more_technical_mutations": true,
+  "closeout_note": "Reserved closeout entered: only CI readback, durable checkpoint, Gmail end, message-id verification and tranche closure may follow.",
+  "latest_dev_head": "d529533b5c7ef8c72b73e9e4ab6fb4cf22cc046a"
 }
