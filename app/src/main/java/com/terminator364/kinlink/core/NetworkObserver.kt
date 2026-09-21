@@ -8,6 +8,11 @@ import android.net.LinkProperties
 import android.os.Handler
 import android.os.Looper
 
+object DefaultNetworkCallbackAcceptancePolicy {
+    fun accept(callbackNetworkPresent: Boolean, callbackMatchesActive: Boolean): Boolean =
+        !callbackNetworkPresent || callbackMatchesActive
+}
+
 /** Observer only: any internal failure leaves Android networking untouched. */
 class NetworkObserver(
     context: Context,
@@ -66,7 +71,15 @@ class NetworkObserver(
         providedLp: LinkProperties? = null
     ) {
         runCatching {
-            val active = network ?: cm.activeNetwork
+            val activeNow = cm.activeNetwork
+            if (!DefaultNetworkCallbackAcceptancePolicy.accept(
+                    callbackNetworkPresent = network != null,
+                    callbackMatchesActive = network != null && network == activeNow
+                )
+            ) {
+                return
+            }
+            val active = activeNow
             val caps = providedCaps ?: active?.let(cm::getNetworkCapabilities)
             val lp = providedLp ?: active?.let(cm::getLinkProperties)
             val truth = ConnectivityTruthEngine.reduce(caps, lp)
