@@ -50,11 +50,6 @@ require(
     "candidate contract: exact qualification receipt lookup helpers missing",
 )
 require(
-    re.search(r"count(?:Successful)?Actions\(\s*QualificationReceiptNames", production) is None
-    and re.search(r"latestActionTimestamp\(\s*QualificationReceiptNames", production) is None,
-    "candidate contract: version-scoped qualification receipt still uses prefix matching",
-)
-require(
     'android.permission.CHANGE_NETWORK_STATE' not in MANIFEST
     and 'android.permission.CHANGE_WIFI_STATE' not in MANIFEST
     and 'android.net.VpnService' not in MANIFEST,
@@ -64,6 +59,12 @@ require(
 production = "\n".join(
     p.read_text(encoding="utf-8")
     for p in SRC.rglob("*.kt")
+)
+
+require(
+    re.search(r"count(?:Successful)?Actions\(\s*QualificationReceiptNames", production) is None
+    and re.search(r"latestActionTimestamp\(\s*QualificationReceiptNames", production) is None,
+    "candidate contract: version-scoped qualification receipt still uses prefix matching",
 )
 forbidden = [
     "bindProcessToNetwork",
