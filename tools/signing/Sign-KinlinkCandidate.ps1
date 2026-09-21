@@ -96,7 +96,7 @@ if ($LASTEXITCODE -ne 0) {
 $verifyText = ($verifyLines -join [Environment]::NewLine)
 $match = [regex]::Match(
     $verifyText,
-    "Signer #1 certificate SHA-256 digest:\s*([0-9a-fA-F:]{64,95})"
+    "(?:Signer #1|V[0-9.]+ Signer): certificate SHA-256 digest:\s*([0-9a-fA-F:]{64,95})"
 )
 if (-not $match.Success) {
     throw "Could not read signer SHA-256 from apksigner output."
