@@ -1,71 +1,71 @@
 # NEXT_UNCOMMITTED_ACTION
 
-## Current phone
-- Installed: KINLINK 0.7.0 / versionCode 8.
-- It may remain in use.
-- Its canonical promotion was invalidated by post-install counter-audit.
+## True current state
 
-## Consolidated successor — Stage A PASS
-- Version: 0.7.1
+### Phone
+- Installed now: KINLINK 0.7.0 / versionCode 8.
+- Keep it installed until the single successor gate below.
+- 0.7.0 is usable but not canonically promotable.
+
+### Canonical rollback
+- KINLINK 0.6.0-rc3 / versionCode 7 remains the canonical Drive installer and rollback.
+- Do not replace it until Stage B passes.
+
+### Consolidated 0.7.1 Mobile Assist field candidate
+- versionName: 0.7.1
 - versionCode: 9
-- Exact source/audit head: `9a6eac0c3f4e97d1b6685bda92fc5d04859ec2b5`
-- Android CI run: `35590793691` — PASS
-- design-lint run: `35590793645` — PASS
-- Artifact ID: `10634896108`
-- Artifact ZIP SHA-256: `96b903ba823196ef119bb77975b8bc6ad307b96206492960a7bd1c344c93d315`
-- Unsigned APK SHA-256: `25ff61529a7bc009543fe39edad05bd356b4ec4664be9da591af45721c34feff`
-- Signed APK SHA-256: `db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329`
-- Signed size: 336843 bytes
-- Canonical signer SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
+- exact functional source: `a15a784ab51ae048e37ae31c998092ad2cd3f03c`
+- design-lint run `35594766801`: PASS
+- Android candidate run `35594766821`: PASS
+- artifact ID: `10636385308`
+- artifact ZIP SHA-256: `07b3e0c5110bc866b0fce53b9ab1abb3784b72b8db2dda068d000ffe50921175`
+- unsigned APK SHA-256: `f4b3f3c42d2f8d90a4ecfddac4ff580fb7afdce8e8bfb7ef9f39d373f5a68507`
+- signed APK SHA-256: `0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae`
+- signed size: 357323 bytes
+- signer cert SHA-256: `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
 - APK Signature Scheme v3: PASS
-- Signers: 1
-- Stage A: PASS
-- Stage B: PENDING target-phone evidence
+- Drive file ID: `1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1`
+- Drive readback SHA-256: exact MATCH / PASS
 
-## Counter-audit closed machine-side
-CA-001 through CA-013 are integrated and machine-tested.
+### Mobile Assist Level 1 included
+- passive mobile low-capacity / congestion / suspension / weak-radio diagnosis;
+- no automatic cellular HTTP/DNS/speedtest;
+- bounded Android bandwidth-metric refresh on validated degraded cellular;
+- 5-minute automatic cooldown;
+- max 6 actions/hour;
+- resource / Mobile Vault / safe-mode / weak-radio suppression;
+- anti-repeat after ineffective outcomes;
+- explicit user Android connectivity-panel fallback;
+- passive mobile slow-link history in cockpit and diagnostics.
 
-Key latest additions:
-- exact version-scoped qualification SQL;
-- current verdict cannot be forced by historical QUALIFIED/BLOCKED receipts;
-- automatic HTTP outer wall-clock deadline;
-- stale default-network callbacks fenced before/after reduction;
-- stale callbacks cannot suppress delayed offline settling;
-- stale manual Wi-Fi work aborts after handoff;
-- DNS/HTTP helper threads are globally bounded;
-- structured privacy-safe diagnostic ZIP core bundle;
-- exhaustive P0 transport/resource scenario sweep;
-- notification visibility request without blocking service;
-- qualification receipts protected against pruning.
+## Current gate
 
-## Immediate internal action — no human gate yet
-1. stage the exact signed 0.7.1 APK into Drive `KINLINK/FIELD_CANDIDATE`;
-2. read it back from Drive and require SHA-256 `db2f73277eff1fa3da1a1082a7f71ecbef7ef79c8054e246cebfcc1414b66329`;
-3. verify FIELD_CANDIDATE contains the current successor cleanly and remove obsolete delivery accumulation;
-4. update Drive master/receipt;
-5. only then ask for ONE in-place 0.7.1 install.
+Machine-side work for this exact candidate is complete.
 
-Current blocker is an internal file-handoff/session bridge for Drive upload, not a user action and not a reason to request another APK/install cycle.
+The next action is a **true human gate**:
+1. install the exact Drive APK in-place over existing 0.7.0;
+2. do not uninstall 0.7.0 first;
+3. after install, collect versionCode 9:
+   - core self-test PASS;
+   - observer callback self-test PASS;
+   - Wi-Fi -> validated cellular;
+   - cellular -> Wi-Fi return;
+   - >=30-minute resource qualification;
+4. promote canonically only after Stage B PASS.
 
-## After one 0.7.1 install
-Collect versionCode 9 evidence:
-- core self-test;
-- observer callback self-test;
-- Wi-Fi -> validated cellular;
-- cellular -> Wi-Fi return;
-- resource qualification >=30 minutes.
-
-Canonical INSTALLER replacement remains forbidden until Stage B PASS.
+No additional micro-beta is allowed before this gate unless the current candidate is explicitly invalidated.
 
 ## Communication protocol
 - Gmail start first.
-- Work coherent 25-minute tranche.
-- Intermediate feedback is queued/integrated without breaking tranche.
-- Stop early only for true human gate.
-- Gmail complete end report first and require returned Gmail message ID.
-- Only then app message: check Gmail + Kinshasa date/time.
-- Gmail label: KINLINK.
+- Persist start message ID.
+- Coherent 25-minute tranche.
+- Intermediate feedback does not erase end-mail obligation.
+- Final technical checkpoint.
+- Gmail end report first.
+- Require end Gmail message ID.
+- Persist tranche CLOSED.
+- Only then app reply: check Gmail + Kinshasa date/time.
 - APK never by Gmail.
 
-## Resume command
+## Resume
 `KINLINKGO`
