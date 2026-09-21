@@ -46,6 +46,7 @@ class MobileAssistEvidenceTracker {
     private var active: Active? = null
     private var sustainedWatch: SustainedWatch? = null
 
+    @Synchronized
     fun start(truth: NetworkTruth) {
         sustainedWatch = null
         val quality = PassiveLinkQualityPolicy.assess(truth).quality
@@ -57,6 +58,7 @@ class MobileAssistEvidenceTracker {
         )
     }
 
+    @Synchronized
     fun observe(truth: NetworkTruth): MobileAssistEvidence? {
         val currentQuality = PassiveLinkQualityPolicy.assess(truth).quality
         val currentScore = PassiveQualityScorePolicy.score(truth).score
