@@ -1,44 +1,27 @@
 {
   "project": "KINLINK",
-  "tranche_id": "KINLINK-2026-09-21-25M-UX-CONTINUOUS-IMPROVEMENT",
+  "tranche_id": "KINLINK-2026-09-21-25M-WATCHDOG-AND-FINALIZATION",
   "cadence_minutes": 25,
+  "primary_work_budget_minutes": 20,
+  "closeout_reserve_minutes": 5,
+  "max_mutation_groups_before_forced_closeout": 12,
+  "mutation_groups_used": 1,
   "status": "RUNNING",
-  "gmail_start_message_id": "1a0c3f2bee1af99a",
+  "forced_closeout_entered": false,
+  "gmail_start_message_id": "1a0c40fc5bc4a549",
+  "gmail_end_message_id": null,
+  "end_mail_verified": false,
   "gmail_label": "KINLINK",
   "end_mail_required_before_app_reply": true,
-  "human_gate_exception_only": true,
-  "goal": "refine installed 0.7.1 UX and prove/implement bounded continuous improvement loop without overheating or hidden mobile probes",
-  "current_exact_machine_pass_head": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
-  "current_exact_machine_pass_runs": {
-    "design_lint": 35594766801,
-    "android_candidate": 35594766821
-  },
+  "system_interruption_guard": true,
+  "goal": "make communication interruption-safe and advance 0.7.2 toward final-like machine-clean state",
+  "prior_unclosed_tranche_recovery_note": "previous response exposed protocol weakness; current tranche adds reserved closeout window and mutation budget",
+  "technical_branch": "dev/0.7.2-continuous-improvement",
+  "installed_field_build": "0.7.1/versionCode9 remains frozen and installed",
   "notes": [
     "No APK by Gmail",
-    "No new install until exact signed Drive-staged candidate is ready",
-    "Intermediate user feedback must not erase the end-mail obligation"
-  ],
-  "final_technical_checkpoint": {
-    "functional_source": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
-    "design_lint_run": 35594766801,
-    "android_candidate_run": 35594766821,
-    "machine": "PASS",
-    "mobile_assist_level_1": "INCLUDED",
-    "signed_apk_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
-    "drive_file_id": "1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1",
-    "drive_readback": "PASS",
-    "next_gate": "ONE_IN_PLACE_0_7_1_INSTALL"
-  },
-  "gmail_end_message_id": "1a0c3de49c81719c",
-  "end_mail_verified": true,
-  "next_gate": "ONE_IN_PLACE_0_7_1_INSTALL_FROM_DRIVE",
-  "drive_candidate_file_id": "1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1",
-  "drive_readback_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
-  "evidence_targets": [
-    "real screenshot UX audit",
-    "web/youtube interface research",
-    "continuous improvement controller audit",
-    "resource-safe regression tests",
-    "exact-head CI status"
+    "No app reply before verified Gmail end",
+    "At reserve boundary stop technical mutations even if work remains",
+    "If interrupted, next session must send missing end mail before any new work"
   ]
 }
