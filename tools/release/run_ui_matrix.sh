@@ -2,7 +2,7 @@
 set -euo pipefail
 
 mkdir -p build/ui-proof
-APP_PROOF="/sdcard/Android/data/com.terminator364.kinlink/files/ui-proof"
+APP_PROOF="/sdcard/Download/KINLINK-ui-proof"
 
 archive_test_evidence() {
   local name="$1"
@@ -37,6 +37,7 @@ run_matrix() {
   adb shell wm density 420
   adb shell wm size "$size"
   adb shell settings put system font_scale "$font"
+  adb shell rm -rf "$APP_PROOF/$name" || true
   adb shell am force-stop com.terminator364.kinlink || true
 
   set +e

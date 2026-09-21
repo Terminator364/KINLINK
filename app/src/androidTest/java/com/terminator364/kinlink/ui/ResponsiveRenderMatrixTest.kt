@@ -1,7 +1,7 @@
 package com.terminator364.kinlink.ui
 
-import android.graphics.Bitmap
 import android.graphics.Rect
+import android.os.ParcelFileDescriptor
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
@@ -19,8 +19,7 @@ import com.terminator364.kinlink.core.RecoveryModeStore
 import com.terminator364.kinlink.core.ResourceGuardSnapshot
 import com.terminator364.kinlink.core.Transport
 import com.terminator364.kinlink.data.StabilityWindow
-import java.io.File
-import java.io.FileOutputStream
+import java.io.FileInputStream
 import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -281,16 +280,22 @@ class ResponsiveRenderMatrixTest {
     }
 
     private fun capture(name: String) {
-        val bitmap = instrumentation.uiAutomation.takeScreenshot()
-            ?: throw AssertionError("Unable to capture screenshot for ${name}")
-        val dir = File(targetContext.getExternalFilesDir(null), "ui-proof/${matrixId}")
-        assertTrue("Cannot create screenshot directory ${dir.absolutePath}", dir.mkdirs() || dir.isDirectory)
-        val out = File(dir, "${matrixId}-${name}.png")
-        FileOutputStream(out).use { stream ->
-            assertTrue("PNG compression failed for ${out.name}", bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream))
+        val dir = "/sdcard/Download/KINLINK-ui-proof/${matrixId}"
+        val path = "$dir/${matrixId}-${name}.png"
+        val output = runShell(
+            "mkdir -p $dir && screencap -p $path && test -s $path && echo CAPTURE_OK"
+        )
+        assertTrue("Screenshot persistence failed for $path", output.contains("CAPTURE_OK"))
+    }
+
+    private fun runShell(command: String): String {
+        val descriptor: ParcelFileDescriptor =
+            instrumentation.uiAutomation.executeShellCommand(command)
+        return try {
+            FileInputStream(descriptor.fileDescriptor).bufferedReader().use { it.readText() }
+        } finally {
+            descriptor.close()
         }
-        bitmap.recycle()
-        assertTrue("Screenshot missing: ${out.absolutePath}", out.isFile && out.length() > 0L)
     }
 
     private fun dp(activity: MainActivity, value: Int): Int =
