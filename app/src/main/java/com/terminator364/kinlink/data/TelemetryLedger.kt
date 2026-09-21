@@ -507,7 +507,10 @@ class TelemetryLedger(context: Context) : SQLiteOpenHelper(context, "kinlink_tel
             manualWifiDiagnosisCounts = actionCountsByPrefix("MANUAL_WIFI_DIAG_"),
             runtimeResourcePasses = countActions("RUNTIME_RESOURCE_GATE_PASS"),
             runtimeResourceInconclusive = countActions("RUNTIME_RESOURCE_GATE_INCONCLUSIVE"),
-            runtimeResourceBlocked = countActions("RUNTIME_RESOURCE_GATE_BLOCKED")
+            runtimeResourceBlocked = countActions("RUNTIME_RESOURCE_GATE_BLOCKED"),
+            fieldCandidateQualifiedReceipts = countSuccessfulActions("FIELD_CANDIDATE_QUALIFIED"),
+            fieldCandidateBlockedReceipts = countActions("FIELD_CANDIDATE_BLOCKED"),
+            cellularToWifiReturns = countSuccessfulActions("HANDOFF_CELLULAR_TO_WIFI")
         )
     }
 }
