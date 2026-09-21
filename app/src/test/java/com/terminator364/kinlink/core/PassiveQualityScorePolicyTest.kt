@@ -71,4 +71,21 @@ class PassiveQualityScorePolicyTest {
         ).score
         assertTrue(score in 0..100)
     }
+    @Test fun stalledStateCannotOutscoreValidatedState() {
+        val base = NetworkTruth(
+            transport = Transport.CELLULAR,
+            downstreamKbps = 20_000,
+            upstreamKbps = 5_000,
+            androidNotSuspended = true,
+            androidNotCongested = true
+        )
+        val stalled = PassiveQualityScorePolicy.score(
+            base.copy(internetState = InternetState.STALLED)
+        ).score
+        val validated = PassiveQualityScorePolicy.score(
+            base.copy(internetState = InternetState.VALIDATED)
+        ).score
+        assertTrue(stalled < validated)
+    }
+
 }
