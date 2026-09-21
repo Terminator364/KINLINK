@@ -2,13 +2,13 @@
   "project": "KINLINK",
   "line": "0.7.0-dev",
   "versionCode": 8,
-  "code_head": "b34dacc780ab2e931b1b698b6cbf81129054d937",
+  "code_head": "e1e2e7169d6a13f5fce8b808574cc63ed9fe915d",
   "latest_full_machine_pass": "c8999e902e92af51e34c95349073135df4de6ecc",
   "promotion_allowed": false,
   "gates": {
     "MACHINE": {
       "status": "PENDING",
-      "evidence": "design-lint PASS on b34dacc; Android CI still in progress"
+      "evidence": "current two-stage readiness head under CI; last full machine PASS c8999e9"
     },
     "MIGRATION": {
       "status": "PASS",
@@ -20,19 +20,21 @@
     },
     "FIELD_HANDOFF": {
       "status": "PENDING",
-      "evidence": "RC3 bidirectional handoff PASS; 0.7.0-dev not yet field-qualified"
+      "evidence": "RC3 bidirectional handoff PASS; must be requalified on the single consolidated 0.7 field candidate before canonical promotion"
     },
     "RESOURCE_QUALIFICATION": {
       "status": "PENDING",
-      "evidence": "one-shot >=30m automatic resource checkpoint integrated; target-device PASS receipt not yet collected"
+      "evidence": "automatic >=30m resource gate integrated; must be collected on the consolidated signed field candidate before canonical promotion"
     }
   },
   "invariants": [
-    "RC3 remains canonical rollback field build until all gates pass",
-    "no DEV APK promotion",
+    "RC3 remains canonical rollback field build until canonical promotion gates pass",
+    "at most one consolidated signed field candidate is produced for this tranche after pre-candidate gates pass",
+    "no DEV/debug APK replaces RC3",
     "no automatic cellular probe",
     "no automatic metered Wi-Fi probe",
     "no routing/network ownership APIs",
     "VPN/TUN remains disabled"
-  ]
+  ],
+  "field_candidate_allowed": false
 }
