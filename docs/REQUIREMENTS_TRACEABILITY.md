@@ -37,6 +37,8 @@ Status meanings:
 | CA-007 stale historical QUALIFIED | PROVEN | live verdict can be revoked by newer blocking evidence |
 | CA-008 DNS/socket wall-clock proof | PROVEN | outer probe deadline + forced disconnect + tests |
 | CA-009 stale default-network callback | PROVEN | callback network must still equal Android active default |
+| CA-010 stale manual post-handoff refresh | PROVEN | manual optimizer rechecks captured Wi-Fi before any final refresh |
+| CA-011 bounded diagnostic workers | PROVEN | HTTP/DNS helper work shares a max-2 fail-open executor; saturation rejects new work |
 | Exact signed 0.7.1 target-phone field gate | FIELD_PENDING | no human install until final exact-head CI/audit/signing is closed |
 
 ## User-facing product functions
