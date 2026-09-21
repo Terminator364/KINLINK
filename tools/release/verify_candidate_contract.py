@@ -149,9 +149,10 @@ require(
     "candidate contract: NetworkObserver reintroduced synchronous property queries inside callback flow",
 )
 require(
-    "shouldCancelPendingLoss(" in OBSERVER
-    and "network == cm.activeNetwork" in OBSERVER,
-    "candidate contract: stale callback can cancel pending loss-settle generation",
+    OBSERVER.count("if (network != cm.activeNetwork) return") >= 3
+    and "if (callbackNetwork == network)" in OBSERVER
+    and "generation != lossGeneration" in OBSERVER,
+    "candidate contract: stale callback can mutate or cancel current default-network state",
 )
 
 require(
