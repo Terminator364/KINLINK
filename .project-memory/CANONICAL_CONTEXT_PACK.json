@@ -1,6 +1,6 @@
 {
   "schema": "kinlink.canonical_context_pack/2",
-  "generated_at": "2026-09-22T00:45:00+01:00",
+  "generated_at": "2026-09-22T00:48:00+01:00",
   "project": "KINLINK",
   "immutable_A": {
     "preconception_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
@@ -56,15 +56,18 @@
     "current_focus": "W2 Mobile Vault UI/reconciliation proof closed at 7d589ddd; continue optional NetworkStats/per-SIM-safe evidence and complete Mobile Vault product surface."
   },
   "communication": {
-    "current_tranche": "KINLINK-2026-09-21-2327-K25-12",
-    "state": "CLOSE_INTENT_PERSISTED",
-    "gmail_start_message_id": "1a0c61541332ee94",
-    "watchdog": "KINLINK Comms Watchdog",
+    "current_tranche": "KINLINK-2026-09-22-0038-K25-14",
+    "state": "START_ACKNOWLEDGED_WORKING",
+    "gmail_start_message_id": "1a0c655d61b9e72e",
+    "protocol": "v6",
+    "deadline_mode": "20_PLUS_5_DURABLE",
+    "watchdog": "KINLINK Continuity & Comms",
     "watchdog_cardinality": 1,
     "watchdog_cadence": "HOURLY",
+    "watchdog_role": "FAILOVER_ONLY",
     "watchdog_policy": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json"
   },
-  "next_action": "Continue W2 large block after 7d589ddd 45-shot PASS; no phone install.",
+  "next_action": "continue W2 after 7d589ddd 45-shot PASS: optional capability-gated NetworkStats/per-subscription-safe evidence, then full Mobile Vault product surface; communication v6 20+5 deadline enforced; no install",
   "memory": {
     "policy": ".project-memory/MEMORY_POLICY_V2.json",
     "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",
