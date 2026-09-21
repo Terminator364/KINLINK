@@ -21,7 +21,7 @@ def require(ok: bool, message: str) -> None:
         raise SystemExit(message)
 
 require('versionCode = 10' in GRADLE, "candidate contract: versionCode 10 missing")
-require('versionName = "0.7.2-dev"' in GRADLE, "candidate contract: versionName 0.7.2-dev missing")
+require('versionName = "0.7.2"' in GRADLE, "candidate contract: versionName 0.7.2 missing")
 require(
     'transport != Transport.WIFI -> RecoveryBlockReason.NON_WIFI' in ACTIVE,
     "candidate contract: central non-Wi-Fi active-recovery block missing",
@@ -121,7 +121,7 @@ tests = list((ROOT / "app/src/test").rglob("*Test.kt"))
 require(len(tests) >= 64, f"candidate contract: regression suite unexpectedly shrank to {len(tests)} tests")
 
 print("candidate-contract: PASS")
-print("version: 0.7.2-dev / code 10")
+print("version: 0.7.2 / code 10")
 print(f"probe_socket_envelope_ms: {socket_envelope}")
 print(f"probe_hard_envelope_ms: {hard_envelope}")
 print(f"recovery_deadline_ms: {deadline_ms}")
