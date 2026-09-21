@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_2_FINAL_LIKE_FIELD_CANDIDATE_READY",
-  "status": "HUMAN_GATE_ONE_IN_PLACE_INSTALL_REQUIRED",
+  "phase": "KINLINK_0_7_2_INSTALLED_P0_UX_INVALID_0_7_3_DEV_ACTIVE",
+  "status": "ENGINEERING_ACTIVE_0_7_3_EXACT_HEAD_CI_PENDING",
   "candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "install exact Drive 0.7.2 field candidate in-place over installed 0.7.1; then collect versionCode 10 self-test/handoff/resource/continuous-evidence field proof; keep canonical 0.6.0-rc3 untouched until Stage B PASS",
+  "next_uncommitted_action": "recheck exact-head 0.7.3 CI for 6ef270d83461628aa8a6a6356b0d56dece6f0ca1; if PASS run final counter-audit then freeze/sign/Drive-readback one consolidated 0.7.3 candidate; do not ask user to reinstall before that",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -68,15 +68,21 @@
     "hero classifier surfaces validated-but-constrained Wi-Fi as degraded"
   ],
   "installed_field_baseline": {
-    "version": "0.7.1",
-    "versionCode": 9,
-    "signed_apk_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
+    "version": "0.7.2",
+    "versionCode": 10,
+    "signed_apk_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
     "installed": true,
     "usable": true,
     "canonical": false,
-    "stage_b": "SUPERSEDED_BY_0_7_2_BEFORE_PROMOTION",
-    "superseded_reason": "0.7.2 consolidates compact cockpit + continuous evidence/relapse + resource-path hardening requested after target-phone 0.7.1 screenshots",
-    "field_candidate_frozen": false
+    "near_final_candidate": false,
+    "invalidation": "P0_RESPONSIVE_HEADER_LAYOUT_FROM_TARGET_PHONE_SCREENSHOTS",
+    "observed_field_facts": {
+      "current_mobile_quality_score": 97,
+      "mobile_low_quality_episodes_24h": 22,
+      "mobile_low_quality_cumulative_ms_24h": 138043,
+      "interruptions_24h": 0,
+      "screenshots_confirm_version": "0.7.2"
+    }
   },
   "development_line": {
     "version": "0.7.1",
@@ -211,7 +217,7 @@
     "rule": "resume_from_latest_durable_main_without_restart"
   },
   "communication_protocol": {
-    "version": 2,
+    "version": 3,
     "tranche_style": "PRIMARY_NORMAL_CLOSE_25_MIN",
     "target_minutes": 25,
     "useful_work_minutes": 22,
@@ -219,9 +225,7 @@
     "normal_close_owner": "PRIMARY_ASSISTANT",
     "backup_earliest_offset_minutes": 26,
     "hard_guard_offset_minutes": 29,
-    "start": "SEND_GMAIL_START_AND_PERSIST_PROVIDER_ACK",
-    "end": "PRIMARY_SEND_NORMAL_END_AS_REPLY_TO_START_THREAD",
-    "idempotency": "DELIVERY_KEY_AND_THREAD_SEARCH_BEFORE_BACKUP_SEND",
+    "idempotency": "DELIVERY_KEY_GMAIL_SEARCH_PROVIDER_ACK",
     "app_response": "ONLY_CHECK_GMAIL_PLUS_KINSHASA_DATE_TIME",
     "gmail_label": "KINLINK",
     "apk_via_email": false
@@ -375,44 +379,25 @@
     }
   },
   "development_next_line": {
-    "branch": "dev/0.7.2-continuous-improvement",
-    "version": "0.7.2",
-    "versionCode": 10,
-    "head": "cc48c1dea1a151af25edc1942bb4efa983c5ff13",
-    "status": "FROZEN_FIELD_CANDIDATE",
-    "design_lint_runs": [
-      35610708971,
-      35610716886
-    ],
-    "android_ci_run": 35610708876,
-    "full_machine_verdict": "PASS",
-    "artifact_id": 10643704115,
-    "artifact_zip_sha256": "ad2fee91b3d51fa5c2528767dbe004d92366ee8ae46bb9450a35f11a86f7f18b",
-    "unsigned_apk_sha256": "d961ea42c09a6509a228f4bfe9b55b197598efaea2f942ef649e8c8983925779",
-    "signed_apk_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
-    "drive_file_id": "1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU",
-    "drive_readback_sha256": "a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b",
-    "drive_readback": "PASS",
-    "install_requested": true,
-    "merge_to_main": false,
+    "branch": "dev/0.7.3-final-like-ui-control",
+    "version": "0.7.3-dev",
+    "versionCode": 11,
+    "head": "6ef270d83461628aa8a6a6356b0d56dece6f0ca1",
+    "status": "EXACT_HEAD_CI_PENDING",
+    "design_lint_run": 35616879792,
+    "android_ci_run": 35616879783,
     "integrated": [
-      "compact status/action/proof cockpit",
-      "contextual primary action only",
-      "technical details collapsed by default",
-      "passive quality score 0..100 without speedtest",
-      "truthful requestBandwidthUpdate semantics",
-      "sustained correlated improvement evidence",
-      "transient relapse detection",
-      "post-sustained relapse detection",
-      "bounded three-shot post-action framework sampling",
-      "manual Mobile Assist proof-loop integration",
-      "healthy mobile callback fast path",
-      "moderate thermal protection",
-      "resource-abort evidence",
-      "synchronized evidence tracker",
-      "atomic generation fencing",
-      "large-font cockpit hardening"
-    ]
+      "P0 responsive header fix: vertical full-width product/version stack",
+      "before/current/delta control proof card",
+      "maintained-duration and relapse states",
+      "current-now versus 24h-history separation",
+      "explicit Conservateur/Stable/Max selector",
+      "profile-aware bounded mobile vigilance",
+      "exact battery/thermal/low-memory protection reason",
+      "responsive UI static regression gate"
+    ],
+    "install_requested": false,
+    "merge_to_main": false
   },
   "final_0_7_2_candidate": {
     "version": "0.7.2",
