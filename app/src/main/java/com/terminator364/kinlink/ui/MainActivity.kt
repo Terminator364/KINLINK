@@ -467,6 +467,15 @@ class MainActivity : Activity() {
                     )
                 }
 
+                if (refreshed) {
+                    ContextCompat.startForegroundService(
+                        this,
+                        Intent(this, KinlinkObserverService::class.java).apply {
+                            action = KinlinkObserverService.ACTION_TRACK_MANUAL_MOBILE_ASSIST
+                        }
+                    )
+                }
+
                 val quality = PassiveLinkQualityPolicy.assess(latestTruth)
                 adviceTitleText.text = "Mobile Assist · mesure actualisée"
                 adviceText.text = if (refreshed)
