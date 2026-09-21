@@ -106,7 +106,7 @@ class NetworkObserver(
             registered = true
         }.onFailure {
             // Fail-open: no retry loop and no Android network change.
-            deliver(NetworkTruth())
+            publishTruth(NetworkTruth())
         }
     }
 
