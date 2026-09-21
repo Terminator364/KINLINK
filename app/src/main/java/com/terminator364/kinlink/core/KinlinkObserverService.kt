@@ -92,7 +92,9 @@ class KinlinkObserverService : Service() {
                 ledger.appendAction(event.action, event.success, event.summary)
             }
         }
-        val platformDiagnosticsStarted = platformDiagnostics?.start() == true
+        val platformDiagnosticsStarted = platformDiagnostics?.start(
+            PlatformDiagnosticsEligibility.LITE_OBSERVER_INELIGIBLE
+        ) == true
         runCatching {
             ledger.appendAction(
                 "PLATFORM_DIAGNOSTICS_OBSERVER",
@@ -100,7 +102,7 @@ class KinlinkObserverService : Service() {
                 if (platformDiagnosticsStarted)
                     "Android ConnectivityDiagnostics actif; observation native sans probe KINLINK."
                 else
-                    "ConnectivityDiagnostics indisponible; KINLINK continue en mode fail-open."
+                    "ConnectivityDiagnostics non activé en Lite Observer : Android réserve les callbacks utiles aux apps qui fournissent la connectivité (VPN actif/carrier/Wi‑Fi suggester). KINLINK continue avec NetworkCallback/LinkProperties en fail-open."
             )
         }
         mobileBudget = MobileBudgetTracker(this)
