@@ -234,3 +234,20 @@ Repair integrated:
 - workers are daemonized and expire after a short idle keep-alive;
 - existing per-attempt wall-clock timeouts and connection disconnect remain in force;
 - regression tests and candidate-contract CI fence the concurrency bound.
+
+
+### CA-012 — active default could change during callback truth reduction
+
+CA-009 rejected callbacks whose network was already stale when processing began. A narrower race remained: Android's active default could change after the first equality check but before the reduced truth was delivered.
+
+That window is small, but qualification receipts are proof-carrying and must not accept a truth snapshot that became stale during reduction.
+
+**Verdict: blocking evidence-race defect for the consolidated successor.**
+
+Repair integrated:
+- explicit callback networks are checked against Android's active default before reduction;
+- they are checked again after reduction and immediately before fingerprint/delivery;
+- a callback that ceased to be the active default during the reduction window is discarded;
+- current-default refreshes without a callback-supplied network remain allowed;
+- regression tests cover before/after identity combinations;
+- candidate-contract CI requires the two-phase active-default fence.
