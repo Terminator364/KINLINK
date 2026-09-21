@@ -133,6 +133,25 @@
                 android:text="Protection mobile" />
 
             <TextView
+                android:id="@+id/qualityScoreText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Qualité passive · --/100"
+                android:textColor="#123B78"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/qualityProgress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="5dp"
+                android:max="100"
+                android:progress="0" />
+
+            <TextView
                 android:id="@+id/mobileBudgetText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
