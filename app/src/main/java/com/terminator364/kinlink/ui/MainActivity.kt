@@ -67,6 +67,7 @@ import com.terminator364.kinlink.core.HandoffKind
 import com.terminator364.kinlink.core.HandoffOutcome
 import com.terminator364.kinlink.core.RuntimeResourceVerdict
 import com.terminator364.kinlink.core.SessionHealthPolicy
+import com.terminator364.kinlink.core.UserExperienceTruthPolicy
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.NotificationPermissionPolicy
 import com.terminator364.kinlink.core.WifiDoctor
@@ -124,6 +125,7 @@ class MainActivity : Activity() {
     )
     private var latestStability: StabilityWindow? = null
     private var latestReliability: RecentReliabilityWindow? = null
+    private var latestUserIncidentTsWallMs: Long? = null
     private var installedVersionName: String = "?"
     private var installedVersionCode: Long = -1L
     private var lastQualificationUiRefreshElapsed: Long = 0L
@@ -196,6 +198,9 @@ class MainActivity : Activity() {
         evidenceReceiverRegistered = true
 
         ledger = TelemetryLedger(this)
+        latestUserIncidentTsWallMs = runCatching {
+            ledger.latestActionReceipt("USER_INCIDENT_MARKER")?.tsWallMs
+        }.getOrNull()
         mobileBudget = MobileBudgetTracker(this)
         profileStore = AutopilotProfileStore(this)
         recoveryModeStore = RecoveryModeStore(this)
@@ -340,7 +345,7 @@ class MainActivity : Activity() {
     }
 
     private fun profileLabel(profile: AutopilotProfile): String = when (profile) {
-        AutopilotProfile.CONSERVATIVE -> "Conservateur"
+        AutopilotProfile.CONSERVATIVE -> "Prudent"
         AutopilotProfile.BALANCED -> "Stable"
         AutopilotProfile.MAXIMUM_STABILITY -> "Max"
     }
@@ -380,9 +385,11 @@ class MainActivity : Activity() {
                 summary
             )
         }.onSuccess {
+            latestUserIncidentTsWallMs = System.currentTimeMillis()
+            render(latestTruth, latestBudget, latestStability)
             Toast.makeText(
                 this,
-                "État enregistré. Tu pourras l’exporter dans les détails techniques.",
+                "Problème pris en compte : ton ressenti prime sur les estimations Android.",
                 Toast.LENGTH_LONG
             ).show()
         }.onFailure {
@@ -401,30 +408,29 @@ class MainActivity : Activity() {
     private fun configureMobileBudget() {
         val input = EditText(this).apply {
             inputType = InputType.TYPE_CLASS_NUMBER
-            hint = "Ex. 100"
-            mobileBudget.configuredDailyLimitMiB()?.let { setText(it.toString()) }
+            hint = "Ex. 500 MB"
+            mobileBudget.configuredDailyLimitMB()?.let { setText(it.toString()) }
         }
 
         AlertDialog.Builder(this)
-            .setTitle("Protection des données mobiles")
+            .setTitle("Limite de données mobiles")
             .setMessage(
-                "Seuil de prudence optionnel en MiB. Il s’appuie sur la variation du compteur mobile global Android observée par KINLINK. " +
-                    "Ce n’est ni la consommation propre de KINLINK ni le solde opérateur. KINLINK ne lance jamais de speedtest mobile."
+                "Entre une limite quotidienne en MB. À partir de 1000 MB, KINLINK affiche aussi les valeurs en GB. " +
+                    "C’est le trafic mobile global vu par Android, pas ton solde opérateur."
             )
             .setView(input)
             .setPositiveButton("Enregistrer") { _, _ ->
                 val value = input.text.toString().trim().toIntOrNull()
-                mobileBudget.setDailyLimitMiB(value)
+                mobileBudget.setDailyLimitMB(value)
                 refreshBudgetUi()
             }
-            .setNeutralButton("Sans plafond") { _, _ ->
-                mobileBudget.setDailyLimitMiB(null)
+            .setNeutralButton("Sans limite") { _, _ ->
+                mobileBudget.setDailyLimitMB(null)
                 refreshBudgetUi()
             }
             .setNegativeButton("Annuler", null)
             .show()
     }
-
     private fun refreshBudgetUi() {
         val snapshot = mobileBudget.sample()
         latestBudget = snapshot
@@ -509,6 +515,18 @@ class MainActivity : Activity() {
             latestTruth.budgetState == BudgetState.BUNDLE_LOW ||
                 latestTruth.budgetState == BudgetState.BUNDLE_EXHAUSTED ||
                 latestTruth.budgetState == BudgetState.BUNDLE_EXPIRED
+        val recentIneffective = runCatching {
+            ledger.countExactActionSince(
+                MobileAssistController.EVIDENCE_NO_BETTER,
+                nowWall - 24L * 60L * 60L * 1000L
+            ) + ledger.countExactActionSince(
+                MobileAssistController.EVIDENCE_RELAPSED,
+                nowWall - 24L * 60L * 60L * 1000L
+            )
+        }.getOrDefault(0)
+        val recentUserIssue = latestUserIncidentTsWallMs?.let {
+            (nowWall - it).coerceAtLeast(0L) <= 60L * 60L * 1000L
+        } ?: false
 
         val decision = MobileAssistManualPolicy.decide(
             isCellular = activeCellular,
@@ -520,7 +538,8 @@ class MainActivity : Activity() {
             resourceConstrained = resourceConstrained,
             recentActions = recentActions,
             millisSinceLastAction = sinceLast,
-            profile = currentProfile
+            profile = currentProfile,
+            preferSystemPanel = recentIneffective >= 2 || recentUserIssue
         )
 
         when (decision.action) {
@@ -598,12 +617,11 @@ class MainActivity : Activity() {
                     )
                 }
 
-                val quality = PassiveLinkQualityPolicy.assess(latestTruth)
                 adviceTitleText.text = "Mobile Assist · mesure actualisée"
                 adviceText.text = if (refreshed)
-                    "Android a accepté une actualisation des métriques. Cela améliore l’observation, pas directement le débit. Qualité passive : ${quality.quality.name}."
+                    "Android a actualisé ses métriques. Cela améliore l’observation, pas directement le débit : KINLINK attend une preuve réelle avant de parler d’amélioration."
                 else
-                    "Android n’a pas accepté l’actualisation. Aucun changement réseau n’a été forcé. Qualité passive : ${quality.quality.name}."
+                    "Android n’a pas accepté l’actualisation. Aucun changement réseau n’a été forcé et aucun gain n’est annoncé."
             }
 
             MobileAssistManualAction.NONE -> {
@@ -675,6 +693,14 @@ class MainActivity : Activity() {
         val vaultDecision = MobileVault.decide(truth, assessment)
         val passiveQuality = PassiveLinkQualityPolicy.assess(truth)
         val passiveScore = PassiveQualityScorePolicy.score(truth)
+        val recentUserIssue = latestUserIncidentTsWallMs?.let {
+            (System.currentTimeMillis() - it).coerceAtLeast(0L) <= 60L * 60L * 1000L
+        } ?: false
+        val userExperience = UserExperienceTruthPolicy.assess(
+            truth = truth,
+            reliability = latestReliability,
+            recentUserIssue = recentUserIssue
+        )
         val passiveProblem = PassiveProblemClassifier.classify(
             truth,
             instabilityScore = stability?.assessment?.score ?: 0,
@@ -696,18 +722,16 @@ class MainActivity : Activity() {
             recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY
 
         heroEyebrow.text = if (observationOnly) "MODE SÛR" else "AUTOPILOT"
-        stateText.text =
-            if (observationOnly) "Observation uniquement" else assessment.headline
+        stateText.text = if (observationOnly) {
+            "Observation · ${userExperience.headline}"
+        } else {
+            userExperience.headline
+        }
 
         val qualityLabel = passiveQuality.quality.name
             .lowercase()
             .replaceFirstChar { it.uppercase() }
-        heroDetailText.text = if (observationOnly) {
-            "${transportLabel(truth)} · surveillance passive · Android garde le contrôle"
-        } else {
-            "${transportLabel(truth)} · qualité passive $qualityLabel · sans speedtest"
-        }
-
+        heroDetailText.text = userExperience.detail
         transportText.text = "Réseau · ${transportLabel(truth)}"
         internetText.text = "Internet · ${internetLabel(truth)}"
         mobileText.text = when (truth.budgetState) {
@@ -720,9 +744,8 @@ class MainActivity : Activity() {
                 else -> "Mobile · protégé · aucune prise de contrôle"
             }
         }
-        qualityScoreText.text =
-            "Qualité · " + passiveScore.score + "/100 · " + qualityLabel
-        qualityProgress.progress = passiveScore.score
+        qualityScoreText.text = "Expérience · " + userExperience.statusLabel
+        qualityProgress.visibility = View.GONE
         mobileBudgetText.text = mobileBudgetLabel(budget)
 
         val latestEvidence = runCatching {
@@ -743,47 +766,31 @@ class MainActivity : Activity() {
             latestEvidenceSummary = latestEvidence?.summary,
             latestEvidenceAgeMillis = evidenceAge
         )
-        beforeScoreText.text = controlPanel.beforeScore?.toString() ?: "—"
-        nowScoreText.text = controlPanel.nowScore.toString()
-        deltaScoreText.text = controlPanel.delta?.let {
-            if (it > 0) "+" + it else it.toString()
-        } ?: "—"
-        maintainedText.text = controlPanel.maintenance
+        val confirmedBenefit =
+            latestEvidence?.action?.endsWith("SUSTAINED_BETTER") == true
+        beforeScoreText.text =
+            if (confirmedBenefit) controlPanel.beforeScore?.toString() ?: "—" else "—"
+        nowScoreText.text =
+            if (confirmedBenefit) controlPanel.nowScore.toString() else "—"
+        deltaScoreText.text =
+            if (confirmedBenefit) {
+                controlPanel.delta?.let { if (it > 0) "+$it" else it.toString() } ?: "—"
+            } else {
+                "—"
+            }
+        maintainedText.text =
+            if (confirmedBenefit) controlPanel.maintenance
+            else "Amélioration · aucun gain causal confirmé"
         evidenceText.text =
-            if (resourceConstrained)
+            if (resourceConstrained) {
                 "Protection · " + resourceGuardReason(resourceSnapshot)
-            else
+            } else if (confirmedBenefit) {
                 controlPanel.evidence
-
+            } else {
+                mobileAssistEvidenceLabel()
+            }
         val reliability = latestReliability
-        reliabilityText.text = if (reliability == null) {
-            "24 h · historique en préparation"
-        } else {
-            val burden = RecentReliabilityPolicy.classify(
-                reliability.interruptionCount,
-                reliability.cumulativeMillis,
-                reliability.longestMillis,
-                reliability.lowQualityEpisodeCount +
-                    reliability.mobileLowQualityEpisodeCount,
-                reliability.lowQualityCumulativeMillis +
-                    reliability.mobileLowQualityCumulativeMillis,
-                maxOf(
-                    reliability.lowQualityLongestMillis,
-                    reliability.mobileLowQualityLongestMillis
-                )
-            )
-            val nowLabel =
-                if (passiveScore.score >= 75 && truth.internetState.name == "VALIDATED")
-                    "Maintenant bon"
-                else
-                    "Maintenant à surveiller"
-            nowLabel +
-                " · 24 h " + burden.name.lowercase() +
-                " · coupures=" + reliability.interruptionCount +
-                " · Wi‑Fi lent=" + reliability.lowQualityEpisodeCount +
-                " · mobile lent=" + reliability.mobileLowQualityEpisodeCount
-        }
-
+        reliabilityText.text = reliabilityHumanLabel(reliability)
         when (
             CockpitPrimaryActionPolicy.select(
                 truth.transport,
@@ -811,27 +818,21 @@ class MainActivity : Activity() {
         } else {
             adviceTitleText.text = controlPanel.title
 
-            val handling = when (truth.transport) {
-                com.terminator364.kinlink.core.Transport.CELLULAR ->
-                    if (passiveQuality.quality == PassiveLinkQuality.COMFORTABLE) {
-                        "Liaison mobile utilisable : aucune action inutile. Si elle rechute, KINLINK réévalue après ses garde-fous."
-                    } else {
-                        passiveGuidance.message
-                    }
-                com.terminator364.kinlink.core.Transport.WIFI ->
-                    if (passiveQuality.quality == PassiveLinkQuality.COMFORTABLE) {
-                        "Wi‑Fi utilisable : surveillance. KINLINK n’agit que si la dégradation persiste."
-                    } else {
-                        passiveGuidance.message
-                    }
-                else -> passiveGuidance.message
+            val handling = when {
+                recentUserIssue ->
+                    "Ton signalement est prioritaire : KINLINK ne classe plus la connexion comme bonne sur la seule base des estimations Android."
+                userExperience.degraded ->
+                    userExperience.detail
+                else ->
+                    userExperience.detail
             }
             adviceText.text = handling + "\nMode " + profileLabel(currentProfile) + " · " + mobileAssistEvidenceLabel()
         }
 
         detailText.text = buildString {
-            append("État KINLINK : ${assessment.state.name}\n")
-            append("Profil Autopilot : ${currentProfile.name}\n")
+            append("État technique KINLINK : ${assessment.state.name}\n")
+            append("Expérience utilisateur : ${userExperience.statusLabel}\n")
+            append("Profil Autopilot : ${profileLabel(currentProfile)}\n")
             append("Mode récupération : ${recoveryModeStore.current().name}\n")
             append("Réseau local : ${lanLabel(truth)}\n")
             append("Contexte : ${contextLabel(truth)}\n")
@@ -839,9 +840,9 @@ class MainActivity : Activity() {
             append("Confiance Android : ${(truth.confidence * 100).toInt()} %\n")
             append("Budget mobile : ${truth.budgetState.name}\n")
             append("Autopilot : ${adaptiveDecision.intent.name}\n")
-            append("Capacité Android : ↓${truth.downstreamKbps} kbps / ↑${truth.upstreamKbps} kbps\n")
-            append("Qualité passive : ${passiveQuality.quality.name} · ${passiveQuality.summary}\n")
-            append("Indice passif : ${passiveScore.score}/100 · ${passiveScore.summary}\n")
+            append("Estimation Android : ↓${truth.downstreamKbps} kbps / ↑${truth.upstreamKbps} kbps · indication, pas débit réel\n")
+            append("Classe technique interne : ${passiveQuality.quality.name} · ne prouve pas la qualité ressentie\n")
+            append("Indice technique interne : ${passiveScore.score}/100 · non présenté comme score de qualité utilisateur\n")
             append("Cause passive : ${passiveProblem.cause.name} · confiance ${passiveProblem.confidence}%\n")
             append("Cause passive détail : ${passiveProblem.summary}\n")
             append("Santé de session : ${sessionHealth.health.name} · ${sessionHealth.summary}\n")
@@ -952,17 +953,47 @@ class MainActivity : Activity() {
 
     private fun mobileBudgetLabel(snapshot: MobileBudgetSnapshot): String {
         if (!snapshot.supported) {
-            return "Data mobile · compteur Android indisponible"
+            return "Données mobiles · compteur Android indisponible"
         }
-        val used = String.format(Locale.US, "%.1f", snapshot.usedTodayMiB)
-        val limit = snapshot.dailyLimitMiB
+        val used = formatMobileBytes(snapshot.usedTodayBytes)
+        val limit = snapshot.dailyLimitBytes?.let(::formatMobileBytes)
         return if (limit == null) {
-            "Data mobile · $used MiB observés · seuil OFF"
+            "Données mobiles · $used observés · aucune limite"
         } else {
-            "Data mobile · $used / $limit MiB observés"
+            "Données mobiles · $used / $limit observés"
         }
     }
 
+    private fun formatMobileBytes(bytes: Long): String {
+        val safe = bytes.coerceAtLeast(0L).toDouble()
+        return if (safe >= 1_000_000_000.0) {
+            String.format(Locale.US, "%.2f GB", safe / 1_000_000_000.0)
+        } else {
+            String.format(Locale.US, "%.0f MB", safe / 1_000_000.0)
+        }
+    }
+
+    private fun reliabilityHumanLabel(reliability: RecentReliabilityWindow?): String {
+        if (reliability == null) return "Historique 24 h · collecte en cours"
+        val burden = RecentReliabilityPolicy.classify(
+            reliability.interruptionCount,
+            reliability.cumulativeMillis,
+            reliability.longestMillis,
+            reliability.lowQualityEpisodeCount + reliability.mobileLowQualityEpisodeCount,
+            reliability.lowQualityCumulativeMillis + reliability.mobileLowQualityCumulativeMillis,
+            maxOf(reliability.lowQualityLongestMillis, reliability.mobileLowQualityLongestMillis)
+        )
+        val burdenLabel = when (burden) {
+            com.terminator364.kinlink.core.RecentReliabilityBurden.QUIET -> "calme"
+            com.terminator364.kinlink.core.RecentReliabilityBurden.NOTICEABLE -> "à surveiller"
+            com.terminator364.kinlink.core.RecentReliabilityBurden.UNSTABLE -> "instable"
+            com.terminator364.kinlink.core.RecentReliabilityBurden.SEVERE -> "très instable"
+        }
+        return "Historique 24 h · $burdenLabel · " +
+            "${reliability.interruptionCount} coupure(s) · " +
+            "${reliability.lowQualityEpisodeCount} épisode(s) Wi‑Fi lent · " +
+            "${reliability.mobileLowQualityEpisodeCount} épisode(s) mobile lent"
+    }
     private fun installSystemBarInsets() {
         val root = findViewById<ScrollView>(R.id.rootScroll)
         root.setOnApplyWindowInsetsListener { view, insets ->
