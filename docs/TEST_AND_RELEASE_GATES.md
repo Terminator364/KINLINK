@@ -59,9 +59,23 @@ Target-phone in-place update and field behavior.
 - manifest must not request CHANGE_NETWORK_STATE, CHANGE_WIFI_STATE, MODIFY_PHONE_STATE or WRITE_SETTINGS
 
 
-## 0.7.0-dev consolidated signed-candidate gate
+## 0.7.0-dev two-stage consolidated release gate
 
-Promotion is blocked unless all five readiness gates are PASS in the durable release-readiness ledger:
+The release flow is deliberately split so field evidence is not required before a field candidate exists.
+
+### Stage A — one signed field candidate
+
+A single consolidated signed field candidate may be produced only when these pre-candidate gates are PASS:
+
+- MACHINE
+- MIGRATION
+- SIGNER_CONTINUITY
+
+This stage does not promote or replace the canonical RC3 artifact. It creates the one build needed to collect device evidence without a chain of micro-betas.
+
+### Stage B — canonical promotion
+
+The signed field candidate may replace RC3 only when all five gates are PASS:
 
 - MACHINE
 - MIGRATION
@@ -69,11 +83,15 @@ Promotion is blocked unless all five readiness gates are PASS in the durable rel
 - FIELD_HANDOFF
 - RESOURCE_QUALIFICATION
 
-The ledger is stored at:
+The durable ledger is stored at:
 `.project-memory/RELEASE_READINESS_0_7_0_DEV.json`
 
 `tools/release/verify_release_readiness.py --audit` verifies ledger consistency during design-lint.
 
-`tools/release/verify_release_readiness.py --require-ready` is the promotion fence: it must fail while any mandatory gate is PENDING or BLOCKED.
+`tools/release/verify_release_readiness.py --require-field-candidate` fences Stage A.
+
+`tools/release/verify_release_readiness.py --require-promotion` fences Stage B.
+
+The manual `consolidated-release-readiness` workflow asks which stage is being checked and never signs, installs or promotes an APK itself.
 
 Resource qualification is not satisfied by a short session, by charging/inconclusive battery evidence, or by a raw callback count that ignores session duration.
