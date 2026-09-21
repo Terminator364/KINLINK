@@ -94,3 +94,17 @@ If Android broadcasts ACTION_POWER_DISCONNECTED while the observer service is ru
 - records a local version-scoped baseline-reset receipt.
 
 No network probe is launched by this reset.
+
+
+## Resource verdict recovery
+
+A historical BLOCKED receipt is not permanently sticky. The field-candidate gate compares the timestamps of the most recent version-scoped PASS and BLOCKED resource receipts:
+- a newer BLOCKED remains blocking;
+- a newer clean PASS supersedes an older BLOCKED;
+- no PASS remains PENDING/INCONCLUSIVE.
+
+This permits a controlled clean re-measurement after an adverse or abnormal session without erasing the earlier evidence.
+
+## Receipt persistence fail-open
+
+Qualification state is only marked persisted after SQLite confirms the receipt write. If a runtime resource receipt cannot be persisted, KINLINK does not claim that checkpoint as complete and schedules a bounded local retry. Self-test completion flags likewise advance only after their evidence receipt is stored.
