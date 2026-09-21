@@ -74,7 +74,8 @@ object ContinuousControlPanelPolicy {
                     before,
                     safeNow,
                     delta,
-                    "Maintien · qualité toujours au-dessus du niveau avant action",
+                    "Maintien · qualité au-dessus du niveau avant action" +
+                        ageSuffix(latestEvidenceAgeMillis),
                     "Preuve · amélioration soutenue corrélée, surveillance de rechute active"
                 )
 
@@ -157,6 +158,15 @@ object ContinuousControlPanelPolicy {
                     "Maintien · attente d’une preuve suffisante",
                     evidenceLabel(latestEvidenceAction, latestEvidenceAgeMillis)
                 )
+        }
+    }
+
+    private fun ageSuffix(ageMillis: Long?): String {
+        val age = ageMillis?.coerceAtLeast(0L) ?: return ""
+        return when {
+            age < 60_000L -> " · <1 min"
+            age < 3_600_000L -> " · " + (age / 60_000L) + " min"
+            else -> " · " + (age / 3_600_000L) + " h"
         }
     }
 
