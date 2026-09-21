@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_0_FINAL_FIELD_CANDIDATE_READY",
-  "status": "HUMAN_FIELD_GATE_REQUIRED",
+  "phase": "KINLINK_0_7_0_INSTALLED_COUNTER_AUDIT_BLOCKING_REPAIR",
+  "status": "ENGINEERING_REPAIR_ACTIVE_NO_HUMAN_GATE_YET",
   "candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "deliver/install exact signed KINLINK 0.7.0 field candidate SHA256 cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc over RC3 without uninstall; then collect versionCode 8 FIELD_HANDOFF + >=30min RESOURCE_QUALIFICATION receipts; do not replace canonical RC3 until Stage B PASS",
+  "next_uncommitted_action": "repair CA-001..CA-004 in one consolidated successor with new versionCode, full GitHub CI/audit/counter-audit, stable signer, Drive FIELD_CANDIDATE delivery; ask for human install only after replacement is fully proven",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -73,10 +73,11 @@
     "immutable": true
   },
   "development_line": {
-    "version": "0.7.0",
-    "versionCode": 8,
-    "promotion": "FIELD_CANDIDATE_READY_CANONICAL_PROMOTION_FORBIDDEN",
-    "head": "4153720cde8c6bd0004b8e69baeadf5254735abe",
+    "version": "0.7.1-dev",
+    "versionCode": 9,
+    "promotion": "REPAIR_BATCH_IN_PROGRESS_NO_INSTALL_YET",
+    "base": "4153720cde8c6bd0004b8e69baeadf5254735abe",
+    "objective": "close CA-001..CA-004 without micro-beta chain",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -190,10 +191,14 @@
   "communication_protocol": {
     "tranche_style": "LONG_25_MIN_COHERENT",
     "target_minutes": 25,
-    "start": "SEND_GMAIL_FIRST",
-    "end": "SEND_COMPLETE_GMAIL_REPORT_FIRST",
+    "feedback_policy": "IGNORE_INTERMEDIATE_FEEDBACK_FOR_TRANCHE_FLOW_UNLESS_TRUE_HUMAN_GATE",
+    "start": "SEND_GMAIL_FIRST_BEFORE_WORK",
+    "end": "SEND_COMPLETE_GMAIL_REPORT_BEFORE_ANY_APP_MESSAGE",
     "app_response": "ONLY_CHECK_GMAIL_PLUS_KINSHASA_DATE_TIME",
-    "duplicate_report_in_app": false
+    "human_gate_exception": "ONLY_WHEN_OBJECTIVELY_REQUIRED_TO_CONTINUE",
+    "duplicate_report_in_app": false,
+    "gmail_label": "KINLINK",
+    "apk_via_email": false
   },
   "release_flow": {
     "stage_a_field_candidate": {
@@ -204,7 +209,7 @@
       ],
       "result": "ONE_CONSOLIDATED_SIGNED_FIELD_CANDIDATE",
       "canonical_replacement": false,
-      "status": "PASS"
+      "status": "INVALIDATED_FOR_V8_REPLACEMENT"
     },
     "stage_b_canonical_promotion": {
       "required": [
@@ -215,7 +220,7 @@
         "RESOURCE_QUALIFICATION"
       ],
       "result": "CANONICAL_PROMOTION",
-      "status": "PENDING"
+      "status": "BLOCKED_COUNTER_AUDIT"
     }
   },
   "preliminary_signed_candidate": {
@@ -238,10 +243,22 @@
     "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
     "signature": "APK_SIGNATURE_SCHEME_V3_PASS",
     "signers": 1,
-    "delivered": false,
-    "installed": false,
+    "delivered": true,
+    "installed": true,
     "canonical": false,
     "stage_a": "PASS",
-    "stage_b": "PENDING_FIELD_HANDOFF_AND_RESOURCE"
+    "stage_b": "BLOCKED_BY_POST_INSTALL_COUNTER_AUDIT",
+    "promotion_invalidated": true,
+    "counter_audit_findings": [
+      "CA-001",
+      "CA-002",
+      "CA-003",
+      "CA-004"
+    ]
+  },
+  "gmail": {
+    "project_label": "KINLINK",
+    "labeled_messages_backfill": 60,
+    "future_rule": "label every KINLINK tranche mail; Gmail is reports only, never APK delivery"
   }
 }
