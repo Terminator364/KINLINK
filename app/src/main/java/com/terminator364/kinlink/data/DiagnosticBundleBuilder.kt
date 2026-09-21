@@ -73,8 +73,8 @@ object DiagnosticBundleBuilder {
             "\"recent24h_low_quality_ms\":${summary.recent24hLowQualityMillis}," +
             "\"recent24h_mobile_low_quality_episodes\":${summary.recent24hMobileLowQualityEpisodeCount}," +
             "\"recent24h_mobile_low_quality_ms\":${summary.recent24hMobileLowQualityMillis}," +
-            "\"mobile_assist_actions\":${summary.recentActions.count { it.action.startsWith("MOBILE_ASSIST_ACTION_") }}," +
-            "\"mobile_assist_outcomes\":${summary.recentActions.count { it.action.startsWith("MOBILE_ASSIST_OUTCOME_") }}" +
+            "\"recent_mobile_assist_actions\":${summary.recentActions.count { it.action.startsWith("MOBILE_ASSIST_ACTION_") }}," +
+            "\"recent_mobile_assist_outcomes\":${summary.recentActions.count { it.action.startsWith("MOBILE_ASSIST_OUTCOME_") }}" +
         "}\n"
     }
 
