@@ -306,7 +306,15 @@ class KinlinkObserverService : Service() {
                 runtimeResourcePasses =
                     ledger.countSuccessfulActions(QualificationReceiptNames.resourceGate(RuntimeResourceVerdict.PASS, runningVersionCode)),
                 runtimeResourceBlocks =
-                    ledger.countActions(QualificationReceiptNames.resourceGate(RuntimeResourceVerdict.BLOCKED, runningVersionCode))
+                    ledger.countActions(QualificationReceiptNames.resourceGate(RuntimeResourceVerdict.BLOCKED, runningVersionCode)),
+                latestRuntimeResourcePassMillis =
+                    ledger.latestActionTimestamp(
+                        QualificationReceiptNames.resourceGate(RuntimeResourceVerdict.PASS, runningVersionCode)
+                    ),
+                latestRuntimeResourceBlockMillis =
+                    ledger.latestActionTimestamp(
+                        QualificationReceiptNames.resourceGate(RuntimeResourceVerdict.BLOCKED, runningVersionCode)
+                    )
             )
         )
 
