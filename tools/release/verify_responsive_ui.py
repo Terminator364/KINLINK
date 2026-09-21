@@ -42,8 +42,9 @@ require(ANDROID + "maxLines" not in advice.attrib,
         "responsive-ui: control evidence must not be clipped by maxLines")
 
 for name in [
-    "wifiDoctorButton", "mobileAssistButton", "profileButton",
-    "safeModeButton", "budgetButton", "incidentMarkerButton"
+    "wifiDoctorButton", "mobileAssistButton", "modeConservativeButton",
+    "modeBalancedButton", "modeMaxButton", "safeModeButton",
+    "budgetButton", "incidentMarkerButton"
 ]:
     node = by_id(name)
     minimum = node.attrib.get(ANDROID + "minHeight")
@@ -55,5 +56,11 @@ require("Mobile Assist · améliorer maintenant" not in text,
         "responsive-ui: UI overclaims throughput improvement")
 require('android:text="AVANT"' in text and 'android:text="MAINTENANT"' in text,
         "responsive-ui: before/now proof labels missing")
+require(
+    'android:id="@+id/modeConservativeButton"' in text
+    and 'android:id="@+id/modeBalancedButton"' in text
+    and 'android:id="@+id/modeMaxButton"' in text,
+    "responsive-ui: explicit mode selector missing",
+)
 
 print("responsive-ui: PASS")
