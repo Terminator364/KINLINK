@@ -1,13 +1,13 @@
 {
   "project": "KINLINK",
-  "tranche_id": "KINLINK-2026-09-21-25M-FINALIZATION",
+  "tranche_id": "KINLINK-2026-09-21-25M-UX-CONTINUOUS-IMPROVEMENT",
   "cadence_minutes": 25,
-  "status": "CLOSED_TRUE_HUMAN_GATE",
-  "gmail_start_message_id": "1a0c3d50150b0db9",
+  "status": "RUNNING",
+  "gmail_start_message_id": "1a0c3f2bee1af99a",
   "gmail_label": "KINLINK",
   "end_mail_required_before_app_reply": true,
   "human_gate_exception_only": true,
-  "goal": "viable consolidated 0.7.1 close to user final expectation",
+  "goal": "refine installed 0.7.1 UX and prove/implement bounded continuous improvement loop without overheating or hidden mobile probes",
   "current_exact_machine_pass_head": "a15a784ab51ae048e37ae31c998092ad2cd3f03c",
   "current_exact_machine_pass_runs": {
     "design_lint": 35594766801,
@@ -33,5 +33,12 @@
   "end_mail_verified": true,
   "next_gate": "ONE_IN_PLACE_0_7_1_INSTALL_FROM_DRIVE",
   "drive_candidate_file_id": "1hixAB1tKY8G3u-ajD16PJ6kQ-lznNaV1",
-  "drive_readback_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae"
+  "drive_readback_sha256": "0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae",
+  "evidence_targets": [
+    "real screenshot UX audit",
+    "web/youtube interface research",
+    "continuous improvement controller audit",
+    "resource-safe regression tests",
+    "exact-head CI status"
+  ]
 }
