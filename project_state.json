@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "keep exact installed 0.7.1 frozen while collecting versionCode 9 Stage B self-test/handoff/resource evidence; continue UX + continuous-improvement engineering only on dev/0.7.2-continuous-improvement; do not canonically promote 0.7.1 until Stage B PASS and do not ask for 0.7.2 install until its exact-head CI/audit is fully green",
+  "next_uncommitted_action": "continue target-phone Stage B evidence on installed frozen 0.7.1; next engineering tranche counter-audits exact machine-PASS 0.7.2-dev head d529533... without asking for install until a consolidated successor is deliberately frozen and signed",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -378,9 +378,31 @@
     "branch": "dev/0.7.2-continuous-improvement",
     "version": "0.7.2-dev",
     "versionCode": 10,
-    "purpose": "compact final-like cockpit + sustained evidence/relapse model + lower healthy-path overhead",
+    "head": "d529533b5c7ef8c72b73e9e4ab6fb4cf22cc046a",
+    "design_lint_run": 35604679827,
+    "design_lint": "PASS",
+    "android_ci_run": 35604679752,
+    "android_ci": "PASS",
+    "full_machine_verdict": "PASS",
+    "artifact_id": 10641472446,
+    "artifact_zip_sha256": "dde386d56535af4a1ef191994ce1a0c5c1a84b37f41f6e63b1a4c9e72e141dd2",
     "install_requested": false,
     "merge_to_main": false,
-    "reason": "preserve exact installed 0.7.1 field-candidate freeze during Stage B"
+    "integrated": [
+      "compact status/action/proof cockpit",
+      "contextual Wi-Fi/mobile primary action",
+      "passive 0-100 quality index with visual meter",
+      "truthful requestBandwidthUpdate semantics",
+      "sustained Mobile Assist evidence",
+      "early relapse and post-sustained relapse detection",
+      "bounded three-shot post-action framework sampling",
+      "manual Mobile Assist proof-loop integration",
+      "healthy mobile callback fast path",
+      "moderate thermal protection",
+      "synchronized evidence tracker",
+      "atomic generation fencing",
+      "volatile cross-thread latestTruth publication"
+    ],
+    "next_gate": "FIELD-QUALIFY_INSTALLED_0_7_1_AND_COUNTER-AUDIT_0_7_2_BEFORE_FREEZE"
   }
 }
