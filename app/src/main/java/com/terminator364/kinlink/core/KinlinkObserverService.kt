@@ -376,10 +376,6 @@ class KinlinkObserverService : Service() {
 
     private fun maybeRecordFieldCandidateQualification() {
         if (runningVersionCode < 8L) return
-        if (fieldQualificationReceiptWritten) {
-            currentFieldQualificationVerdict = FieldCandidateQualificationVerdict.PASS
-            return
-        }
 
         val previousVerdict = currentFieldQualificationVerdict
         val assessment = evaluateFieldCandidateQualification()
