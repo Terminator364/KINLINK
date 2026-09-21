@@ -20,8 +20,8 @@ def require(ok: bool, message: str) -> None:
     if not ok:
         raise SystemExit(message)
 
-require('versionCode = 9' in GRADLE, "candidate contract: versionCode 9 missing")
-require('versionName = "0.7.1"' in GRADLE, "candidate contract: versionName 0.7.1 missing")
+require('versionCode = 10' in GRADLE, "candidate contract: versionCode 10 missing")
+require('versionName = "0.7.2-dev"' in GRADLE, "candidate contract: versionName 0.7.2-dev missing")
 require(
     'transport != Transport.WIFI -> RecoveryBlockReason.NON_WIFI' in ACTIVE,
     "candidate contract: central non-Wi-Fi active-recovery block missing",
@@ -121,7 +121,7 @@ tests = list((ROOT / "app/src/test").rglob("*Test.kt"))
 require(len(tests) >= 64, f"candidate contract: regression suite unexpectedly shrank to {len(tests)} tests")
 
 print("candidate-contract: PASS")
-print("version: 0.7.1 / code 9")
+print("version: 0.7.2-dev / code 10")
 print(f"probe_socket_envelope_ms: {socket_envelope}")
 print(f"probe_hard_envelope_ms: {hard_envelope}")
 print(f"recovery_deadline_ms: {deadline_ms}")
@@ -194,4 +194,21 @@ require(
     "MobileRadioQuality.WEAK" in MOBILE_POLICY
     and "MobileAssistBlockReason.WEAK_SIGNAL" in MOBILE_POLICY,
     "candidate contract: weak cellular radio no-op fence missing",
+)
+
+EVIDENCE_TRACKER = (SRC / "com/terminator364/kinlink/core/MobileAssistEvidenceTracker.kt").read_text(encoding="utf-8")
+require(
+    "MIN_SUSTAINED_BETTER_MS = 20_000L" in EVIDENCE_TRACKER
+    and "NO_BENEFIT_AFTER_MS = 60_000L" in EVIDENCE_TRACKER
+    and "RELAPSE_MONITOR_WINDOW_MS = 10L * 60L * 1000L" in EVIDENCE_TRACKER,
+    "candidate contract: sustained Mobile Assist evidence windows missing",
+)
+require(
+    "RELAPSED_AFTER_SUSTAINED" in EVIDENCE_TRACKER
+    and "causalité non affirmée" in EVIDENCE_TRACKER,
+    "candidate contract: Mobile Assist relapse/truthfulness evidence missing",
+)
+require(
+    "MOBILE_ASSIST_EVIDENCE_" in SERVICE,
+    "candidate contract: service does not persist Mobile Assist evidence",
 )
