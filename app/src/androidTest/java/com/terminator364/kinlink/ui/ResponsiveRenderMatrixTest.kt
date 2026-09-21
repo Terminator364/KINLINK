@@ -182,7 +182,10 @@ class ResponsiveRenderMatrixTest {
             assertTrue("technical details did not expand", detail.visibility == View.VISIBLE)
             assertTrue("technical details are empty", detail.text.toString().length > 120)
             val root = activity.findViewById<ScrollView>(R.id.rootScroll)
-            root.scrollTo(0, detail.top)
+            val rect = Rect()
+            detail.getDrawingRect(rect)
+            root.offsetDescendantRectToMyCoords(detail, rect)
+            root.scrollTo(0, (rect.top - 24).coerceAtLeast(0))
         }
         instrumentation.waitForIdleSync()
         capture("technical-details-start")
