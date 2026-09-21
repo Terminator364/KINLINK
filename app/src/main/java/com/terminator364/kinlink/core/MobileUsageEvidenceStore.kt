@@ -10,7 +10,7 @@ data class StoredMobileUsageEvidence(
 )
 
 object MobileUsageEvidenceStoragePolicy {
-    const val MobileUsageEvidenceStoragePolicy.SCHEMA_VERSION = 1
+    const val SCHEMA_VERSION = 1
 
     fun validUserEvidence(bytes: Long?, observedAtEpochMillis: Long?): Boolean =
         (bytes == null && observedAtEpochMillis == null) ||
