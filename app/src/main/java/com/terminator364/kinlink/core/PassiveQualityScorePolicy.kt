@@ -21,6 +21,7 @@ object PassiveQualityScorePolicy {
             InternetState.VALIDATED -> 45
             InternetState.PARTIAL -> 24
             InternetState.CAPTIVE_PORTAL -> 12
+            InternetState.STALLED -> 8
             InternetState.UNKNOWN -> 16
             InternetState.OFFLINE -> 0
         }
