@@ -18,6 +18,7 @@ class ContinuousControlPanelPolicyTest {
         assertEquals(55, panel.beforeScore)
         assertEquals(27, panel.delta)
         assertTrue(panel.maintenance.contains("au-dessus"))
+        assertTrue(panel.maintenance.contains("<1 min"))
     }
 
     @Test fun laterReturnNearBaselineShowsRelapseEvenBeforeAnotherReceipt() {
