@@ -15,7 +15,8 @@ enum class MobileAssistBlockReason {
     BUDGET_PROTECTED,
     HEALTHY_OR_UNKNOWN,
     COOLDOWN,
-    HOURLY_CAP
+    HOURLY_CAP,
+    INEFFECTIVE_RECENTLY
 }
 
 data class MobileAssistDecision(
@@ -34,7 +35,8 @@ object MobileAssistPolicy {
         recoveryMode: RecoveryMode,
         resourceConstrained: Boolean,
         recentActions: Int,
-        millisSinceLastAction: Long
+        millisSinceLastAction: Long,
+        recentIneffectiveOutcomes: Int = 0
     ): MobileAssistDecision {
         if (truth.transport != Transport.CELLULAR) {
             return MobileAssistDecision(
@@ -73,6 +75,14 @@ object MobileAssistPolicy {
                 MobileAssistAction.NONE,
                 MobileAssistBlockReason.BUDGET_PROTECTED,
                 "Budget mobile protégé : aucun travail radio supplémentaire."
+            )
+        }
+
+        if (recentIneffectiveOutcomes >= 2) {
+            return MobileAssistDecision(
+                MobileAssistAction.NONE,
+                MobileAssistBlockReason.INEFFECTIVE_RECENTLY,
+                "Deux assistances mobiles récentes n’ont pas amélioré la qualité : pause anti-répétition."
             )
         }
 
