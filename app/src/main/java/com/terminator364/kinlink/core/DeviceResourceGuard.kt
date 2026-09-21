@@ -7,13 +7,13 @@ import android.os.PowerManager
 
 data class ResourceGuardSnapshot(
     val powerSaveMode: Boolean,
-    val thermalSevereOrWorse: Boolean,
+    val thermalModerateOrWorse: Boolean,
     val lowMemory: Boolean
 ) {
     val constrained: Boolean
         get() = ResourceGuardPolicy.constrained(
             powerSaveMode = powerSaveMode,
-            thermalSevereOrWorse = thermalSevereOrWorse,
+            thermalModerateOrWorse = thermalModerateOrWorse,
             lowMemory = lowMemory
         )
 }
@@ -21,9 +21,9 @@ data class ResourceGuardSnapshot(
 object ResourceGuardPolicy {
     fun constrained(
         powerSaveMode: Boolean,
-        thermalSevereOrWorse: Boolean,
+        thermalModerateOrWorse: Boolean,
         lowMemory: Boolean = false
-    ): Boolean = powerSaveMode || thermalSevereOrWorse || lowMemory
+    ): Boolean = powerSaveMode || thermalModerateOrWorse || lowMemory
 }
 
 class DeviceResourceGuard(context: Context) {
@@ -31,8 +31,8 @@ class DeviceResourceGuard(context: Context) {
     private val activityManager = context.getSystemService(ActivityManager::class.java)
 
     fun snapshot(): ResourceGuardSnapshot {
-        val thermalSevere = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            powerManager.currentThermalStatus >= PowerManager.THERMAL_STATUS_SEVERE
+        val thermalModerate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            powerManager.currentThermalStatus >= PowerManager.THERMAL_STATUS_MODERATE
         } else false
 
         val memoryInfo = ActivityManager.MemoryInfo()
@@ -43,7 +43,7 @@ class DeviceResourceGuard(context: Context) {
 
         return ResourceGuardSnapshot(
             powerSaveMode = powerManager.isPowerSaveMode,
-            thermalSevereOrWorse = thermalSevere,
+            thermalModerateOrWorse = thermalModerate,
             lowMemory = lowMemory
         )
     }
