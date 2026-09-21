@@ -7,6 +7,7 @@ import com.terminator364.kinlink.core.PassiveGuidancePolicy
 import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.ActionDurationPolicy
 import com.terminator364.kinlink.core.RecentReliabilityPolicy
+import com.terminator364.kinlink.core.LongitudinalRadioEvidencePolicy
 
 /** Privacy-safe diagnostic summary: no SSID, SIM identifier, IP address, gateway or payload. */
 data class DiagnosticSummary(
@@ -140,6 +141,9 @@ object DiagnosticReportBuilder {
                 appendLine("- $cause: $count")
             }
         }
+        val longitudinalRadio = LongitudinalRadioEvidencePolicy.assess(summary.recent24hCauseCounts)
+        appendLine("- 24h longitudinal radio pattern: ${longitudinalRadio.pattern.name}")
+        appendLine("- 24h longitudinal radio evidence: ${longitudinalRadio.summary}")
         appendLine()
 
         val recentBurden = RecentReliabilityPolicy.classify(
