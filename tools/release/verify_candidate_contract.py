@@ -355,8 +355,10 @@ require(
 )
 
 require(
-    "baselineObservedAt = SystemClock.elapsedRealtime()" in MAIN_ACTIVITY,
-    "candidate contract: manual proof baseline can use a stale callback timestamp",
+    "preActionTruth = ConnectivityTruthEngine.reduce(" in MAIN_ACTIVITY
+    and "observedAtMillis = SystemClock.elapsedRealtime()" in MAIN_ACTIVITY
+    and "baselineObservedAt = preActionTruth.observedAtMillis" in MAIN_ACTIVITY,
+    "candidate contract: manual proof baseline can use stale callback state/time",
 )
 require(
     "Mobile Assist · améliorer maintenant" not in LAYOUT
