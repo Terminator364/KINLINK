@@ -6,7 +6,7 @@ KINLINK is not Wi-Fi-only. It must also improve the user's experience when Andro
 
 The implementation is split into two safety levels so "mobile optimization" never means hidden paid traffic or unsafe modem/routing control.
 
-## Level 1 — Mobile Assist (current 0.7.1 line)
+## Level 1 — Mobile Assist (installed 0.7.1; 0.7.2 dev hardening)
 
 Mobile Assist works without root, without a VPN data plane and without cellular speed tests.
 
@@ -19,7 +19,8 @@ It may:
 - suppress itself under low-memory / battery-saver / severe thermal pressure;
 - suppress itself when the configured mobile budget is LOW / EXHAUSTED / EXPIRED;
 - on an explicit user tap, open Android's Internet connectivity panel when the mobile network is not validated;
-- record privacy-safe action/outcome receipts.
+- record privacy-safe action/outcome receipts;
+- keep a passive post-improvement relapse watch so a later degradation can be re-evaluated after normal cooldown/resource/data gates.
 
 It must never:
 - run an automatic cellular HTTP/DNS probe;
@@ -30,6 +31,20 @@ It must never:
 - report negative connectivity back to Android;
 - override Android VALIDATED;
 - silently spend data to "test" whether mobile is working.
+
+### Evidence semantics in 0.7.2 dev
+
+Android documents `requestBandwidthUpdate(Network)` as a request for updated bandwidth information. Acceptance means ConnectivityService accepted a metric-update request; it is **not** evidence that KINLINK increased carrier throughput.
+
+0.7.2 therefore records:
+- METRICS_AVAILABLE — observability became available;
+- SUSTAINED_BETTER — passive quality score stayed meaningfully above baseline across the confirmation window;
+- RELAPSED — an early improvement did not hold;
+- RELAPSED_AFTER_SUSTAINED — a confirmed better state later returned near baseline;
+- NO_BETTER — no meaningful passive gain inside the evidence window;
+- INCONCLUSIVE — transport/validation/time context prevented a defensible comparison.
+
+The UI must say “correlated sustained improvement”, not “KINLINK made 4G faster”, until a mechanism that actually changes traffic handling passes the Strong Stabilizer gate.
 
 ### What Level 1 can and cannot improve
 
@@ -68,6 +83,8 @@ It may only graduate from SHADOW/GATED status if evidence proves:
 
 ## Current release rule
 
-0.7.1 may include Mobile Assist Level 1 because it does not seize routing or emit hidden cellular probes.
+Installed 0.7.1 may include Mobile Assist Level 1 because it does not seize routing or emit hidden cellular probes.
+
+0.7.2 dev may harden the evidence model, UI, thermal policy and event-driven follow-up on an isolated branch while the exact installed 0.7.1 remains frozen for Stage B field qualification.
 
 Level 2 remains separately gated and must never be smuggled into a release merely because the code compiles.
