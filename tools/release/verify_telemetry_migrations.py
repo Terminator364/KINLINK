@@ -42,7 +42,10 @@ def decode_kotlin_string(token: str) -> str:
 
 
 def parse_steps(source: str):
-    starts = [m.start() for m in re.finditer(r"TelemetryMigrationStep\s*\(", source)]
+    starts = [
+        m.start()
+        for m in re.finditer(r"TelemetryMigrationStep\s*\(\s*\d+\s*,", source)
+    ]
     steps = []
     for i, start in enumerate(starts):
         end = starts[i + 1] if i + 1 < len(starts) else source.find("\n    )\n", start)
