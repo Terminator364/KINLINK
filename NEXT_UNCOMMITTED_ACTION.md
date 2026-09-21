@@ -2,70 +2,103 @@
 
 ## Installed target-phone build
 
-- KINLINK 0.7.1 / versionCode 9 is installed and remains frozen.
-- Signed APK SHA-256:
-  `0c2210acf29e18926634fc1d8b23b156cce153e1b536bb62b87615199dca6eae`
-- Canonical 0.6.0-rc3 rollback remains unchanged.
-- Stage B field qualification is still in progress.
+- Installed now: KINLINK 0.7.1 / versionCode 9.
+- Keep it installed until the single in-place 0.7.2 update below.
+- 0.7.1 is usable but superseded before canonical promotion.
+- Canonical rollback remains 0.6.0-rc3 / versionCode 7.
 
-Required versionCode 9 field evidence:
-- core self-test PASS;
-- observer callback self-test PASS;
-- Wi-Fi -> validated cellular handoff;
-- cellular -> Wi-Fi return;
-- >=30-minute resource qualification.
+## Consolidated 0.7.2 final-like field candidate
 
-## 0.7.2 dev — exact machine PASS
-
-Engineering branch:
+Source branch:
 `dev/0.7.2-continuous-improvement`
 
-Exact head:
-`d529533b5c7ef8c72b73e9e4ab6fb4cf22cc046a`
+Exact frozen source:
+`cc48c1dea1a151af25edc1942bb4efa983c5ff13`
 
-Proof:
-- design-lint run `35604679827`: PASS
-- Android run `35604679752`: PASS
+Machine proof:
+- design-lint `35610708971`: PASS
+- design-lint `35610716886`: PASS
+- Android candidate `35610708876`: PASS
 - unit tests: PASS
 - Android lint: PASS
 - fail-open API fence: PASS
 - manifest safety fence: PASS
 - background wakeup fence: PASS
-- candidate identity/unsigned fence: PASS
-- artifact ID: `10641472446`
-- artifact ZIP SHA-256:
-  `dde386d56535af4a1ef191994ce1a0c5c1a84b37f41f6e63b1a4c9e72e141dd2`
+- package/version/unsigned candidate fence: PASS
 
-Integrated 0.7.2 dev:
-- compact final-like cockpit: status -> network/quality -> continuous care -> proof;
-- irrelevant primary action hidden by active transport;
-- visual passive quality 0..100 meter without speedtest;
-- requestBandwidthUpdate no longer described as throughput acceleration;
-- sustained benefit requires meaningful passive-score delta and time confirmation;
-- transient relapse and later relapse are distinct evidence;
-- max three one-shot local framework samples per accepted action, no repeating polling;
-- manual Mobile Assist joins the same proof loop;
-- healthy mobile callbacks avoid unnecessary SQLite/resource work;
-- active assistance pauses from Android moderate thermal pressure;
-- evidence tracker and scheduler generation are cross-thread fenced.
+Artifact:
+- artifact ID: `10643704115`
+- ZIP SHA-256:
+  `ad2fee91b3d51fa5c2528767dbe004d92366ee8ae46bb9450a35f11a86f7f18b`
+- unsigned APK SHA-256:
+  `d961ea42c09a6509a228f4bfe9b55b197598efaea2f942ef649e8c8983925779`
 
-## Counter-audit finding retained for next tranche
+Stable signed field APK:
+- SHA-256:
+  `a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b`
+- size: 369611 bytes
+- APK Signature Scheme v3: PASS
+- signers: 1
+- signer cert SHA-256:
+  `2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3`
 
-The exact 0.7.2 head is machine-clean, but it is still DEV:
-- do not install it yet;
-- do not merge it into the installed-field baseline;
-- do not claim causal cellular throughput gain;
-- strong VpnService/TUN remains a separate experiment gate.
+Drive:
+- file: `KINLINK-0.7.2-FINAL-FIELD-CANDIDATE.apk`
+- file ID: `1pBf93qjb9vE3T3BIW7Jg54DuSIch3wSU`
+- Drive readback SHA-256:
+  `a67537e814f81230526ff5de211bdfcd6d810831fcaed75fdc1252578e5b364b`
+- readback: PASS
 
-## Communication watchdog
+## What materially changed
 
-Every 25-minute tranche:
-- 20-minute primary work budget;
-- mandatory 5-minute closeout reserve;
-- max 12 mutation groups before forced closeout;
-- no new technical mutation after closeout starts;
-- if a prior tranche lacks a verified end Gmail message ID, repair that mail before any new work or app reply;
-- Gmail end report + returned message ID + durable CLOSED receipt before app response.
+0.7.2 is not a cosmetic micro-beta.
+
+It consolidates:
+- compact status/action/proof cockpit from target-phone screenshot audit;
+- contextual primary action: Wi-Fi OR Mobile, not both;
+- technical details collapsed by default;
+- passive quality index without speedtest;
+- truthful Mobile Assist wording;
+- pre-action baseline for manual Mobile Assist;
+- sustained benefit confirmation;
+- transient relapse;
+- post-sustained relapse;
+- bounded one-shot framework samples;
+- anti-repeat evidence;
+- healthy mobile fast path to reduce DB/resource overhead;
+- earlier thermal protection;
+- large-font cockpit corrections;
+- privacy/fail-open/mobile-data invariants from 0.7.1.
+
+## Truth boundary
+
+Mobile Assist Level 1 does not claim carrier-throughput causality.
+`requestBandwidthUpdate` improves/refreshes Android's link metrics; later quality change is recorded as correlated evidence.
+
+A strong VpnService/TUN data plane remains a separate experiment gate and cannot be enabled until measurable benefit + RAM/battery/latency/DNS/watchdog/rollback evidence passes.
+
+## Current true human gate
+
+One in-place target-phone update to exact 0.7.2 is now justified.
+
+Rules:
+1. do not uninstall 0.7.1 first;
+2. install the exact Drive APK above;
+3. after install collect versionCode 10 self-test/handoff/resource/continuous-evidence receipts;
+4. do not replace canonical 0.6.0-rc3 until Stage B passes.
+
+No further micro-beta is allowed before this field gate unless 0.7.2 is explicitly invalidated by a newly proven blocking defect.
+
+## Communication v2
+
+Normal closure is primary-owned:
+- 22 min work;
+- 3 min normal close reserve;
+- END replies to START in the same Gmail thread;
+- delivery key prevents duplicate END;
+- backup cannot preempt normal close;
+- backup searches Gmail before send and uses normal FIN wording;
+- app reply only after persisted provider END acknowledgement.
 
 ## Resume
 
