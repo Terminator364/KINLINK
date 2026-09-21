@@ -12,7 +12,9 @@ data class FieldCandidateQualificationEvidence(
     val mobileValidatedHandoffs: Int,
     val cellularToWifiReturns: Int,
     val runtimeResourcePasses: Int,
-    val runtimeResourceBlocks: Int
+    val runtimeResourceBlocks: Int,
+    val latestRuntimeResourcePassMillis: Long? = null,
+    val latestRuntimeResourceBlockMillis: Long? = null
 )
 
 data class FieldCandidateQualificationAssessment(
@@ -24,7 +26,25 @@ object FieldCandidateQualificationPolicy {
     fun evaluate(
         evidence: FieldCandidateQualificationEvidence
     ): FieldCandidateQualificationAssessment {
-        if (evidence.runtimeResourceBlocks > 0) {
+        val hasTimestampedResourceEvidence =
+            evidence.latestRuntimeResourcePassMillis != null ||
+                evidence.latestRuntimeResourceBlockMillis != null
+        val latestResourceIsBlocked = if (hasTimestampedResourceEvidence) {
+            val blockedAt = evidence.latestRuntimeResourceBlockMillis
+            val passAt = evidence.latestRuntimeResourcePassMillis
+            blockedAt != null && (passAt == null || blockedAt >= passAt)
+        } else {
+            evidence.runtimeResourceBlocks > 0
+        }
+        val latestResourceIsPass = if (hasTimestampedResourceEvidence) {
+            val passAt = evidence.latestRuntimeResourcePassMillis
+            val blockedAt = evidence.latestRuntimeResourceBlockMillis
+            passAt != null && (blockedAt == null || passAt > blockedAt)
+        } else {
+            evidence.runtimeResourcePasses > 0 && evidence.runtimeResourceBlocks == 0
+        }
+
+        if (latestResourceIsBlocked) {
             return FieldCandidateQualificationAssessment(
                 FieldCandidateQualificationVerdict.BLOCKED,
                 setOf("RESOURCE_BLOCKED")
@@ -36,7 +56,7 @@ object FieldCandidateQualificationPolicy {
         if (evidence.observerSelfTestPasses < 1) missing += "OBSERVER_SELF_TEST"
         if (evidence.mobileValidatedHandoffs < 1) missing += "WIFI_TO_VALIDATED_CELLULAR"
         if (evidence.cellularToWifiReturns < 1) missing += "CELLULAR_TO_WIFI_RETURN"
-        if (evidence.runtimeResourcePasses < 1) missing += "RUNTIME_RESOURCE_PASS"
+        if (!latestResourceIsPass) missing += "RUNTIME_RESOURCE_PASS"
 
         return FieldCandidateQualificationAssessment(
             if (missing.isEmpty()) FieldCandidateQualificationVerdict.PASS
