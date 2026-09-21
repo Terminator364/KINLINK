@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
-  "phase": "KINLINK_0_7_0_FINAL_FIELD_CANDIDATE_CI",
-  "status": "ACTIVE",
+  "phase": "KINLINK_0_7_0_FINAL_FIELD_CANDIDATE_READY",
+  "status": "HUMAN_FIELD_GATE_REQUIRED",
   "candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "CANONICAL_DRIVE_PROMOTION_PASS",
-  "next_uncommitted_action": "qualify final app head 50df92a0fb1131e1b9b136fd7fc25ad6739f406b; after PASS download exact unsigned candidate, verify artifact, sign once with canonical signer, deliver only that candidate; resource baseline auto-resets on power disconnect and old RC3 evidence cannot qualify v8",
+  "next_uncommitted_action": "deliver/install exact signed KINLINK 0.7.0 field candidate SHA256 cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc over RC3 without uninstall; then collect versionCode 8 FIELD_HANDOFF + >=30min RESOURCE_QUALIFICATION receipts; do not replace canonical RC3 until Stage B PASS",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -75,8 +75,8 @@
   "development_line": {
     "version": "0.7.0",
     "versionCode": 8,
-    "promotion": "FIELD_CANDIDATE_ONLY_AFTER_STAGE_A_PASS",
-    "head": "50df92a0fb1131e1b9b136fd7fc25ad6739f406b",
+    "promotion": "FIELD_CANDIDATE_READY_CANONICAL_PROMOTION_FORBIDDEN",
+    "head": "4153720cde8c6bd0004b8e69baeadf5254735abe",
     "integrated": [
       "passive bandwidth estimates",
       "quality tiering",
@@ -162,15 +162,17 @@
       "power disconnect automatically resets resource qualification baseline",
       "resource qualification restarts a clean 30-minute window after unplug"
     ],
-    "last_full_pass": "a00ed98ab269a851f38fb33cfda8bb77a624e502"
+    "last_full_pass": "4153720cde8c6bd0004b8e69baeadf5254735abe"
   },
   "telemetry_schema_version": 5,
   "current_machine_gate": {
-    "code_head": "50df92a0fb1131e1b9b136fd7fc25ad6739f406b",
-    "design_lint": "IN_PROGRESS",
-    "android_ci": "PENDING",
-    "full_machine_verdict": "PENDING",
-    "latest_full_pass": "9a4a0c5c1dd9e88eb2dd03983281b8115159a6ab"
+    "code_head": "4153720cde8c6bd0004b8e69baeadf5254735abe",
+    "design_lint": "PASS",
+    "design_lint_run": 35550539365,
+    "android_ci": "PASS",
+    "android_ci_run": 35550539216,
+    "full_machine_verdict": "PASS",
+    "latest_full_pass": "4153720cde8c6bd0004b8e69baeadf5254735abe"
   },
   "continuity": {
     "command": "KINLINKGO",
@@ -202,7 +204,7 @@
       ],
       "result": "ONE_CONSOLIDATED_SIGNED_FIELD_CANDIDATE",
       "canonical_replacement": false,
-      "status": "PENDING_UNSIGNED_CANDIDATE_CI"
+      "status": "PASS"
     },
     "stage_b_canonical_promotion": {
       "required": [
@@ -212,7 +214,8 @@
         "FIELD_HANDOFF",
         "RESOURCE_QUALIFICATION"
       ],
-      "result": "CANONICAL_PROMOTION"
+      "result": "CANONICAL_PROMOTION",
+      "status": "PENDING"
     }
   },
   "preliminary_signed_candidate": {
@@ -221,5 +224,24 @@
     "status": "SUPERSEDED_BEFORE_DELIVERY",
     "delivered": false,
     "installed": false
+  },
+  "final_field_candidate": {
+    "version": "0.7.0",
+    "versionCode": 8,
+    "source_commit": "4153720cde8c6bd0004b8e69baeadf5254735abe",
+    "ci_run": 35550539216,
+    "artifact_id": 10618495983,
+    "artifact_zip_sha256": "0deb11a13ba4ee2b8f15d96865741af3be42483d707e2814dabe5bef22717c09",
+    "unsigned_apk_sha256": "3c08caec397d49c8ab623cacb8e3f749cdae4fb23289a8d53b4e14b8cf0fafb",
+    "signed_apk_sha256": "cea3468340a8f81dc38cc1ba09abb68e8f9ccc1634e223f275b0e92b083ef0bc",
+    "size_bytes": 320260,
+    "signer_cert_sha256": "2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3",
+    "signature": "APK_SIGNATURE_SCHEME_V3_PASS",
+    "signers": 1,
+    "delivered": false,
+    "installed": false,
+    "canonical": false,
+    "stage_a": "PASS",
+    "stage_b": "PENDING_FIELD_HANDOFF_AND_RESOURCE"
   }
 }
