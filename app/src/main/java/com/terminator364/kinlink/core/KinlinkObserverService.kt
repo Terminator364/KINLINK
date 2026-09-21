@@ -14,6 +14,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.terminator364.kinlink.data.TelemetryLedger
+import java.util.concurrent.atomic.AtomicLong
 
 class KinlinkObserverService : Service() {
     private lateinit var observer: NetworkObserver
@@ -30,7 +31,7 @@ class KinlinkObserverService : Service() {
     private val mobileAssistEvidenceHandler by lazy {
         android.os.Handler(android.os.Looper.getMainLooper())
     }
-    private var mobileAssistEvidenceGeneration = 0L
+    private val mobileAssistEvidenceGeneration = AtomicLong(0L)
     private val interruptionTracker = ConnectivityInterruptionTracker()
     private val degradedQualityEpisodeTracker = DegradedQualityEpisodeTracker()
     private val mobileDegradedQualityEpisodeTracker =
@@ -262,13 +263,12 @@ class KinlinkObserverService : Service() {
     }
 
     private fun startMobileAssistEvidenceWindow(baseline: NetworkTruth) {
-        mobileAssistEvidenceGeneration += 1L
-        val generation = mobileAssistEvidenceGeneration
+        val generation = mobileAssistEvidenceGeneration.incrementAndGet()
         mobileAssistEvidenceTracker.start(baseline)
 
         for (delayMs in MobileAssistEvidenceSamplingPolicy.sampleDelaysMs) {
             mobileAssistEvidenceHandler.postDelayed({
-                if (generation != mobileAssistEvidenceGeneration) return@postDelayed
+                if (generation != mobileAssistEvidenceGeneration.get()) return@postDelayed
                 val cm = getSystemService(ConnectivityManager::class.java)
                 val network = cm.activeNetwork ?: return@postDelayed
                 val truth = ConnectivityTruthEngine.reduce(
@@ -279,7 +279,7 @@ class KinlinkObserverService : Service() {
                         .getOrDefault(BudgetState.BALANCE_UNKNOWN)
                 )
                 if (recordMobileAssistEvidence(truth)) {
-                    mobileAssistEvidenceGeneration += 1L
+                    mobileAssistEvidenceGeneration.incrementAndGet()
                 }
             }, delayMs)
         }
@@ -507,7 +507,7 @@ class KinlinkObserverService : Service() {
 
     override fun onDestroy() {
         runtimeBudgetHandler.removeCallbacks(runtimeBudgetCheckpointRunnable)
-        mobileAssistEvidenceGeneration += 1L
+        mobileAssistEvidenceGeneration.incrementAndGet()
         mobileAssistEvidenceHandler.removeCallbacksAndMessages(null)
         if (powerReceiverRegistered) {
             runCatching { unregisterReceiver(powerStateReceiver) }
