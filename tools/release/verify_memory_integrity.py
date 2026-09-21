@@ -67,5 +67,7 @@ req(watch.get("schema")=="kinlink.communication_watchdog_policy/1","watchdog pol
 req(watch.get("cardinality")==1,"watchdog cardinality must remain exactly one")
 req(watch.get("name")=="KINLINK Comms Watchdog","watchdog name drift")
 req(watch.get("cadence")=="HOURLY","watchdog cadence drift")
+req(watch.get("stale_work_threshold_minutes")==35,"watchdog stale-work threshold drift")
+req(watch.get("foreground_resume",{}).get("auto_open_new_start") is False,"watchdog must not create orphan START loops")
 req(pack.get("communication",{}).get("watchdog_cardinality")==1,"context pack watchdog cardinality stale")
 print(f"memory-integrity: PASS | chronicle={len(chron)} | B-depth={len(ids)} | macros={score['result']['macro_capabilities']} | maturity={score['result']['overall_percent']}%")
