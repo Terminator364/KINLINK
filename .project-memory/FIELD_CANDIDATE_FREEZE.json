@@ -8,8 +8,15 @@
     "app/src",
     "app/build.gradle.kts"
   ],
-  "rule": "While Stage B is pending for the installed 0.7.0 candidate, do not mutate production app sources/build identity on main. Engineering support work may continue in docs/tools/workflows. If an app-code fix becomes mandatory, explicitly invalidate the field candidate before changing protected paths.",
+  "rule": "0.8.0 must earn fresh exact-head CI, rendered UI, signing, Drive readback and field proof. No 0.7.3 PASS may be inherited.",
   "invalidated_at_phase": "POST_INSTALL_COUNTER_AUDIT",
-  "invalidation_reason": "CA-001 hard recovery deadline not actually hard; CA-002 battery quantization false-block risk; CA-003 no bounded retry after persisted non-PASS; CA-004 historical BLOCKED UI truthfulness",
-  "replacement_policy": "No micro-beta chain. Produce one consolidated successor with new versionCode after all counter-audit repairs and full CI."
+  "invalidation_reason": "0.8.0 integrated successor intentionally changes protected app surfaces; predecessor proof remains historical and must not be inherited.",
+  "replacement_policy": "No micro-beta chain. Produce one consolidated successor with new versionCode after all counter-audit repairs and full CI.",
+  "successor_branch": "dev/0.8.0-integrated-truth-and-control",
+  "predecessor_frozen_candidate": {
+    "source_commit": "2aeac4cf801e60986c33347676e12310790d1d98",
+    "version": "0.7.3-dev",
+    "versionCode": 11,
+    "status": "INSTALLED_TARGET_BASELINE"
+  }
 }
