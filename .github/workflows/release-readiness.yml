@@ -1,0 +1,76 @@
+name: consolidated-release-readiness
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Require durable readiness ledger PASS
+        run: python tools/release/verify_release_readiness.py --require-ready
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+
+      - name: Fail-open API fence
+        run: |
+          set -euo pipefail
+          SRC="app/src/main/java"
+          forbidden='bindProcessToNetwork|setProcessDefaultNetwork|reportNetworkConnectivity|requestNetwork\(|VpnService'
+          if grep -R -n -E "$forbidden" "$SRC"; then
+            echo "Forbidden network-ownership API found in production source."
+            exit 1
+          fi
+
+      - name: Manifest safety fence
+        run: |
+          set -euo pipefail
+          MANIFEST="app/src/main/AndroidManifest.xml"
+          forbidden_permissions='android.permission.CHANGE_NETWORK_STATE|android.permission.CHANGE_WIFI_STATE|android.permission.MODIFY_PHONE_STATE|android.permission.WRITE_SETTINGS'
+          if grep -E -q "$forbidden_permissions" "$MANIFEST"; then
+            grep -E -n "$forbidden_permissions" "$MANIFEST" || true
+            exit 1
+          fi
+          if grep -q 'android.net.VpnService' "$MANIFEST"; then
+            exit 1
+          fi
+
+      - name: Background wakeup fence
+        run: |
+          set -euo pipefail
+          SRC="app/src/main/java"
+          forbidden_wakeup='AlarmManager|WorkManager|PeriodicWorkRequest|ScheduledExecutorService|scheduleAtFixedRate|TimerTask'
+          if grep -R -n -E "$forbidden_wakeup" "$SRC"; then
+            echo "Repeating/background wakeup scheduler found in production source."
+            exit 1
+          fi
+
+      - name: Unit tests
+        run: gradle :app:testDebugUnitTest --stacktrace
+
+      - name: Android lint
+        run: gradle :app:lintDebug --stacktrace
+
+      - name: Build eligibility artifact
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Record eligibility head
+        run: |
+          echo "KINLINK signed-candidate eligibility gate PASS at ${GITHUB_SHA}"
+          echo "This workflow does not sign, install, or promote an APK."
