@@ -56,8 +56,8 @@ require("Mobile Assist · améliorer maintenant" not in text,
         "responsive-ui: UI overclaims throughput improvement")
 require('android:text="Prudent"' in text,
         "responsive-ui: long conservative label can wrap on narrow phones")
-require('android:text="Limite data"' in text,
-        "responsive-ui: compact mobile data control label missing")
+require('android:text="Forfait &amp; réserves"' in text,
+        "responsive-ui: Mobile Vault control label missing")
 require('android:text="Qualité passive · --/100"' not in text,
         "responsive-ui: user-facing pseudo-quality score must not return")
 require('android:text="AVANT"' in text and 'android:text="MAINTENANT"' in text,
