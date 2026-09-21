@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+import re
+from pathlib import Path
+
+ROOT = Path(".")
+SRC = ROOT / "app/src/main/java"
+MANIFEST = (ROOT / "app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
+GRADLE = (ROOT / "app/build.gradle.kts").read_text(encoding="utf-8")
+ACTIVE = (SRC / "com/terminator364/kinlink/core/ActiveRecoveryPolicy.kt").read_text(encoding="utf-8")
+AUTO = (SRC / "com/terminator364/kinlink/core/AutopilotRecoveryController.kt").read_text(encoding="utf-8")
+PROBE = (SRC / "com/terminator364/kinlink/core/WifiDoctorProbe.kt").read_text(encoding="utf-8")
+OPT = (SRC / "com/terminator364/kinlink/core/WifiOptimizer.kt").read_text(encoding="utf-8")
+LEDGER = (SRC / "com/terminator364/kinlink/data/TelemetryLedger.kt").read_text(encoding="utf-8")
+
+def require(ok: bool, message: str) -> None:
+    if not ok:
+        raise SystemExit(message)
+
+require('versionCode = 9' in GRADLE, "candidate contract: versionCode 9 missing")
+require('versionName = "0.7.1"' in GRADLE, "candidate contract: versionName 0.7.1 missing")
+require(
+    'transport != Transport.WIFI -> RecoveryBlockReason.NON_WIFI' in ACTIVE,
+    "candidate contract: central non-Wi-Fi active-recovery block missing",
+)
+require(
+    'caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)' in AUTO,
+    "candidate contract: execution-time Wi-Fi recheck missing",
+)
+require(
+    'ABORT_METERED_WIFI' in AUTO,
+    "candidate contract: automatic metered-Wi-Fi probe block missing",
+)
+require(
+    'network.openConnection(URL(endpoint.url))' in PROBE,
+    "candidate contract: probe is not pinned to the captured Android Network",
+)
+require(
+    'meteredWifi -> WifiOptimizationAction.METERED_WIFI_REFRESH_ONLY' in OPT,
+    "candidate contract: manual metered-Wi-Fi zero-HTTP branch missing",
+)
+require(
+    'null, null, truth.failureDomain.name' in LEDGER,
+    "candidate contract: new telemetry rows no longer prove NULL legacy interface/gateway persistence",
+)
+require(
+    'android.permission.CHANGE_NETWORK_STATE' not in MANIFEST
+    and 'android.permission.CHANGE_WIFI_STATE' not in MANIFEST
+    and 'android.net.VpnService' not in MANIFEST,
+    "candidate contract: forbidden network ownership surface present in manifest",
+)
+
+production = "\n".join(
+    p.read_text(encoding="utf-8")
+    for p in SRC.rglob("*.kt")
+)
+forbidden = [
+    "bindProcessToNetwork",
+    "setProcessDefaultNetwork",
+    "reportNetworkConnectivity",
+    "requestNetwork(",
+    "setUnderlyingNetworks",
+]
+for token in forbidden:
+    require(token not in production, f"candidate contract: forbidden API token present: {token}")
+
+def const_int(name: str, text: str) -> int:
+    m = re.search(rf"const val {name}\s*=\s*([0-9_]+)", text)
+    require(m is not None, f"candidate contract: constant {name} missing")
+    return int(m.group(1).replace("_", ""))
+
+connect_ms = const_int("CONNECT_TIMEOUT_MS", PROBE)
+read_ms = const_int("READ_TIMEOUT_MS", PROBE)
+max_endpoints = const_int("MAX_ENDPOINTS", PROBE)
+deadline_ms = const_int("RECOVERY_DEADLINE_MS", AUTO)
+worst_case = max_endpoints * (connect_ms + read_ms)
+require(
+    worst_case < deadline_ms,
+    f"candidate contract: HTTP timeout bound {worst_case}ms is not below recovery deadline {deadline_ms}ms",
+)
+
+tests = list((ROOT / "app/src/test").rglob("*Test.kt"))
+require(len(tests) >= 64, f"candidate contract: regression suite unexpectedly shrank to {len(tests)} tests")
+
+print("candidate-contract: PASS")
+print("version: 0.7.1 / code 9")
+print(f"probe_timeout_bound_ms: {worst_case}")
+print(f"recovery_deadline_ms: {deadline_ms}")
+print(f"test_files: {len(tests)}")
