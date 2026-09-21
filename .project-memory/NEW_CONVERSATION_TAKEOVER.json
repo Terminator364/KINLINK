@@ -8,6 +8,7 @@
   "repository": "Terminator364/KINLINK",
   "control_branch": "main",
   "mandatory_first_reads": [
+    ".project-memory/RESUME_CAPSULE.json",
     ".project-memory/CONTINUITY_CONTEXT_MANIFEST.json",
     "project_state.json",
     "NEXT_UNCOMMITTED_ACTION.md",
@@ -43,6 +44,7 @@
   ],
   "takeover_algorithm": [
     "DO_NOT_ASK_USER_TO_RECONSTRUCT_PRIOR_CHAT",
+    "VERIFY_RESUME_CAPSULE_BLOBS_BEFORE_USING_DERIVED_CONTEXT",
     "READ_DURABLE_STATE_BEFORE_EXPLAINING_ANYTHING",
     "VERIFY_FULL_CONTEXT_MANIFEST_BEFORE_SCOPING",
     "RECONCILE_ANY_UNCLOSED_TRANCHE_BEFORE_NEW_WORK",
@@ -81,5 +83,10 @@
     "next_action": "requalify 0.8 after capability discovery and visual semantic cleanup; no install until coherent batch closes",
     "b_depth": "B31-B90 canonical; macro denominator remains 80"
   },
-  "full_spec_rule": "ALWAYS_LOAD_A_PLUS_B_PLUS_C_BEFORE_SCOPING_OR_PERCENT_COMPLETE; recent traceability is a derivative view, never the full product spec. B depth is a separate canonical layer; deepen it without silently changing the macro denominator."
+  "full_spec_rule": "ALWAYS_LOAD_A_PLUS_B_PLUS_C_BEFORE_SCOPING_OR_PERCENT_COMPLETE; recent traceability is a derivative view, never the full product spec. B depth is a separate canonical layer; deepen it without silently changing the macro denominator.",
+  "continuity_sync": {
+    "capsule": ".project-memory/RESUME_CAPSULE.json",
+    "verifier": "tools/release/verify_resume_capsule.py",
+    "rule": "If capsule verification fails, HOLD and reconcile canonical files before any product or communication claim."
+  }
 }

@@ -43,6 +43,7 @@ for s in sup["entries"]:
         req(key in s,f"supersession missing {key}")
 
 required_memory=[
+    ".project-memory/RESUME_CAPSULE.json",
     ".project-memory/MEMORY_POLICY_V2.json",
     ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json",
     ".project-memory/DEAD_END_REGISTRY.json",
@@ -81,4 +82,8 @@ for e in dead["entries"]:
     for key in ["premise","verdict","evidence","safe_alternative","supersession_condition"]:
         req(key in e,f"dead-end entry missing {key}")
 req(pack.get("communication",{}).get("watchdog_cardinality")==1,"context pack watchdog cardinality stale")
+cap=load(".project-memory/RESUME_CAPSULE.json")
+req(cap.get("schema")=="kinlink.resume_capsule/1","resume capsule schema")
+req(cap["canonical_truth"]["b_depth_range"]=="B31-B90","resume capsule B depth stale")
+req(cap["canonical_truth"]["macro_capabilities"]==score["result"]["macro_capabilities"],"resume capsule macro count stale")
 print(f"memory-integrity: PASS | chronicle={len(chron)} | B-depth={len(ids)} | macros={score['result']['macro_capabilities']} | maturity={score['result']['overall_percent']}%")

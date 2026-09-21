@@ -34,6 +34,7 @@
       ".project-memory/INTEGRATED_PROGRAM_PLAN.json"
     ],
     "memory_core": [
+      ".project-memory/RESUME_CAPSULE.json",
       ".project-memory/MEMORY_POLICY_V2.json",
       ".project-memory/PROJECT_CHRONICLE.jsonl",
       ".project-memory/CANONICAL_CONTEXT_PACK.json",
@@ -51,6 +52,7 @@
     "rule": "Never quote completion from REQUIREMENTS_TRACEABILITY alone."
   },
   "startup_order": [
+    "VERIFY_RESUME_CAPSULE_BLOBS",
     "RECONCILE_COMMUNICATION_STATE",
     "LOAD_A_ORIGINAL",
     "LOAD_B_EXPANSION",
@@ -75,6 +77,8 @@
     "Exactly one KINLINK communication watchdog policy is canonical; automation is a safety net, not a substitute for primary START/END protocol.",
     "Android 17 LAN permission is feature-scoped: never add a blanket startup permission prompt merely because targetSdk is 37.",
     "B-depth growth must update the integrity verifier and context pack without changing the 80-macro denominator automatically.",
-    "Progress is organized by integrated waves; internal CI iterations must never be confused with user-facing micro-beta delivery."
+    "Progress is organized by integrated waves; internal CI iterations must never be confused with user-facing micro-beta delivery.",
+    "Canonical A+B+C and communication-policy files are Git-blob pinned by RESUME_CAPSULE; partial sync fails CI instead of silently degrading context.",
+    "Volatile state is never frozen into the capsule as truth; takeover must read it fresh."
   ]
 }
