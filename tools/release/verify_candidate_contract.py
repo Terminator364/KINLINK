@@ -310,8 +310,8 @@ require(
 require(
     '"Qualité · " + passiveScore.score' not in MAIN_ACTIVITY
     and "Expérience · " in MAIN_ACTIVITY
-    and 'Indice technique interne : ${passiveScore.score}/100' in MAIN_ACTIVITY
-    and "ne prouve pas la qualité ressentie" in MAIN_ACTIVITY,
+    and 'Indice interne non-QoE : ${passiveScore.score}/100' in MAIN_ACTIVITY
+    and "diagnostic seulement" in MAIN_ACTIVITY,
     "candidate contract: Android passive score leaked back into user-facing quality claims",
 )
 
@@ -328,6 +328,45 @@ require(
     "MobileAssistEvidenceSummaryPolicy.summarize(counts).label" in MAIN_ACTIVITY,
     "candidate contract: cockpit does not use tested proof summary",
 )
+require(
+    "PlatformDiagnosticsEligibility.LITE_OBSERVER_INELIGIBLE" in SERVICE,
+    "candidate contract: Lite Observer can wrongly claim ConnectivityDiagnostics eligibility",
+)
+PLATFORM_DIAGNOSTICS = (SRC / "com/terminator364/kinlink/core/PlatformConnectivityDiagnosticsObserver.kt").read_text(encoding="utf-8")
+require(
+    "fun registrationAllowed(" in PLATFORM_DIAGNOSTICS
+    and "ELIGIBLE_CONNECTIVITY_PROVIDER" in PLATFORM_DIAGNOSTICS
+    and "LITE_OBSERVER_INELIGIBLE" in PLATFORM_DIAGNOSTICS,
+    "candidate contract: ConnectivityDiagnostics capability gate missing",
+)
+for raw in [
+    'assessment.state.name',
+    'truth.budgetState.name',
+    'adaptiveDecision.intent.name',
+    'sessionHealth.health.name',
+    'WHAT : ${vaultDecision.what.name}',
+]:
+    require(
+        raw not in MAIN_ACTIVITY,
+        f"candidate contract: raw internal enum leaked into technical UI: {raw}",
+    )
+require(
+    "operationalStateLabel(" in MAIN_ACTIVITY
+    and "autopilotIntentLabel(" in MAIN_ACTIVITY
+    and "passiveCauseLabel(" in MAIN_ACTIVITY
+    and "vaultActionLabel(" in MAIN_ACTIVITY,
+    "candidate contract: human-readable technical detail mapping missing",
+)
+RUN_UI_MATRIX = (ROOT / "tools/release/run_ui_matrix.sh").read_text(encoding="utf-8")
+UI_TEST = (ROOT / "app/src/androidTest/java/com/terminator364/kinlink/ui/ResponsiveRenderMatrixTest.kt").read_text(encoding="utf-8")
+require(
+    'test "$count" -eq 45' in RUN_UI_MATRIX
+    and 'capture("mobile-data-dialog")' in UI_TEST
+    and 'capture("technical-details-start")' in UI_TEST
+    and 'capture("technical-details-bottom")' in UI_TEST,
+    "candidate contract: expanded 45-shot visual proof gate missing",
+)
+
 
 require(
     "countExactActionSince(EVIDENCE_NO_BETTER, since)" in MOBILE_ASSIST
