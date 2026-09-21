@@ -1,0 +1,47 @@
+{
+  "project": "KINLINK",
+  "line": "0.7.1-dev",
+  "versionCode": 9,
+  "code_head": null,
+  "latest_full_machine_pass": null,
+  "field_candidate_allowed": false,
+  "promotion_allowed": false,
+  "gates": {
+    "MACHINE": {
+      "status": "PENDING",
+      "evidence": "fresh full candidate CI required after CA-001..CA-004 repair"
+    },
+    "MIGRATION": {
+      "status": "PENDING",
+      "evidence": "schema unchanged, but executable migration simulation must pass on final repair head"
+    },
+    "SIGNER_CONTINUITY": {
+      "status": "PENDING",
+      "evidence": "successor must be signed with canonical certificate SHA-256 2a22808df1de43eb87daa4cc37f3146e23c8b496d7f8fc5c3b314073539558b3"
+    },
+    "FIELD_HANDOFF": {
+      "status": "PENDING",
+      "evidence": "must be collected with versionCode 9 scoped receipts on exact signed successor"
+    },
+    "RESOURCE_QUALIFICATION": {
+      "status": "PENDING",
+      "evidence": "must be collected with versionCode 9 scoped receipts after quantization/retry repair"
+    }
+  },
+  "counter_audit_repairs": {
+    "CA-001": "IN_PROGRESS",
+    "CA-002": "IN_PROGRESS",
+    "CA-003": "IN_PROGRESS",
+    "CA-004": "IN_PROGRESS"
+  },
+  "invariants": [
+    "No micro-beta chain",
+    "Installed 0.7.0 may remain in use until consolidated successor is proven",
+    "RC3 Drive canonical remains untouched until a fully qualified promotion",
+    "No automatic cellular probe",
+    "No automatic metered Wi-Fi probe",
+    "No Android routing ownership APIs",
+    "VPN/TUN remains disabled",
+    "Stable signer continuity is mandatory"
+  ]
+}
