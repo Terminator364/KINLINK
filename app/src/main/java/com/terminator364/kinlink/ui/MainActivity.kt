@@ -52,6 +52,8 @@ import com.terminator364.kinlink.core.MobileUsageResolutionStatus
 import com.terminator364.kinlink.core.NetworkStatsMobileEvidenceStatus
 import com.terminator364.kinlink.core.NetworkStatsMobileUsageReader
 import com.terminator364.kinlink.core.NetworkStatsMobileUsageRequest
+import com.terminator364.kinlink.core.NetworkStatsQueryGateStatus
+import com.terminator364.kinlink.core.NetworkStatsQuerySessionGate
 import com.terminator364.kinlink.core.MobileVaultAssessment
 import com.terminator364.kinlink.core.MobileVaultFormPolicy
 import com.terminator364.kinlink.core.MobileVaultZone
@@ -97,6 +99,9 @@ import com.terminator364.kinlink.data.StabilityWindow
 import com.terminator364.kinlink.data.RecentReliabilityWindow
 import com.terminator364.kinlink.data.TelemetryLedger
 import java.util.Locale
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 
 class MainActivity : Activity() {
     private lateinit var observer: NetworkObserver
@@ -154,7 +159,18 @@ class MainActivity : Activity() {
     private var lastAssistEvidenceRefreshElapsed: Long = 0L
     private var cachedAssistEvidenceLabel: String =
         "Preuve 24 h · aucune action Mobile Assist évaluée"
-    private var networkStatsRefreshInFlight = false
+    private val networkStatsSessionGate = NetworkStatsQuerySessionGate()
+    private val networkStatsWorker = Executors.newSingleThreadExecutor { runnable ->
+        Thread(runnable, "KINLINK-NetworkStats").apply { isDaemon = true }
+    }
+    private val networkStatsDeadlineWorker =
+        Executors.newSingleThreadScheduledExecutor { runnable ->
+            Thread(runnable, "KINLINK-NetworkStats-Deadline").apply {
+                isDaemon = true
+            }
+        }
+    @Volatile
+    private var networkStatsFuture: Future<*>? = null
 
     private var evidenceReceiverRegistered = false
     private val evidenceUpdatedReceiver = object : BroadcastReceiver() {
@@ -304,6 +320,10 @@ class MainActivity : Activity() {
             runCatching { unregisterReceiver(evidenceUpdatedReceiver) }
             evidenceReceiverRegistered = false
         }
+        networkStatsSessionGate.disableForSession()
+        networkStatsFuture?.cancel(true)
+        networkStatsDeadlineWorker.shutdownNow()
+        networkStatsWorker.shutdownNow()
         ledger.close()
         super.onDestroy()
     }
@@ -676,30 +696,57 @@ class MainActivity : Activity() {
     }
 
     private fun refreshOptionalNetworkStatsEvidence() {
-        if (networkStatsRefreshInFlight) return
         val plan = mobilePlanVaultStore.read() ?: return
         val cycleStart = plan.config.cycleStartAtEpochMillis ?: return
         val endAt = System.currentTimeMillis()
         if (endAt <= cycleStart) return
 
-        networkStatsRefreshInFlight = true
-        Thread {
-            val evidence = NetworkStatsMobileUsageReader(this).query(
-                NetworkStatsMobileUsageRequest(
-                    cycleStartAtEpochMillis = cycleStart,
-                    endAtEpochMillis = endAt
-                )
-            )
+        val start = networkStatsSessionGate.tryStart()
+        if (start.status != NetworkStatsQueryGateStatus.STARTED) return
+        val token = requireNotNull(start.token)
+        val request = NetworkStatsMobileUsageRequest(
+            cycleStartAtEpochMillis = cycleStart,
+            endAtEpochMillis = endAt
+        )
+
+        val future = networkStatsWorker.submit {
+            val evidence =
+                NetworkStatsMobileUsageReader(applicationContext).query(request)
+            if (!networkStatsSessionGate.complete(token)) {
+                return@submit
+            }
+
             val stored =
                 evidence.status == NetworkStatsMobileEvidenceStatus.AVAILABLE &&
                     mobileUsageEvidenceStore.writeNetworkStats(evidence)
             runOnUiThread {
-                networkStatsRefreshInFlight = false
-                if (stored) {
+                if (!isDestroyed && stored) {
                     refreshBudgetUi()
                 }
             }
-        }.start()
+        }
+        networkStatsFuture = future
+
+        networkStatsDeadlineWorker.schedule(
+            {
+                if (networkStatsSessionGate.timeoutAndDisable(token)) {
+                    future.cancel(true)
+                    runOnUiThread {
+                        if (!isDestroyed) {
+                            runCatching {
+                                ledger.appendAction(
+                                    "MOBILE_VAULT_NETWORK_STATS_TIMEOUT",
+                                    false,
+                                    "NetworkStats a dépassé le budget de latence; voie optionnelle désactivée pour cette session."
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            NetworkStatsQuerySessionGate.DEFAULT_TIMEOUT_MILLIS,
+            TimeUnit.MILLISECONDS
+        )
     }
 
     private fun refreshBudgetUi() {
