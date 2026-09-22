@@ -1,6 +1,6 @@
 {
   "schema": "kinlink.canonical_context_pack/2",
-  "generated_at": "2026-09-22T00:48:00+01:00",
+  "generated_at": "2026-09-22T04:00:44+01:00",
   "project": "KINLINK",
   "immutable_A": {
     "preconception_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
@@ -37,11 +37,11 @@
     "active_wave": "W2_CONTEXT_AND_MOBILE_VAULT_CORE",
     "last_fully_audited_head": "b54020291f866042103ad0f63cae3645977638d1",
     "last_fully_audited_run": 35656916207,
-    "latest_head": "7d589ddd6038adcb7c318f2b00dc1cf03faaa355",
-    "latest_design_lint_run": 35664821268,
+    "latest_head": "78b03442ab421ff5eb7f597488d40722fc9ab3cc",
+    "latest_design_lint_run": 35681033427,
     "latest_design_lint_status": "PASS",
-    "latest_android_run": 35664821258,
-    "latest_android_status": "IN_PROGRESS_AT_CLOSE_INTENT",
+    "latest_android_run": 35681033393,
+    "latest_android_status": "PASS",
     "provenance_incident_head": "62a910a698286896af90d22551366f728ee0c4e7",
     "provenance_incident": "artifact manifest literal backreference values; fixed by deterministic Python parser",
     "install_requested": false,
@@ -53,21 +53,23 @@
       "versionCode": 12,
       "unsigned_apk_sha256": "8b81f3ec51e6f558ebe5c1a41904b47fe65aef2c0cd1ee4e0d21d372837fa1ff"
     },
-    "current_focus": "W2 Mobile Vault UI/reconciliation proof closed at 7d589ddd; continue optional NetworkStats/per-SIM-safe evidence and complete Mobile Vault product surface."
+    "current_focus": "W2 B92+B93 machine PASS at 78b03442: bounded 4s NetworkStats worker/session fail-open and explicit two-plan aggregate HOLD proof. Next B94 Subscription ID privacy boundary; no permission expansion/install."
   },
   "communication": {
-    "current_tranche": "KINLINK-2026-09-22-0038-K25-14",
-    "state": "START_ACKNOWLEDGED_WORKING",
-    "gmail_start_message_id": "1a0c655d61b9e72e",
+    "current_tranche": "KINLINK-2026-09-22-0344-K25-18",
+    "state": "CLOSED",
+    "gmail_start_message_id": "1a0c6ffbf89f4188",
     "protocol": "v6",
     "deadline_mode": "20_PLUS_5_DURABLE",
     "watchdog": "KINLINK Continuity & Comms",
     "watchdog_cardinality": 1,
     "watchdog_cadence": "HOURLY",
     "watchdog_role": "FAILOVER_ONLY",
-    "watchdog_policy": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json"
+    "watchdog_policy": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json",
+    "gmail_end_message_id": "1a0c70f0154dceff",
+    "closed_at_local": "2026-09-22T04:00:44+01:00"
   },
-  "next_action": "continue W2 after 7d589ddd 45-shot PASS: optional capability-gated NetworkStats/per-subscription-safe evidence, then full Mobile Vault product surface; communication v6 20+5 deadline enforced; no install",
+  "next_action": "fresh START; B94 Subscription ID privacy boundary and negative CI identifier fence; preserve aggregate/UNKNOWN fallback; no READ_PHONE_STATE unless separately justified; no signing/staging/install",
   "memory": {
     "policy": ".project-memory/MEMORY_POLICY_V2.json",
     "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",
