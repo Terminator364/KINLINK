@@ -243,7 +243,7 @@ class ResponsiveRenderMatrixTest {
                 activity.findViewById<View>(buttonId).performClick()
             }
             instrumentation.waitForIdleSync()
-            assertActiveWindowContains(expected)
+            waitForActiveWindowContains(expected)
             assertKinlinkOwnsForeground(captureName, "surface")
             capture(captureName)
             runShell("input keyevent KEYCODE_BACK")
@@ -395,6 +395,21 @@ class ResponsiveRenderMatrixTest {
             if (found != null) return found
         }
         return null
+    }
+
+    private fun waitForActiveWindowContains(
+        fragment: String,
+        timeoutMillis: Long = 5_000L
+    ) {
+        val deadline = android.os.SystemClock.elapsedRealtime() + timeoutMillis
+        while (android.os.SystemClock.elapsedRealtime() < deadline) {
+            val root = instrumentation.uiAutomation.rootInActiveWindow
+            if (root != null && accessibilityTreeContains(root, fragment)) {
+                return
+            }
+            android.os.SystemClock.sleep(100L)
+        }
+        assertActiveWindowContains(fragment)
     }
 
     private fun assertActiveWindowContains(fragment: String) {
