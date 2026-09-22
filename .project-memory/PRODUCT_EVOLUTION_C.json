@@ -16,6 +16,9 @@
     "Repeated ineffective actions must stop/escalate rather than repeat theatre.",
     "Battery/RAM/thermal/data guards are visible product requirements, not hidden implementation details.",
     "Field findings become regression tests/durable evidence.",
-    "Strong stabilizer remains required as future core value but must pass measurable benefit, battery/RAM/latency/DNS/watchdog/rollback gates before activation."
+    "Strong stabilizer remains required as future core value but must pass measurable benefit, battery/RAM/latency/DNS/watchdog/rollback gates before activation.",
+    "No fixed 25-minute engineering tranche: communication is milestone-based START → reasonable coherent work → human explanatory END, ending only at a real milestone, human/security/platform gate, or explicit stop.",
+    "Gmail START/END must be written in natural explanatory French with the same substantive explanation as ChatGPT; machine-only classification/status dumps are not an acceptable human report.",
+    "Under severe time pressure, prioritize a coherent usable A+C-heavy product candidate while preserving B safety/privacy/fail-open gates; advanced B depth must remain visible but cannot block every usable field delivery."
   ]
 }

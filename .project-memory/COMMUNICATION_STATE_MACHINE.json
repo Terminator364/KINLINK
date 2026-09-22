@@ -1,8 +1,6 @@
 {
-  "schema": "kinlink.communication_state_machine/6",
-  "cadence_minutes": 25,
-  "useful_work_minutes": 20,
-  "normal_close_reserve_minutes": 5,
+  "schema": "kinlink.communication_state_machine/7",
+  "cadence_mode": "MILESTONE_BASED_NO_FIXED_DURATION",
   "work_states": [
     "IDLE",
     "WORKING",
@@ -23,8 +21,6 @@
   "owners": [
     "PRIMARY_ASSISTANT",
     "INTERRUPTION_RECOVERY",
-    "SHADOW_BACKUP",
-    "HARD_GUARD",
     "AUTOMATION_FAILOVER"
   ],
   "normal_path": [
@@ -36,47 +32,33 @@
     "END_SEND_PENDING->END_ACKNOWLEDGED",
     "END_ACKNOWLEDGED->CLOSED"
   ],
+  "close_rule": "NO_TIME_BASED_FORCED_CLOSE; close on coherent milestone, true human/security/platform gate, or explicit user stop.",
   "crash_windows": [
     {
       "window": "after START ack before close intent",
-      "recovery": "resume from durable work checkpoint; never final-reply without END"
+      "recovery": "resume from durable work checkpoint; do not invent a time-based END"
     },
     {
       "window": "after CLOSE_INTENT before Gmail send",
-      "recovery": "send exactly one normal END using delivery key"
+      "recovery": "send exactly one human explanatory END using delivery key"
     },
     {
       "window": "after Gmail END send before GitHub receipt",
       "recovery": "search same Gmail thread/delivery key; persist ACK; do not resend"
     },
     {
-      "window": "user/tool interruption after START or intermediate deliverable before normal END",
-      "recovery": "reconcile active tranche first; close it exactly once if close intent is required; if the mission continues, create a NEW tranche and send a NEW START before more substantive work"
-    },
-    {
-      "window": "automation closes stale tranche and mission can continue",
-      "recovery": "send human-style END and persist CLOSED; open a new CONTINUER START only if the same automation will execute at least one real bounded next action; close/checkpoint before automation run ends"
+      "window": "parallel/duplicate STARTs",
+      "recovery": "reconcile to one authoritative active tranche and record the others as absorbed/superseded"
     }
   ],
   "security_invariants": [
     "final ChatGPT closeout is blocked until Gmail END provider ACK is durable",
     "new work cannot reuse a CLOSED tranche",
-    "platform/security controls are never bypassed; interruption becomes a durable checkpoint",
+    "platform/security controls are never bypassed",
     "human APK delivery exposes one authorized install file only",
-    "rollback APKs are not present in the normal human install surface",
-    "an intermediate PDF/report/artifact email never counts as END unless it is explicitly the END transition",
-    "a forced close caused by interruption does not end the mission; user-authorized failover may open a new START only with immediate real work and no human/security gate",
-    "automation-generated END/START emails must remain human-readable and explanatory, not machine-status prose",
-    "active foreground tranche must persist its close deadline at START; deadline is part of the durable state, not an implicit timer",
-    "foreground time is checked before each major mutation batch and after at most three tool batches",
-    "hourly automation is failover only and cannot be represented as a 25-minute guarantee"
+    "Gmail APK attachments are forbidden; Drive is the installer transport",
+    "START/END emails are natural explanatory French and carry the same substantive story as chat",
+    "active work is not terminated merely because a clock duration elapsed"
   ],
-  "backup_earliest_offset_minutes": 25,
-  "hard_guard_offset_minutes": 25,
-  "required_deadline_fields": [
-    "start_provider_ts",
-    "start_local",
-    "forced_stop_new_mutations_local",
-    "close_deadline_local"
-  ]
+  "required_deadline_fields": []
 }

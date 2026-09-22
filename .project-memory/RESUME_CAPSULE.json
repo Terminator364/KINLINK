@@ -1,7 +1,7 @@
 {
   "schema": "kinlink.resume_capsule/1",
   "project": "KINLINK",
-  "generated_at": "2026-09-22T00:47:00+01:00",
+  "generated_at": "2026-09-22T13:12:24+01:00",
   "purpose": "cold-start a new conversation from durable truth and detect stale/partially synchronized memory before product work",
   "immutable_history": {
     "repo_initial_commit": "e066f17a7d804acad538aa58b5cb35cda06b6014",
@@ -27,15 +27,15 @@
     },
     {
       "path": ".project-memory/COMMUNICATION_PROTOCOL.json",
-      "git_blob_sha1": "a795f0d8f6e9f33abd6398e2d010452c4c3f6fab"
+      "git_blob_sha1": "2ffc453b3427cfdefac832f267498acf5ea6f8e0"
     },
     {
       "path": ".project-memory/COMMUNICATION_STATE_MACHINE.json",
-      "git_blob_sha1": "2dafc1125cf329f16ca706e341b7dff190e4fb71"
+      "git_blob_sha1": "a43f93f35bb079ece88b802c84e4f23be0155fc6"
     },
     {
       "path": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json",
-      "git_blob_sha1": "b20e897eddb81f2cf45508ee472c51feeff112f1"
+      "git_blob_sha1": "ca9dfc5f185e97e976d2d6a0634dac22a7e971e6"
     },
     {
       "path": ".project-memory/DEAD_END_REGISTRY.json",
@@ -67,7 +67,7 @@
     },
     {
       "path": ".project-memory/PRODUCT_EVOLUTION_C.json",
-      "git_blob_sha1": "900f1c14b04ded75f6d0556ebf462ad6c01c68ac"
+      "git_blob_sha1": "34370bafbcd95c50f7e83ca2ea101f18801c0dd3"
     },
     {
       "path": ".project-memory/VISUAL_COUNTER_AUDIT_POLICY.json",
@@ -123,6 +123,8 @@
     "A CLOSED tranche is never reused.",
     "The watchdog repairs communication state only; it never starts orphan product work.",
     "User-facing install is not the unit of engineering progress.",
-    "CLOSE_INTENT without END ACK is a P0 fault; any next foreground takeover must reconcile it before opening new work."
+    "CLOSE_INTENT without END ACK is a P0 fault; any next foreground takeover must reconcile it before opening new work.",
+    "Communication has no fixed tranche duration; active work ends on a coherent milestone, real gate or explicit stop, not on age.",
+    "Gmail START/END human reports must be substantively consistent with chat explanations."
   ]
 }

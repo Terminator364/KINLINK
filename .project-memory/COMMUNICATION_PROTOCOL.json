@@ -1,39 +1,58 @@
 {
-  "schema": "kinlink.communication_protocol/6",
+  "schema": "kinlink.communication_protocol/7",
   "project": "KINLINK",
-  "cadence_minutes": 25,
-  "primary_work_budget_minutes": 20,
-  "closeout_reserve_minutes": 5,
+  "cadence_mode": "MILESTONE_BASED_NO_FIXED_DURATION",
+  "cadence_minutes": null,
+  "primary_work_budget_minutes": null,
+  "closeout_reserve_minutes": null,
   "normal_close_owner": "PRIMARY_ASSISTANT",
-  "backup_earliest_offset_minutes": 25,
-  "hard_guard_offset_minutes": 25,
   "gmail_label": "KINLINK",
   "rule_priority": "P0_COMMUNICATION_CONTINUITY_THEN_DELIVERY_SECURITY_THEN_PRODUCT",
   "start_sequence": [
-    "RECONCILE_OR_CLOSE_ANY_PRIOR_TRANCHE",
-    "IF_MISSION_CONTINUES_AFTER_FORCED_CLOSE_CREATE_NEW_TRANCHE",
-    "LOAD_DELIVERY_SECURITY_POLICY",
-    "SEND_GMAIL_START",
+    "RECONCILE_OR_CLOSE_ANY_PRIOR_TRANSITION",
+    "LOAD_DELIVERY_SECURITY_AND_A_PLUS_B_PLUS_C",
+    "SEND_HUMAN_EXPLANATORY_GMAIL_START",
     "VERIFY_START_PROVIDER_ACK_MESSAGE_ID_AND_THREAD_ID",
-    "APPLY_GMAIL_LABEL_KINLINK",
     "PERSIST_ACTIVE_TRANCHE_START_RECEIPT",
-    "BEGIN_WORK"
+    "BEGIN_COHERENT_WORK"
   ],
-  "feedback_during_tranche": "QUEUE_AND_INTEGRATE_WITHOUT_BREAKING_ACTIVE_TRANCHE",
-  "only_early_stop": "TRUE_HUMAN_GATE_OBJECTIVELY_REQUIRED_TO_CONTINUE",
+  "close_trigger": [
+    "COHERENT_PRODUCT_OR_ENGINEERING_MILESTONE_REACHED",
+    "TRUE_HUMAN_GATE_REQUIRED",
+    "SECURITY_OR_PLATFORM_GATE_REQUIRED",
+    "USER_EXPLICITLY_REQUESTS_STOP_OR_CLOSE"
+  ],
   "end_sequence": [
     "STOP_NEW_PRODUCT_MUTATIONS",
     "PERSIST_FINAL_TECHNICAL_CHECKPOINT_AND_CLOSE_INTENT",
-    "SEND_COMPLETE_GMAIL_END_REPORT",
+    "SEND_HUMAN_EXPLANATORY_GMAIL_END",
     "VERIFY_END_PROVIDER_ACK_MESSAGE_ID",
-    "APPLY_GMAIL_LABEL_KINLINK",
     "PERSIST_END_ACKNOWLEDGED_AND_CLOSED",
-    "ONLY_THEN_REPLY_IN_CHAT_APP"
+    "ONLY_THEN_REPLY_IN_CHAT_WITH_CONSISTENT_HUMAN_SUMMARY"
   ],
-  "chat_app_reply": "VA_SUR_GMAIL_PLUS_KINSHASA_DATE_TIME_ONLY",
+  "feedback_during_tranche": "INTEGRATE_WITHOUT_FORCING_ARTIFICIAL_TIME_CLOSE",
+  "chat_app_reply": "HUMAN_EXPLANATORY_SUMMARY_CONSISTENT_WITH_GMAIL_END",
+  "email_style": {
+    "language": "fr",
+    "tone": "natural_explanatory",
+    "parity_rule": "GMAIL_START_AND_END_MUST_MATCH_OR_EXCEED_THE_HUMAN_EXPLANATION_GIVEN_IN_CHAT_NOT_MACHINE_ONLY_STATUS_PROSE",
+    "start_sections": [
+      "ce qu’on vise",
+      "pourquoi ce choix",
+      "comment je vais travailler",
+      "ce que je ne vais pas sacrifier"
+    ],
+    "end_sections": [
+      "ce qui a réellement changé",
+      "ce que cela apporte à l’utilisateur",
+      "preuves importantes sans jargon inutile",
+      "ce qui reste honnêtement",
+      "prochaine action concrète"
+    ]
+  },
   "final_reply_gate": {
     "required_delivery_state": "END_ACKNOWLEDGED_OR_CLOSED",
-    "rule": "NO_FINAL_CHAT_APP_RESPONSE_BEFORE_GMAIL_END_PROVIDER_ACK_AND_DURABLE_LEDGER_RECEIPT"
+    "rule": "NO_FINAL_CHAT_CLOSEOUT_BEFORE_GMAIL_END_PROVIDER_ACK_AND_DURABLE_LEDGER_RECEIPT"
   },
   "apk_delivery": "DRIVE_KINLINK_INSTALLER_SINGLE_EXACT_APK_ONLY_NEVER_GMAIL_ATTACHMENT",
   "delivery_security_policy_file": ".project-memory/DELIVERY_SECURITY_POLICY.json",
@@ -41,6 +60,7 @@
     "folder": "KINLINK/INSTALLER",
     "folder_id": "1HjnK_CtA_Bg5d19twTnYvGghCKY3AIc8",
     "authorized_filename": "KINLINK_INSTALL_NOW.apk",
+    "file_id": "1dj2j2zhLmUPb63NVIaMx0jElpNdb04ky",
     "max_apk_cardinality": 1,
     "rule": "USER_NEVER_CHOOSES_BETWEEN_SIMILAR_APKS"
   },
@@ -51,91 +71,42 @@
     "install_contract": "PACKAGE_VERSION_SIGNER_HASH_DRIVE_READBACK_SINGLE_PATH_ALL_REQUIRED",
     "fail_mode": "FAIL_CLOSED"
   },
-  "idempotency": "DELIVERY_KEY_PLUS_GMAIL_SEARCH_PLUS_PROVIDER_MESSAGE_ID",
-  "threading": "PREFER_END_REPLY_TO_START_THREAD_WITH_VERIFIED_STANDALONE_FALLBACK",
-  "network_interruption_policy": "PERSIST_CHECKPOINT_AND_RESUME_SAME_TRANCHE_NEVER_SILENTLY_ABANDON",
-  "no_app_reply_before_end_mail": true,
-  "end_mail_required_even_if_user_sends_intermediate_feedback": true,
-  "violation_recovery": "IF_END_MAIL_MISSING_SEND_IT_BEFORE_ANY_OTHER_FINAL_APP_REPLY",
-  "platform_hold_rule": "SECURITY_HOLD_IS_NOT_MISSION_COMPLETION; CHECKPOINT_AND_RESUME_WITHOUT_BYPASS",
-  "normal_end_sequence": [
-    "ENTER_NORMAL_CLOSE_RESERVE",
-    "STOP_NEW_PRODUCT_MUTATIONS",
-    "PERSIST_CLOSE_INTENT",
-    "SEND_GMAIL_END",
-    "VERIFY_PROVIDER_ACK",
-    "PERSIST_END_ACK_AND_CLOSED",
-    "ONLY_THEN_FINAL_APP_REPLY"
-  ],
   "field_feedback_intake": {
     "rule": "SCREENSHOTS_OR_FIELD_EVIDENCE_TRIGGER_AUTOMATIC_COUNTER_AUDIT_BEFORE_USER_IS_ASKED_TO_DIAGNOSE",
-    "communication": "OPEN_NEW_TRANCHE_WITH_GMAIL_START_ACK_BEFORE_SUBSTANTIVE_REPAIR",
+    "communication": "CONTINUE_CURRENT_MILESTONE_IF_OPEN_OR_OPEN_FRESH_START_IF_CLOSED",
     "closeout": "GMAIL_END_ACK_AND_DURABLE_END_ACK_REQUIRED"
   },
   "interruption_recovery": {
-    "rule": "A_USER_MESSAGE_OR_TOOL_INTERRUPTION_MUST_NOT_SILENTLY_ABANDON_AN_ACTIVE_TRANCHE",
     "reconcile_first": true,
-    "if_start_exists_end_missing": "checkpoint current work, persist close intent, send/verify exactly one END, persist CLOSED",
-    "if_mission_continues_after_close": "automation or foreground may open a NEW tranche with a NEW Gmail START; an automation START is permitted only when the same automation immediately executes at least one real bounded next action and then closes/checkpoints safely",
-    "in_tranche_deliverables": "PDF/report/artifact messages are neither START nor END unless explicitly typed as such",
+    "rule": "A user/tool interruption must not silently abandon an active tranche. Resume from durable state; close only when a real milestone/gate/explicit close exists.",
+    "in_tranche_deliverables": "PDF/report/artifact messages are neither START nor END unless explicitly typed as such.",
     "no_false_end": "Do not treat an intermediate requested deliverable as tranche completion.",
     "idempotency": "Search/verify provider message IDs before replaying START or END."
   },
-  "close_intent_must_complete": {
-    "rule": "Once forced_stop_new_mutations_local is reached OR CLOSE_INTENT is durable, the foreground worker must stop product mutations and attempt Gmail END immediately; no normal reply first.",
-    "missed_end_class": "P0_COMMUNICATION_FAULT",
-    "recovery": "verify provider thread before replay, then exactly-one END + ACK + CLOSED",
-    "deadline_minutes": 25,
-    "foreground_reserve_minutes": 5
-  },
   "foreground_handoff": {
-    "rule": "A tool/user/automation interruption after CLOSE_INTENT does not cancel the END obligation. Reconcile and close old tranche first. If continuation is authorized and no human/security gate exists, open a fresh START and actually continue work.",
     "required_order": [
-      "RECONCILE_OLD_END",
-      "PERSIST_CLOSED",
-      "SEND_NEW_START",
-      "PERSIST_START_ACK",
-      "EXECUTE_REAL_NEXT_ACTION",
-      "CHECKPOINT_OR_CLOSE"
-    ]
+      "RECONCILE_OLD_END_IF_CLOSE_INTENT_EXISTS",
+      "PERSIST_CLOSED_IF_END_ACK_EXISTS",
+      "RESUME_ACTIVE_WORK_OR_SEND_NEW_START_IF_CLOSED",
+      "EXECUTE_REAL_NEXT_ACTION"
+    ],
+    "rule": "Age alone never forces END; explicit close intent/gate does."
   },
   "automation_failover": {
     "name": "KINLINK Continuity & Comms",
     "cardinality": 1,
-    "user_authorized_auto_resume": true,
-    "trigger": "missed END / CLOSE_INTENT orphan / stale WORKING >=28m",
-    "repaired_end_style": "NORMAL_HUMAN_FRENCH_EXPLANATORY",
-    "repaired_end_subject_rule": "KINLINK — FIN DE TRANCHE — date/heure Kinshasa; never expose WATCHDOG/RECOVERY/RATTRAPAGE/FAILSAFE unless technically necessary",
-    "after_repaired_close": [
-      "IF_NO_HUMAN_OR_SECURITY_GATE_OPEN_NEW_TRANCHE",
-      "SEND_NEW_START_WITH_CONTINUE_KEYWORD",
-      "VERIFY_PROVIDER_ACK",
-      "PERSIST_START_ACK",
-      "EXECUTE_AT_LEAST_ONE_BOUNDED_SAFE_NEXT_ACTION",
-      "CHECKPOINT",
-      "CLOSE_NEW_AUTOMATION_TRANCHE_BEFORE_RUN_END_UNLESS_A_REAL_FOREGROUND_WORKER_OWNS_IT"
-    ],
-    "start_keyword": "CONTINUER",
-    "orphan_start_forbidden": true,
-    "human_gate_rule": "if true human/security/platform gate, close normally and do not auto-restart",
-    "hourly_platform_limit": true,
-    "guarantee": "FAILOVER_ONLY_NOT_25_MIN_GUARANTEE",
-    "blind_window": "Because condition-watch cadence cannot exceed hourly, an active tranche can cross its 25-minute deadline after a healthy watchdog run and remain unobserved until the next hourly run."
+    "timing_mode": "condition_watch",
+    "cadence": "HOURLY",
+    "role": "FAILOVER_FOR_ORPHANED_COMMUNICATION_TRANSITIONS_NOT_A_WORK_TIMER",
+    "trigger": "CLOSE_INTENT_OR_END_SEND_PENDING_WITHOUT_ACK_OR_PROVIDER_STATE_MISMATCH",
+    "no_age_based_close": true,
+    "guarantee": "FAILOVER_ONLY_NO_TRANCHE_DURATION_GUARANTEE",
+    "start_keyword": "CONTINUER"
   },
-  "foreground_deadline": {
-    "total_tranche_minutes": 25,
-    "useful_work_minutes": 20,
-    "hard_close_reserve_minutes": 5,
-    "required_active_fields": [
-      "start_provider_ts",
-      "start_local",
-      "forced_stop_new_mutations_local",
-      "close_deadline_local"
-    ],
-    "time_check_rule": "CHECK_TIME_BEFORE_EVERY_MAJOR_MUTATION_BATCH_AND_AFTER_AT_MOST_3_TOOL_BATCHES",
-    "at_forced_stop": "STOP_NEW_PRODUCT_MUTATIONS_PERSIST_CLOSE_INTENT_SEND_GMAIL_END_NOW",
-    "at_or_after_deadline": "P0_MISSED_END_RECONCILE_GMAIL_THEN_SEND_EXACTLY_ONE_END_BEFORE_ANY_OTHER_WORK_OR_NORMAL_REPLY",
-    "tool_error_rule": "If Gmail send errors without provider message_id, read/search provider state before retry; never assume send failed or succeeded.",
-    "rationale": "Repeated missed END events show 3-minute reserve was too narrow for connector/readback retries. Keep 25-minute total but reserve 5 minutes."
-  }
+  "timing_rule": {
+    "fixed_duration_enabled": false,
+    "rule": "NO_FIXED_TRANCHE_DURATION; WORK_CONTINUES_TO_THE_NEXT_REASONABLE_COHERENT_MILESTONE_OR_REAL_GATE"
+  },
+  "no_app_reply_before_end_mail": true,
+  "idempotency": "DELIVERY_KEY_PLUS_GMAIL_SEARCH_PLUS_PROVIDER_MESSAGE_ID"
 }
