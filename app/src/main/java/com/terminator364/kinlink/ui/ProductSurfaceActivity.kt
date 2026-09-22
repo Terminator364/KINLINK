@@ -19,6 +19,10 @@ import com.terminator364.kinlink.core.MobileVaultOfflineFallbackPolicy
 import com.terminator364.kinlink.core.MobileVaultZone
 import com.terminator364.kinlink.core.PlatformCapabilityDiscovery
 import com.terminator364.kinlink.core.DataSaverState
+import com.terminator364.kinlink.core.DeviceResourceGuard
+import com.terminator364.kinlink.core.StrongStabilizerShadowInput
+import com.terminator364.kinlink.core.StrongStabilizerShadowMode
+import com.terminator364.kinlink.core.StrongStabilizerShadowPolicy
 import com.terminator364.kinlink.core.LocalNetworkAccessState
 import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
@@ -253,6 +257,67 @@ class ProductSurfaceActivity : Activity() {
         append("\n\nUrgence · suspend toutes les actions KINLINK sans prendre le contrôle du routage : Android continue d’utiliser son réseau natif.")
         append("\n\n")
         append(capabilitySummary())
+        append("\n\n")
+        append(strongStabilizerSummary())
+    }
+
+    private fun strongStabilizerSummary(): String {
+        val resourcesConstrained = runCatching {
+            DeviceResourceGuard(this).snapshot().constrained
+        }.getOrDefault(true)
+        val assessment = StrongStabilizerShadowPolicy.evaluate(
+            StrongStabilizerShadowInput(
+                safeMode = recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY,
+                emergencyObservationOnly = false,
+                resourcesConstrained = resourcesConstrained,
+                handoffInProgress = false,
+                nativeEscapeVerified = true,
+                perAppConsent = false,
+                lanPreservationVerified = false,
+                dnsSafetyVerified = false,
+                routeLoopSafetyVerified = false,
+                mtuSafetyVerified = false,
+                ipv4Verified = false,
+                ipv6Verified = false,
+                meteredNetwork = false,
+                meteredCanaryAllowed = false,
+                harmObserved = false
+            )
+        )
+        val modeLabel = when (assessment.mode) {
+            StrongStabilizerShadowMode.DISABLED -> "désactivé par sécurité"
+            StrongStabilizerShadowMode.SHADOW_ONLY -> "SHADOW — observation uniquement"
+            StrongStabilizerShadowMode.PER_APP_CANARY -> "canary par application autorisable"
+        }
+        val blockers = if (assessment.blockers.isEmpty()) {
+            "aucun blocker de pré-canary"
+        } else {
+            assessment.blockers.sorted().joinToString(", ") { blocker ->
+                when (blocker) {
+                    "SAFE_MODE" -> "Mode sûr"
+                    "EMERGENCY_OBSERVATION_ONLY" -> "Urgence"
+                    "RESOURCE_CONSTRAINED" -> "ressources téléphone"
+                    "HANDOFF_IN_PROGRESS" -> "handoff en cours"
+                    "NATIVE_ESCAPE_UNVERIFIED" -> "sortie Android native"
+                    "HARM_OBSERVED" -> "dommage observé"
+                    "PER_APP_CONSENT_REQUIRED" -> "consentement par application"
+                    "LAN_PRESERVATION_UNVERIFIED" -> "LAN"
+                    "DNS_SAFETY_UNVERIFIED" -> "DNS"
+                    "ROUTE_LOOP_SAFETY_UNVERIFIED" -> "boucles de routage"
+                    "MTU_SAFETY_UNVERIFIED" -> "MTU"
+                    "IPV4_UNVERIFIED" -> "IPv4"
+                    "IPV6_UNVERIFIED" -> "IPv6"
+                    "METERED_CANARY_NOT_ALLOWED" -> "réseau facturé"
+                    else -> blocker
+                }
+            }
+        }
+        return buildString {
+            append("Strong Stabilizer · $modeLabel")
+            append("\nTrafic pris en charge · non")
+            append("\nBlockers actuels · $blockers")
+            append("\nRègle · aucun VPN/TUN ni routage KINLINK tant que bénéfice, RAM/batterie, rollback, DNS/LAN, IPv4/IPv6/QUIC et sortie native ne sont pas prouvés.")
+        }
     }
 
     private fun capabilitySummary(): String {
