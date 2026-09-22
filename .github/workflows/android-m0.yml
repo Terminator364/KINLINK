@@ -1,8 +1,8 @@
-name: android-0.8-integrated
+name: android-0.9-w4-consolidated
 on:
   workflow_dispatch:
   push:
-    branches: [dev/0.8.0-integrated-truth-and-control]
+    branches: [dev/0.9-w4-shadow-product]
 permissions:
   contents: read
 
@@ -85,8 +85,8 @@ jobs:
           BADGING="$("$BUILD_TOOLS/aapt" dump badging "$APK" | head -n 1)"
           echo "$BADGING"
           echo "$BADGING" | grep -F "package: name='com.terminator364.kinlink'"
-          echo "$BADGING" | grep -F "versionCode='12'"
-          echo "$BADGING" | grep -F "versionName='0.8.0-dev'"
+          echo "$BADGING" | grep -F "versionCode='13'"
+          echo "$BADGING" | grep -F "versionName='0.9.0-dev'"
 
           set +e
           VERIFY_OUTPUT="$("$BUILD_TOOLS/apksigner" verify --verbose "$APK" 2>&1)"
@@ -129,7 +129,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: KINLINK-0.8.0-dev-ci-build
+          name: KINLINK-0.9.0-dev-ci-build
           path: |
             app/build/outputs/apk/candidate/app-candidate-unsigned.apk
             app/build/outputs/apk/candidate/KINLINK-candidate-unsigned.apk.sha256
@@ -138,7 +138,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: KINLINK-0.8.0-responsive-ui-proof
+          name: KINLINK-0.9.0-responsive-ui-proof
           path: |
             build/ui-proof
             app/build/reports/androidTests
