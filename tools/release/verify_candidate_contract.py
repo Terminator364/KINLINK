@@ -20,8 +20,20 @@ def require(ok: bool, message: str) -> None:
     if not ok:
         raise SystemExit(message)
 
-require('versionCode = 12' in GRADLE, "candidate contract: versionCode 12 missing")
-require('versionName = "0.8.0-dev"' in GRADLE, "candidate contract: versionName 0.8.0-dev missing")
+version_code_match = re.search(r"versionCode\s*=\s*([0-9]+)", GRADLE)
+version_name_match = re.search(r'versionName\s*=\s*"([^"]+)"', GRADLE)
+require(version_code_match is not None, "candidate contract: versionCode missing")
+require(version_name_match is not None, "candidate contract: versionName missing")
+candidate_version_code = int(version_code_match.group(1))
+candidate_version_name = version_name_match.group(1)
+require(
+    candidate_version_code >= 12,
+    f"candidate contract: versionCode regressed below 12: {candidate_version_code}",
+)
+require(
+    re.fullmatch(r"0\.(?:8|9|[1-9][0-9]+)\.[0-9]+-dev", candidate_version_name) is not None,
+    f"candidate contract: unsupported integrated dev version name: {candidate_version_name}",
+)
 require(
     'transport != Transport.WIFI -> RecoveryBlockReason.NON_WIFI' in ACTIVE,
     "candidate contract: central non-Wi-Fi active-recovery block missing",
@@ -218,7 +230,7 @@ tests = list((ROOT / "app/src/test").rglob("*Test.kt"))
 require(len(tests) >= 64, f"candidate contract: regression suite unexpectedly shrank to {len(tests)} tests")
 
 print("candidate-contract: PASS")
-print("version: 0.8.0-dev / code 12")
+print(f"version: {candidate_version_name} / code {candidate_version_code}")
 print(f"probe_socket_envelope_ms: {socket_envelope}")
 print(f"probe_hard_envelope_ms: {hard_envelope}")
 print(f"recovery_deadline_ms: {deadline_ms}")
