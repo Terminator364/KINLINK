@@ -1,7 +1,7 @@
 {
   "project": "KINLINK",
   "phase": "KINLINK_FULL_A_B_C_W1_PLATFORM_CAPABILITY_AND_CONTINUITY_SYNC_ACTIVE",
-  "status": "0_8_W2_B95_ACTIVE_DATA_GENERATION_MACHINE_PASS",
+  "status": "0_8_W2_B91_B100_FASTLANE_MACHINE_PASS",
   "candidate": {
     "version": "0.7.3-dev",
     "versionCode": 11
@@ -24,7 +24,7 @@
     "durable boot/package-restart start receipts"
   ],
   "delivery": "SINGLE_HUMAN_INSTALL_SURFACE_READY",
-  "next_uncommitted_action": "fresh START; continue W2 with B96 NetworkStats usage-callback semantics as a pure restart/reconciliation policy first: callbacks are advisory/process-live only, missed callback never proves zero usage, process restart requires fresh reconciliation before Mobile Vault spending decisions; no Android callback activation, no permission expansion, no signing/staging/install",
+  "next_uncommitted_action": "fresh START; execute W2_CLOSEOUT_PLUS_W3_PRODUCTIZATION_FASTLANE as one large integrated wave: finish privacy-preserving trusted/home Wi-Fi context and cost-aware W2 inputs, then build the highest-value product surfaces together (dedicated Mobile Vault, Diagnostic path, Settings/Emergency, local report/This Week) with one consolidated test/CI cycle; avoid B-number micro-tranches; no signing/staging/install until the wave is coherent",
   "release_candidate": {
     "version": "0.6.0-rc3",
     "versionCode": 7,
@@ -508,10 +508,10 @@
     "last_fully_audited_head": "b54020291f866042103ad0f63cae3645977638d1",
     "last_fully_audited_android_run": 35656916207,
     "last_fully_audited_status": "PASS_45_OF_45_UI_AND_TRUTH",
-    "latest_head": "5a45fb3ec5d4d82960b7687fdd75836e6770ccb4",
-    "latest_change": "W2 B95: privacy-preserving default-data vs active-data generations; active-generation change/staleness invalidation and UNKNOWN on observation loss/reappearance",
-    "latest_design_lint_run": 35710089427,
-    "latest_android_run": 35710089508,
+    "latest_head": "805318ed84d4626908727c8e874f34a189b9e082",
+    "latest_change": "FASTLANE B96-B100 integrated in one block: advisory process-live usage callbacks, wall-clock vs monotonic time domains, complete observation provenance, repeated reset/reboot no-free-quota proof, and first-class offline local-plan fallback",
+    "latest_design_lint_run": 35715253302,
+    "latest_android_run": 35715253452,
     "latest_ci_status": "PASS",
     "provenance_incident_head": "62a910a698286896af90d22551366f728ee0c4e7",
     "provenance_incident_run": 35657955186,
@@ -687,6 +687,27 @@
       "maturity_effect": "NO_SCORE_INFLATION_FULL_A_B_C_REMAINS_46_PERCENT",
       "install_requested": false,
       "next_gap": "B96 usage callbacks advisory/process-live only; restart requires fresh reconciliation before plan decisions"
+    },
+    "w2_b96_b100": {
+      "head": "805318ed84d4626908727c8e874f34a189b9e082",
+      "design_lint_run": 35715253302,
+      "design_lint_status": "PASS",
+      "android_run": 35715253452,
+      "android_status": "PASS",
+      "ci_build_artifact_id": 10688759701,
+      "responsive_ui_artifact_id": 10689019546,
+      "status": "FASTLANE_MACHINE_PASS",
+      "semantics": [
+        "B96 callbacks are advisory/process-live only; process restart requires fresh reconciliation and missed callback never proves zero usage",
+        "B97 plan cycle/expiry uses calendar wall time while control deadlines use monotonic elapsed time",
+        "B98 MobileUsageObservation carries semantic kind, source, attribution, observed-at, confidence, adapter id and adapter version; malformed provenance is rejected and semantic mismatches are not reinterpreted",
+        "B99 repeated aggregate counter resets never reduce proven cycle usage and increment counter generation",
+        "B100 local user-entered plan/expiry/reserves remain first-class offline fallback without carrier/cloud/telephony dependency; missing exact usage remains UNKNOWN"
+      ],
+      "methodology_change": "ABANDON_B_NUMBER_MICRO_TRANCHES; USE_LARGE_FUNCTIONAL_WAVES_AND_ONE_FULL_CI_PER_CONSOLIDATED_HEAD_EXCEPT_REAL_FAILURE_REPAIR",
+      "maturity_effect": "NO_SCORE_INFLATION_UNTIL_MACRO_STAGE_RECALCULATION",
+      "install_requested": false,
+      "next_wave": "W2_CLOSEOUT_PLUS_W3_PRODUCTIZATION_FASTLANE"
     }
   },
   "product_completion_scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
@@ -736,11 +757,11 @@
     "time_check_rule": "before every major mutation batch and after at most 3 tool batches",
     "interruption_rule": "deadline/CLOSE_INTENT without END ACK is immediate P0; reconcile Gmail before retry; fresh START required before substantive continuation",
     "intermediate_deliverable_rule": "PDF/report/artifact email is neither START nor END unless explicitly typed as that transition",
-    "active_tranche": "KINLINK-2026-09-22-1021-K25-20",
+    "active_tranche": "KINLINK-2026-09-22-1113-K25-21",
     "active_tranche_state": "CLOSED",
-    "close_intent_local": "2026-09-22T10:29:47+01:00",
-    "gmail_end_message_id": "1a0c87395f2b17c4",
-    "closed_at_local": "2026-09-22T10:30:13+01:00",
+    "close_intent_local": "2026-09-22T11:25:30+01:00",
+    "gmail_end_message_id": "1a0c8a69dde69159",
+    "closed_at_local": "2026-09-22T11:25:57+01:00",
     "next_rule": "NEW_START_REQUIRED_BEFORE_SUBSTANTIVE_CONTINUATION"
   },
   "state_authority": {

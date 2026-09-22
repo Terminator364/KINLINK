@@ -1,39 +1,39 @@
 # KINLINK build status
 
-## Current field / development split
-- Installed phone baseline: **0.7.3-dev / versionCode 11**
-- Active development successor: **0.8.0-dev / versionCode 12**
-- Branch: `dev/0.8.0-integrated-truth-and-control`
-- Exact head: `5a45fb3ec5d4d82960b7687fdd75836e6770ccb4`
-- No signing, Drive staging or phone installation requested.
+## Field / development split
+- installed phone baseline: **0.7.3-dev / versionCode 11**
+- development successor: **0.8.0-dev / versionCode 12**
+- dev head: `805318ed84d4626908727c8e874f34a189b9e082`
+- no signing/staging/install requested.
 
-## Full A+B+C
-- macro capabilities: **80**
-- B-depth: **B31-B100**
-- conservative maturity: **46.0%**
-- active wave: **W2 Context + Mobile Vault**
-- no score inflation from generation/restart-infrastructure proof.
+## Latest FASTLANE result
+B96-B100 were implemented and qualified as one consolidated block.
 
-## K25-20 — B95 active-data generation semantics
-- design-lint `35710089427`: **PASS**
-- Android CI `35710089508`: **PASS**
-- build artifact `10686770362`
-- responsive UI proof artifact `10686325691`
-- all Android workflow steps PASS.
+- design-lint `35715253302`: **PASS**
+- Android CI `35715253452`: **PASS**
+- build artifact `10688759701`
+- responsive proof `10689019546`
+- unit tests, lint, package identity, rendered matrix, provenance and upload: **PASS**
 
-### Proven behavior
-- default-data and active-data generations are independent;
-- active change invalidates old active-bound evidence;
-- default-only change leaves active-bound evidence current;
-- observation loss forces UNKNOWN;
-- reappearance after unknown creates a new generation;
-- no real subscription identifier reaches the core model;
-- B94 privacy fences remain PASS.
+### Delivered
+- process-live/advisory callback continuity
+- fresh reconciliation after restart
+- wall-clock plan vs monotonic control timing
+- explicit usage semantic/provenance/confidence/adapter metadata
+- conservative conflict/malformed evidence rejection
+- repeated counter reset/reboot no-free-quota regression
+- first-class offline user-entered Mobile Vault fallback
 
-## Next integrated block
-**B96 — usage callbacks are advisory/process-live only**
-- callback absence never proves zero usage;
-- restart requires fresh reconciliation;
-- model/process-kill tests first;
-- no callback API activation or permission expansion yet;
-- no signing/staging/install.
+## Pace correction
+The prior one-B-item/one-full-CI rhythm is retired.
+Next engineering unit is a **large functional wave** with one final exact-head CI unless a real failure forces a repair run.
+
+## Next wave
+**W2 CLOSEOUT + W3 PRODUCTIZATION FASTLANE**
+- trusted/home Wi-Fi context memory
+- dedicated Mobile Vault
+- Diagnostic surface
+- Settings/Emergency
+- This Week/local report
+- diagnostic/export privacy hardening
+- one coherent qualification at wave end

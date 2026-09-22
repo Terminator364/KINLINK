@@ -1,6 +1,6 @@
 {
   "schema": "kinlink.canonical_context_pack/2",
-  "generated_at": "2026-09-22T10:30:13+01:00",
+  "generated_at": "2026-09-22T11:25:57+01:00",
   "project": "KINLINK",
   "immutable_A": {
     "preconception_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
@@ -37,10 +37,10 @@
     "active_wave": "W2_CONTEXT_AND_MOBILE_VAULT_CORE",
     "last_fully_audited_head": "b54020291f866042103ad0f63cae3645977638d1",
     "last_fully_audited_run": 35656916207,
-    "latest_head": "5a45fb3ec5d4d82960b7687fdd75836e6770ccb4",
-    "latest_design_lint_run": 35710089427,
+    "latest_head": "805318ed84d4626908727c8e874f34a189b9e082",
+    "latest_design_lint_run": 35715253302,
     "latest_design_lint_status": "PASS",
-    "latest_android_run": 35710089508,
+    "latest_android_run": 35715253452,
     "latest_android_status": "PASS",
     "provenance_incident_head": "62a910a698286896af90d22551366f728ee0c4e7",
     "provenance_incident": "artifact manifest literal backreference values; fixed by deterministic Python parser",
@@ -53,12 +53,12 @@
       "versionCode": 12,
       "unsigned_apk_sha256": "8b81f3ec51e6f558ebe5c1a41904b47fe65aef2c0cd1ee4e0d21d372837fa1ff"
     },
-    "current_focus": "W2 B95 machine PASS at 5a45fb3e: default-data/active-data independent generations, stale evidence invalidation on active change, UNKNOWN on observation loss, no real subscription identifiers/APIs. Next B96 callback process-lifetime/restart reconciliation semantics."
+    "current_focus": "B96-B100 FASTLANE machine PASS. Micro-B-item cadence retired. Next: W2 closeout + W3 productization as one large coherent wave focused on trusted context plus dedicated Mobile Vault/Diagnostic/Settings-Emergency/This Week surfaces."
   },
   "communication": {
-    "current_tranche": "KINLINK-2026-09-22-1021-K25-20",
+    "current_tranche": "KINLINK-2026-09-22-1113-K25-21",
     "state": "CLOSED",
-    "gmail_start_message_id": "1a0c86b70676d8df",
+    "gmail_start_message_id": "1a0c89bd5ebcd02e",
     "protocol": "v6",
     "deadline_mode": "20_PLUS_5_DURABLE",
     "watchdog": "KINLINK Continuity & Comms",
@@ -66,10 +66,10 @@
     "watchdog_cadence": "HOURLY",
     "watchdog_role": "FAILOVER_ONLY",
     "watchdog_policy": ".project-memory/COMMUNICATION_WATCHDOG_POLICY.json",
-    "gmail_end_message_id": "1a0c87395f2b17c4",
-    "closed_at_local": "2026-09-22T10:30:13+01:00"
+    "gmail_end_message_id": "1a0c8a69dde69159",
+    "closed_at_local": "2026-09-22T11:25:57+01:00"
   },
-  "next_action": "fresh START; B96 usage callback process-live semantics and restart-required fresh reconciliation; pure model/tests first; no callback API/permission activation; no signing/staging/install",
+  "next_action": "fresh START; execute W2_CLOSEOUT_PLUS_W3_PRODUCTIZATION_FASTLANE as one large wave; no B-number micro-tranches; one full exact-head CI at consolidated wave end; no signing/staging/install until coherent candidate",
   "memory": {
     "policy": ".project-memory/MEMORY_POLICY_V2.json",
     "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",

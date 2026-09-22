@@ -2,52 +2,49 @@
 
 Resume with `KINLINKGO`.
 
-## P0 communication first
-1. verify RESUME_CAPSULE and fresh communication state;
-2. K25-20 is CLOSED with Gmail END ACK `1a0c87395f2b17c4`;
-3. a fresh Gmail START is required before new product work;
-4. keep v6 cadence: 20 min useful work + 5 min hard-close reserve.
+## Communication
+- K25-21 FASTLANE is CLOSED with Gmail END ACK `1a0c8a69dde69159`.
+- Fresh START before substantive continuation.
+- Gmail START/END remains, but engineering work is no longer split into one micro-tranche per B item.
 
 ## Canonical scope
 - A+B+C: **80 macro capabilities**
-- B5: **B31-B100**
-- maturity: **46.0%** — deliberately unchanged
-- W2 active
+- B-depth: **B31-B100**
+- conservative maturity: **46.0%** pending macro-stage recalculation
 - installed baseline: **0.7.3-dev / versionCode 11**
-- development line: **0.8.0-dev / versionCode 12**
-- no micro-beta / no phone reinstall chain
+- active development line: **0.8.0-dev / versionCode 12**
+- no user-facing micro-beta chain
 
-## Newly proven W2 state — B95
-Exact head:
-`5a45fb3ec5d4d82960b7687fdd75836e6770ccb4`
+## Latest consolidated head
+`805318ed84d4626908727c8e874f34a189b9e082`
 
-Runs:
-- design-lint `35710089427`: **PASS**
-- Android `35710089508`: **PASS**
-- CI build artifact: `10686770362`
-- responsive UI proof artifact: `10686325691`
+Evidence:
+- design-lint `35715253302`: **PASS**
+- Android CI `35715253452`: **PASS**
+- build artifact `10688759701`
+- responsive proof artifact `10689019546`
 
-Machine-proven semantics:
-- default-data and active-data are distinct facts with independent generations;
-- first available observation initializes a generation without exposing identifiers;
-- a default-data change alone does not invalidate active-data-bound evidence;
-- an active-data change invalidates prior active-generation evidence;
-- active-data observation loss => `ACTIVE_DATA_UNKNOWN`;
-- reappearance after UNKNOWN creates a new generation so stale evidence cannot revive;
-- `SAME/DIFFERENT` is only claimable when both sides are observable;
-- no subId, SubscriptionManager, TelephonyManager or telephony permission is activated.
+## B96-B100 delivered together
+- B96: callbacks advisory/process-live; restart => fresh reconciliation; no zero-usage inference.
+- B97: carrier plan calendar time separated from monotonic control-loop time.
+- B98: observation semantic/provenance/confidence + adapter/version; malformed/mismatched evidence rejected.
+- B99: repeated reset/reboot cannot decrease proven usage or create free quota.
+- B100: local user-entered plan/expiry/reserves works offline; unknown usage remains fail-safe UNKNOWN.
 
-## Exact next W2 block — B96
-1. model NetworkStats usage callbacks as **advisory/process-live only**;
-2. missed callback must never mean zero usage;
-3. after process death/restart, Mobile Vault must require fresh reconciliation before spending decisions;
-4. persist plan state, but do not persist callback continuity as truth;
-5. write pure process-kill/restart and missed-callback tests first;
-6. no Android usage-callback activation yet;
-7. no permission expansion;
-8. no signing, Drive staging or phone install.
+## Methodology change
+Do **not** resume B-number-by-B-number micro-tranches.
+Use large integrated functional waves. Run cheap/static/unit gates during construction and one full Android/rendered CI on the consolidated wave head, except when a real failure needs repair.
 
-## Communication invariant
-- Gmail START before substantive work.
-- Gmail END before normal app closeout.
-- END provider ACK must be persisted before final app response.
+## Next large wave
+**W2 CLOSEOUT + W3 PRODUCTIZATION FASTLANE**
+Build as one coherent product wave:
+1. finish privacy-preserving trusted/home-Wi-Fi context memory and cost-aware W2 inputs;
+2. complete/dedicate the Mobile Vault product surface;
+3. build the Diagnostic vertical-path surface;
+4. build Settings + Emergency native-network escape surface;
+5. build local This Week/report surface using existing telemetry;
+6. strengthen diagnostic export/privacy allowlist where needed;
+7. then one consolidated unit/design/Android/rendered qualification cycle;
+8. no signing, Drive staging or phone install until this wave is coherent.
+
+Goal: prioritize a **usable integrated candidate in hours**, not maximal per-subrequirement certification.
