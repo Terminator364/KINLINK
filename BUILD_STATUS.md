@@ -4,7 +4,7 @@
 - Installed phone baseline: **0.7.3-dev / versionCode 11**
 - Active development successor: **0.8.0-dev / versionCode 12**
 - Branch: `dev/0.8.0-integrated-truth-and-control`
-- Exact head: `e341c3e2cb95649cb5a441bd3aca7aacbf835b52`
+- Exact head: `5a45fb3ec5d4d82960b7687fdd75836e6770ccb4`
 - No signing, Drive staging or phone installation requested.
 
 ## Full A+B+C
@@ -12,28 +12,28 @@
 - B-depth: **B31-B100**
 - conservative maturity: **46.0%**
 - active wave: **W2 Context + Mobile Vault**
-- no score inflation from infrastructure/privacy-boundary proof.
+- no score inflation from generation/restart-infrastructure proof.
 
-## K25-19 — B94 Subscription ID privacy boundary
-- design-lint `35707268025`: **PASS**
-- Android CI `35707267993`: **PASS**
-- build artifact `10685735166`
-- responsive UI proof artifact `10684824257`
+## K25-20 — B95 active-data generation semantics
+- design-lint `35710089427`: **PASS**
+- Android CI `35710089508`: **PASS**
+- build artifact `10686770362`
+- responsive UI proof artifact `10686325691`
 - all Android workflow steps PASS.
 
-### Proven boundary
-- aggregate-only attribution is the default;
-- per-subscription association requires independent need + permission gates;
-- READ_PHONE_STATE / READ_PHONE_NUMBERS absent and forbidden;
-- sensitive/non-resettable identity getter APIs forbidden;
-- SubscriptionManager/createForSubscriptionId deliberately fenced for now;
-- no subscription identity in diagnostics/export;
-- no non-resettable identifier use.
+### Proven behavior
+- default-data and active-data generations are independent;
+- active change invalidates old active-bound evidence;
+- default-only change leaves active-bound evidence current;
+- observation loss forces UNKNOWN;
+- reappearance after unknown creates a new generation;
+- no real subscription identifier reaches the core model;
+- B94 privacy fences remain PASS.
 
 ## Next integrated block
-**B95 — active-data subscription semantics**
-- model default-data separately from active-data;
-- generation/staleness invalidation first, with pure tests;
-- no telephony API or permission expansion yet;
-- aggregate/UNKNOWN fallback;
+**B96 — usage callbacks are advisory/process-live only**
+- callback absence never proves zero usage;
+- restart requires fresh reconciliation;
+- model/process-kill tests first;
+- no callback API activation or permission expansion yet;
 - no signing/staging/install.

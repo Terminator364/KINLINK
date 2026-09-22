@@ -4,7 +4,7 @@ Resume with `KINLINKGO`.
 
 ## P0 communication first
 1. verify RESUME_CAPSULE and fresh communication state;
-2. K25-19 is CLOSED with Gmail END ACK `1a0c8577168c2184`;
+2. K25-20 is CLOSED with Gmail END ACK `1a0c87395f2b17c4`;
 3. a fresh Gmail START is required before new product work;
 4. keep v6 cadence: 20 min useful work + 5 min hard-close reserve.
 
@@ -17,33 +17,35 @@ Resume with `KINLINKGO`.
 - development line: **0.8.0-dev / versionCode 12**
 - no micro-beta / no phone reinstall chain
 
-## Newly proven W2 state — B94
+## Newly proven W2 state — B95
 Exact head:
-`e341c3e2cb95649cb5a441bd3aca7aacbf835b52`
+`5a45fb3ec5d4d82960b7687fdd75836e6770ccb4`
 
 Runs:
-- design-lint `35707268025`: **PASS**
-- Android `35707267993`: **PASS**
-- CI build artifact: `10685735166`
-- responsive UI proof artifact: `10684824257`
+- design-lint `35710089427`: **PASS**
+- Android `35710089508`: **PASS**
+- CI build artifact: `10686770362`
+- responsive UI proof artifact: `10686325691`
 
-Privacy boundary now machine-proven:
-- `AGGREGATE_ONLY` is the default;
-- future `LOCAL_SUBSCRIPTION_ID` requires **both** a separately justified per-subscription need and explicit permission proof;
-- `READ_PHONE_STATE` / `READ_PHONE_NUMBERS` remain absent and CI-forbidden;
-- subscriber/non-resettable identity getter APIs are CI-forbidden;
-- `SubscriptionManager` / `createForSubscriptionId` remain fenced until an explicit later design change;
-- subscription identity is never diagnostic/export data;
-- non-resettable identifiers remain forbidden.
+Machine-proven semantics:
+- default-data and active-data are distinct facts with independent generations;
+- first available observation initializes a generation without exposing identifiers;
+- a default-data change alone does not invalidate active-data-bound evidence;
+- an active-data change invalidates prior active-generation evidence;
+- active-data observation loss => `ACTIVE_DATA_UNKNOWN`;
+- reappearance after UNKNOWN creates a new generation so stale evidence cannot revive;
+- `SAME/DIFFERENT` is only claimable when both sides are observable;
+- no subId, SubscriptionManager, TelephonyManager or telephony permission is activated.
 
-## Exact next W2 block — B95
-1. model **default-data** and **active-data** as distinct facts;
-2. build the semantics as a pure generation/staleness policy first;
-3. any future per-sub evidence must be invalidated when the active subscription generation changes;
-4. no Android telephony API activation yet;
-5. no permission expansion;
-6. aggregate/UNKNOWN remains the safe fallback;
-7. no signing, Drive staging or phone install.
+## Exact next W2 block — B96
+1. model NetworkStats usage callbacks as **advisory/process-live only**;
+2. missed callback must never mean zero usage;
+3. after process death/restart, Mobile Vault must require fresh reconciliation before spending decisions;
+4. persist plan state, but do not persist callback continuity as truth;
+5. write pure process-kill/restart and missed-callback tests first;
+6. no Android usage-callback activation yet;
+7. no permission expansion;
+8. no signing, Drive staging or phone install.
 
 ## Communication invariant
 - Gmail START before substantive work.
