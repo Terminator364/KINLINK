@@ -68,4 +68,32 @@ object MobileVaultFormPolicy {
                 .toString()
         }.getOrDefault("")
     }
+
+    fun parseCycleStartDate(
+        text: String,
+        zoneId: ZoneId = ZoneId.systemDefault()
+    ): Long? {
+        val trimmed = text.trim()
+        if (trimmed.isEmpty()) return null
+        return runCatching {
+            LocalDate.parse(trimmed)
+                .atStartOfDay(zoneId)
+                .toInstant()
+                .toEpochMilli()
+        }.getOrNull()
+    }
+
+    fun formatCycleStartDate(
+        cycleStartAtEpochMillis: Long?,
+        zoneId: ZoneId = ZoneId.systemDefault()
+    ): String {
+        val value = cycleStartAtEpochMillis ?: return ""
+        if (value <= 0L) return ""
+        return runCatching {
+            java.time.Instant.ofEpochMilli(value)
+                .atZone(zoneId)
+                .toLocalDate()
+                .toString()
+        }.getOrDefault("")
+    }
 }
