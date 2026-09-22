@@ -474,7 +474,7 @@ class MainActivity : Activity() {
             )
         )
         val cycleStartInput = field(
-            "Début du cycle · AAAA-MM-JJ · optionnel",
+            "Début cycle · AAAA-MM-JJ",
             MobileVaultFormPolicy.formatCycleStartDate(
                 current?.cycleStartAtEpochMillis
             )
@@ -497,6 +497,18 @@ class MainActivity : Activity() {
             minHeight = (48 * resources.displayMetrics.density).toInt()
             setPadding(0, 8, 0, 8)
         }
+        val saveAction = TextView(this).apply {
+            text = "Enregistrer"
+            gravity = android.view.Gravity.CENTER
+            minHeight = (48 * resources.displayMetrics.density).toInt()
+            setPadding(0, 8, 0, 8)
+        }
+        val cancelAction = TextView(this).apply {
+            text = "Annuler"
+            gravity = android.view.Gravity.CENTER
+            minHeight = (48 * resources.displayMetrics.density).toInt()
+            setPadding(0, 8, 0, 8)
+        }
         val clearAction = TextView(this).apply {
             text = "Effacer le forfait"
             gravity = android.view.Gravity.CENTER
@@ -515,6 +527,8 @@ class MainActivity : Activity() {
             addView(cycleStartInput)
             addView(expiryInput)
             addView(usageAccessAction)
+            addView(saveAction)
+            addView(cancelAction)
             addView(clearAction)
         }
         val scroll = ScrollView(this).apply { addView(form) }
@@ -526,12 +540,10 @@ class MainActivity : Activity() {
                     "NetworkStats Android reste agrégé et optionnel."
             )
             .setView(scroll)
-            .setPositiveButton("Enregistrer", null)
-            .setNegativeButton("Annuler", null)
             .create()
 
         dialog.setOnShowListener {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            saveAction.setOnClickListener {
                 val total = MobileVaultFormPolicy.parseDecimalBytes(
                     totalInput.text.toString()
                 )
@@ -630,6 +642,9 @@ class MainActivity : Activity() {
                 dialog.dismiss()
                 refreshBudgetUi()
                 refreshOptionalNetworkStatsEvidence()
+            }
+            cancelAction.setOnClickListener {
+                dialog.dismiss()
             }
             usageAccessAction.setOnClickListener {
                 runCatching {
