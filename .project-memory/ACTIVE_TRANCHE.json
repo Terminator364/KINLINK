@@ -1,59 +1,42 @@
 {
   "schema": "kinlink.active_tranche/7",
   "project": "KINLINK",
-  "tranche_id": "KINLINK-2026-09-22-1301-AABC-PRODUCT",
-  "delivery_key": "AABC-20260922-1301-PRODUCT",
+  "tranche_id": "KINLINK-2026-09-22-W4-0.9-PROVIDER-RECONCILED",
+  "delivery_key": "PROVIDER-W4-20260922-2146-0.9",
   "timing_mode": "MILESTONE_BASED_NO_FIXED_DURATION",
-  "start_provider_ts": "2026-09-22T12:02:21Z",
-  "start_local": "2026-09-22T13:02:21+01:00",
   "work_state": "CHECKPOINTED",
   "delivery_state": "CLOSED",
   "status": "CLOSED",
-  "gmail_start_message_id": "1a0c8fedd6619710",
-  "gmail_start_thread_id": "1a0c8fedd6619710",
+  "gmail_start_message_id": "1a0caf4fe5427b82",
+  "gmail_start_thread_id": "1a0caf4fe5427b82",
+  "gmail_end_message_id": "1a0cb05736fea9f4",
+  "gmail_end_thread_id": "1a0cb05736fea9f4",
   "gmail_label": "KINLINK",
-  "objectives": [
-    "A_PLUS_B_PLUS_C_USABLE_PRODUCT_PRIORITY_WITH_A_PLUS_C_VALUE",
-    "W2_CLOSEOUT_PLUS_W3_PRODUCTIZATION",
-    "HUMAN_EXPLANATORY_EMAIL_PARITY",
-    "NO_FIXED_25_MINUTE_TRANCHE",
-    "SIGNED_SINGLE_PATH_0_8_FIELD_CANDIDATE"
-  ],
-  "absorbed_parallel_starts": [
-    {
-      "gmail_message_id": "1a0c8b4ab6af6d74",
-      "subject_hint": "WAVE-22 11:41",
-      "disposition": "ABSORBED_INTO_CURRENT_AUTHORITATIVE_RESULT"
-    },
-    {
-      "gmail_message_id": "1a0c8dc41f968d0a",
-      "subject_hint": "FASTLANE PRODUIT 12:24",
-      "disposition": "ABSORBED_INTO_CURRENT_AUTHORITATIVE_RESULT"
-    }
-  ],
-  "current_progress": {
-    "code_head": "efcaf5f7d2686b454c10713961a0c01d238a9ca5",
-    "design_lint_run": 35722723971,
-    "design_lint_status": "PASS",
-    "android_run": 35722724029,
-    "android_status": "PASS",
-    "responsive_screenshots": 60,
-    "manual_visual_audit": "PASS",
-    "maturity_percent": 54.2,
-    "signed_candidate_sha256": "36851b7f35d7525647d33fa4af4929bcb48227dc42197ac805666e4ab6e26c6f",
-    "installer_file_id": "1dj2j2zhLmUPb63NVIaMx0jElpNdb04ky",
-    "installer_readback": "PASS",
-    "next_gate": "HUMAN_INSTALL_OVER_0_7_3_THEN_FIELD_VALIDATION"
-  },
-  "close_intent_persisted": true,
-  "close_owner": "PRIMARY_ASSISTANT",
-  "no_more_product_mutations": true,
-  "close_intent_local": "2026-09-22T13:12:24+01:00",
-  "next_atomic_action": "HUMAN_GATE_INSTALL_0_8_OVER_0_7_3_THEN_TARGET_FIELD_VALIDATION",
-  "gmail_end_message_id": "1a0c911f1bbfa6f5",
-  "gmail_end_thread_id": "1a0c911f1bbfa6f5",
   "end_mail_verified": true,
   "closed_state": true,
-  "closed_at_provider_ts": "2026-09-22T12:23:11Z",
-  "closed_at_local": "2026-09-22T13:23:11+01:00"
+  "close_owner": "AUTOMATION_FAILOVER",
+  "reconciliation": {
+    "reason": "Gmail provider state proved a newer explicit KINLINK START and explicit KINLINK FIN that were not represented by the previously durable ACTIVE_TRANCHE.",
+    "action": "Persist provider ACK/CLOSED only; no email resent and no product engineering performed.",
+    "provider_start_subject": "KINLINK — DÉBUT — grande tranche W4 vers livrable consolidé — 22/09/2026 21:46 Kinshasa",
+    "provider_end_subject": "KINLINK — FIN — livrable 0.9 W4 signé et prêt à installer — 22/09/2026 22:28 Kinshasa",
+    "provider_start_ts": "2026-09-22T21:10:48",
+    "provider_end_ts": "2026-09-22T21:28:46",
+    "delivery_key_origin": "FAILOVER_SYNTHETIC_FROM_PROVIDER_START_TIMESTAMP_BECAUSE_FOREGROUND_DID_NOT_PERSIST_A_KEY",
+    "no_duplicate_send": true
+  },
+  "provider_proven_product_checkpoint": {
+    "version": "0.9.0-dev",
+    "versionCode": 13,
+    "code_head": "c3cf6c83e26d0e096b2110dec271afea3dcb2b78",
+    "design_lint_run": 35785478349,
+    "android_run": 35785478149,
+    "responsive_screenshots": 60,
+    "signed_sha256": "f0f3bfc0be385e7a3fd1352ce1adf50a3859aa464da229486678468b72792ed2",
+    "installer_file_id": "1dj2j2zhLmUPb63NVIaMx0jElpNdb04ky",
+    "field_status": "PENDING_REAL_PHONE_VALIDATION"
+  },
+  "next_atomic_action": "HUMAN_GATE_INSTALL_CURRENT_KINLINK_INSTALL_NOW_APK_THEN_FIELD_VALIDATE_0_9",
+  "foreground_resume_requires_fresh_start": true,
+  "no_more_product_mutations": true
 }
