@@ -25,6 +25,48 @@ class MobileUsageReconciliationPolicyTest {
         assertNull(r.usage)
     }
 
+    @Test fun oneDeviceAggregateCannotBecomeEitherOfTwoPlanBalances() {
+        val aggregate = MobileUsageObservation(
+            usedBytes = 900_000_000L,
+            source = MobilePlanUsageSource.NETWORK_STATS_OPTIONAL,
+            attributionScope = MobileUsageAttributionScope.DEVICE_MOBILE_AGGREGATE,
+            observedAtEpochMillis = now - 1_000L,
+            confidencePercent = 75
+        )
+        val resolution = MobileUsageReconciliationPolicy.reconcile(
+            listOf(aggregate),
+            now
+        )
+        val planOne = MobilePlanConfig(
+            totalBytes = 2_000_000_000L,
+            expiryAtEpochMillis = null,
+            protectedReserveBytes = 200_000_000L,
+            rescueAllowanceBytes = 100_000_000L,
+            criticalInteractiveAllowanceBytes = 50_000_000L
+        )
+        val planTwo = MobilePlanConfig(
+            totalBytes = 5_000_000_000L,
+            expiryAtEpochMillis = null,
+            protectedReserveBytes = 500_000_000L,
+            rescueAllowanceBytes = 200_000_000L,
+            criticalInteractiveAllowanceBytes = 100_000_000L
+        )
+
+        assertEquals(
+            MobileUsageResolutionStatus.HOLD_UNATTRIBUTED,
+            resolution.status
+        )
+        assertNull(resolution.usage)
+        assertEquals(
+            MobileVaultZone.UNKNOWN,
+            MobilePlanVaultPolicy.evaluate(planOne, resolution.usage, now).zone
+        )
+        assertEquals(
+            MobileVaultZone.UNKNOWN,
+            MobilePlanVaultPolicy.evaluate(planTwo, resolution.usage, now).zone
+        )
+    }
+
     @Test fun exactSourcesInLargeConflictHoldInsteadOfAverage() {
         val r = MobileUsageReconciliationPolicy.reconcile(
             listOf(
