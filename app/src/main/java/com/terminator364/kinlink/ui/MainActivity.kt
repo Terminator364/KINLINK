@@ -94,6 +94,7 @@ import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.NotificationPermissionPolicy
 import com.terminator364.kinlink.core.TrustedWifiContextPolicy
 import com.terminator364.kinlink.core.TrustedWifiContextStore
+import com.terminator364.kinlink.core.Transport
 import com.terminator364.kinlink.core.WifiDoctor
 import com.terminator364.kinlink.core.WifiOptimizer
 import com.terminator364.kinlink.data.DiagnosticExporter
