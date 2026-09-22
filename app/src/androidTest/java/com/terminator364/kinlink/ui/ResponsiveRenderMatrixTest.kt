@@ -128,6 +128,7 @@ class ResponsiveRenderMatrixTest {
                 )
             }
             captureExpandedSurfaces(scenario, cellularDegraded)
+            captureProductSurfaces(scenario)
         }
     }
 
@@ -228,6 +229,28 @@ class ResponsiveRenderMatrixTest {
         instrumentation.waitForIdleSync()
     }
 
+    private fun captureProductSurfaces(
+        scenario: ActivityScenario<MainActivity>
+    ) {
+        val surfaces = listOf(
+            Triple(R.id.diagnosticSurfaceButton, "Diagnostic", "product-diagnostic"),
+            Triple(R.id.weekSurfaceButton, "Cette semaine", "product-week"),
+            Triple(R.id.mobileVaultSurfaceButton, "Mobile Vault", "product-mobile-vault"),
+            Triple(R.id.settingsSurfaceButton, "Réglages", "product-settings")
+        )
+        for ((buttonId, expected, captureName) in surfaces) {
+            scenario.onActivity { activity ->
+                activity.findViewById<View>(buttonId).performClick()
+            }
+            instrumentation.waitForIdleSync()
+            assertActiveWindowContains(expected)
+            assertKinlinkOwnsForeground(captureName, "surface")
+            capture(captureName)
+            runShell("input keyevent KEYCODE_BACK")
+            instrumentation.waitForIdleSync()
+        }
+    }
+
     private fun invokeRender(
         activity: MainActivity,
         truth: NetworkTruth,
@@ -296,6 +319,10 @@ class ResponsiveRenderMatrixTest {
             R.id.modeMaxButton,
             R.id.safeModeButton,
             R.id.budgetButton,
+            R.id.diagnosticSurfaceButton,
+            R.id.weekSurfaceButton,
+            R.id.mobileVaultSurfaceButton,
+            R.id.settingsSurfaceButton,
             R.id.incidentMarkerButton
         )) {
             val view = activity.findViewById<View>(id)

@@ -463,11 +463,47 @@ require(
 RUN_UI_MATRIX = (ROOT / "tools/release/run_ui_matrix.sh").read_text(encoding="utf-8")
 UI_TEST = (ROOT / "app/src/androidTest/java/com/terminator364/kinlink/ui/ResponsiveRenderMatrixTest.kt").read_text(encoding="utf-8")
 require(
-    'test "$count" -eq 48' in RUN_UI_MATRIX
+    'test "$count" -eq 60' in RUN_UI_MATRIX
     and 'capture("mobile-data-dialog")' in UI_TEST
     and 'capture("technical-details-start")' in UI_TEST
     and 'capture("technical-details-bottom")' in UI_TEST,
     "candidate contract: expanded 48-shot visual proof gate missing",
+)
+
+PRODUCT_SURFACE = (
+    SRC / "com/terminator364/kinlink/ui/ProductSurfaceActivity.kt"
+).read_text(encoding="utf-8")
+TRUSTED_WIFI_CONTEXT = (
+    SRC / "com/terminator364/kinlink/core/TrustedWifiContextStore.kt"
+).read_text(encoding="utf-8")
+PRODUCT_LAYOUT = (
+    ROOT / "app/src/main/res/layout/activity_product_surface.xml"
+).read_text(encoding="utf-8")
+require(
+    all(token in MAIN_ACTIVITY for token in [
+        "diagnosticSurfaceButton",
+        "weekSurfaceButton",
+        "mobileVaultSurfaceButton",
+        "settingsSurfaceButton",
+        "openProductSurface("
+    ])
+    and all(token in PRODUCT_SURFACE for token in [
+        "SURFACE_DIAGNOSTIC",
+        "SURFACE_WEEK",
+        "SURFACE_MOBILE_VAULT",
+        "SURFACE_SETTINGS",
+        "EMERGENCY_NATIVE_NETWORK_ESCAPE",
+        "MobileVaultOfflineFallbackPolicy"
+    ])
+    and "productSurfaceDangerAction" in PRODUCT_LAYOUT,
+    "candidate contract: W3 product surfaces/navigation are incomplete",
+)
+require(
+    'MessageDigest.getInstance("SHA-256")' in TRUSTED_WIFI_CONTEXT
+    and "mayAuthorizeActiveRecovery(): Boolean = false" in TRUSTED_WIFI_CONTEXT
+    and "SSID" not in TRUSTED_WIFI_CONTEXT
+    and "BSSID" not in TRUSTED_WIFI_CONTEXT,
+    "candidate contract: trusted Wi-Fi context is not privacy-preserving/non-authoritative",
 )
 
 NETWORK_STATS_READER = (

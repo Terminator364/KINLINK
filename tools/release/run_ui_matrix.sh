@@ -60,5 +60,5 @@ run_matrix medium-large 945x1890 1.3
 run_matrix phone-xlfont 1080x1920 1.6
 
 count="$(find build/ui-proof -type f -name '*.png' | wc -l | tr -d ' ')"
-test "$count" -eq 48
+test "$count" -eq 60
 echo "Rendered responsive proof PASS: $count screenshots (including data dialog top/bottom + technical detail start/bottom)."
