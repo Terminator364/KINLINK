@@ -5,8 +5,8 @@ Resume with `KINLINKGO`.
 ## P0 communication first
 
 1. verify RESUME_CAPSULE and fresh communication state;
-2. K25-15 is at CLOSE_INTENT until Gmail END ACK is persisted;
-3. do not resume product work until that closure is reconciled;
+2. K25-15 is CLOSED with Gmail END ACK `1a0c675701aa2ce5`;
+3. a fresh Gmail START is required before any new product work;
 4. each new tranche remains 20 min useful work + 5 min hard-close reserve.
 
 ## Canonical scope

@@ -633,8 +633,11 @@
     "interruption_rule": "deadline/CLOSE_INTENT without END ACK is immediate P0; reconcile Gmail before retry; fresh START required before substantive continuation",
     "intermediate_deliverable_rule": "PDF/report/artifact email is neither START nor END unless explicitly typed as that transition",
     "active_tranche": "KINLINK-2026-09-22-0054-K25-15",
-    "active_tranche_state": "CLOSE_INTENT_PERSISTED",
-    "close_intent_local": "2026-09-22T01:10:25+01:00"
+    "active_tranche_state": "CLOSED",
+    "close_intent_local": "2026-09-22T01:10:25+01:00",
+    "gmail_end_message_id": "1a0c675701aa2ce5",
+    "closed_at_local": "2026-09-22T01:13:00+01:00",
+    "next_rule": "NEW_START_REQUIRED_BEFORE_SUBSTANTIVE_CONTINUATION"
   },
   "state_authority": {
     "schema": "kinlink.state_authority/1",

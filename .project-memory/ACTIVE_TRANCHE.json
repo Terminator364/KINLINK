@@ -12,8 +12,8 @@
   "close_deadline_local": "2026-09-22T01:19:00+01:00",
   "foreground_time_check_rule": "CHECK_TIME_BEFORE_EVERY_MAJOR_MUTATION_BATCH_AND_AFTER_AT_MOST_3_TOOL_BATCHES",
   "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSE_INTENT_PERSISTED",
-  "status": "CLOSING",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "gmail_start_message_id": "1a0c664b9e984bf4",
   "gmail_start_thread_id": "1a0c664b9e984bf4",
   "gmail_label": "KINLINK",
@@ -46,7 +46,7 @@
     "android_run": 35664821258,
     "android_status": "PASS"
   },
-  "next_atomic_action": "SEND_GMAIL_END_VERIFY_PROVIDER_ACK_THEN_PERSIST_CLOSED",
+  "next_atomic_action": "NEW_START_REQUIRED_BEFORE_SUBSTANTIVE_CONTINUATION",
   "close_intent_persisted": true,
   "close_owner": "PRIMARY_ASSISTANT",
   "no_more_product_mutations": true,
@@ -81,5 +81,11 @@
       "active_wave": "W2",
       "maturity_percent": 46
     }
-  }
+  },
+  "gmail_end_message_id": "1a0c675701aa2ce5",
+  "gmail_end_thread_id": "1a0c675701aa2ce5",
+  "end_mail_verified": true,
+  "closed_state": true,
+  "closed_at_provider_ts": "2026-09-22T00:13:00",
+  "closed_at_local": "2026-09-22T01:13:00+01:00"
 }
