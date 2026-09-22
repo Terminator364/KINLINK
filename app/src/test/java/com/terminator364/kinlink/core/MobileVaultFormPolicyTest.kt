@@ -26,4 +26,29 @@ class MobileVaultFormPolicyTest {
             MobileVaultFormPolicy.formatInclusiveExpiryDate(epoch, zone)
         )
     }
+
+    @Test fun cycleStartDateRoundTripsAtLocalDayStart() {
+        val zone = ZoneId.of("Africa/Kinshasa")
+        val epoch = MobileVaultFormPolicy.parseCycleStartDate("2026-09-22", zone)
+        assertEquals(
+            "2026-09-22",
+            MobileVaultFormPolicy.formatCycleStartDate(epoch, zone)
+        )
+        assertEquals(
+            0,
+            java.time.Instant.ofEpochMilli(requireNotNull(epoch))
+                .atZone(zone)
+                .toLocalTime()
+                .toSecondOfDay()
+        )
+    }
+
+    @Test fun rejectsInvalidCycleStartDate() {
+        assertNull(
+            MobileVaultFormPolicy.parseCycleStartDate(
+                "22/09/2026",
+                ZoneId.of("Africa/Kinshasa")
+            )
+        )
+    }
 }
