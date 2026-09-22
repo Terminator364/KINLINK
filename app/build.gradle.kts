@@ -18,8 +18,8 @@ android {
         applicationId = "com.terminator364.kinlink"
         minSdk = 30
         targetSdk = 37
-        versionCode = 12
-        versionName = "0.8.0-dev"
+        versionCode = 13
+        versionName = "0.9.0-dev"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
