@@ -130,6 +130,51 @@ require(
     "candidate contract: B95 pure policy leaked Android subscription identity/API details",
 )
 
+USAGE_CALLBACK_POLICY = (
+    SRC / "com/terminator364/kinlink/core/UsageCallbackContinuityPolicy.kt"
+).read_text(encoding="utf-8")
+TIME_DOMAIN_POLICY = (
+    SRC / "com/terminator364/kinlink/core/MobileTimeDomainPolicy.kt"
+).read_text(encoding="utf-8")
+OFFLINE_FALLBACK_POLICY = (
+    SRC / "com/terminator364/kinlink/core/MobileVaultOfflineFallbackPolicy.kt"
+).read_text(encoding="utf-8")
+USAGE_RECONCILIATION = (
+    SRC / "com/terminator364/kinlink/core/MobileUsageReconciliationPolicy.kt"
+).read_text(encoding="utf-8")
+require(
+    "FRESH_RECONCILIATION_REQUIRED" in USAGE_CALLBACK_POLICY
+    and "usageImpliedByMissingCallbackBytes(): Long? = null" in USAGE_CALLBACK_POLICY
+    and "registerUsageCallback" not in production,
+    "candidate contract: B96 callback continuity can be mistaken for durable/zero-usage truth",
+)
+require(
+    "WALL_CLOCK_CALENDAR" in TIME_DOMAIN_POLICY
+    and "MONOTONIC_ELAPSED" in TIME_DOMAIN_POLICY
+    and "elapsedControlMillis" in TIME_DOMAIN_POLICY,
+    "candidate contract: B97 calendar and monotonic time domains are not separated",
+)
+require(
+    "MobileUsageSemanticKind" in USAGE_RECONCILIATION
+    and "adapterId" in USAGE_RECONCILIATION
+    and "adapterVersion" in USAGE_RECONCILIATION
+    and "HOLD_CONFLICT" in USAGE_RECONCILIATION,
+    "candidate contract: B98 observation provenance/conflict semantics missing",
+)
+require(
+    "resetDetected = true" in USAGE_RECONCILIATION
+    and "provenCycleBytes = previous.provenCycleBytes" in USAGE_RECONCILIATION,
+    "candidate contract: B99 counter reset can reduce proven cycle usage",
+)
+require(
+    "CONFIGURED_USAGE_UNKNOWN" in OFFLINE_FALLBACK_POLICY
+    and "READY_WITH_USER_USAGE" in OFFLINE_FALLBACK_POLICY
+    and "USER_RECONCILED" in OFFLINE_FALLBACK_POLICY
+    and "Usage Access" not in OFFLINE_FALLBACK_POLICY
+    and "Telephony" not in OFFLINE_FALLBACK_POLICY,
+    "candidate contract: B100 local offline plan fallback is not independent from privileged/cloud sources",
+)
+
 def const_int(name: str, text: str) -> int:
     m = re.search(rf"const val {name}\s*=\s*([0-9_]+)", text)
     require(m is not None, f"candidate contract: constant {name} missing")

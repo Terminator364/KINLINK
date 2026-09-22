@@ -6,12 +6,23 @@ enum class MobileUsageAttributionScope {
     UNKNOWN
 }
 
+enum class MobileUsageSemanticKind {
+    CYCLE_USED_BYTES,
+    PLAN_REMAINING_BYTES,
+    PLAN_BALANCE_BYTES,
+    UNKNOWN
+}
+
 data class MobileUsageObservation(
     val usedBytes: Long,
     val source: MobilePlanUsageSource,
     val attributionScope: MobileUsageAttributionScope,
     val observedAtEpochMillis: Long,
-    val confidencePercent: Int
+    val confidencePercent: Int,
+    val semanticKind: MobileUsageSemanticKind =
+        MobileUsageSemanticKind.CYCLE_USED_BYTES,
+    val adapterId: String = source.name,
+    val adapterVersion: Int = 1
 )
 
 enum class MobileUsageResolutionStatus {
@@ -53,7 +64,10 @@ object MobileUsageReconciliationPolicy {
                 it.observedAtEpochMillis > 0L &&
                 it.observedAtEpochMillis <= nowEpochMillis &&
                 nowEpochMillis - it.observedAtEpochMillis <= maxAgeMillis &&
-                it.confidencePercent in 0..100
+                it.confidencePercent in 0..100 &&
+                it.semanticKind == MobileUsageSemanticKind.CYCLE_USED_BYTES &&
+                it.adapterId.isNotBlank() &&
+                it.adapterVersion > 0
         }
         if (valid.isEmpty()) {
             return MobileUsageResolution(

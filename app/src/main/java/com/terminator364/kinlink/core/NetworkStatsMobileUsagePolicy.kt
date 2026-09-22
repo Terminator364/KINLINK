@@ -50,7 +50,10 @@ object NetworkStatsMobileUsagePolicy {
             source = MobilePlanUsageSource.NETWORK_STATS_OPTIONAL,
             attributionScope = MobileUsageAttributionScope.DEVICE_MOBILE_AGGREGATE,
             observedAtEpochMillis = evidence.observedAtEpochMillis,
-            confidencePercent = evidence.confidencePercent
+            confidencePercent = evidence.confidencePercent,
+            semanticKind = MobileUsageSemanticKind.CYCLE_USED_BYTES,
+            adapterId = "android-networkstats",
+            adapterVersion = evidence.adapterVersion
         )
     }
 }
