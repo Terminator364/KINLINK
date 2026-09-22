@@ -49,6 +49,9 @@ import com.terminator364.kinlink.core.MobileUsageEvidenceStore
 import com.terminator364.kinlink.core.MobileUsageObservation
 import com.terminator364.kinlink.core.MobileUsageReconciliationPolicy
 import com.terminator364.kinlink.core.MobileUsageResolutionStatus
+import com.terminator364.kinlink.core.NetworkStatsMobileEvidenceStatus
+import com.terminator364.kinlink.core.NetworkStatsMobileUsageReader
+import com.terminator364.kinlink.core.NetworkStatsMobileUsageRequest
 import com.terminator364.kinlink.core.MobileVaultAssessment
 import com.terminator364.kinlink.core.MobileVaultFormPolicy
 import com.terminator364.kinlink.core.MobileVaultZone
@@ -151,6 +154,7 @@ class MainActivity : Activity() {
     private var lastAssistEvidenceRefreshElapsed: Long = 0L
     private var cachedAssistEvidenceLabel: String =
         "Preuve 24 h · aucune action Mobile Assist évaluée"
+    private var networkStatsRefreshInFlight = false
 
     private var evidenceReceiverRegistered = false
     private val evidenceUpdatedReceiver = object : BroadcastReceiver() {
@@ -229,6 +233,7 @@ class MainActivity : Activity() {
         currentProfile = profileStore.current()
         refreshModeButtons()
         refreshSafeModeButton()
+        refreshOptionalNetworkStatsEvidence()
 
         incidentMarkerButton.setOnClickListener { recordUserIncidentMarker() }
         technicalToggle.setOnClickListener { toggleTechnicalDetails() }
@@ -543,7 +548,8 @@ class MainActivity : Activity() {
                     expiryAtEpochMillis = expiry,
                     protectedReserveBytes = reserve,
                     rescueAllowanceBytes = rescue,
-                    criticalInteractiveAllowanceBytes = critical
+                    criticalInteractiveAllowanceBytes = critical,
+                    cycleStartAtEpochMillis = current?.cycleStartAtEpochMillis
                 )
                 if (!MobilePlanVaultPolicy.valid(config)) {
                     reserveInput.error =
@@ -573,10 +579,12 @@ class MainActivity : Activity() {
                 }
                 dialog.dismiss()
                 refreshBudgetUi()
+                refreshOptionalNetworkStatsEvidence()
             }
             clearAction.setOnClickListener {
                 mobilePlanVaultStore.clear()
                 mobileUsageEvidenceStore.clearUserReconciled()
+                mobileUsageEvidenceStore.clearNetworkStats()
                 runCatching {
                     ledger.appendAction(
                         "MOBILE_VAULT_PLAN_CLEARED",
@@ -589,6 +597,33 @@ class MainActivity : Activity() {
             }
         }
         dialog.show()
+    }
+
+    private fun refreshOptionalNetworkStatsEvidence() {
+        if (networkStatsRefreshInFlight) return
+        val plan = mobilePlanVaultStore.read() ?: return
+        val cycleStart = plan.config.cycleStartAtEpochMillis ?: return
+        val endAt = System.currentTimeMillis()
+        if (endAt <= cycleStart) return
+
+        networkStatsRefreshInFlight = true
+        Thread {
+            val evidence = NetworkStatsMobileUsageReader(this).query(
+                NetworkStatsMobileUsageRequest(
+                    cycleStartAtEpochMillis = cycleStart,
+                    endAtEpochMillis = endAt
+                )
+            )
+            val stored =
+                evidence.status == NetworkStatsMobileEvidenceStatus.AVAILABLE &&
+                    mobileUsageEvidenceStore.writeNetworkStats(evidence)
+            runOnUiThread {
+                networkStatsRefreshInFlight = false
+                if (stored) {
+                    refreshBudgetUi()
+                }
+            }
+        }.start()
     }
 
     private fun refreshBudgetUi() {
@@ -1180,6 +1215,25 @@ class MainActivity : Activity() {
                     )
                 )
             }
+            evidence?.networkStatsEvidence
+                ?.takeIf {
+                    stored.config.cycleStartAtEpochMillis != null &&
+                        it.cycleStartAtEpochMillis ==
+                            stored.config.cycleStartAtEpochMillis
+                }
+                ?.let {
+                    add(
+                        MobileUsageObservation(
+                            usedBytes = it.usedBytes,
+                            source = MobilePlanUsageSource.NETWORK_STATS_OPTIONAL,
+                            attributionScope =
+                                MobileUsageAttributionScope.DEVICE_MOBILE_AGGREGATE,
+                            observedAtEpochMillis =
+                                it.observedAtEpochMillis,
+                            confidencePercent = it.confidencePercent
+                        )
+                    )
+                }
         }
         val resolution = MobileUsageReconciliationPolicy.reconcile(
             observations,
