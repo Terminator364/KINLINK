@@ -35,7 +35,7 @@ jobs:
         run: |
           set -euo pipefail
           MANIFEST="app/src/main/AndroidManifest.xml"
-          forbidden_permissions='android.permission.CHANGE_NETWORK_STATE|android.permission.CHANGE_WIFI_STATE|android.permission.MODIFY_PHONE_STATE|android.permission.WRITE_SETTINGS'
+          forbidden_permissions='android.permission.CHANGE_NETWORK_STATE|android.permission.CHANGE_WIFI_STATE|android.permission.MODIFY_PHONE_STATE|android.permission.WRITE_SETTINGS|android.permission.READ_PHONE_STATE|android.permission.READ_PHONE_NUMBERS'
           if grep -E -q "$forbidden_permissions" "$MANIFEST"; then
             echo "A network-affecting Android permission is forbidden for the KINLINK fail-open baseline."
             grep -E -n "$forbidden_permissions" "$MANIFEST" || true
@@ -46,6 +46,16 @@ jobs:
             exit 1
           fi
           echo "Manifest safety fence passed."
+      - name: Subscriber identity privacy fence
+        run: |
+          set -euo pipefail
+          SRC="app/src/main/java"
+          forbidden_identity='getSubscriberId\(|getImei\(|getDeviceId\(|getMeid\(|getSimSerialNumber\(|getLine1Number\(|createForSubscriptionId\(|SubscriptionManager'
+          if grep -R -n -E "$forbidden_identity" "$SRC"; then
+            echo "B94 privacy boundary violation: subscriber/non-resettable identity surface found without separate authorization gate."
+            exit 1
+          fi
+          echo "B94 subscriber identity privacy fence passed."
       - name: Background wakeup fence
         run: |
           set -euo pipefail

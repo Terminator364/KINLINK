@@ -55,8 +55,10 @@ require(
 require(
     'android.permission.CHANGE_NETWORK_STATE' not in MANIFEST
     and 'android.permission.CHANGE_WIFI_STATE' not in MANIFEST
+    and 'android.permission.READ_PHONE_STATE' not in MANIFEST
+    and 'android.permission.READ_PHONE_NUMBERS' not in MANIFEST
     and 'android.net.VpnService' not in MANIFEST,
-    "candidate contract: forbidden network ownership surface present in manifest",
+    "candidate contract: forbidden network ownership or subscriber-identity surface present in manifest",
 )
 
 production = "\n".join(
@@ -78,6 +80,34 @@ forbidden = [
 ]
 for token in forbidden:
     require(token not in production, f"candidate contract: forbidden API token present: {token}")
+
+subscriber_identity_forbidden = [
+    "getSubscriberId(",
+    "getImei(",
+    "getDeviceId(",
+    "getMeid(",
+    "getSimSerialNumber(",
+    "getLine1Number(",
+    "createForSubscriptionId(",
+    "SubscriptionManager",
+]
+for token in subscriber_identity_forbidden:
+    require(
+        token not in production,
+        f"candidate contract: B94 subscriber-identity surface is forbidden until separately justified and permission-gated: {token}",
+    )
+
+SUBSCRIPTION_PRIVACY = (
+    SRC / "com/terminator364/kinlink/core/SubscriptionIdentityPolicy.kt"
+).read_text(encoding="utf-8")
+require(
+    "AGGREGATE_ONLY" in SUBSCRIPTION_PRIVACY
+    and "LOCAL_SUBSCRIPTION_ID" in SUBSCRIPTION_PRIVACY
+    and "perSubscriptionNeedJustified && phoneStatePermissionGranted" in SUBSCRIPTION_PRIVACY
+    and "fun mayExportSubscriptionIdentity(): Boolean = false" in SUBSCRIPTION_PRIVACY
+    and "fun mayUseNonResettableIdentifier(): Boolean = false" in SUBSCRIPTION_PRIVACY,
+    "candidate contract: B94 privacy boundary policy missing or weakened",
+)
 
 def const_int(name: str, text: str) -> int:
     m = re.search(rf"const val {name}\s*=\s*([0-9_]+)", text)
