@@ -11,9 +11,9 @@
   "forced_stop_new_mutations_local": "2026-09-22T01:50:18+01:00",
   "close_deadline_local": "2026-09-22T01:55:18+01:00",
   "foreground_time_check_rule": "CHECK_TIME_BEFORE_EVERY_MAJOR_MUTATION_BATCH_AND_AFTER_AT_MOST_3_TOOL_BATCHES",
-  "work_state": "CLOSE_INTENT",
-  "delivery_state": "CLOSING",
-  "status": "CLOSE_INTENT",
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "gmail_start_message_id": "1a0c6856897cc236",
   "gmail_start_thread_id": "1a0c6856897cc236",
   "gmail_label": "KINLINK",
@@ -51,24 +51,15 @@
     "design_lint_run": 35673188556,
     "design_lint_status": "PASS",
     "android_run": 35673188589,
-    "android_status": "IN_PROGRESS_RESPONSIVE_MATRIX",
-    "automated_pre_matrix_gates": [
-      "fail-open API fence PASS",
-      "manifest safety fence PASS",
-      "background wakeup fence PASS",
-      "unit tests PASS",
-      "Android lint PASS",
-      "unsigned candidate build PASS",
-      "package identity and unsigned fence PASS"
-    ],
-    "manual_counter_audit": {
-      "prior_head": "0119d9ab114ea549ae4ddd2dd70a720b599918b6",
-      "finding": "Dialog actions were visually inaccessible/partially clipped in medium/XL despite automated PASS.",
-      "remediation_head": "48005d2a94b5771929e38d3cf85d96adc0b499af",
-      "remediation": "Save/cancel/clear moved inside scrollable dialog; cycle hint shortened; proof expanded 45->48 shots with dialog bottom."
-    }
+    "android_status": "PASS",
+    "ci_build_artifact_id": 10672715026,
+    "responsive_ui_artifact_id": 10672625092,
+    "responsive_screenshots": 48,
+    "manual_visual_audit": "PASS_NARROW_MEDIUM_XL_DIALOG_TOP_BOTTOM",
+    "maturity_percent": 46,
+    "signing_staging_install": "NONE"
   },
-  "next_atomic_action": "AWAIT_ANDROID_RUN_35673188589; IF PASS DOWNLOAD_RESPONSIVE_ARTIFACT_AND_MANUALLY_AUDIT_DIALOG_TOP_BOTTOM; THEN PERSIST FINAL PROOF_AND_SEND_GMAIL_END",
+  "next_atomic_action": "NEW_START_REQUIRED_BEFORE_SUBSTANTIVE_CONTINUATION; THEN B92_BOUNDED_NETWORKSTATS_SINGLE_WORKER_TIMEOUT_CANCELLATION",
   "close_intent_persisted": true,
   "close_owner": "PRIMARY_ASSISTANT",
   "no_more_product_mutations": true,
@@ -93,11 +84,11 @@
       "maturity_percent": 46
     }
   },
-  "gmail_end_message_id": null,
-  "gmail_end_thread_id": null,
-  "end_mail_verified": false,
-  "closed_state": false,
-  "closed_at_provider_ts": null,
-  "closed_at_local": null,
+  "gmail_end_message_id": "1a0c69c249feaffb",
+  "gmail_end_thread_id": "1a0c69c249feaffb",
+  "end_mail_verified": true,
+  "closed_state": true,
+  "closed_at_provider_ts": "2026-09-22T00:55:01Z",
+  "closed_at_local": "2026-09-22T01:55:01+01:00",
   "close_intent_local": "2026-09-22T01:49:26+01:00"
 }
