@@ -366,11 +366,11 @@ require(
 RUN_UI_MATRIX = (ROOT / "tools/release/run_ui_matrix.sh").read_text(encoding="utf-8")
 UI_TEST = (ROOT / "app/src/androidTest/java/com/terminator364/kinlink/ui/ResponsiveRenderMatrixTest.kt").read_text(encoding="utf-8")
 require(
-    'test "$count" -eq 45' in RUN_UI_MATRIX
+    'test "$count" -eq 48' in RUN_UI_MATRIX
     and 'capture("mobile-data-dialog")' in UI_TEST
     and 'capture("technical-details-start")' in UI_TEST
     and 'capture("technical-details-bottom")' in UI_TEST,
-    "candidate contract: expanded 45-shot visual proof gate missing",
+    "candidate contract: expanded 48-shot visual proof gate missing",
 )
 
 
