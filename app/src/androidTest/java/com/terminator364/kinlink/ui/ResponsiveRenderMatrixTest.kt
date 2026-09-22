@@ -233,10 +233,26 @@ class ResponsiveRenderMatrixTest {
         scenario: ActivityScenario<MainActivity>
     ) {
         val surfaces = listOf(
-            Triple(R.id.diagnosticSurfaceButton, "Diagnostic", "product-diagnostic"),
-            Triple(R.id.weekSurfaceButton, "Cette semaine", "product-week"),
-            Triple(R.id.mobileVaultSurfaceButton, "Mobile Vault", "product-mobile-vault"),
-            Triple(R.id.settingsSurfaceButton, "Réglages", "product-settings")
+            Triple(
+                R.id.diagnosticSurfaceButton,
+                "Où se situe le problème ?",
+                "product-diagnostic"
+            ),
+            Triple(
+                R.id.weekSurfaceButton,
+                "Ce que KINLINK a réellement observé",
+                "product-week"
+            ),
+            Triple(
+                R.id.mobileVaultSurfaceButton,
+                "Ton forfait, tes réserves",
+                "product-mobile-vault"
+            ),
+            Triple(
+                R.id.settingsSurfaceButton,
+                "Simple, local, réversible",
+                "product-settings"
+            )
         )
         for ((buttonId, expected, captureName) in surfaces) {
             scenario.onActivity { activity ->

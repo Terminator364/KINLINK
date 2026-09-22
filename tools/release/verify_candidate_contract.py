@@ -469,6 +469,13 @@ require(
     and 'capture("technical-details-bottom")' in UI_TEST,
     "candidate contract: expanded 48-shot visual proof gate missing",
 )
+require(
+    '"Où se situe le problème ?"' in UI_TEST
+    and '"Ce que KINLINK a réellement observé"' in UI_TEST
+    and '"Ton forfait, tes réserves"' in UI_TEST
+    and '"Simple, local, réversible"' in UI_TEST,
+    "candidate contract: product-surface proof may pass on generic cockpit labels",
+)
 
 PRODUCT_SURFACE = (
     SRC / "com/terminator364/kinlink/ui/ProductSurfaceActivity.kt"
