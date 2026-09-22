@@ -1,6 +1,6 @@
 {
   "schema": "kinlink.canonical_context_pack/2",
-  "generated_at": "2026-09-22T13:12:24+01:00",
+  "generated_at": "2026-09-22T13:23:11+01:00",
   "project": "KINLINK",
   "immutable_A": {
     "preconception_anchor": "c565b6f1164d327caaa17e1de47d1cf48ed3c885",
@@ -68,7 +68,7 @@
   },
   "communication": {
     "current_tranche": "KINLINK-2026-09-22-1301-AABC-PRODUCT",
-    "state": "CLOSING",
+    "state": "CLOSED",
     "gmail_start_message_id": "1a0c8fedd6619710",
     "protocol": "v7",
     "timing_mode": "MILESTONE_BASED_NO_FIXED_DURATION",
@@ -76,9 +76,11 @@
     "watchdog_cardinality": 1,
     "watchdog_cadence": "HOURLY",
     "watchdog_role": "ORPHAN_TRANSITION_FAILOVER_ONLY",
-    "email_style": "HUMAN_EXPLANATORY_PARITY_WITH_CHAT"
+    "email_style": "HUMAN_EXPLANATORY_PARITY_WITH_CHAT",
+    "gmail_end_message_id": "1a0c911f1bbfa6f5",
+    "closed_at_local": "2026-09-22T13:23:11+01:00"
   },
-  "next_action": "After Gmail END/CLOSED, user installs single KINLINK_INSTALL_NOW.apk over 0.7.3; then focused target-device validation. Advanced Strong Stabilizer/VPN and SHADOW learner remain visible future work.",
+  "next_action": "HUMAN GATE: install KINLINK_INSTALL_NOW.apk over the existing 0.7.3 without uninstall; then focused Samsung field validation. Do not start another internal micro-wave before this gate unless the user explicitly postpones installation.",
   "memory": {
     "policy": ".project-memory/MEMORY_POLICY_V2.json",
     "chronicle": ".project-memory/PROJECT_CHRONICLE.jsonl",

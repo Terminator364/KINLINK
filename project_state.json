@@ -760,10 +760,12 @@
   },
   "communication": {
     "active_tranche": "KINLINK-2026-09-22-1301-AABC-PRODUCT",
-    "active_tranche_state": "CLOSING",
+    "active_tranche_state": "CLOSED",
     "gmail_start_message_id": "1a0c8fedd6619710",
     "close_intent_local": "2026-09-22T13:12:24+01:00",
-    "next_rule": "SEND_HUMAN_EXPLANATORY_END_VERIFY_ACK_THEN_PERSIST_CLOSED"
+    "next_rule": "NEW_START_REQUIRED_ONLY_AFTER_HUMAN_INSTALL_FEEDBACK_OR_EXPLICIT_NEW_WORK",
+    "gmail_end_message_id": "1a0c911f1bbfa6f5",
+    "closed_at_local": "2026-09-22T13:23:11+01:00"
   },
   "state_authority": {
     "schema": "kinlink.state_authority/1",

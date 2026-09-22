@@ -7,8 +7,8 @@
   "start_provider_ts": "2026-09-22T12:02:21Z",
   "start_local": "2026-09-22T13:02:21+01:00",
   "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSE_INTENT_PERSISTED",
-  "status": "CLOSING",
+  "delivery_state": "CLOSED",
+  "status": "CLOSED",
   "gmail_start_message_id": "1a0c8fedd6619710",
   "gmail_start_thread_id": "1a0c8fedd6619710",
   "gmail_label": "KINLINK",
@@ -49,5 +49,11 @@
   "close_owner": "PRIMARY_ASSISTANT",
   "no_more_product_mutations": true,
   "close_intent_local": "2026-09-22T13:12:24+01:00",
-  "next_atomic_action": "SEND_HUMAN_EXPLANATORY_GMAIL_END_VERIFY_PROVIDER_ACK_THEN_PERSIST_CLOSED"
+  "next_atomic_action": "HUMAN_GATE_INSTALL_0_8_OVER_0_7_3_THEN_TARGET_FIELD_VALIDATION",
+  "gmail_end_message_id": "1a0c911f1bbfa6f5",
+  "gmail_end_thread_id": "1a0c911f1bbfa6f5",
+  "end_mail_verified": true,
+  "closed_state": true,
+  "closed_at_provider_ts": "2026-09-22T12:23:11Z",
+  "closed_at_local": "2026-09-22T13:23:11+01:00"
 }
