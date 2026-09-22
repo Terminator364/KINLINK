@@ -109,6 +109,27 @@ require(
     "candidate contract: B94 privacy boundary policy missing or weakened",
 )
 
+ACTIVE_DATA_POLICY = (
+    SRC / "com/terminator364/kinlink/core/ActiveDataSubscriptionPolicy.kt"
+).read_text(encoding="utf-8")
+require(
+    "DefaultActiveDataRelation" in ACTIVE_DATA_POLICY
+    and "activeDataGeneration" in ACTIVE_DATA_POLICY
+    and "defaultDataGeneration" in ACTIVE_DATA_POLICY
+    and "STALE_ACTIVE_DATA_GENERATION" in ACTIVE_DATA_POLICY
+    and "ACTIVE_DATA_UNKNOWN" in ACTIVE_DATA_POLICY
+    and "previous.activeDataAvailable && activeDataChanged" in ACTIVE_DATA_POLICY
+    and "!previous.activeDataAvailable && activeDataAvailable" in ACTIVE_DATA_POLICY,
+    "candidate contract: B95 active/default data generation or conservative staleness semantics missing",
+)
+require(
+    "SubscriptionManager" not in ACTIVE_DATA_POLICY
+    and "TelephonyManager" not in ACTIVE_DATA_POLICY
+    and "subId" not in ACTIVE_DATA_POLICY
+    and "subscriberId" not in ACTIVE_DATA_POLICY,
+    "candidate contract: B95 pure policy leaked Android subscription identity/API details",
+)
+
 def const_int(name: str, text: str) -> int:
     m = re.search(rf"const val {name}\s*=\s*([0-9_]+)", text)
     require(m is not None, f"candidate contract: constant {name} missing")
