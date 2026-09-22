@@ -9,14 +9,14 @@
   },
   "canonical_truth": {
     "macro_capabilities": 80,
-    "maturity_percent": 46,
+    "maturity_percent": 54.2,
     "b_depth_version": "B5",
     "b_depth_range": "B31-B100",
     "b_depth_count": 70,
     "integrated_program": "W0-W6",
-    "active_wave": "W2",
-    "installed_field_build": "0.7.3-dev/versionCode11 baseline",
-    "active_successor": "0.8.0-dev/versionCode12",
+    "active_wave": "W3_PRODUCTIZATION_CORE_MACHINE_PROVEN",
+    "installed_field_build": "0.7.3-dev/versionCode11 baseline; 0.8 update staged but not yet installed",
+    "active_successor": "0.8.0-dev/versionCode12 exact-head efcaf5f7",
     "no_micro_beta": true,
     "communication_watchdog_cardinality": 1
   },
@@ -47,11 +47,11 @@
     },
     {
       "path": ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
-      "git_blob_sha1": "40c6265f4688fd9c11aa3164ed16b17470affb93"
+      "git_blob_sha1": "8f682f8076779ef84d6380383dedba7533e07f96"
     },
     {
       "path": ".project-memory/INTEGRATED_PROGRAM_PLAN.json",
-      "git_blob_sha1": "5e847e5006ed27ad75c32746c0a470e2b0721fda"
+      "git_blob_sha1": "d6de83ca4f7be37410aa74cba8513de6da9566dc"
     },
     {
       "path": ".project-memory/MEMORY_POLICY_V2.json",
@@ -63,7 +63,7 @@
     },
     {
       "path": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
-      "git_blob_sha1": "86bdaa9b99ab7e7ecfe4581a0bad03a6f765f579"
+      "git_blob_sha1": "89605d2f5fe25f663307cb40516c1062e143888a"
     },
     {
       "path": ".project-memory/PRODUCT_EVOLUTION_C.json",
@@ -91,7 +91,7 @@
     },
     {
       "path": "docs/FULL_PRODUCT_SPEC_A_B_C.md",
-      "git_blob_sha1": "22c07ad6ef11d9dbc86048b87813dd7318e40254"
+      "git_blob_sha1": "e92dcc21b64f03b539937a1552f87e671f40176c"
     }
   ],
   "fresh_state_files": [

@@ -48,7 +48,7 @@
     "scorecard": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json",
     "ledger": ".project-memory/FULL_REQUIREMENTS_LEDGER.json",
     "expected_macro_capabilities": 80,
-    "current_percent": 46,
+    "current_percent": 54.2,
     "superseded_metric": "56% recent-slice weighted metric",
     "rule": "Never quote completion from REQUIREMENTS_TRACEABILITY alone."
   },
@@ -82,6 +82,9 @@
     "Canonical A+B+C and communication-policy files are Git-blob pinned by RESUME_CAPSULE; partial sync fails CI instead of silently degrading context.",
     "Volatile state is never frozen into the capsule as truth; takeover must read it fresh.",
     "Cold-takeover CI must prove project_state, BUILD_STATUS, NEXT_UNCOMMITTED_ACTION and current communication ledger tell the same live story.",
-    "Per-SIM Mobile Vault truth must never be inferred from aggregate mobile counters; B91-B100 preserve attribution, permission and restart semantics."
+    "Per-SIM Mobile Vault truth must never be inferred from aggregate mobile counters; B91-B100 preserve attribution, permission and restart semantics.",
+    "Communication is milestone-based with no fixed tranche duration; age alone cannot force END.",
+    "Gmail START/END must be human explanatory and substantively consistent with chat.",
+    "The current 0.8 Lite field candidate may be delivered before advanced W4/W5, while those major A+B+C gaps remain explicitly visible."
   ]
 }

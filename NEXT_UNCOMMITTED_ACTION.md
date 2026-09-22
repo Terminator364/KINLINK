@@ -1,51 +1,34 @@
 # NEXT_UNCOMMITTED_ACTION
-
 Resume with `KINLINKGO`.
 
-## Communication
-- Verify `.project-memory/RESUME_CAPSULE.json` and fresh volatile state before any new work.
-- K25-21 FASTLANE is CLOSED with Gmail END ACK `1a0c8a69dde69159`.
-- Fresh START before substantive continuation.
-- Gmail START/END remains, but engineering work is no longer split into one micro-tranche per B item.
+## Communication first
+- Verify `.project-memory/RESUME_CAPSULE.json` and fresh volatile state.
+- Protocol **v7**: Gmail START before substantive work and human explanatory Gmail END at the coherent milestone/gate.
+- There is **no fixed 25-minute tranche duration**. Age alone never forces an END.
+- Gmail START and Gmail END must carry the same substantive human explanation as ChatGPT.
+- APK delivery is Drive-only; Gmail executable attachments are forbidden.
 
-## Canonical scope
-- A+B+C: **80 macro capabilities**
+## Canonical A+B+C
 - B-depth: **B31-B100**
-- conservative maturity: **46.0%** pending macro-stage recalculation
-- installed baseline: **0.7.3-dev / versionCode 11**
-- active development line: **0.8.0-dev / versionCode 12**
-- no user-facing micro-beta chain
+- **80 macro capabilities**
+- conservative maturity: **54.2%**
+- A: **50.9%**
+- B: **30.8%**
+- C: **67.7%**
 
-## Latest consolidated head
-`805318ed84d4626908727c8e874f34a189b9e082`
+## Current 0.8 candidate
+Exact product head: `efcaf5f7d2686b454c10713961a0c01d238a9ca5`
+- design-lint `35722723971`: **PASS**
+- Android CI `35722724029`: **PASS**
+- responsive matrix: **60 screenshots PASS**
+- manual visual audit: **PASS**
+- signed Drive readback: **PASS**
 
-Evidence:
-- design-lint `35715253302`: **PASS**
-- Android CI `35715253452`: **PASS**
-- build artifact `10688759701`
-- responsive proof artifact `10689019546`
+## Single install surface
+**KINLINK_INSTALL_NOW.apk**
+Drive file ID: `1dj2j2zhLmUPb63NVIaMx0jElpNdb04ky`
+Contains signed **0.8.0-dev / versionCode 12**.
+Install **over** existing 0.7.3. **Do not uninstall first.**
 
-## B96-B100 delivered together
-- B96: callbacks advisory/process-live; restart => fresh reconciliation; no zero-usage inference.
-- B97: carrier plan calendar time separated from monotonic control-loop time.
-- B98: observation semantic/provenance/confidence + adapter/version; malformed/mismatched evidence rejected.
-- B99: repeated reset/reboot cannot decrease proven usage or create free quota.
-- B100: local user-entered plan/expiry/reserves works offline; unknown usage remains fail-safe UNKNOWN.
-
-## Methodology change
-Do **not** resume B-number-by-B-number micro-tranches.
-Use large integrated functional waves. Run cheap/static/unit gates during construction and one full Android/rendered CI on the consolidated wave head, except when a real failure needs repair.
-
-## Next large wave
-**W2 CLOSEOUT + W3 PRODUCTIZATION FASTLANE**
-Build as one coherent product wave:
-1. finish privacy-preserving trusted/home-Wi-Fi context memory and cost-aware W2 inputs;
-2. complete/dedicate the Mobile Vault product surface;
-3. build the Diagnostic vertical-path surface;
-4. build Settings + Emergency native-network escape surface;
-5. build local This Week/report surface using existing telemetry;
-6. strengthen diagnostic export/privacy allowlist where needed;
-7. then one consolidated unit/design/Android/rendered qualification cycle;
-8. no signing, Drive staging or phone install until this wave is coherent.
-
-Goal: prioritize a **usable integrated candidate in hours**, not maximal per-subrequirement certification.
+## Exact next action — HUMAN GATE
+After Gmail END/CLOSED, user installs the update. Then perform focused target-device validation: launch/update continuity, Home + Diagnostic + Cette semaine + Mobile Vault + Settings, Wi-Fi/mobile truth, Safe Mode/Emergency, Mobile Vault persistence and obvious resource regressions. Advanced W4/W5 remain explicit future scope.

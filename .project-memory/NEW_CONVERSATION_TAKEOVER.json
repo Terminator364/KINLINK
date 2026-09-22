@@ -62,28 +62,29 @@
     "PERSIST_START_RECEIPT",
     "LOAD_INTEGRATED_WAVE_PLAN_AND_AVOID_MICRO_BETA_DELIVERY",
     "WORK_FROM_NEXT_UNCOMMITTED_ACTION",
+    "WORK_UNTIL_REASONABLE_COHERENT_MILESTONE_OR_REAL_GATE",
     "OBEY_PLATFORM_SECURITY_CONTROLS_NEVER_BYPASS",
     "ON_SECURITY_OR_PLATFORM_HOLD_PERSIST_CHECKPOINT_AND_RESUME_LATER",
-    "STOP_NEW_PRODUCT_MUTATIONS_AT_CLOSE_RESERVE",
     "SEND_COMPLETE_GMAIL_END_AND_REQUIRE_PROVIDER_ACK",
     "PERSIST_CLOSED_STATE",
-    "ONLY_THEN_REPLY_BRIEFLY_IN_APP"
+    "ONLY_THEN_REPLY_WITH_HUMAN_EXPLANATORY_SUMMARY_CONSISTENT_WITH_GMAIL_END"
   ],
   "communication_contract": {
-    "cadence_minutes": 25,
-    "useful_work_minutes": 22,
-    "normal_close_reserve_minutes": 3,
+    "mode": "MILESTONE_BASED_NO_FIXED_DURATION",
     "gmail_label": "KINLINK",
+    "email_style": "HUMAN_EXPLANATORY_PARITY_WITH_CHAT",
+    "start_required_before_substantive_work": true,
+    "end_required_at_coherent_milestone_or_real_gate": true,
     "apk_delivery": "Drive KINLINK INSTALLER only; never Gmail attachment"
   },
   "product_truth": {
     "installed_field_build": "0.7.3-dev/versionCode11 field baseline; not near-final",
-    "active_integrated_successor": "0.8.0-dev/versionCode12",
-    "full_abc_maturity_percent": 44.8,
+    "active_integrated_successor": "0.8.0-dev/versionCode12 exact-head efcaf5f7; signed single-path field candidate staged",
+    "full_abc_maturity_percent": 54.2,
     "macro_capabilities": 80,
     "previous_56_percent": "superseded because it omitted original preconception breadth",
     "no_micro_beta": true,
-    "next_action": "poll e633 Android CI and independently verify 0.8.0-dev/v12 release manifest, then continue W1→W2; no install",
+    "next_action": "human installs KINLINK_INSTALL_NOW.apk over existing 0.7.3, then focused target-device field validation; W4/W5 remain advanced future scope",
     "b_depth": "B31-B100 canonical; macro denominator remains 80"
   },
   "full_spec_rule": "ALWAYS_LOAD_A_PLUS_B_PLUS_C_BEFORE_SCOPING_OR_PERCENT_COMPLETE; recent traceability is a derivative view, never the full product spec. B depth is a separate canonical layer; deepen it without silently changing the macro denominator.",

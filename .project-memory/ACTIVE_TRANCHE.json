@@ -1,52 +1,53 @@
 {
   "schema": "kinlink.active_tranche/7",
   "project": "KINLINK",
-  "tranche_id": "KINLINK-2026-09-22-1113-K25-21",
-  "delivery_key": "K25-20260922-1113-21",
-  "cadence_minutes": 25,
-  "useful_work_minutes": 20,
-  "hard_close_reserve_minutes": 5,
-  "start_local": "2026-09-22T11:13:00+01:00",
+  "tranche_id": "KINLINK-2026-09-22-1301-AABC-PRODUCT",
+  "delivery_key": "AABC-20260922-1301-PRODUCT",
+  "timing_mode": "MILESTONE_BASED_NO_FIXED_DURATION",
+  "start_provider_ts": "2026-09-22T12:02:21Z",
+  "start_local": "2026-09-22T13:02:21+01:00",
   "work_state": "CHECKPOINTED",
-  "delivery_state": "CLOSED",
-  "status": "CLOSED",
-  "gmail_start_message_id": "1a0c89bd5ebcd02e",
-  "gmail_start_thread_id": "1a0c89bd5ebcd02e",
+  "delivery_state": "CLOSE_INTENT_PERSISTED",
+  "status": "CLOSING",
+  "gmail_start_message_id": "1a0c8fedd6619710",
+  "gmail_start_thread_id": "1a0c8fedd6619710",
   "gmail_label": "KINLINK",
   "objectives": [
-    "FASTLANE_B96_B100_SINGLE_INTEGRATED_BLOCK",
-    "ONE_FULL_CI_AT_CONSOLIDATED_HEAD",
-    "NO_SIGNING_STAGING_OR_INSTALL"
+    "A_PLUS_B_PLUS_C_USABLE_PRODUCT_PRIORITY_WITH_A_PLUS_C_VALUE",
+    "W2_CLOSEOUT_PLUS_W3_PRODUCTIZATION",
+    "HUMAN_EXPLANATORY_EMAIL_PARITY",
+    "NO_FIXED_25_MINUTE_TRANCHE",
+    "SIGNED_SINGLE_PATH_0_8_FIELD_CANDIDATE"
   ],
-  "starting_truth": {
-    "prior_real_tranche": "K25-20 B95 CLOSED with Gmail END ACK 1a0c87395f2b17c4",
-    "duplicate_start_correction_message_id": "1a0c89bccc2d6177",
-    "main_head": "78e5282513c39b999f0ac37fd096935691ae23be",
-    "dev_head": "5a45fb3ec5d4d82960b7687fdd75836e6770ccb4",
-    "maturity_percent": 46
-  },
+  "absorbed_parallel_starts": [
+    {
+      "gmail_message_id": "1a0c8b4ab6af6d74",
+      "subject_hint": "WAVE-22 11:41",
+      "disposition": "ABSORBED_INTO_CURRENT_AUTHORITATIVE_RESULT"
+    },
+    {
+      "gmail_message_id": "1a0c8dc41f968d0a",
+      "subject_hint": "FASTLANE PRODUIT 12:24",
+      "disposition": "ABSORBED_INTO_CURRENT_AUTHORITATIVE_RESULT"
+    }
+  ],
   "current_progress": {
-    "code_head": "805318ed84d4626908727c8e874f34a189b9e082",
-    "design_lint_run": 35715253302,
+    "code_head": "efcaf5f7d2686b454c10713961a0c01d238a9ca5",
+    "design_lint_run": 35722723971,
     "design_lint_status": "PASS",
-    "android_run": 35715253452,
+    "android_run": 35722724029,
     "android_status": "PASS",
-    "ci_build_artifact_id": 10688759701,
-    "responsive_ui_artifact_id": 10689019546,
-    "b96_b100": "FASTLANE_MACHINE_PASS",
-    "methodology": "LARGE_FUNCTIONAL_WAVES",
-    "maturity_percent": 46,
-    "signing_staging_install": "NONE"
+    "responsive_screenshots": 60,
+    "manual_visual_audit": "PASS",
+    "maturity_percent": 54.2,
+    "signed_candidate_sha256": "36851b7f35d7525647d33fa4af4929bcb48227dc42197ac805666e4ab6e26c6f",
+    "installer_file_id": "1dj2j2zhLmUPb63NVIaMx0jElpNdb04ky",
+    "installer_readback": "PASS",
+    "next_gate": "HUMAN_INSTALL_OVER_0_7_3_THEN_FIELD_VALIDATION"
   },
-  "next_atomic_action": "NEW_START_REQUIRED; THEN W2_CLOSEOUT_PLUS_W3_PRODUCTIZATION_FASTLANE",
   "close_intent_persisted": true,
   "close_owner": "PRIMARY_ASSISTANT",
   "no_more_product_mutations": true,
-  "gmail_end_message_id": "1a0c8a69dde69159",
-  "gmail_end_thread_id": "1a0c8a69dde69159",
-  "end_mail_verified": true,
-  "closed_state": true,
-  "closed_at_provider_ts": "2026-09-22T10:25:57Z",
-  "closed_at_local": "2026-09-22T11:25:57+01:00",
-  "close_intent_local": "2026-09-22T11:25:30+01:00"
+  "close_intent_local": "2026-09-22T13:12:24+01:00",
+  "next_atomic_action": "SEND_HUMAN_EXPLANATORY_GMAIL_END_VERIFY_PROVIDER_ACK_THEN_PERSIST_CLOSED"
 }

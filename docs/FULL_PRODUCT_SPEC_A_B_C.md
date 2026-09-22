@@ -101,7 +101,7 @@ The old 56% number is superseded because it measured a recent traceability subse
 
 The canonical ledger now contains **80 deduplicated macro capabilities** spanning A+B+C. Each macro capability has one maturity stage so many small safety checks cannot inflate one missing major capability.
 
-Current A+B+C macro maturity: **44.8%**.
+Current A+B+C macro maturity: **54.2%**.
 
 This is a conservative management score, not a probability and not a marketing percentage.
 
@@ -114,6 +114,8 @@ The full scorecard is:
 ## Product direction from this point
 
 The active 0.8 line is no longer an “UI correction release”. It is the first integrated re-convergence toward the full A+B+C product.
+
+As of 22 September 2026, the Lite 0.8 product core is exact-head machine/visual proven and signed/staged for target-device update: trusted/home Wi-Fi context, Diagnostic, This Week, Mobile Vault, Settings and Emergency are present. This does **not** mean full A+B+C is complete: Strong Stabilizer/VPN, carrier adapters, SHADOW learner and advanced diagnostics remain explicit major gaps.
 
 No field installation is requested until the integrated batch has:
 1. exact-head machine gates;

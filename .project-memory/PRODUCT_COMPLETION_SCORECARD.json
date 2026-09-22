@@ -1,7 +1,7 @@
 {
   "schema": "kinlink.full_product_completion_scorecard/2",
   "supersedes": ".project-memory/PRODUCT_COMPLETION_SCORECARD.json v1 based on recent traceability only",
-  "measured_at": "2026-09-22",
+  "measured_at": "2026-09-22T13:12:24+01:00",
   "canonical_scope": "A+B+C deduplicated macro-capability ledger",
   "provenance_definition": {
     "A": "Original preconception/frozen design recovered from git commit c565b6f1164d327caaa17e1de47d1cf48ed3c885 and library DESIGN/PRE-IMPLEMENTATION artifacts.",
@@ -20,23 +20,23 @@
   },
   "result": {
     "macro_capabilities": 80,
-    "overall_percent": 46,
-    "A_percent": 41.4,
+    "overall_percent": 54.2,
+    "A_percent": 50.9,
     "A_capabilities": 63,
-    "B_percent": 26.1,
+    "B_percent": 30.8,
     "B_capabilities": 31,
-    "C_percent": 61.3,
+    "C_percent": 67.7,
     "C_capabilities": 53,
     "stage_counts": {
-      "IMPLEMENTED_UNQUALIFIED": 12,
-      "PARTIAL": 9,
-      "MACHINE_PROVEN": 29,
-      "DESIGN_ONLY": 15,
+      "IMPLEMENTED_UNQUALIFIED": 11,
+      "PARTIAL": 10,
+      "MACHINE_PROVEN": 39,
       "FIELD_PROVEN": 1,
-      "NOT_STARTED": 14
+      "NOT_STARTED": 12,
+      "DESIGN_ONLY": 7
     },
-    "verdict": "The full A+B+C product is materially below the earlier 56% estimate because that estimate did not include the recovered preconception breadth. Current macro maturity is the number in overall_percent.",
-    "note": "Conservative macro maturity recalculated from the 80 canonical epics. K014/K017/K068 are IMPLEMENTED_UNQUALIFIED only after exact-head W2 tests/CI plus 45-shot Mobile Vault visual proof; B-depth growth alone does not change this score."
+    "verdict": "A+B+C is now 54.2% on conservative macro-stage scoring after exact-head W2/W3 productization proof. Strong Stabilizer, carrier adapters, SHADOW learner and advanced diagnostics are not marked complete.",
+    "note": "Exact-head efcaf5f7 adds machine-proven trusted/home Wi-Fi memory, Mobile Vault/Diagnostic/This Week/Settings/Emergency surfaces, optional NetworkStats safeguards and a signed single-path 0.8 field candidate. Physical target-device field proof is pending."
   },
   "major_missing_value_blocks": [
     "Strong Mobile Stabilizer / VpnService data plane",
@@ -96,11 +96,11 @@
       "id": "K005",
       "title": "Trusted Wi-Fi memory",
       "provenance": "A+B",
-      "stage": "DESIGN_ONLY",
-      "points": 0.15,
+      "stage": "MACHINE_PROVEN",
+      "points": 0.8,
       "category": "truth",
-      "evidence": "Original component contract and state model preserve this requirement.",
-      "gap": "No complete durable trusted-context learner is implemented."
+      "evidence": "0.8 TrustedWifiContextStore stores only a local SHA-256 digest; Settings can mark/forget the current Wi-Fi as home; unit tests, exact-head CI and 60-shot UI proof PASS.",
+      "gap": "Target-phone recognition still needs field use; trusted context cannot authorize active recovery by itself."
     },
     {
       "id": "K006",
@@ -186,21 +186,21 @@
       "id": "K014",
       "title": "Mobile Vault hard economic envelopes",
       "provenance": "A+C",
-      "stage": "IMPLEMENTED_UNQUALIFIED",
-      "points": 0.6,
+      "stage": "MACHINE_PROVEN",
+      "points": 0.8,
       "category": "data",
-      "evidence": "W2 MobilePlanVaultPolicy implements normal/protected-reserve/rescue/critical-interactive envelopes; exact-head policy tests and Android CI PASS.",
-      "gap": "Policy core is implemented and persisted plan setup now exists; operator balance discovery, per-SIM attribution and field evidence remain incomplete."
+      "evidence": "Mobile Vault envelopes, persisted plan/cycle/expiry, offline-safe reconciliation and dedicated Mobile Vault surface are exact-head machine proven on efcaf5f7.",
+      "gap": "Real carrier balance discovery and authoritative per-SIM operator attribution remain outside this candidate."
     },
     {
       "id": "K015",
       "title": "Carrier Wallet balance model",
       "provenance": "A",
-      "stage": "DESIGN_ONLY",
-      "points": 0.15,
+      "stage": "PARTIAL",
+      "points": 0.35,
       "category": "data",
-      "evidence": "Original source/confidence/adapter design is preserved.",
-      "gap": "No real carrier wallet implementation."
+      "evidence": "Generic source/confidence/semantic-kind/adapter-id/version provenance and conservative conflict handling now exist for carrier-wallet-compatible evidence.",
+      "gap": "No real RDC carrier balance source/adapter is implemented yet."
     },
     {
       "id": "K016",
@@ -216,21 +216,21 @@
       "id": "K017",
       "title": "Device-wide mobile data accounting",
       "provenance": "A+C",
-      "stage": "IMPLEMENTED_UNQUALIFIED",
-      "points": 0.6,
+      "stage": "MACHINE_PROVEN",
+      "points": 0.8,
       "category": "data",
-      "evidence": "TrafficStats device-wide observation now has durable aggregate-counter generations, reset/reboot protection and explicit non-attribution semantics; 7d589ddd Android CI PASS.",
-      "gap": "Device-wide accounting is implemented but is not operator balance or per-SIM truth; optional richer NetworkStats/per-subscription evidence remains future W2 work."
+      "evidence": "Device-wide counters have durable generations, repeated reset/reboot no-free-quota tests and explicit aggregate-not-plan semantics; exact-head CI PASS.",
+      "gap": "Device-wide accounting remains aggregate Android evidence, not an operator or SIM balance."
     },
     {
       "id": "K018",
       "title": "Optional NetworkStatsManager richer accounting",
       "provenance": "B",
-      "stage": "NOT_STARTED",
-      "points": 0,
+      "stage": "IMPLEMENTED_UNQUALIFIED",
+      "points": 0.6,
       "category": "data",
-      "evidence": "Android supports user-granted Usage Access for broader stats, off main thread.",
-      "gap": "Not implemented."
+      "evidence": "Optional Usage Access + NetworkStatsManager path is implemented off the UI thread with a single worker, 4 s timeout, session fail-open and aggregate-only attribution.",
+      "gap": "Target-device Usage Access behavior is not yet field qualified and the evidence is not per-SIM truth."
     },
     {
       "id": "K019",
@@ -386,11 +386,11 @@
       "id": "K034",
       "title": "Rich weekly report generated locally",
       "provenance": "A+C",
-      "stage": "PARTIAL",
-      "points": 0.35,
+      "stage": "IMPLEMENTED_UNQUALIFIED",
+      "points": 0.6,
       "category": "diagnostics",
-      "evidence": "24 h/summary fragments exist.",
-      "gap": "Original full weekly report screen/engine is incomplete."
+      "evidence": "Dedicated This Week surface generates a local 7-day summary from TelemetryLedger and supports sharing; exact-head UI/CI PASS.",
+      "gap": "Richer energy/crash/failure-cluster analytics are still incomplete."
     },
     {
       "id": "K035",
@@ -399,68 +399,68 @@
       "stage": "MACHINE_PROVEN",
       "points": 0.8,
       "category": "ux",
-      "evidence": "Installed cockpit exists; 0.8 exact-head UI matrix passes structurally.",
-      "gap": "Current 0.8 still requires manual visual counter-audit before field delivery."
+      "evidence": "Home cockpit plus four product destinations pass exact-head 60-shot responsive proof; manual visual counter-audit of narrow/medium/XL renders is PASS.",
+      "gap": "The 0.8 cockpit still needs target-phone field validation after update."
     },
     {
       "id": "K036",
       "title": "Diagnostic vertical path screen",
       "provenance": "A+C",
-      "stage": "DESIGN_ONLY",
-      "points": 0.15,
+      "stage": "MACHINE_PROVEN",
+      "points": 0.8,
       "category": "ux",
-      "evidence": "Original IA specifies Phone→Radio→LAN/Router→ISP→DNS/IP→Internet→Remote service.",
-      "gap": "No dedicated full screen yet."
+      "evidence": "Dedicated Diagnostic surface presents a human failure path and can launch Wi-Fi Doctor/Mobile Assist or export diagnostics; exact-head CI and visual audit PASS.",
+      "gap": "Remote-service and router-vs-ISP discrimination can still be deepened."
     },
     {
       "id": "K037",
       "title": "This week screen",
       "provenance": "A+C",
-      "stage": "DESIGN_ONLY",
-      "points": 0.15,
+      "stage": "MACHINE_PROVEN",
+      "points": 0.8,
       "category": "ux",
-      "evidence": "Original IA preserved; some data exists in diagnostics.",
-      "gap": "No dedicated complete user screen."
+      "evidence": "Dedicated Cette semaine surface presents 7-day interruptions, slow episodes, user incidents and action history locally; share action included; exact-head visual proof PASS.",
+      "gap": "Trend visualization and richer report analytics remain future depth."
     },
     {
       "id": "K038",
       "title": "Mobile Vault screen",
       "provenance": "A",
-      "stage": "DESIGN_ONLY",
-      "points": 0.15,
+      "stage": "MACHINE_PROVEN",
+      "points": 0.8,
       "category": "ux",
-      "evidence": "Original IA preserved.",
-      "gap": "Only compact data-limit control exists."
+      "evidence": "Dedicated Mobile Vault surface shows plan, cycle, expiry, protected/rescue/critical reserves and safe UNKNOWN state, with a direct edit action; exact-head proof PASS.",
+      "gap": "Carrier-connected balance discovery remains absent."
     },
     {
       "id": "K039",
       "title": "Settings screen with simple top-level controls",
       "provenance": "A+C",
-      "stage": "DESIGN_ONLY",
-      "points": 0.15,
+      "stage": "MACHINE_PROVEN",
+      "points": 0.8,
       "category": "ux",
-      "evidence": "Profiles/safe mode/data control exist inline.",
-      "gap": "No complete settings information architecture."
+      "evidence": "Dedicated Settings surface exposes Autopilot profile, Safe Mode, trusted/home Wi-Fi context and capability summary; exact-head proof PASS.",
+      "gap": "A richer first-run provisioning wizard remains incomplete."
     },
     {
       "id": "K040",
       "title": "Emergency action",
       "provenance": "A+C",
-      "stage": "NOT_STARTED",
-      "points": 0,
+      "stage": "MACHINE_PROVEN",
+      "points": 0.8,
       "category": "ux",
-      "evidence": "Original home actions included Emergency.",
-      "gap": "No dedicated emergency workflow."
+      "evidence": "Emergency action is implemented in Settings: it switches RecoveryMode to OBSERVATION_ONLY, records a receipt and leaves Android native routing in control.",
+      "gap": "Needs target-phone field confirmation after 0.8 update."
     },
     {
       "id": "K041",
       "title": "Capability/permission wizard with graceful degradation",
       "provenance": "A+B",
-      "stage": "DESIGN_ONLY",
-      "points": 0.15,
+      "stage": "PARTIAL",
+      "points": 0.35,
       "category": "ux",
-      "evidence": "Permission model is documented and notification permission handling exists.",
-      "gap": "No complete provisioning wizard."
+      "evidence": "Capability-aware Settings explains platform capabilities and degrades gracefully; notification and Usage Access remain optional.",
+      "gap": "No single complete first-run permission/provisioning wizard yet."
     },
     {
       "id": "K042",
@@ -519,8 +519,8 @@
       "stage": "MACHINE_PROVEN",
       "points": 0.8,
       "category": "delivery",
-      "evidence": "Signer pinning, hashes, Drive readback and single installer path are enforced.",
-      "gap": "0.8 successor is not yet signed/staged."
+      "evidence": "0.8 exact-head CI artifact was signed with the pinned KINLINK Update Key, receipt/hash verified, staged to private Drive and read back into the single INSTALL_NOW surface with matching SHA-256.",
+      "gap": "Target-device install/update and field qualification are the next gate."
     },
     {
       "id": "K048",
@@ -579,8 +579,8 @@
       "stage": "PARTIAL",
       "points": 0.35,
       "category": "quality",
-      "evidence": "Emulator matrix covers 3 display/font configs × 6 states.",
-      "gap": "Exact Samsung target profile + dialogs/details are not yet fully covered."
+      "evidence": "Exact-head rendered matrix contains 60 shots across narrow/medium/XL-font product states; manual semantic visual counter-audit is PASS.",
+      "gap": "Physical Samsung target still needs post-install screenshot/field confirmation."
     },
     {
       "id": "K054",
@@ -656,11 +656,11 @@
       "id": "K061",
       "title": "Home Wi-Fi recognition",
       "provenance": "A",
-      "stage": "DESIGN_ONLY",
-      "points": 0.15,
+      "stage": "MACHINE_PROVEN",
+      "points": 0.8,
       "category": "context",
-      "evidence": "Original Settings/Context Engine requires it.",
-      "gap": "No complete user-friendly trusted-home recognition."
+      "evidence": "Home Wi-Fi recognition is implemented with user-controlled mark/forget and local SHA-256 context identity; raw SSID/BSSID are not persisted; exact-head tests/UI PASS.",
+      "gap": "Automatic learning is deliberately not used; target-device recognition must be field-confirmed."
     },
     {
       "id": "K062",
@@ -726,11 +726,11 @@
       "id": "K068",
       "title": "Plan size/expiry manual input + confidence/source model",
       "provenance": "A",
-      "stage": "IMPLEMENTED_UNQUALIFIED",
-      "points": 0.6,
+      "stage": "MACHINE_PROVEN",
+      "points": 0.8,
       "category": "data",
-      "evidence": "W2 provides durable plan total/expiry/reserve configuration, human MB/GB form parsing, optional cycle start and explicit usage source/confidence reconciliation; 7d589ddd CI PASS and 45-shot visual audit PASS including XL Mobile Vault dialog.",
-      "gap": "Automatic carrier balance/adapters and per-SIM authoritative attribution remain unbuilt."
+      "evidence": "Manual plan total/usage/cycle/expiry/reserves plus explicit source/confidence/semantic provenance are implemented and exact-head machine/visual proven.",
+      "gap": "Automatic carrier balance/adapters and authoritative per-SIM attribution remain unbuilt."
     },
     {
       "id": "K069",
