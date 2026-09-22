@@ -11,9 +11,9 @@
   "forced_stop_new_mutations_local": "2026-09-22T01:14:00+01:00",
   "close_deadline_local": "2026-09-22T01:19:00+01:00",
   "foreground_time_check_rule": "CHECK_TIME_BEFORE_EVERY_MAJOR_MUTATION_BATCH_AND_AFTER_AT_MOST_3_TOOL_BATCHES",
-  "work_state": "WORKING",
-  "delivery_state": "START_ACKNOWLEDGED",
-  "status": "ACTIVE",
+  "work_state": "CHECKPOINTED",
+  "delivery_state": "CLOSE_INTENT_PERSISTED",
+  "status": "CLOSING",
   "gmail_start_message_id": "1a0c664b9e984bf4",
   "gmail_start_thread_id": "1a0c664b9e984bf4",
   "gmail_label": "KINLINK",
@@ -46,5 +46,40 @@
     "android_run": 35664821258,
     "android_status": "PASS"
   },
-  "next_atomic_action": "add optional aggregate NetworkStats evidence with Usage Access fail-open and no per-plan promotion; run exact-head CI; no install"
+  "next_atomic_action": "SEND_GMAIL_END_VERIFY_PROVIDER_ACK_THEN_PERSIST_CLOSED",
+  "close_intent_persisted": true,
+  "close_owner": "PRIMARY_ASSISTANT",
+  "no_more_product_mutations": true,
+  "close_intent_local": "2026-09-22T01:10:25+01:00",
+  "last_durable_checkpoint": {
+    "communication": {
+      "protocol": "v6_20plus5",
+      "gmail_start_message_id": "1a0c664b9e984bf4",
+      "close_intent_local": "2026-09-22T01:10:25+01:00"
+    },
+    "w2_network_stats": {
+      "head": "772448ab0d4ead7fa729e9a76b9fdd4f12b31e93",
+      "design_lint_run": 35670307040,
+      "design_lint_status": "PASS",
+      "android_run": 35670306969,
+      "android_status": "PASS",
+      "ci_build_artifact_id": 10669774346,
+      "responsive_ui_artifact_id": 10670099202,
+      "semantics": "aggregate-only; no UI-thread query; Usage Access fail-open; no PLAN_EXACT promotion",
+      "install_requested": false
+    },
+    "incident": {
+      "failed_head": "6e91442070330a09691f298ca171956acddc6734",
+      "failed_run": 35670150303,
+      "cause": "literal escaped newline in generated AndroidManifest",
+      "remediation_head": "772448ab0d4ead7fa729e9a76b9fdd4f12b31e93",
+      "remediation_status": "PASS"
+    },
+    "full_spec": {
+      "macro_capabilities": 80,
+      "b_depth": "B31-B100",
+      "active_wave": "W2",
+      "maturity_percent": 46
+    }
+  }
 }

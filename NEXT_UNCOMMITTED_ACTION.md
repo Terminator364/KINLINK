@@ -5,54 +5,54 @@ Resume with `KINLINKGO`.
 ## P0 communication first
 
 1. verify RESUME_CAPSULE and fresh communication state;
-2. if prior tranche is not CLOSED, reconcile Gmail END before product work;
-3. new active tranches persist start/forced-stop/close deadlines;
-4. total cadence remains 25 minutes: 20 min work + 5 min hard close reserve;
-5. hourly watchdog is failover only and cannot guarantee minute-25 delivery.
+2. K25-15 is at CLOSE_INTENT until Gmail END ACK is persisted;
+3. do not resume product work until that closure is reconciled;
+4. each new tranche remains 20 min useful work + 5 min hard-close reserve.
 
 ## Canonical scope
 
 - A+B+C: 80 macro capabilities
 - B5: B31-B100
-- maturity: **46.0%**
+- maturity: **46.0%** — deliberately unchanged
 - W2 active
 - no micro-beta / no phone reinstall chain
 
 ## Newly proven W2 state
 
 Exact head:
-`7d589ddd6038adcb7c318f2b00dc1cf03faaa355`
+`772448ab0d4ead7fa729e9a76b9fdd4f12b31e93`
 
 Runs:
-- design-lint 35664821268: PASS
-- Android 35664821258: PASS
+- design-lint `35670307040`: **PASS**
+- Android `35670306969`: **PASS**
+- CI build artifact: `10669774346`
+- responsive UI proof artifact: `10670099202`
 
-Manual visual proof:
-- 45/45 screenshots inspected;
-- XL Mobile Vault “Effacer le forfait” clipping fixed;
-- narrow/medium/XL dialog and state layouts PASS;
-- artifact 10669160578;
-- field install still NOT requested.
+Implemented machine proof:
+- optional Android `NetworkStatsManager` path;
+- query is rejected on the UI/main thread;
+- a plan cycle start is mandatory before querying;
+- missing Usage Access is fail-open and does not impair KINLINK core;
+- current adapter is aggregate-only: `DEVICE_MOBILE_AGGREGATE`;
+- aggregate evidence is never promoted to `PLAN_EXACT`;
+- evidence store schema v2 persists bytes/cycle/timestamp/confidence/adapter version without carrier/SIM identity;
+- evidence from another cycle is ignored.
 
-Maturity updates:
-- K014 synchronized to IMPLEMENTED_UNQUALIFIED;
-- K017 -> IMPLEMENTED_UNQUALIFIED;
-- K068 -> IMPLEMENTED_UNQUALIFIED.
+Counter-audit note:
+- first Android run `35670150303` failed because generated manifest text contained a literal escaped newline;
+- fixed before qualification; exact-head run above is green.
 
 ## Exact next W2 block
 
-1. add optional capability-gated NetworkStatsManager evidence path;
-2. never query it on UI thread;
-3. no Usage Access => core remains fully functional;
-4. preserve PLAN_EXACT vs DEVICE_MOBILE_AGGREGATE distinction;
-5. add per-subscription attribution only where platform permission/identity is explicit; otherwise HOLD/UNKNOWN;
-6. continue toward the full Mobile Vault product surface;
-7. no signing/staging/install yet.
-
+1. expose a truthful plan cycle-start input in Mobile Vault;
+2. expose optional Usage Access status/affordance without making it mandatory;
+3. keep all per-plan attribution HOLD/UNKNOWN unless a separately authorized source proves plan identity and required access;
+4. re-run narrow/medium/XL responsive proof after the UI change;
+5. continue the full Mobile Vault surface;
+6. no signing, Drive staging or phone install yet.
 
 ## Communication invariant
 
-- **Gmail START before substantive work**, with provider ACK persisted.
-- **Gmail END before normal app closeout**, with provider ACK + durable CLOSED state.
-- At the 20-minute forced-stop point, stop new product mutations and enter the 5-minute hard-close reserve.
-- The hourly watchdog is failover only; it does not replace foreground closure.
+- Gmail START before substantive work.
+- Gmail END before normal app closeout.
+- END provider ACK must be persisted before final app response.
