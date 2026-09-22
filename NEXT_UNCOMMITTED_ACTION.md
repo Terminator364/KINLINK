@@ -3,6 +3,7 @@
 Resume with `KINLINKGO`.
 
 ## Communication
+- Verify `.project-memory/RESUME_CAPSULE.json` and fresh volatile state before any new work.
 - K25-21 FASTLANE is CLOSED with Gmail END ACK `1a0c8a69dde69159`.
 - Fresh START before substantive continuation.
 - Gmail START/END remains, but engineering work is no longer split into one micro-tranche per B item.
