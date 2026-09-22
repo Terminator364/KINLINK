@@ -11,9 +11,9 @@
   "forced_stop_new_mutations_local": "2026-09-22T01:50:18+01:00",
   "close_deadline_local": "2026-09-22T01:55:18+01:00",
   "foreground_time_check_rule": "CHECK_TIME_BEFORE_EVERY_MAJOR_MUTATION_BATCH_AND_AFTER_AT_MOST_3_TOOL_BATCHES",
-  "work_state": "ACTIVE",
-  "delivery_state": "OPEN",
-  "status": "ACTIVE",
+  "work_state": "CLOSE_INTENT",
+  "delivery_state": "CLOSING",
+  "status": "CLOSE_INTENT",
   "gmail_start_message_id": "1a0c6856897cc236",
   "gmail_start_thread_id": "1a0c6856897cc236",
   "gmail_label": "KINLINK",
@@ -47,23 +47,31 @@
     "prior_android_status": "PASS"
   },
   "current_progress": {
-    "code_head": "0119d9ab114ea549ae4ddd2dd70a720b599918b6",
-    "design_lint_run": 35672403217,
+    "code_head": "48005d2a94b5771929e38d3cf85d96adc0b499af",
+    "design_lint_run": 35673188556,
     "design_lint_status": "PASS",
-    "android_run": 35672403270,
-    "android_status": "IN_PROGRESS",
-    "implemented": [
-      "cycle-start date parse/format",
-      "Mobile Vault cycle-start field and validation",
-      "optional Usage Access status and settings affordance",
-      "cycle-change NetworkStats evidence invalidation",
-      "responsive proof assertions for cycle/Usage Access/aggregate-only wording"
-    ]
+    "android_run": 35673188589,
+    "android_status": "IN_PROGRESS_RESPONSIVE_MATRIX",
+    "automated_pre_matrix_gates": [
+      "fail-open API fence PASS",
+      "manifest safety fence PASS",
+      "background wakeup fence PASS",
+      "unit tests PASS",
+      "Android lint PASS",
+      "unsigned candidate build PASS",
+      "package identity and unsigned fence PASS"
+    ],
+    "manual_counter_audit": {
+      "prior_head": "0119d9ab114ea549ae4ddd2dd70a720b599918b6",
+      "finding": "Dialog actions were visually inaccessible/partially clipped in medium/XL despite automated PASS.",
+      "remediation_head": "48005d2a94b5771929e38d3cf85d96adc0b499af",
+      "remediation": "Save/cancel/clear moved inside scrollable dialog; cycle hint shortened; proof expanded 45->48 shots with dialog bottom."
+    }
   },
-  "next_atomic_action": "WAIT_FOR_EXACT_HEAD_ANDROID_UI_MATRIX_THEN_PERSIST_PROOF",
-  "close_intent_persisted": false,
+  "next_atomic_action": "AWAIT_ANDROID_RUN_35673188589; IF PASS DOWNLOAD_RESPONSIVE_ARTIFACT_AND_MANUALLY_AUDIT_DIALOG_TOP_BOTTOM; THEN PERSIST FINAL PROOF_AND_SEND_GMAIL_END",
+  "close_intent_persisted": true,
   "close_owner": "PRIMARY_ASSISTANT",
-  "no_more_product_mutations": false,
+  "no_more_product_mutations": true,
   "last_durable_checkpoint": {
     "prior_w2_network_stats": {
       "head": "772448ab0d4ead7fa729e9a76b9fdd4f12b31e93",
@@ -90,5 +98,6 @@
   "end_mail_verified": false,
   "closed_state": false,
   "closed_at_provider_ts": null,
-  "closed_at_local": null
+  "closed_at_local": null,
+  "close_intent_local": "2026-09-22T01:49:26+01:00"
 }
