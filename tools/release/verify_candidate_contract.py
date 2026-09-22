@@ -170,8 +170,9 @@ require(
     "CONFIGURED_USAGE_UNKNOWN" in OFFLINE_FALLBACK_POLICY
     and "READY_WITH_USER_USAGE" in OFFLINE_FALLBACK_POLICY
     and "USER_RECONCILED" in OFFLINE_FALLBACK_POLICY
-    and "Usage Access" not in OFFLINE_FALLBACK_POLICY
-    and "Telephony" not in OFFLINE_FALLBACK_POLICY,
+    and "NetworkStatsMobileUsageReader" not in OFFLINE_FALLBACK_POLICY
+    and "SubscriptionManager" not in OFFLINE_FALLBACK_POLICY
+    and "TelephonyManager" not in OFFLINE_FALLBACK_POLICY,
     "candidate contract: B100 local offline plan fallback is not independent from privileged/cloud sources",
 )
 
