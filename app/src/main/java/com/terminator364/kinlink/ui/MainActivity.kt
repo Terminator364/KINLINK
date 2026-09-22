@@ -92,6 +92,8 @@ import com.terminator364.kinlink.core.LocalNetworkAccessState
 import com.terminator364.kinlink.core.DataSaverState
 import com.terminator364.kinlink.core.NetworkTruth
 import com.terminator364.kinlink.core.NotificationPermissionPolicy
+import com.terminator364.kinlink.core.TrustedWifiContextPolicy
+import com.terminator364.kinlink.core.TrustedWifiContextStore
 import com.terminator364.kinlink.core.WifiDoctor
 import com.terminator364.kinlink.core.WifiOptimizer
 import com.terminator364.kinlink.data.DiagnosticExporter
@@ -140,6 +142,10 @@ class MainActivity : Activity() {
     private lateinit var modeBalancedButton: TextView
     private lateinit var modeMaxButton: TextView
     private lateinit var safeModeButton: TextView
+    private lateinit var diagnosticSurfaceButton: TextView
+    private lateinit var weekSurfaceButton: TextView
+    private lateinit var mobileVaultSurfaceButton: TextView
+    private lateinit var settingsSurfaceButton: TextView
     private lateinit var versionText: TextView
 
     private var latestTruth = NetworkTruth()
@@ -219,6 +225,10 @@ class MainActivity : Activity() {
         modeBalancedButton = findViewById(R.id.modeBalancedButton)
         modeMaxButton = findViewById(R.id.modeMaxButton)
         safeModeButton = findViewById(R.id.safeModeButton)
+        diagnosticSurfaceButton = findViewById(R.id.diagnosticSurfaceButton)
+        weekSurfaceButton = findViewById(R.id.weekSurfaceButton)
+        mobileVaultSurfaceButton = findViewById(R.id.mobileVaultSurfaceButton)
+        settingsSurfaceButton = findViewById(R.id.settingsSurfaceButton)
         versionText = findViewById(R.id.versionText)
         runCatching { packageManager.getPackageInfo(packageName, 0) }.getOrNull()?.let { info ->
             installedVersionName = info.versionName ?: "?"
@@ -257,6 +267,18 @@ class MainActivity : Activity() {
         wifiDoctorButton.setOnClickListener { optimizeWifi() }
         mobileAssistButton.setOnClickListener { optimizeMobile() }
         budgetButton.setOnClickListener { configureMobileBudget() }
+        diagnosticSurfaceButton.setOnClickListener {
+            openProductSurface(ProductSurfaceActivity.SURFACE_DIAGNOSTIC)
+        }
+        weekSurfaceButton.setOnClickListener {
+            openProductSurface(ProductSurfaceActivity.SURFACE_WEEK)
+        }
+        mobileVaultSurfaceButton.setOnClickListener {
+            openProductSurface(ProductSurfaceActivity.SURFACE_MOBILE_VAULT)
+        }
+        settingsSurfaceButton.setOnClickListener {
+            openProductSurface(ProductSurfaceActivity.SURFACE_SETTINGS)
+        }
         modeConservativeButton.setOnClickListener {
             selectProfile(AutopilotProfile.CONSERVATIVE)
         }
@@ -303,6 +325,13 @@ class MainActivity : Activity() {
                 render(enrichedTruth, budget, stability)
             }
         }
+        handleLaunchIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleLaunchIntent(intent)
     }
 
     override fun onStart() {
@@ -327,6 +356,82 @@ class MainActivity : Activity() {
         ledger.close()
         super.onDestroy()
     }
+
+    private fun handleLaunchIntent(launchIntent: Intent?) {
+        when (launchIntent?.getStringExtra(EXTRA_PRODUCT_ACTION)) {
+            ACTION_OPEN_MOBILE_VAULT -> {
+                launchIntent.removeExtra(EXTRA_PRODUCT_ACTION)
+                configureMobileBudget()
+            }
+            ACTION_EXPORT_DIAGNOSTIC -> {
+                launchIntent.removeExtra(EXTRA_PRODUCT_ACTION)
+                exportDiagnostic()
+            }
+        }
+    }
+
+    private fun openProductSurface(surface: String) {
+        val truth = latestTruth
+        val wifiDigest = TrustedWifiContextPolicy.fingerprint(truth)
+        val trustedWifi = TrustedWifiContextStore(this)
+        val trustedLabel = when {
+            wifiDigest == null ->
+                "Wi-Fi de confiance · identité stable indisponible sans permission supplémentaire"
+            trustedWifi.isHome(wifiDigest) ->
+                "Wi-Fi maison reconnu localement"
+            trustedWifi.isTrusted(wifiDigest) ->
+                "Wi-Fi de confiance reconnu localement"
+            else ->
+                "Wi-Fi actuel non mémorisé"
+        }
+        startActivity(
+            Intent(this, ProductSurfaceActivity::class.java).apply {
+                putExtra(ProductSurfaceActivity.EXTRA_SURFACE, surface)
+                putExtra(ProductSurfaceActivity.EXTRA_WIFI_DIGEST, wifiDigest)
+                putExtra(ProductSurfaceActivity.EXTRA_WIFI_LABEL, trustedLabel)
+                if (surface == ProductSurfaceActivity.SURFACE_DIAGNOSTIC) {
+                    putExtra(
+                        ProductSurfaceActivity.EXTRA_DIAGNOSTIC_BODY,
+                        buildProductDiagnosticSummary(truth)
+                    )
+                }
+            }
+        )
+    }
+
+    private fun buildProductDiagnosticSummary(truth: NetworkTruth): String =
+        buildString {
+            append("1. Téléphone · KINLINK observe localement\n")
+            append("2. Radio / transport · ${transportLabel(truth)}\n")
+            append("3. LAN / route · ${lanLabel(truth)} · ")
+            append(
+                if (truth.hasIpv4DefaultRoute || truth.hasIpv6DefaultRoute)
+                    "route par défaut présente"
+                else
+                    "route par défaut non confirmée"
+            )
+            append("\n4. DNS / IP · ${truth.dnsServerCount} DNS · ")
+            append("IPv4=${if (truth.hasIpv4Address) "oui" else "non"} · ")
+            append("IPv6=${if (truth.hasIpv6Address) "oui" else "non"}\n")
+            append("5. Internet · ${internetLabel(truth)}\n")
+            append("6. Service distant · non testé activement par défaut\n\n")
+            append("Cause la plus probable · ${failureLabel(truth)}\n")
+            append("Réseau payant · ${if (truth.metered) "oui" else "non"}\n")
+            append("Confiance technique Android · ")
+            append(String.format(Locale.US, "%.0f%%", truth.confidence * 100.0))
+            append("\n")
+            append(
+                TrustedWifiContextStore(this@MainActivity).let { store ->
+                    val digest = TrustedWifiContextPolicy.fingerprint(truth)
+                    when {
+                        digest == null -> "Contexte Wi-Fi · non mémorisable sans identité stable"
+                        store.isHome(digest) -> "Contexte Wi-Fi · maison"
+                        store.isTrusted(digest) -> "Contexte Wi-Fi · de confiance"
+                        else -> "Contexte Wi-Fi · non mémorisé"
+                    }
+                }
+            )
+        }
 
     private fun ensureNotificationVisibilityPermission() {
         val granted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -1591,6 +1696,9 @@ class MainActivity : Activity() {
     }
     companion object {
         private const val REQUEST_POST_NOTIFICATIONS = 4107
+        const val EXTRA_PRODUCT_ACTION = "kinlink.product.action"
+        const val ACTION_OPEN_MOBILE_VAULT = "open_mobile_vault"
+        const val ACTION_EXPORT_DIAGNOSTIC = "export_diagnostic"
     }
 
 }
