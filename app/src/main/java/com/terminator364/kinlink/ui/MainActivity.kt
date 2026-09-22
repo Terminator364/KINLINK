@@ -84,6 +84,9 @@ import com.terminator364.kinlink.core.FieldCandidateQualificationVerdict
 import com.terminator364.kinlink.core.HandoffKind
 import com.terminator364.kinlink.core.HandoffOutcome
 import com.terminator364.kinlink.core.RuntimeResourceVerdict
+import com.terminator364.kinlink.core.StrongStabilizerShadowInput
+import com.terminator364.kinlink.core.StrongStabilizerShadowMode
+import com.terminator364.kinlink.core.StrongStabilizerShadowPolicy
 import com.terminator364.kinlink.core.SessionHealthPolicy
 import com.terminator364.kinlink.core.UserExperienceTruthPolicy
 import com.terminator364.kinlink.core.UserExperiencePresentationPolicy
@@ -465,7 +468,46 @@ class MainActivity : Activity() {
                     }
                 }
             )
+            append("\n\n")
+            append(strongStabilizerDiagnostic(truth))
         }
+
+    private fun strongStabilizerDiagnostic(truth: NetworkTruth): String {
+        val resourcesConstrained = runCatching {
+            DeviceResourceGuard(this).snapshot().constrained
+        }.getOrDefault(true)
+        val assessment = StrongStabilizerShadowPolicy.evaluate(
+            StrongStabilizerShadowInput(
+                safeMode = recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY,
+                emergencyObservationOnly = false,
+                resourcesConstrained = resourcesConstrained,
+                handoffInProgress = false,
+                nativeEscapeVerified = true,
+                perAppConsent = false,
+                lanPreservationVerified = false,
+                dnsSafetyVerified = false,
+                routeLoopSafetyVerified = false,
+                mtuSafetyVerified = false,
+                ipv4Verified = truth.hasIpv4Address && truth.hasIpv4DefaultRoute,
+                ipv6Verified = truth.hasIpv6Address && truth.hasIpv6DefaultRoute,
+                meteredNetwork = truth.metered,
+                meteredCanaryAllowed = false,
+                harmObserved = false
+            )
+        )
+        val mode = when (assessment.mode) {
+            StrongStabilizerShadowMode.DISABLED -> "DISABLED"
+            StrongStabilizerShadowMode.SHADOW_ONLY -> "SHADOW_ONLY"
+            StrongStabilizerShadowMode.PER_APP_CANARY -> "PER_APP_CANARY"
+        }
+        return buildString {
+            append("Strong Stabilizer · $mode")
+            append("\nTrafic W4 capturé · non")
+            append("\nBlockers · ")
+            append(if (assessment.blockers.isEmpty()) "aucun" else assessment.blockers.sorted().joinToString(", "))
+            append("\nPromotion active · interdite tant que bénéfice, ressources, rollback et no-harm ne sont pas prouvés")
+        }
+    }
 
     private fun ensureNotificationVisibilityPermission() {
         val granted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
