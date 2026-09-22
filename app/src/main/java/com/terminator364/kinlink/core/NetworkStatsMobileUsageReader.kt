@@ -92,7 +92,7 @@ class NetworkStatsMobileUsageReader(context: Context) {
         }
     }
 
-    private fun hasUsageAccess(): Boolean {
+    fun hasUsageAccess(): Boolean {
         val mode = runCatching {
             appOps.unsafeCheckOpNoThrow(
                 AppOpsManager.OPSTR_GET_USAGE_STATS,
