@@ -436,6 +436,7 @@ class MainActivity : Activity() {
     private fun configureMobileBudget() {
         val current = mobilePlanVaultStore.read()?.config
         val evidence = mobileUsageEvidenceStore.read()
+        val usageReader = NetworkStatsMobileUsageReader(this)
 
         fun field(hint: String, value: String = "") = EditText(this).apply {
             inputType = InputType.TYPE_CLASS_TEXT
@@ -472,6 +473,12 @@ class MainActivity : Activity() {
                 current?.criticalInteractiveAllowanceBytes
             )
         )
+        val cycleStartInput = field(
+            "Début du cycle · AAAA-MM-JJ · optionnel",
+            MobileVaultFormPolicy.formatCycleStartDate(
+                current?.cycleStartAtEpochMillis
+            )
+        )
         val expiryInput = field(
             "Expiration · AAAA-MM-JJ",
             MobileVaultFormPolicy.formatInclusiveExpiryDate(
@@ -479,6 +486,17 @@ class MainActivity : Activity() {
             )
         )
 
+        val usageAccessAction = TextView(this).apply {
+            val granted = usageReader.hasUsageAccess()
+            text = if (granted) {
+                "Accès d’utilisation Android · accordé · optionnel"
+            } else {
+                "Accès d’utilisation Android · non accordé · toucher pour les réglages"
+            }
+            gravity = android.view.Gravity.CENTER
+            minHeight = (48 * resources.displayMetrics.density).toInt()
+            setPadding(0, 8, 0, 8)
+        }
         val clearAction = TextView(this).apply {
             text = "Effacer le forfait"
             gravity = android.view.Gravity.CENTER
@@ -494,14 +512,19 @@ class MainActivity : Activity() {
             addView(reserveInput)
             addView(rescueInput)
             addView(criticalInput)
+            addView(cycleStartInput)
             addView(expiryInput)
+            addView(usageAccessAction)
             addView(clearAction)
         }
         val scroll = ScrollView(this).apply { addView(form) }
 
         val dialog = AlertDialog.Builder(this)
             .setTitle("Mobile Vault · forfait")
-            .setMessage("MB/GB · réserves protégées · données locales.")
+            .setMessage(
+                "MB/GB · réserves protégées · données locales. " +
+                    "NetworkStats Android reste agrégé et optionnel."
+            )
             .setView(scroll)
             .setPositiveButton("Enregistrer", null)
             .setNegativeButton("Annuler", null)
@@ -524,6 +547,11 @@ class MainActivity : Activity() {
                 val critical = MobileVaultFormPolicy.parseDecimalBytes(
                     criticalInput.text.toString()
                 ) ?: 0L
+                val cycleStartText = cycleStartInput.text.toString().trim()
+                val cycleStart = if (cycleStartText.isBlank()) null
+                    else MobileVaultFormPolicy.parseCycleStartDate(
+                        cycleStartText
+                    )
                 val expiryText = expiryInput.text.toString().trim()
                 val expiry = if (expiryText.isBlank()) null
                     else MobileVaultFormPolicy.parseInclusiveExpiryDate(
@@ -538,8 +566,21 @@ class MainActivity : Activity() {
                     usedInput.error = "Format attendu : 500 MB ou 1.5 GB."
                     return@setOnClickListener
                 }
+                if (cycleStartText.isNotBlank() && cycleStart == null) {
+                    cycleStartInput.error = "Date attendue : AAAA-MM-JJ."
+                    return@setOnClickListener
+                }
+                if (cycleStart != null && cycleStart > System.currentTimeMillis()) {
+                    cycleStartInput.error = "Le début du cycle ne peut pas être dans le futur."
+                    return@setOnClickListener
+                }
                 if (expiryText.isNotBlank() && expiry == null) {
                     expiryInput.error = "Date attendue : AAAA-MM-JJ."
+                    return@setOnClickListener
+                }
+                if (cycleStart != null && expiry != null && cycleStart >= expiry) {
+                    cycleStartInput.error =
+                        "Le début du cycle doit précéder l’expiration."
                     return@setOnClickListener
                 }
 
@@ -549,13 +590,15 @@ class MainActivity : Activity() {
                     protectedReserveBytes = reserve,
                     rescueAllowanceBytes = rescue,
                     criticalInteractiveAllowanceBytes = critical,
-                    cycleStartAtEpochMillis = current?.cycleStartAtEpochMillis
+                    cycleStartAtEpochMillis = cycleStart
                 )
                 if (!MobilePlanVaultPolicy.valid(config)) {
                     reserveInput.error =
                         "La somme des réserves doit rester inférieure au forfait."
                     return@setOnClickListener
                 }
+                val cycleChanged =
+                    current?.cycleStartAtEpochMillis != cycleStart
                 val saved = mobilePlanVaultStore.write(config)
                 val usageSaved = if (used == null) {
                     mobileUsageEvidenceStore.clearUserReconciled()
@@ -570,16 +613,34 @@ class MainActivity : Activity() {
                     ).show()
                     return@setOnClickListener
                 }
+                if (cycleChanged) {
+                    mobileUsageEvidenceStore.clearNetworkStats()
+                }
                 runCatching {
                     ledger.appendAction(
                         "MOBILE_VAULT_PLAN_SAVED",
                         true,
-                        "Plan local enregistré; aucune donnée opérateur privilégiée."
+                        if (cycleStart == null) {
+                            "Plan local enregistré sans début de cycle; NetworkStats non utilisé."
+                        } else {
+                            "Plan local enregistré avec début de cycle; NetworkStats reste agrégé et optionnel."
+                        }
                     )
                 }
                 dialog.dismiss()
                 refreshBudgetUi()
                 refreshOptionalNetworkStatsEvidence()
+            }
+            usageAccessAction.setOnClickListener {
+                runCatching {
+                    startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                }.onFailure {
+                    Toast.makeText(
+                        this,
+                        "Réglage Usage Access indisponible sur cet appareil",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
             clearAction.setOnClickListener {
                 mobilePlanVaultStore.clear()
