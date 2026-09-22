@@ -390,9 +390,11 @@ require(
 )
 require(
     "Looper.myLooper() == Looper.getMainLooper()" in NETWORK_STATS_READER
-    and MAIN_ACTIVITY.count("NetworkStatsMobileUsageReader(") == 1
-    and "NetworkStatsMobileUsageReader(" not in SERVICE
-    and "NetworkStatsMobileUsageReader(" not in OBSERVER,
+    and MAIN_ACTIVITY.count(
+        "NetworkStatsMobileUsageReader(applicationContext).query(request)"
+    ) == 1
+    and ".query(request)" not in SERVICE
+    and ".query(request)" not in OBSERVER,
     "candidate contract: NetworkStats query can escape its single worker or enter UI/connectivity callback paths",
 )
 
