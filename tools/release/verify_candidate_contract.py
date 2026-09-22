@@ -616,6 +616,23 @@ require(
     "candidate contract: Mobile Assist action-history failure can bypass profile cap",
 )
 
+PRODUCT_SURFACE = (
+    SRC / "com/terminator364/kinlink/ui/ProductSurfaceActivity.kt"
+).read_text(encoding="utf-8")
+require(
+    "ACTION_RUN_WIFI_DOCTOR" in MAIN_ACTIVITY
+    and "ACTION_RUN_MOBILE_ASSIST" in MAIN_ACTIVITY
+    and "Agir · lancer Wi-Fi Doctor" in PRODUCT_SURFACE
+    and "Agir · lancer Mobile Assist" in PRODUCT_SURFACE,
+    "candidate contract: W3 Diagnostic surface is no longer actionable",
+)
+require(
+    'Intent(Intent.ACTION_SEND)' in PRODUCT_SURFACE
+    and "Partager ce rapport" in PRODUCT_SURFACE
+    and "PlatformCapabilityDiscovery(this).snapshot()" in PRODUCT_SURFACE,
+    "candidate contract: W3 weekly report sharing or capability-aware settings missing",
+)
+
 BUILD_MANIFEST_WRITER = ROOT / "tools/release/write_build_manifest.py"
 require(BUILD_MANIFEST_WRITER.exists(), "candidate contract: build-manifest writer missing")
 writer_text = BUILD_MANIFEST_WRITER.read_text(encoding="utf-8")

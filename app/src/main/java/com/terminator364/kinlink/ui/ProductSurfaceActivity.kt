@@ -17,6 +17,9 @@ import com.terminator364.kinlink.core.MobileUsageEvidenceStore
 import com.terminator364.kinlink.core.MobileVaultFormPolicy
 import com.terminator364.kinlink.core.MobileVaultOfflineFallbackPolicy
 import com.terminator364.kinlink.core.MobileVaultZone
+import com.terminator364.kinlink.core.PlatformCapabilityDiscovery
+import com.terminator364.kinlink.core.DataSaverState
+import com.terminator364.kinlink.core.LocalNetworkAccessState
 import com.terminator364.kinlink.core.RecoveryMode
 import com.terminator364.kinlink.core.RecoveryModeStore
 import com.terminator364.kinlink.core.TrustedWifiContextStore
@@ -87,10 +90,24 @@ class ProductSurfaceActivity : Activity() {
         subtitle.text = "Lecture locale, sans speed-test automatique ni consommation inutile de données."
         body.text = intent.getStringExtra(EXTRA_DIAGNOSTIC_BODY)
             ?: "Aucun état réseau récent n’est disponible."
-        primaryAction.visibleAction("Exporter le diagnostic") {
+
+        when (intent.getStringExtra(EXTRA_DIAGNOSTIC_ACTION)) {
+            DIAGNOSTIC_ACTION_WIFI ->
+                primaryAction.visibleAction("Agir · lancer Wi-Fi Doctor") {
+                    returnToMain(MainActivity.ACTION_RUN_WIFI_DOCTOR)
+                }
+            DIAGNOSTIC_ACTION_MOBILE ->
+                primaryAction.visibleAction("Agir · lancer Mobile Assist") {
+                    returnToMain(MainActivity.ACTION_RUN_MOBILE_ASSIST)
+                }
+            else ->
+                primaryAction.visibleAction("Actualiser depuis l’accueil") {
+                    finish()
+                }
+        }
+        secondaryAction.visibleAction("Exporter le diagnostic") {
             returnToMain(MainActivity.ACTION_EXPORT_DIAGNOSTIC)
         }
-        secondaryAction.visibleAction("Actualiser depuis l’accueil") { finish() }
     }
 
     private fun renderWeek() {
@@ -98,7 +115,12 @@ class ProductSurfaceActivity : Activity() {
         title.text = "Ce que KINLINK a réellement observé"
         subtitle.text = "Résumé local sur 7 jours. Ce sont des observations, pas des promesses de débit."
         body.text = weeklySummary()
-        primaryAction.visibleAction("Actualiser le résumé") { body.text = weeklySummary() }
+        primaryAction.visibleAction("Actualiser le résumé") {
+            body.text = weeklySummary()
+        }
+        secondaryAction.visibleAction("Partager ce rapport") {
+            shareWeeklySummary()
+        }
     }
 
     private fun renderMobileVault() {
@@ -229,6 +251,57 @@ class ProductSurfaceActivity : Activity() {
         append("\n${currentWifiLabel()}\n\n")
         append("Confidentialité · l’identité brute du Wi-Fi n’est pas persistée. La mémoire maison utilise uniquement une empreinte SHA-256 locale et ne peut pas autoriser une récupération active.")
         append("\n\nUrgence · suspend toutes les actions KINLINK sans prendre le contrôle du routage : Android continue d’utiliser son réseau natif.")
+        append("\n\n")
+        append(capabilitySummary())
+    }
+
+    private fun capabilitySummary(): String {
+        val capability = runCatching {
+            PlatformCapabilityDiscovery(this).snapshot()
+        }.getOrNull() ?: return "Capacités appareil · lecture indisponible"
+
+        val dataSaver = when (capability.dataSaver) {
+            DataSaverState.DISABLED -> "désactivé"
+            DataSaverState.WHITELISTED -> "KINLINK autorisé"
+            DataSaverState.ENABLED -> "actif"
+            DataSaverState.UNKNOWN -> "état inconnu"
+        }
+        val lan = when (capability.localNetworkAccess) {
+            LocalNetworkAccessState.NOT_REQUIRED_PRE_API_37 ->
+                "permission LAN spéciale non requise sur cet Android"
+            LocalNetworkAccessState.GRANTED ->
+                "accès LAN accordé"
+            LocalNetworkAccessState.NOT_GRANTED ->
+                "accès LAN non accordé"
+        }
+        return buildString {
+            append("Capacités appareil · Android API ${capability.apiLevel}")
+            append("\nWi-Fi · ${if (capability.wifiFeature) "disponible" else "absent"}")
+            append("\nTéléphonie · ${if (capability.telephonyFeature) "disponible" else "absente"}")
+            append("\nÉconomiseur de données · $dataSaver")
+            append("\nUsage Access · ${if (capability.networkUsageAccess) "accordé (optionnel)" else "non accordé (optionnel)"}")
+            append("\nLAN · $lan")
+            append("\nDiagnostic Android avancé · non revendiqué en mode Lite")
+        }
+    }
+
+    private fun shareWeeklySummary() {
+        val report = weeklySummary()
+        runCatching {
+            startActivity(
+                Intent.createChooser(
+                    Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(
+                            Intent.EXTRA_SUBJECT,
+                            "Rapport KINLINK · Cette semaine"
+                        )
+                        putExtra(Intent.EXTRA_TEXT, report)
+                    },
+                    "Partager le rapport KINLINK"
+                )
+            )
+        }
     }
 
     private fun currentWifiLabel(): String {
@@ -329,11 +402,15 @@ class ProductSurfaceActivity : Activity() {
     companion object {
         const val EXTRA_SURFACE = "kinlink.surface"
         const val EXTRA_DIAGNOSTIC_BODY = "kinlink.surface.diagnostic"
+        const val EXTRA_DIAGNOSTIC_ACTION = "kinlink.surface.diagnostic_action"
         const val EXTRA_WIFI_DIGEST = "kinlink.surface.wifi_digest"
         const val EXTRA_WIFI_LABEL = "kinlink.surface.wifi_label"
         const val SURFACE_DIAGNOSTIC = "diagnostic"
         const val SURFACE_WEEK = "week"
         const val SURFACE_MOBILE_VAULT = "mobile_vault"
         const val SURFACE_SETTINGS = "settings"
+        const val DIAGNOSTIC_ACTION_NONE = "none"
+        const val DIAGNOSTIC_ACTION_WIFI = "wifi"
+        const val DIAGNOSTIC_ACTION_MOBILE = "mobile"
     }
 }

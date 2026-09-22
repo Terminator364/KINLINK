@@ -381,6 +381,14 @@ class MainActivity : Activity() {
                 launchIntent.removeExtra(EXTRA_PRODUCT_ACTION)
                 exportDiagnostic()
             }
+            ACTION_RUN_WIFI_DOCTOR -> {
+                launchIntent.removeExtra(EXTRA_PRODUCT_ACTION)
+                optimizeWifi()
+            }
+            ACTION_RUN_MOBILE_ASSIST -> {
+                launchIntent.removeExtra(EXTRA_PRODUCT_ACTION)
+                optimizeMobile()
+            }
         }
     }
 
@@ -407,6 +415,17 @@ class MainActivity : Activity() {
                     putExtra(
                         ProductSurfaceActivity.EXTRA_DIAGNOSTIC_BODY,
                         buildProductDiagnosticSummary(truth)
+                    )
+                    putExtra(
+                        ProductSurfaceActivity.EXTRA_DIAGNOSTIC_ACTION,
+                        when (truth.transport) {
+                            Transport.WIFI ->
+                                ProductSurfaceActivity.DIAGNOSTIC_ACTION_WIFI
+                            Transport.CELLULAR ->
+                                ProductSurfaceActivity.DIAGNOSTIC_ACTION_MOBILE
+                            else ->
+                                ProductSurfaceActivity.DIAGNOSTIC_ACTION_NONE
+                        }
                     )
                 }
             }
@@ -1713,6 +1732,8 @@ class MainActivity : Activity() {
         const val EXTRA_PRODUCT_ACTION = "kinlink.product.action"
         const val ACTION_OPEN_MOBILE_VAULT = "open_mobile_vault"
         const val ACTION_EXPORT_DIAGNOSTIC = "export_diagnostic"
+        const val ACTION_RUN_WIFI_DOCTOR = "run_wifi_doctor"
+        const val ACTION_RUN_MOBILE_ASSIST = "run_mobile_assist"
     }
 
 }
