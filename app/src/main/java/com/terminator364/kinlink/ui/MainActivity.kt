@@ -344,6 +344,20 @@ class MainActivity : Activity() {
         super.onStop()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (::profileStore.isInitialized) {
+            currentProfile = profileStore.current()
+            refreshModeButtons()
+        }
+        if (::recoveryModeStore.isInitialized) {
+            refreshSafeModeButton()
+        }
+        if (::ledger.isInitialized) {
+            render(latestTruth, latestBudget, latestStability)
+        }
+    }
+
     override fun onDestroy() {
         if (evidenceReceiverRegistered) {
             runCatching { unregisterReceiver(evidenceUpdatedReceiver) }

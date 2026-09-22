@@ -226,9 +226,18 @@ class ProductSurfaceActivity : Activity() {
         append("Mode sûr · " + if (recoveryModeStore.current() == RecoveryMode.OBSERVATION_ONLY)
             "ON — KINLINK observe mais ne lance pas d’action active"
         else "OFF — récupération bornée autorisée")
-        append("\n$wifiLabel\n\n")
+        append("\n${currentWifiLabel()}\n\n")
         append("Confidentialité · l’identité brute du Wi-Fi n’est pas persistée. La mémoire maison utilise uniquement une empreinte SHA-256 locale et ne peut pas autoriser une récupération active.")
         append("\n\nUrgence · suspend toutes les actions KINLINK sans prendre le contrôle du routage : Android continue d’utiliser son réseau natif.")
+    }
+
+    private fun currentWifiLabel(): String {
+        val digest = wifiDigest ?: return wifiLabel
+        return when {
+            trustedWifiStore.isHome(digest) -> "Wi-Fi maison reconnu localement"
+            trustedWifiStore.isTrusted(digest) -> "Wi-Fi de confiance reconnu localement"
+            else -> "Wi-Fi actuel non mémorisé"
+        }
     }
 
     private fun notifyServiceModeChanged() {
