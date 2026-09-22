@@ -373,6 +373,29 @@ require(
     "candidate contract: expanded 48-shot visual proof gate missing",
 )
 
+NETWORK_STATS_READER = (
+    SRC / "com/terminator364/kinlink/core/NetworkStatsMobileUsageReader.kt"
+).read_text(encoding="utf-8")
+NETWORK_STATS_GATE = (
+    SRC / "com/terminator364/kinlink/core/NetworkStatsQuerySessionGate.kt"
+).read_text(encoding="utf-8")
+require(
+    "DEFAULT_TIMEOUT_MILLIS = 4_000L" in NETWORK_STATS_GATE
+    and "timeoutAndDisable(token)" in MAIN_ACTIVITY
+    and "future.cancel(true)" in MAIN_ACTIVITY
+    and "Executors.newSingleThreadExecutor" in MAIN_ACTIVITY
+    and "Executors.newSingleThreadScheduledExecutor" in MAIN_ACTIVITY
+    and "networkStatsSessionGate.disableForSession()" in MAIN_ACTIVITY,
+    "candidate contract: B92 bounded NetworkStats worker/timeout/session fail-open missing",
+)
+require(
+    "Looper.myLooper() == Looper.getMainLooper()" in NETWORK_STATS_READER
+    and MAIN_ACTIVITY.count("NetworkStatsMobileUsageReader(") == 1
+    and "NetworkStatsMobileUsageReader(" not in SERVICE
+    and "NetworkStatsMobileUsageReader(" not in OBSERVER,
+    "candidate contract: NetworkStats query can escape its single worker or enter UI/connectivity callback paths",
+)
+
 
 require(
     "countExactActionSince(EVIDENCE_NO_BETTER, since)" in MOBILE_ASSIST
