@@ -172,10 +172,19 @@ class ResponsiveRenderMatrixTest {
             activity.findViewById<View>(R.id.budgetButton).performClick()
         }
         instrumentation.waitForIdleSync()
-        assertActiveWindowContains("Début du cycle")
+        assertActiveWindowContains("Début cycle")
         assertActiveWindowContains("Accès d’utilisation Android")
         assertActiveWindowContains("NetworkStats Android reste agrégé et optionnel")
         capture("mobile-data-dialog")
+        repeat(4) {
+            if (scrollActiveWindowForward()) {
+                instrumentation.waitForIdleSync()
+            }
+        }
+        assertActiveWindowContains("Enregistrer")
+        assertActiveWindowContains("Annuler")
+        assertActiveWindowContains("Effacer le forfait")
+        capture("mobile-data-dialog-bottom")
         runShell("input keyevent KEYCODE_BACK")
         instrumentation.waitForIdleSync()
 
@@ -339,6 +348,26 @@ class ResponsiveRenderMatrixTest {
                 walkVisible(view.getChildAt(i), block)
             }
         }
+    }
+
+    private fun scrollActiveWindowForward(): Boolean {
+        val root = instrumentation.uiAutomation.rootInActiveWindow ?: return false
+        val scrollable = findScrollableNode(root) ?: return false
+        return scrollable.performAction(
+            android.view.accessibility.AccessibilityNodeInfo.ACTION_SCROLL_FORWARD
+        )
+    }
+
+    private fun findScrollableNode(
+        node: android.view.accessibility.AccessibilityNodeInfo
+    ): android.view.accessibility.AccessibilityNodeInfo? {
+        if (node.isScrollable) return node
+        for (index in 0 until node.childCount) {
+            val child = node.getChild(index) ?: continue
+            val found = findScrollableNode(child)
+            if (found != null) return found
+        }
+        return null
     }
 
     private fun assertActiveWindowContains(fragment: String) {
