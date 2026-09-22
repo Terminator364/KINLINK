@@ -4,9 +4,9 @@ Resume with `KINLINKGO`.
 
 ## P0 communication first
 1. verify RESUME_CAPSULE and fresh communication state;
-2. K25-18 is CLOSED with Gmail END ACK `1a0c70f0154dceff`;
+2. K25-19 is CLOSED with Gmail END ACK `1a0c8577168c2184`;
 3. a fresh Gmail START is required before new product work;
-4. keep the v6 cadence: 20 min useful work + 5 min hard-close reserve.
+4. keep v6 cadence: 20 min useful work + 5 min hard-close reserve.
 
 ## Canonical scope
 - A+B+C: **80 macro capabilities**
@@ -17,39 +17,33 @@ Resume with `KINLINKGO`.
 - development line: **0.8.0-dev / versionCode 12**
 - no micro-beta / no phone reinstall chain
 
-## Newly proven W2 state
+## Newly proven W2 state — B94
 Exact head:
-`78b03442ab421ff5eb7f597488d40722fc9ab3cc`
+`e341c3e2cb95649cb5a441bd3aca7aacbf835b52`
 
 Runs:
-- design-lint `35681033427`: **PASS**
-- Android `35681033393`: **PASS**
-- CI build artifact: `10674639294`
-- responsive UI proof artifact: `10674619440`
+- design-lint `35707268025`: **PASS**
+- Android `35707267993`: **PASS**
+- CI build artifact: `10685735166`
+- responsive UI proof artifact: `10684824257`
 
-B92 machine proof:
-- one NetworkStats worker and one in-flight token;
-- 4 s deadline, below the 5 s recovery deadline;
-- timeout cancels the Future and disables the optional lane for the session;
-- stale timeouts cannot disable newer work;
-- query is rejected on the main thread;
-- CI fences the query out of observer/connectivity callback classes;
-- cockpit/recovery never wait for NetworkStats.
+Privacy boundary now machine-proven:
+- `AGGREGATE_ONLY` is the default;
+- future `LOCAL_SUBSCRIPTION_ID` requires **both** a separately justified per-subscription need and explicit permission proof;
+- `READ_PHONE_STATE` / `READ_PHONE_NUMBERS` remain absent and CI-forbidden;
+- subscriber/non-resettable identity getter APIs are CI-forbidden;
+- `SubscriptionManager` / `createForSubscriptionId` remain fenced until an explicit later design change;
+- subscription identity is never diagnostic/export data;
+- non-resettable identifiers remain forbidden.
 
-B93 machine proof:
-- NetworkStats remains `DEVICE_MOBILE_AGGREGATE`;
-- explicit two-plan fixture returns `HOLD_UNATTRIBUTED`;
-- reconciled usage stays null;
-- both plan zones remain `UNKNOWN`;
-- aggregate evidence never becomes `PLAN_EXACT`.
-
-## Exact next W2 block — B94
-1. define and fence the Subscription ID privacy boundary;
-2. add CI negative controls for ICCID/IMSI/IMEI/subscriber/device-ID APIs;
-3. do **not** add READ_PHONE_STATE merely to claim per-SIM support;
-4. only consider Android Subscription ID if a separately justified per-subscription feature needs it;
-5. denial/unavailability must degrade to aggregate/UNKNOWN;
-6. no signing, Drive staging or phone install.
+## Exact next W2 block — B95
+1. model **default-data** and **active-data** as distinct facts;
+2. build the semantics as a pure generation/staleness policy first;
+3. any future per-sub evidence must be invalidated when the active subscription generation changes;
+4. no Android telephony API activation yet;
+5. no permission expansion;
+6. aggregate/UNKNOWN remains the safe fallback;
+7. no signing, Drive staging or phone install.
 
 ## Communication invariant
 - Gmail START before substantive work.
