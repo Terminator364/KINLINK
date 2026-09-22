@@ -172,6 +172,9 @@ class ResponsiveRenderMatrixTest {
             activity.findViewById<View>(R.id.budgetButton).performClick()
         }
         instrumentation.waitForIdleSync()
+        assertActiveWindowContains("Début du cycle")
+        assertActiveWindowContains("Accès d’utilisation Android")
+        assertActiveWindowContains("NetworkStats Android reste agrégé et optionnel")
         capture("mobile-data-dialog")
         runShell("input keyevent KEYCODE_BACK")
         instrumentation.waitForIdleSync()
@@ -336,6 +339,33 @@ class ResponsiveRenderMatrixTest {
                 walkVisible(view.getChildAt(i), block)
             }
         }
+    }
+
+    private fun assertActiveWindowContains(fragment: String) {
+        val root = instrumentation.uiAutomation.rootInActiveWindow
+        assertTrue(
+            "active dialog is missing expected text/hint: $fragment",
+            root != null && accessibilityTreeContains(root, fragment)
+        )
+    }
+
+    private fun accessibilityTreeContains(
+        node: android.view.accessibility.AccessibilityNodeInfo,
+        fragment: String
+    ): Boolean {
+        val candidates = listOfNotNull(
+            node.text?.toString(),
+            node.hintText?.toString(),
+            node.contentDescription?.toString()
+        )
+        if (candidates.any { it.contains(fragment, ignoreCase = true) }) {
+            return true
+        }
+        for (index in 0 until node.childCount) {
+            val child = node.getChild(index) ?: continue
+            if (accessibilityTreeContains(child, fragment)) return true
+        }
+        return false
     }
 
     private fun assertKinlinkOwnsForeground(stateName: String, viewport: String) {
