@@ -1,0 +1,39 @@
+name: w4-shadow-policy-ci
+on:
+  push:
+    branches:
+      - dev/0.9-w4-shadow-gate-foundation
+    paths:
+      - 'app/src/main/java/com/terminator364/kinlink/core/StrongStabilizerShadowPolicy.kt'
+      - 'app/src/test/java/com/terminator364/kinlink/core/StrongStabilizerShadowPolicyTest.kt'
+      - '.github/workflows/w4-shadow-policy-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: w4-shadow-policy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shadow-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+      - name: Prove W4 stays non-owning
+        run: |
+          set -euo pipefail
+          test -f app/src/main/java/com/terminator364/kinlink/core/StrongStabilizerShadowPolicy.kt
+          ! grep -R -n -E 'android\.net\.VpnService|bindProcessToNetwork|setProcessDefaultNetwork|requestNetwork\(' app/src/main/java
+          ! grep -q 'android.net.VpnService' app/src/main/AndroidManifest.xml
+          echo "W4 SHADOW remains non-owning."
+      - name: Unit tests
+        run: gradle :app:testDebugUnitTest --tests 'com.terminator364.kinlink.core.StrongStabilizerShadowPolicyTest' --stacktrace
